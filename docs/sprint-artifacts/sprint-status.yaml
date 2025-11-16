@@ -1,0 +1,32 @@
+# LifeOS - Sprint Status
+# Generated: 2025-01-16
+# Project: LifeOS (Life Operating System)
+
+project_name: "LifeOS"
+generated_date: "2025-01-16"
+last_updated: "2025-01-16"
+
+# Epic Development Status
+# Possible statuses: backlog | contexted | in_progress | completed
+development_status:
+  epic-1: "contexted"
+  epic-2: "contexted"
+  epic-3: "contexted"
+  epic-4: "contexted"
+  epic-5: "contexted"
+  epic-6: "contexted"
+  epic-7: "contexted"
+  epic-8: "contexted"
+  epic-9: "contexted"
+
+# Epic Titles
+epic_titles:
+  epic-1: "Core Platform Foundation"
+  epic-2: "Life Coach MVP"
+  epic-3: "Fitness Coach MVP"
+  epic-4: "Mind & Emotion MVP"
+  epic-5: "Cross-Module Intelligence"
+  epic-6: "Gamification & Retention"
+  epic-7: "Onboarding & Subscriptions"
+  epic-8: "Notifications & Engagement"
+  epic-9: "Settings & Profile"

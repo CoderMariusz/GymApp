@@ -1,0 +1,27 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:github.com)",
+      "Bash(npx bmad-method@alpha install)",
+      "Bash(mkdir:*)",
+      "WebSearch",
+      "Bash(npx bmad-method@alpha list:*)",
+      "Bash(npx bmad-method@alpha resume:*)",
+      "Bash(npx bmad-method@alpha --help)",
+      "Bash(npx bmad-method@alpha prd)",
+      "Bash(npx bmad-method@alpha status:*)",
+      "Bash(npx bmad-method@alpha analyst:*)",
+      "Bash(npx bmad-method@alpha bmm)",
+      "Bash(npx bmad-method@alpha bmm:*)",
+      "Bash(npx bmad-method@alpha build:*)",
+      "Bash(npx bmad-method@alpha uninstall --force)",
+      "Bash(printf:*)",
+      "Bash(npx bmad-method@alpha sm:*)",
+      "Bash(cp:*)",
+      "Bash(cat:*)",
+      "Bash(test:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

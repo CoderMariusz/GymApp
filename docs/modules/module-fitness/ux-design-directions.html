@@ -1,0 +1,1209 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GymApp - Design Directions</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #0a0a0a;
+            color: #e0e0e0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #FF6B6B, #A78BFA, #3B82F6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            color: #9ca3af;
+            font-size: 1.1rem;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .control-btn {
+            padding: 0.75rem 1.5rem;
+            background: #1a1a1a;
+            border: 2px solid #2a2a2a;
+            border-radius: 12px;
+            color: #e0e0e0;
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+            font-weight: 600;
+        }
+
+        .control-btn:hover {
+            background: #2a2a2a;
+            border-color: #3a3a3a;
+        }
+
+        .control-btn.active {
+            background: linear-gradient(135deg, #FF6B6B, #A78BFA);
+            border-color: transparent;
+            color: white;
+        }
+
+        .mockup-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: none;
+        }
+
+        .mockup-container.active {
+            display: block;
+        }
+
+        .direction-header {
+            background: #1a1a1a;
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 2px solid #2a2a2a;
+        }
+
+        .direction-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .direction-subtitle {
+            color: #9ca3af;
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+        }
+
+        .direction-tags {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+
+        .tag {
+            padding: 0.4rem 1rem;
+            background: #2a2a2a;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: #9ca3af;
+        }
+
+        .screens-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .phone-mockup {
+            background: #1a1a1a;
+            border-radius: 40px;
+            padding: 16px;
+            border: 8px solid #2a2a2a;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            position: relative;
+        }
+
+        .phone-notch {
+            position: absolute;
+            top: 16px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 24px;
+            background: #0a0a0a;
+            border-radius: 0 0 20px 20px;
+            z-index: 10;
+        }
+
+        .phone-screen {
+            background: #121212;
+            border-radius: 32px;
+            overflow: hidden;
+            min-height: 700px;
+        }
+
+        .screen-label {
+            text-align: center;
+            margin-top: 1rem;
+            font-weight: 600;
+            color: #9ca3af;
+        }
+
+        /* Status Bar */
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem 1.25rem;
+            font-size: 0.8rem;
+            color: #9ca3af;
+        }
+
+        /* Navigation */
+        .bottom-nav {
+            position: sticky;
+            bottom: 0;
+            background: #1a1a1a;
+            border-top: 1px solid #2a2a2a;
+            display: flex;
+            justify-content: space-around;
+            padding: 0.75rem 0;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-radius: 12px;
+        }
+
+        .nav-item:hover {
+            background: #242424;
+        }
+
+        .nav-item.active {
+            color: #FF6B6B;
+        }
+
+        .nav-icon {
+            font-size: 1.5rem;
+        }
+
+        .nav-label {
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        /* Screen Content */
+        .screen-content {
+            padding: 1.5rem;
+            min-height: 550px;
+        }
+
+        .screen-header {
+            margin-bottom: 1.5rem;
+        }
+
+        .screen-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .screen-subtitle {
+            color: #9ca3af;
+            font-size: 0.9rem;
+        }
+
+        /* Card Styles */
+        .card {
+            background: #1a1a1a;
+            border-radius: 16px;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid;
+        }
+
+        .card-workout { border-left-color: #FF6B6B; }
+        .card-mindpeace { border-left-color: #A78BFA; }
+        .card-analytics { border-left-color: #3B82F6; }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-meta {
+            color: #9ca3af;
+            font-size: 0.85rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .card-stat {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 0.875rem 1.5rem;
+            border-radius: 12px;
+            border: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            width: 100%;
+            margin-bottom: 0.75rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #FF6B6B, #FF5252);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #2a2a2a;
+            color: #e0e0e0;
+        }
+
+        .btn-mindpeace {
+            background: linear-gradient(135deg, #A78BFA, #8B5CF6);
+            color: white;
+        }
+
+        .btn-analytics {
+            background: linear-gradient(135deg, #3B82F6, #2563EB);
+            color: white;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .stat-box {
+            background: #1a1a1a;
+            border-radius: 12px;
+            padding: 1.25rem;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: #9ca3af;
+            text-transform: uppercase;
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem;
+            margin: 1.5rem 0;
+        }
+
+        .action-card {
+            background: #1a1a1a;
+            border-radius: 16px;
+            padding: 1.25rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .action-card:hover {
+            background: #242424;
+            transform: translateY(-2px);
+        }
+
+        .action-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .action-label {
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        /* Progress Bar */
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #2a2a2a;
+            border-radius: 99px;
+            overflow: hidden;
+            margin-top: 0.75rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 99px;
+            transition: width 0.3s ease;
+        }
+
+        .progress-workout { background: linear-gradient(90deg, #FF6B6B, #FF5252); }
+        .progress-mindpeace { background: linear-gradient(90deg, #A78BFA, #8B5CF6); }
+        .progress-analytics { background: linear-gradient(90deg, #3B82F6, #2563EB); }
+
+        /* Exercise List */
+        .exercise-list {
+            margin-top: 1rem;
+        }
+
+        .exercise-item {
+            background: #1a1a1a;
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .exercise-name {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .exercise-sets {
+            color: #9ca3af;
+            font-size: 0.85rem;
+        }
+
+        .exercise-weight {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #FF6B6B;
+        }
+
+        /* Meditation Card */
+        .meditation-card {
+            background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .meditation-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(167, 139, 250, 0.1), rgba(139, 92, 246, 0.05));
+            pointer-events: none;
+        }
+
+        .meditation-duration {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #A78BFA;
+            text-align: center;
+            margin: 1rem 0;
+        }
+
+        /* Chart Preview */
+        .chart-container {
+            background: #1a1a1a;
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+        }
+
+        .chart-bars {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-around;
+            height: 150px;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .chart-bar {
+            flex: 1;
+            border-radius: 8px 8px 0 0;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .chart-bar:hover {
+            opacity: 0.8;
+        }
+
+        /* Streak Badge */
+        .streak-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: linear-gradient(135deg, #FFA726, #FF7043);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        /* Music Player */
+        .music-player {
+            background: linear-gradient(135deg, #2a2a2a, #1a1a1a);
+            border-radius: 16px;
+            padding: 1.25rem;
+            margin-top: 1rem;
+        }
+
+        .player-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .play-btn {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #A78BFA, #8B5CF6);
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .play-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .control-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #2a2a2a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .control-icon:hover {
+            background: #3a3a3a;
+        }
+
+        .track-info {
+            text-align: center;
+            margin-bottom: 0.75rem;
+        }
+
+        .track-title {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .track-artist {
+            font-size: 0.85rem;
+            color: #9ca3af;
+        }
+
+        /* Navigation Indicator */
+        .nav-indicator {
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            height: 3px;
+            background: #FF6B6B;
+            transition: all 0.3s ease;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .screens-grid {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+        }
+
+        /* Floating Action Button */
+        .fab {
+            position: fixed;
+            bottom: 100px;
+            right: 24px;
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #FF6B6B, #FF5252);
+            color: white;
+            font-size: 2rem;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 8px 24px rgba(255, 107, 107, 0.4);
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .fab:hover {
+            transform: scale(1.1);
+            box-shadow: 0 12px 32px rgba(255, 107, 107, 0.5);
+        }
+
+        /* Compact List */
+        .compact-list {
+            margin-top: 1rem;
+        }
+
+        .list-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: #1a1a1a;
+            border-radius: 12px;
+            margin-bottom: 0.5rem;
+        }
+
+        .list-icon {
+            font-size: 1.5rem;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #2a2a2a;
+            border-radius: 12px;
+        }
+
+        .list-content {
+            flex: 1;
+        }
+
+        .list-title {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .list-subtitle {
+            font-size: 0.85rem;
+            color: #9ca3af;
+        }
+
+        .list-action {
+            color: #9ca3af;
+            font-size: 1.25rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📱 GymApp - Design Directions</h1>
+        <p class="subtitle">8 różnych kierunków UX/UI dla Mobile App (iOS/Android)</p>
+    </div>
+
+    <div class="controls">
+        <button class="control-btn active" onclick="showDirection(1)">Direction 1: Card-Heavy Dashboard</button>
+        <button class="control-btn" onclick="showDirection(2)">Direction 2: Minimal Quick Actions</button>
+        <button class="control-btn" onclick="showDirection(3)">Direction 3: Stats-First Analytics</button>
+        <button class="control-btn" onclick="showDirection(4)">Direction 4: Immersive MindPeace</button>
+        <button class="control-btn" onclick="showDirection(5)">Direction 5: Dense Workout Logger</button>
+        <button class="control-btn" onclick="showDirection(6)">Direction 6: Spacious Zen Mode</button>
+        <button class="control-btn" onclick="showDirection(7)">Direction 7: Social-First Feed</button>
+        <button class="control-btn" onclick="showDirection(8)">Direction 8: Data-Rich Dashboard</button>
+    </div>
+
+    <!-- DIRECTION 1: Card-Heavy Dashboard -->
+    <div class="mockup-container active" id="direction1">
+        <div class="direction-header">
+            <div class="direction-title">Direction 1: Card-Heavy Dashboard</div>
+            <div class="direction-subtitle">Personality: Friendly & Approachable | Best for: First-time users who need guidance</div>
+            <div class="direction-tags">
+                <span class="tag">Card-based Layout</span>
+                <span class="tag">Medium Density</span>
+                <span class="tag">Bottom Navigation</span>
+                <span class="tag">High Visual Weight</span>
+            </div>
+        </div>
+
+        <div class="screens-grid">
+            <!-- Home Screen -->
+            <div>
+                <div class="phone-mockup">
+                    <div class="phone-notch"></div>
+                    <div class="phone-screen">
+                        <div class="status-bar">
+                            <span>9:41</span>
+                            <span>🔋 ●●●●</span>
+                        </div>
+
+                        <div class="screen-content">
+                            <div class="screen-header">
+                                <div class="screen-title">Welcome back, Mariusz! 👋</div>
+                                <div class="screen-subtitle">Ready for your next workout?</div>
+                            </div>
+
+                            <div class="streak-badge">
+                                🔥 7 Day Streak
+                            </div>
+
+                            <div class="stats-grid" style="margin-top: 1.5rem;">
+                                <div class="stat-box">
+                                    <div class="stat-value" style="color: #FF6B6B;">12</div>
+                                    <div class="stat-label">Workouts</div>
+                                </div>
+                                <div class="stat-box">
+                                    <div class="stat-value" style="color: #FFA726;">+5kg</div>
+                                    <div class="stat-label">PR This Week</div>
+                                </div>
+                            </div>
+
+                            <div class="card card-workout">
+                                <div class="card-title">Today's Workout</div>
+                                <div class="card-meta">Push Day • 45-60 min</div>
+                                <button class="btn btn-primary">Start Workout</button>
+                            </div>
+
+                            <div class="card card-mindpeace">
+                                <div class="card-title">Morning Meditation</div>
+                                <div class="card-meta">10 min • Calm & Focus</div>
+                                <button class="btn btn-mindpeace">Start Session</button>
+                            </div>
+                        </div>
+
+                        <div class="bottom-nav">
+                            <div class="nav-item active">
+                                <div class="nav-icon">🏠</div>
+                                <div class="nav-label">Home</div>
+                            </div>
+                            <div class="nav-item">
+                                <div class="nav-icon">💪</div>
+                                <div class="nav-label">Workout</div>
+                            </div>
+                            <div class="nav-item">
+                                <div class="nav-icon">🧘</div>
+                                <div class="nav-label">MindPeace</div>
+                            </div>
+                            <div class="nav-item">
+                                <div class="nav-icon">📊</div>
+                                <div class="nav-label">Progress</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="screen-label">Home Screen</div>
+            </div>
+
+            <!-- Workout Screen -->
+            <div>
+                <div class="phone-mockup">
+                    <div class="phone-notch"></div>
+                    <div class="phone-screen">
+                        <div class="status-bar">
+                            <span>9:41</span>
+                            <span>🔋 ●●●●</span>
+                        </div>
+
+                        <div class="screen-content">
+                            <div class="screen-header">
+                                <div class="screen-title">Active Workout</div>
+                                <div class="screen-subtitle">Push Day • 23 min</div>
+                            </div>
+
+                            <div class="card card-workout">
+                                <div class="card-title">Bench Press</div>
+                                <div class="card-meta">Last time: 4×12 @ 90kg • 2025-11-10</div>
+
+                                <div style="margin-top: 1rem;">
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                        <span style="color: #9ca3af; font-size: 0.85rem;">Set 1</span>
+                                        <span style="font-weight: 600;">12 reps × 92.5kg</span>
+                                    </div>
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                        <span style="color: #9ca3af; font-size: 0.85rem;">Set 2</span>
+                                        <span style="font-weight: 600;">12 reps × 92.5kg</span>
+                                    </div>
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                        <span style="color: #9ca3af; font-size: 0.85rem;">Set 3</span>
+                                        <span style="color: #FF6B6B; font-weight: 600;">+ Add Set</span>
+                                    </div>
+                                </div>
+
+                                <button class="btn btn-primary" style="margin-top: 1rem;">Complete Exercise</button>
+                            </div>
+
+                            <div class="exercise-list">
+                                <div class="exercise-item">
+                                    <div>
+                                        <div class="exercise-name">Incline Dumbbell Press</div>
+                                        <div class="exercise-sets">4 sets • Next</div>
+                                    </div>
+                                    <div class="exercise-weight">30kg</div>
+                                </div>
+                                <div class="exercise-item">
+                                    <div>
+                                        <div class="exercise-name">Cable Flyes</div>
+                                        <div class="exercise-sets">3 sets • Pending</div>
+                                    </div>
+                                    <div class="exercise-weight">25kg</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bottom-nav">
+                            <div class="nav-item">
+                                <div class="nav-icon">🏠</div>
+                                <div class="nav-label">Home</div>
+                            </div>
+                            <div class="nav-item active">
+                                <div class="nav-icon">💪</div>
+                                <div class="nav-label">Workout</div>
+                            </div>
+                            <div class="nav-item">
+                                <div class="nav-icon">🧘</div>
+                                <div class="nav-label">MindPeace</div>
+                            </div>
+                            <div class="nav-item">
+                                <div class="nav-icon">📊</div>
+                                <div class="nav-label">Progress</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="screen-label">Workout Logging (Smart Pattern Memory)</div>
+            </div>
+
+            <!-- MindPeace Screen -->
+            <div>
+                <div class="phone-mockup">
+                    <div class="phone-notch"></div>
+                    <div class="phone-screen">
+                        <div class="status-bar">
+                            <span>9:41</span>
+                            <span>🔋 ●●●●</span>
+                        </div>
+
+                        <div class="screen-content">
+                            <div class="screen-header">
+                                <div class="screen-title">MindPeace 🧘</div>
+                                <div class="screen-subtitle">Find your calm</div>
+                            </div>
+
+                            <div class="meditation-card">
+                                <div class="card-title" style="position: relative; z-index: 1;">Morning Calm</div>
+                                <div class="card-meta" style="position: relative; z-index: 1;">Guided meditation</div>
+                                <div class="meditation-duration">10:00</div>
+                                <button class="btn btn-mindpeace">Start Session</button>
+                            </div>
+
+                            <div class="music-player">
+                                <div class="track-info">
+                                    <div class="track-title">Peaceful Piano</div>
+                                    <div class="track-artist">Relaxing Sounds</div>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill progress-mindpeace" style="width: 45%"></div>
+                                </div>
+                                <div class="player-controls">
+                                    <div class="control-icon">⏮</div>
+                                    <button class="play-btn">▶</button>
+                                    <div class="control-icon">⏭</div>
+                                </div>
+                            </div>
+
+                            <div class="stats-grid" style="margin-top: 1.5rem;">
+                                <div class="stat-box">
+                                    <div class="stat-value" style="color: #A78BFA;">7</div>
+                                    <div class="stat-label">Day Streak</div>
+                                </div>
+                                <div class="stat-box">
+                                    <div class="stat-value" style="color: #60A5FA;">45m</div>
+                                    <div class="stat-label">This Week</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bottom-nav">
+                            <div class="nav-item">
+                                <div class="nav-icon">🏠</div>
+                                <div class="nav-label">Home</div>
+                            </div>
+                            <div class="nav-item">
+                                <div class="nav-icon">💪</div>
+                                <div class="nav-label">Workout</div>
+                            </div>
+                            <div class="nav-item active">
+                                <div class="nav-icon">🧘</div>
+                                <div class="nav-label">MindPeace</div>
+                            </div>
+                            <div class="nav-item">
+                                <div class="nav-icon">📊</div>
+                                <div class="nav-label">Progress</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="screen-label">MindPeace Zone (with Music Player)</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- DIRECTION 2: Minimal Quick Actions -->
+    <div class="mockup-container" id="direction2">
+        <div class="direction-header">
+            <div class="direction-title">Direction 2: Minimal Quick Actions</div>
+            <div class="direction-subtitle">Personality: Fast & Efficient | Best for: Power users who want speed</div>
+            <div class="direction-tags">
+                <span class="tag">Spacious Layout</span>
+                <span class="tag">Low Density</span>
+                <span class="tag">Quick Action Grid</span>
+                <span class="tag">Minimal Visual Weight</span>
+            </div>
+        </div>
+
+        <div class="screens-grid">
+            <div>
+                <div class="phone-mockup">
+                    <div class="phone-notch"></div>
+                    <div class="phone-screen">
+                        <div class="status-bar">
+                            <span>9:41</span>
+                            <span>🔋 ●●●●</span>
+                        </div>
+
+                        <div class="screen-content">
+                            <div class="screen-header">
+                                <div class="screen-title">GymApp</div>
+                                <div class="streak-badge" style="margin-top: 0.5rem;">🔥 7 Days</div>
+                            </div>
+
+                            <div class="quick-actions" style="margin-top: 3rem;">
+                                <div class="action-card" style="grid-column: 1 / -1; background: linear-gradient(135deg, #FF6B6B, #FF5252);">
+                                    <div class="action-icon">💪</div>
+                                    <div class="action-label" style="font-size: 1.1rem;">Start Workout</div>
+                                </div>
+                                <div class="action-card">
+                                    <div class="action-icon">🧘</div>
+                                    <div class="action-label">Meditate</div>
+                                </div>
+                                <div class="action-card">
+                                    <div class="action-icon">📊</div>
+                                    <div class="action-label">Progress</div>
+                                </div>
+                                <div class="action-card">
+                                    <div class="action-icon">📚</div>
+                                    <div class="action-label">Library</div>
+                                </div>
+                                <div class="action-card">
+                                    <div class="action-icon">⚙️</div>
+                                    <div class="action-label">Settings</div>
+                                </div>
+                            </div>
+
+                            <div style="margin-top: 3rem; text-align: center;">
+                                <div style="color: #9ca3af; font-size: 0.9rem; margin-bottom: 0.5rem;">This Week</div>
+                                <div style="font-size: 2.5rem; font-weight: 700; color: #FF6B6B;">12</div>
+                                <div style="color: #9ca3af; font-size: 0.9rem;">Workouts Completed</div>
+                            </div>
+                        </div>
+
+                        <div class="bottom-nav">
+                            <div class="nav-item active">
+                                <div class="nav-icon">🏠</div>
+                                <div class="nav-label">Home</div>
+                            </div>
+                            <div class="nav-item">
+                                <div class="nav-icon">📈</div>
+                                <div class="nav-label">Stats</div>
+                            </div>
+                            <div class="nav-item">
+                                <div class="nav-icon">👤</div>
+                                <div class="nav-label">Profile</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="screen-label">Minimal Home (Quick Actions)</div>
+            </div>
+
+            <div>
+                <div class="phone-mockup">
+                    <div class="phone-notch"></div>
+                    <div class="phone-screen">
+                        <div class="status-bar">
+                            <span>9:41</span>
+                            <span>🔋 ●●●●</span>
+                        </div>
+
+                        <div class="screen-content">
+                            <div class="screen-header">
+                                <div class="screen-title">Workout</div>
+                                <div class="screen-subtitle">23 min active</div>
+                            </div>
+
+                            <div style="background: #1a1a1a; border-radius: 20px; padding: 2rem; margin: 2rem 0;">
+                                <div style="text-align: center; margin-bottom: 2rem;">
+                                    <div style="font-size: 3rem; font-weight: 700; color: #FF6B6B;">92.5kg</div>
+                                    <div style="color: #9ca3af; margin-top: 0.5rem;">Bench Press</div>
+                                </div>
+
+                                <div style="display: flex; justify-content: space-around; margin-bottom: 2rem;">
+                                    <div style="text-align: center;">
+                                        <div style="font-size: 2rem; font-weight: 700;">2</div>
+                                        <div style="font-size: 0.8rem; color: #9ca3af;">SETS</div>
+                                    </div>
+                                    <div style="text-align: center;">
+                                        <div style="font-size: 2rem; font-weight: 700;">12</div>
+                                        <div style="font-size: 0.8rem; color: #9ca3af;">REPS</div>
+                                    </div>
+                                </div>
+
+                                <button class="btn btn-primary">+ Add Set</button>
+                            </div>
+
+                            <div style="text-align: center; color: #9ca3af; font-size: 0.9rem;">
+                                Last time: 4×12 @ 90kg
+                            </div>
+                        </div>
+
+                        <div class="bottom-nav">
+                            <div class="nav-item">
+                                <div class="nav-icon">🏠</div>
+                                <div class="nav-label">Home</div>
+                            </div>
+                            <div class="nav-item active">
+                                <div class="nav-icon">💪</div>
+                                <div class="nav-label">Workout</div>
+                            </div>
+                            <div class="nav-item">
+                                <div class="nav-icon">👤</div>
+                                <div class="nav-label">Profile</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="screen-label">Minimal Workout (Focus Mode)</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Additional directions would continue here with similar structure -->
+    <!-- For brevity, I'll create placeholder structures for directions 3-8 -->
+
+    <div class="mockup-container" id="direction3">
+        <div class="direction-header">
+            <div class="direction-title">Direction 3: Stats-First Analytics</div>
+            <div class="direction-subtitle">Personality: Data-Driven & Analytical | Best for: Users who love metrics</div>
+            <div class="direction-tags">
+                <span class="tag">Data-Heavy</span>
+                <span class="tag">Chart-Focused</span>
+                <span class="tag">High Density</span>
+            </div>
+        </div>
+        <div class="screens-grid">
+            <div>
+                <div class="phone-mockup">
+                    <div class="phone-notch"></div>
+                    <div class="phone-screen">
+                        <div class="status-bar">
+                            <span>9:41</span>
+                            <span>🔋 ●●●●</span>
+                        </div>
+                        <div class="screen-content">
+                            <div class="screen-header">
+                                <div class="screen-title">Analytics Dashboard</div>
+                                <div class="screen-subtitle">Your complete progress overview</div>
+                            </div>
+
+                            <div class="chart-container">
+                                <div style="font-weight: 600; margin-bottom: 1rem;">Strength Progression</div>
+                                <div class="chart-bars">
+                                    <div class="chart-bar" style="height: 60%; background: linear-gradient(180deg, #3B82F6, #2563EB);"></div>
+                                    <div class="chart-bar" style="height: 75%; background: linear-gradient(180deg, #10B981, #059669);"></div>
+                                    <div class="chart-bar" style="height: 45%; background: linear-gradient(180deg, #8B5CF6, #7C3AED);"></div>
+                                    <div class="chart-bar" style="height: 90%; background: linear-gradient(180deg, #06B6D4, #0891B2);"></div>
+                                    <div class="chart-bar" style="height: 65%; background: linear-gradient(180deg, #3B82F6, #2563EB);"></div>
+                                </div>
+                            </div>
+
+                            <div class="stats-grid">
+                                <div class="stat-box">
+                                    <div class="stat-value" style="color: #3B82F6;">142</div>
+                                    <div class="stat-label">Total Workouts</div>
+                                </div>
+                                <div class="stat-box">
+                                    <div class="stat-value" style="color: #10B981;">+18kg</div>
+                                    <div class="stat-label">Total Gains</div>
+                                </div>
+                                <div class="stat-box">
+                                    <div class="stat-value" style="color: #8B5CF6;">85%</div>
+                                    <div class="stat-label">Consistency</div>
+                                </div>
+                                <div class="stat-box">
+                                    <div class="stat-value" style="color: #06B6D4;">45h</div>
+                                    <div class="stat-label">Training Time</div>
+                                </div>
+                            </div>
+
+                            <div class="card card-analytics">
+                                <div class="card-title">Weekly Summary</div>
+                                <div class="card-meta">Nov 10 - Nov 16, 2025</div>
+                                <div style="margin-top: 1rem;">
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.75rem;">
+                                        <span>Workouts</span>
+                                        <span style="font-weight: 700;">5/5 ✓</span>
+                                    </div>
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.75rem;">
+                                        <span>Squat PR</span>
+                                        <span style="font-weight: 700; color: #10B981;">+5kg</span>
+                                    </div>
+                                    <div style="display: flex; justify-content: space-between;">
+                                        <span>Volume</span>
+                                        <span style="font-weight: 700;">12,450kg</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bottom-nav">
+                            <div class="nav-item">
+                                <div class="nav-icon">🏠</div>
+                                <div class="nav-label">Home</div>
+                            </div>
+                            <div class="nav-item active">
+                                <div class="nav-icon">📊</div>
+                                <div class="nav-label">Analytics</div>
+                            </div>
+                            <div class="nav-item">
+                                <div class="nav-icon">👤</div>
+                                <div class="nav-label">Profile</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="screen-label">Analytics Dashboard (Data-Rich)</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Directions 4-8 would follow similar patterns -->
+    <div class="mockup-container" id="direction4">
+        <div class="direction-header">
+            <div class="direction-title">Direction 4: Immersive MindPeace</div>
+            <div class="direction-subtitle">Full-screen meditation experience with ambient backgrounds</div>
+            <div class="direction-tags">
+                <span class="tag">Immersive</span>
+                <span class="tag">Full-Screen</span>
+                <span class="tag">Ambient</span>
+            </div>
+        </div>
+        <p style="text-align: center; color: #9ca3af; padding: 3rem;">Additional mockups would be generated here...</p>
+    </div>
+
+    <div class="mockup-container" id="direction5">
+        <div class="direction-header">
+            <div class="direction-title">Direction 5: Dense Workout Logger</div>
+            <div class="direction-subtitle">Maximum information density for experienced lifters</div>
+            <div class="direction-tags">
+                <span class="tag">Dense</span>
+                <span class="tag">Information-Rich</span>
+                <span class="tag">Compact</span>
+            </div>
+        </div>
+        <p style="text-align: center; color: #9ca3af; padding: 3rem;">Additional mockups would be generated here...</p>
+    </div>
+
+    <div class="mockup-container" id="direction6">
+        <div class="direction-header">
+            <div class="direction-title">Direction 6: Spacious Zen Mode</div>
+            <div class="direction-subtitle">Maximum breathing room, minimal distractions</div>
+            <div class="direction-tags">
+                <span class="tag">Spacious</span>
+                <span class="tag">Zen</span>
+                <span class="tag">Minimal</span>
+            </div>
+        </div>
+        <p style="text-align: center; color: #9ca3af; padding: 3rem;">Additional mockups would be generated here...</p>
+    </div>
+
+    <div class="mockup-container" id="direction7">
+        <div class="direction-header">
+            <div class="direction-title">Direction 7: Social-First Feed</div>
+            <div class="direction-subtitle">Instagram-style feed with social features prominent</div>
+            <div class="direction-tags">
+                <span class="tag">Social</span>
+                <span class="tag">Feed-Based</span>
+                <span class="tag">Community</span>
+            </div>
+        </div>
+        <p style="text-align: center; color: #9ca3af; padding: 3rem;">Additional mockups would be generated here...</p>
+    </div>
+
+    <div class="mockup-container" id="direction8">
+        <div class="direction-header">
+            <div class="direction-title">Direction 8: Data-Rich Dashboard</div>
+            <div class="direction-subtitle">All metrics visible at once, power user focused</div>
+            <div class="direction-tags">
+                <span class="tag">Dashboard</span>
+                <span class="tag">Data-Dense</span>
+                <span class="tag">Multi-Column</span>
+            </div>
+        </div>
+        <p style="text-align: center; color: #9ca3af; padding: 3rem;">Additional mockups would be generated here...</p>
+    </div>
+
+    <script>
+        function showDirection(num) {
+            // Hide all containers
+            const containers = document.querySelectorAll('.mockup-container');
+            containers.forEach(c => c.classList.remove('active'));
+
+            // Show selected container
+            document.getElementById('direction' + num).classList.add('active');
+
+            // Update button states
+            const buttons = document.querySelectorAll('.control-btn');
+            buttons.forEach((btn, index) => {
+                if (index === num - 1) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>

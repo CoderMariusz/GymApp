@@ -1,0 +1,353 @@
+# LifeOS - Ecosystem Workflow Status
+#
+# This tracks the BMAD workflow for the entire LifeOS modular ecosystem.
+# Individual module workflows are tracked in their respective folders.
+#
+# PROJECT: LifeOS (Life Operating System) - Modular Life Coaching Ecosystem
+# ARCHITECTURE: Modular app with premium subscriptions
+# MVP: 3 Modules (Life Coach + Fitness Coach + Mind & Emotion)
+
+generated: "2025-01-16"
+last_updated: "2025-01-16"  # Architecture completed
+project: "LifeOS"
+project_type: "software"
+selected_track: "enterprise"
+field_type: "greenfield"
+workflow_path: "enterprise-greenfield.yaml"
+
+# ============================================================================
+# ECOSYSTEM ARCHITECTURE
+# ============================================================================
+
+ecosystem:
+  name: "LifeOS"
+  tagline: "Your AI-powered operating system for life"
+  architecture_type: "modular"
+
+  monetization_model: "freemium + modular subscriptions + ads"
+  pricing:
+    free_tier: "Life Coach (basic) + 14-day trial of any module"
+    single_module: "2.99 EUR/month"
+    three_module_pack: "5.00 EUR/month"
+    lifeos_plus_all_access: "7.00 EUR/month"
+    trial_period: "14 days"
+    regional_pricing: "Yes (UK, PL, EU)"
+
+  modules:
+    mvp_phase:
+      - name: "Life Coach AI"
+        status: "planned"
+        role: "Core module - AI brain of the ecosystem"
+        priority: "P0"
+      - name: "Fitness Coach AI"
+        status: "designed"  # GymApp module already planned
+        role: "Workout tracking, training plans, AR analysis"
+        priority: "P0"
+      - name: "Mind & Emotion"
+        status: "planned"
+        role: "Mental health, mindfulness, CBT, meditation"
+        priority: "P0"
+
+    phase_2:
+      - name: "Talent Tree"
+        status: "concept"
+        role: "RPG-style gamification of life progress"
+        priority: "P1"
+      - name: "Relationship AI"
+        status: "concept"
+        role: "Communication coaching, relationship guidance"
+        priority: "P1"
+      - name: "Tandem/Team Mode"
+        status: "concept"
+        role: "Social features, shared goals, team challenges"
+        priority: "P1"
+      - name: "Human Help"
+        status: "concept"
+        role: "Social good platform, peer support, donations"
+        priority: "P2"
+      - name: "E-Learning"
+        status: "concept"
+        role: "Micro courses on life skills"
+        priority: "P1"
+      - name: "AI Future Self"
+        status: "concept"
+        role: "Conversations with your future self"
+        priority: "P2"
+      - name: "Life Map"
+        status: "concept"
+        role: "Visual dashboard of your life progress"
+        priority: "P1"
+
+# ============================================================================
+# BMAD WORKFLOW PROGRESS - ECOSYSTEM LEVEL
+# ============================================================================
+
+workflow_status: |
+  # Phase 0: Discovery (✅ COMPLETE)
+  brainstorm-answers: docs/ecosystem/brainstorming-answers.md  # ✅ COMPLETE
+  brainstorm-project: docs/ecosystem/bmm-brainstorming-session-2025-01-16.md  # ✅ COMPLETE
+  research-technical: docs/ecosystem/research-technical-2025-01-16.md  # ✅ COMPLETE
+  research-domain: docs/ecosystem/research-domain-2025-01-16.md  # ✅ COMPLETE
+  product-brief: docs/ecosystem/product-brief-LifeOS-2025-01-16.md  # ✅ COMPLETE
+
+  # Phase 1: Planning (⏳ IN PROGRESS)
+  prd: docs/ecosystem/prd.md  # ✅ COMPLETE (123 FRs, 37 NFRs, mobile_app + general domain)
+  validate-prd: recommended  # agent: pm
+  create-design: docs/ecosystem/ux-design-specification.md  # ✅ COMPLETE (Nike+Headspace fusion, 5 UX principles, complete visual system)
+
+  # Phase 2: Solutioning (⏳ IN PROGRESS)
+  create-architecture: docs/ecosystem/architecture.md  # ✅ COMPLETE (13 architectural decisions, CMI pattern, 100% NFR coverage)
+  test-design: pending  # agent: tea
+  create-security-architecture: recommended  # agent: architect (AI data privacy critical)
+  create-devops-strategy: recommended  # agent: architect (Multi-module deployment)
+  validate-architecture: pending  # agent: architect (NEXT STEP)
+  solutioning-gate-check: pending  # agent: architect
+
+  # Phase 3: Implementation Planning (⏳ NOT STARTED)
+  sprint-planning: pending  # agent: sm (MVP: 3 modules)
+
+# ============================================================================
+# MODULE WORKFLOWS
+# ============================================================================
+
+module_workflows:
+  fitness:
+    path: "docs/modules/module-fitness/"
+    workflow_file: "docs/modules/module-fitness/bmm-workflow-status.yaml"
+    status: "Phase 3 Complete"
+    completion: "100%"
+    notes: |
+      Originally planned as standalone "GymApp"
+      Now integrated as "Fitness Coach AI" module
+      All planning complete (Sprints 1-3, 43 SP)
+      Ready for implementation when MVP starts
+
+  life_coach:
+    path: "docs/modules/module-life-coach/"
+    workflow_file: "pending"
+    status: "Not Started"
+    completion: "0%"
+    notes: |
+      Core module - AI brain
+      Will be planned in ecosystem Brainstorming Session
+
+  mind:
+    path: "docs/modules/module-mind/"
+    workflow_file: "pending"
+    status: "Not Started"
+    completion: "0%"
+    notes: |
+      Mental health & mindfulness module
+      Will be planned in ecosystem Brainstorming Session
+
+# ============================================================================
+# NEXT STEPS
+# ============================================================================
+
+next_steps:
+  current_phase: "Phase 2: Solutioning"
+  current_step: "Validate Architecture"
+
+  immediate_actions:
+    - step: 1
+      action: "Validate architecture completeness and quality"
+      owner: "BMAD Architect"
+      status: "pending"
+      details: |
+        Validation checklist:
+        - All 13 architectural decisions documented
+        - NFR coverage validated (37/37 NFRs satisfied)
+        - Technology stack compatibility verified
+        - Cross-Module Intelligence pattern feasibility confirmed
+        - Database schema complete (PostgreSQL + Drift)
+        - Security architecture validated (E2EE, RLS, GDPR)
+        - Implementation patterns defined
+        - Risk mitigation strategies in place
+
+    - step: 2
+      action: "Optional: Create security architecture deep-dive"
+      owner: "BMAD Architect"
+      status: "recommended"
+      details: |
+        Focus areas:
+        - E2EE implementation details
+        - RLS policies for all tables
+        - API security (Edge Functions)
+        - Data anonymization for analytics
+        - GDPR compliance procedures
+
+    - step: 3
+      action: "Optional: Create DevOps strategy"
+      owner: "BMAD Architect"
+      status: "recommended"
+      details: |
+        Focus areas:
+        - CI/CD pipeline (GitHub Actions)
+        - Multi-module deployment strategy
+        - Environment management (dev/staging/prod)
+        - Monitoring and alerting
+        - Database migration strategy
+
+  future_phases:
+    - phase: "Phase 1: Planning"
+      estimated_start: "After Product Brief approved"
+      duration: "2-3 weeks"
+
+    - phase: "Phase 2: Solutioning"
+      estimated_start: "After PRD approved"
+      duration: "2-3 weeks"
+
+    - phase: "Phase 3: Implementation"
+      estimated_start: "After Architecture validated"
+      duration: "3-6 months (MVP: 3 modules)"
+
+# ============================================================================
+# TECHNOLOGY DECISIONS (PRELIMINARY)
+# ============================================================================
+
+technology:
+  frontend:
+    framework: "Flutter 3.16+"  # ✅ DECIDED
+    platforms: ["iOS", "Android", "Web (future)"]
+    design: "Nike + Headspace fusion"
+    themes: "Deep Blue, Energetic Teal, Orange/Purple accents"
+
+  backend:
+    infrastructure: "Supabase"  # ✅ DECIDED (PostgreSQL, open-source)
+    database: "PostgreSQL (via Supabase)"
+    realtime: "Supabase Realtime"
+    auth: "Supabase Auth (email, Google, Apple)"
+    storage: "Supabase Storage"
+    functions: "Supabase Edge Functions (AI orchestration)"
+
+  ai_integration:
+    strategy: "Hybrid + User Choice"  # ✅ DECIDED
+    models:
+      free_tier: "Llama 3 (self-hosted)"
+      standard_tier: "Claude (Anthropic API)"
+      premium_tier: "GPT-4 (OpenAI API)"
+    budget: "30% of revenue"
+    fallback: "Clear error messages (no internet / rate limit)"
+
+    by_module:
+      life_coach:
+        free: "Llama"
+        standard: "Claude"
+        premium: "GPT-4"
+      mind:
+        free: "Claude (limited)"
+        standard: "Claude"
+        premium: "GPT-4"
+      fitness:
+        free: "Rule-based + Llama"
+        standard: "Claude"
+        premium: "GPT-4"
+
+  architecture:
+    pattern: "modular monolith"  # Single app with modular features
+    state_management: "Riverpod 2.x"  # ✅ From Fitness module
+    local_database: "Drift (SQLite)"  # ✅ From Fitness module
+    sync: "Supabase Realtime"
+
+  ai_features:
+    - "Daily life plan generation (Life Coach)"
+    - "Conversational coaching (Life Coach)"
+    - "Workout recommendations (Fitness + Life Coach)"
+    - "Meditation script generation (Mind)"
+    - "CBT chat therapy (Mind)"
+    - "Mood analysis (Mind)"
+    - "Burnout prediction (cross-module)"
+
+# ============================================================================
+# RISKS & ASSUMPTIONS
+# ============================================================================
+
+risks:
+  - id: "RISK-001"
+    description: "AI costs may be prohibitive for freemium model"
+    probability: "high"
+    impact: "critical"
+    mitigation: "Use hybrid approach (GPT-4 for premium, open-source for free)"
+
+  - id: "RISK-002"
+    description: "Scope too large for MVP (3 modules)"
+    probability: "medium"
+    impact: "high"
+    mitigation: "Start with 2 modules (Life Coach + Fitness), defer Mind to Phase 2"
+
+  - id: "RISK-003"
+    description: "Module integration complexity"
+    probability: "medium"
+    impact: "medium"
+    mitigation: "Design shared core platform with clean module interfaces"
+
+  - id: "RISK-004"
+    description: "Privacy/security concerns with AI handling sensitive data"
+    probability: "medium"
+    impact: "critical"
+    mitigation: "Prioritize security architecture, GDPR compliance, data anonymization"
+
+assumptions:
+  - "Users are willing to pay for AI-powered life coaching"
+  - "Modular pricing model is attractive (vs all-in-one)"
+  - "Fitness Coach AI (GymApp) can be integrated without major redesign"
+  - "AI technology will continue to improve and costs will decrease"
+  - "Market appetite exists for comprehensive life coaching app"
+
+# ============================================================================
+# QUESTIONS TO ANSWER IN BRAINSTORMING
+# ============================================================================
+
+open_questions:
+  monetization:
+    - "What is the optimal pricing for each tier?"
+    - "Should we offer lifetime purchases or subscription-only?"
+    - "How do we handle module trials (time-based or feature-based)?"
+    - "What features are free vs premium within each module?"
+
+  technology:
+    - "Which AI provider(s) should we use? (OpenAI, Anthropic, open-source)"
+    - "What is the AI usage budget per user per month?"
+    - "Should we self-host open-source LLMs or use cloud APIs?"
+    - "How do we handle AI rate limits and failover?"
+
+  product:
+    - "What is the onboarding flow across multiple modules?"
+    - "How do modules share data (e.g., fitness data → life coach)?"
+    - "Can users purchase modules individually or only through app?"
+    - "What is the minimum viable feature set per module?"
+
+  market:
+    - "Who are the primary competitors? (Calm, Headspace, Noom, Freeletics)"
+    - "What is our unique value proposition?"
+    - "Which market should we launch first? (UK, PL, US, global)"
+    - "B2C only or also B2B (corporate wellness)?"
+
+# ============================================================================
+# NOTES
+# ============================================================================
+
+notes: |
+  LifeCoach AI - Ecosystem Workflow Tracker
+  =========================================
+
+  This file tracks the BMAD workflow for the ENTIRE ecosystem.
+  Individual modules have their own detailed planning in:
+  - docs/modules/module-fitness/ (GymApp - COMPLETE)
+  - docs/modules/module-life-coach/ (PENDING)
+  - docs/modules/module-mind/ (PENDING)
+
+  The Fitness Coach AI module (formerly GymApp) has complete planning:
+  - PRD with 23 FRs, 15 NFRs
+  - Architecture validated
+  - 3 sprints planned (43 SP)
+  - Ready to implement when MVP starts
+
+  This gives us a head start on the MVP!
+
+  Next: Brainstorming Session to define:
+  1. Life Coach AI module (core)
+  2. Mind & Emotion module
+  3. Ecosystem integration strategy
+  4. AI infrastructure
+  5. Shared platform requirements
