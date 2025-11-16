@@ -175,18 +175,31 @@ next_steps:
 
   immediate_actions:
     - step: 1
-      action: "Run Solutioning Gate Check"
+      action: "Run Implementation Readiness Check"
       owner: "BMAD Architect"
-      status: "recommended"
+      status: "completed - 2025-01-16"
       details: |
-        Validate alignment:
-        - PRD → Architecture alignment (123 FRs → 13 decisions)
-        - Architecture → Epics alignment (9 epics → directory structure)
-        - Test Design → NFRs coverage (37 NFRs → 523 tests)
-        - Risks identified and mitigated
-        - Ready for Sprint Planning
+        ✅ COMPLETE: Cross-validated UX design vs Architecture
+        Result: 82% ready - identified 6 missing database tables
+        Report: docs/ecosystem/implementation-readiness-report-2025-01-16.md
 
     - step: 2
+      action: "Complete Sprint 0: Database Schema Completion"
+      owner: "Developer"
+      status: "REQUIRED BEFORE SPRINT 1"
+      priority: "CRITICAL"
+      details: |
+        📋 See: docs/ecosystem/sprint-0-database-schema-completion.md
+
+        MUST complete before Epic 1:
+        - Add 6 missing database tables (workout_templates, mental_health_screenings, subscriptions, streaks, ai_conversations, mood_logs)
+        - Create 2 Edge Functions (mental health screening, workout templates)
+        - Add Drift mirror tables for offline support
+
+        Effort: 18-21 hours (1-2 weeks)
+        Impact: Blocks 38/123 FRs (31%)
+
+    - step: 3
       action: "Fix minor architecture issues"
       owner: "Developer"
       status: "recommended"
@@ -196,12 +209,12 @@ next_steps:
         - Update PostgreSQL recommendation to 17+
         - Add project initialization section
 
-    - step: 3
+    - step: 4
       action: "Begin Sprint Planning"
       owner: "BMAD SM"
-      status: "ready"
+      status: "ready after Sprint 0"
       details: |
-        After gate check passes:
+        After Sprint 0 complete:
         - Run sprint-planning workflow
         - Break down Epic 1 (Core Platform) into Sprint 1
         - Estimate story points

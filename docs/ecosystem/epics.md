@@ -12,6 +12,13 @@
 
 Ten dokument dekompozycje 123 Functional Requirements z PRD na **9 implementable epics** z **~60 user stories**. Każdy epic dostarcza end-to-end user value (nie technical layers). Stories są vertical slices, completable by single dev agent in one focused session.
 
+**IMPORTANT: Sprint 0 Required First**
+⚠️ Before starting Epic 1, complete **Sprint 0: Database Schema Completion** (see `sprint-0-database-schema-completion.md`)
+- Duration: 1-2 weeks (18-21 hours)
+- Adds 6 missing database tables required for UX features
+- Creates 2 Edge Functions (mental health screening, templates)
+- **Why:** Implementation-readiness analysis found critical gaps in database schema
+
 **Epic Structure:**
 1. **Core Platform Foundation** - Auth, data sync, GDPR (6 stories)
 2. **Life Coach MVP** - Daily planning, goals, AI chat (10 stories)
@@ -26,6 +33,7 @@ Ten dokument dekompozycje 123 Functional Requirements z PRD na **9 implementable
 **Total:** 9 Epics, 66 Stories
 
 **Sequencing Principle:**
+- **Sprint 0** must be completed first (database schema gaps)
 - Epic 1 establishes foundation
 - Epics 2-4 are parallel (core modules)
 - Epic 5+ depend on earlier epics
