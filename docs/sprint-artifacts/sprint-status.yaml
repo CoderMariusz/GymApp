@@ -63,16 +63,16 @@ development_status:
 
   # Epic 3: Fitness Coach MVP
   epic-3: "contexted"
-  3-1-smart-pattern-memory-pre-fill-last-workout: "drafted"
-  3-2-exercise-library-500-exercises: "drafted"
-  3-3-workout-logging-with-rest-timer: "drafted"
-  3-4-workout-history-detail-view: "drafted"
-  3-5-progress-charts-strength-volume-prs: "drafted"
-  3-6-body-measurements-tracking: "drafted"
-  3-7-workout-templates-pre-built-custom: "drafted"
-  3-8-quick-log-rapid-workout-entry: "drafted"
-  3-9-exercise-instructions-form-tips: "drafted"
-  3-10-cross-module-receive-stress-data-from-mind: "drafted"
+  3-1-smart-pattern-memory-pre-fill-last-workout: "ready-for-dev"
+  3-2-exercise-library-500-exercises: "ready-for-dev"
+  3-3-workout-logging-with-rest-timer: "ready-for-dev"
+  3-4-workout-history-detail-view: "ready-for-dev"
+  3-5-progress-charts-strength-volume-prs: "ready-for-dev"
+  3-6-body-measurements-tracking: "ready-for-dev"
+  3-7-workout-templates-pre-built-custom: "ready-for-dev"
+  3-8-quick-log-rapid-workout-entry: "ready-for-dev"
+  3-9-exercise-instructions-form-tips: "ready-for-dev"
+  3-10-cross-module-receive-stress-data-from-mind: "ready-for-dev"
   epic-3-retrospective: "optional"
 
   # Epic 4: Mind & Emotion MVP

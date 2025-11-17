@@ -1,7 +1,7 @@
 # Story 3.5: Progress Charts (Strength, Volume, PRs)
 
 **Epic:** Epic 3 - Fitness Coach MVP
-**Priority:** P1 | **Status:** drafted | **Effort:** 3 SP
+**Priority:** P1 | **Status:** ready-for-dev | **Effort:** 3 SP
 
 ---
 
@@ -79,6 +79,16 @@ LineChart(
 **Prerequisites:** Story 3.3 (Workout data), Story 3.4 (History)
 
 **Coverage Target:** 75%+
+
+---
+
+## Dev Agent Record
+
+### Context Reference
+
+- **Story Context File:** [3-5-progress-charts-strength-volume-prs.context.xml](./3-5-progress-charts-strength-volume-prs.context.xml)
+- **Generated:** 2025-11-17
+- **Status:** Context created, story ready for implementation
 
 ---
 

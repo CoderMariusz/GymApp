@@ -1,7 +1,7 @@
 # Story 3.7: Workout Templates (Pre-built + Custom)
 
 **Epic:** Epic 3 - Fitness Coach MVP
-**Priority:** P1 | **Status:** drafted | **Effort:** 3 SP
+**Priority:** P1 | **Status:** ready-for-dev | **Effort:** 3 SP
 
 ---
 
@@ -73,6 +73,16 @@ INSERT INTO workout_templates (name, description) VALUES
 **Prerequisites:** Story 3.2 (Exercise Library)
 
 **Coverage Target:** 80%+
+
+---
+
+## Dev Agent Record
+
+### Context Reference
+
+- **Story Context File:** [3-7-workout-templates-pre-built-custom.context.xml](./3-7-workout-templates-pre-built-custom.context.xml)
+- **Generated:** 2025-11-17
+- **Status:** Context created, story ready for implementation
 
 ---
 

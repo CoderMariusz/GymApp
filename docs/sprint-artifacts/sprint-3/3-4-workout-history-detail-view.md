@@ -1,7 +1,7 @@
 # Story 3.4: Workout History & Detail View
 
 **Epic:** Epic 3 - Fitness Coach MVP
-**Priority:** P0 | **Status:** drafted | **Effort:** 2 SP
+**Priority:** P0 | **Status:** ready-for-dev | **Effort:** 2 SP
 
 ---
 
@@ -72,6 +72,16 @@ ORDER BY w.start_time DESC;
 **Prerequisites:** Story 3.3 (Workout Logging)
 
 **Coverage Target:** 80%+
+
+---
+
+## Dev Agent Record
+
+### Context Reference
+
+- **Story Context File:** [3-4-workout-history-detail-view.context.xml](./3-4-workout-history-detail-view.context.xml)
+- **Generated:** 2025-11-17
+- **Status:** Context created, story ready for implementation
 
 ---
 

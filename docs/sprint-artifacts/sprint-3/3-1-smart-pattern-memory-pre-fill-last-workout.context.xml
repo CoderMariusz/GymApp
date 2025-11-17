@@ -1,0 +1,554 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>3</epicId>
+    <storyId>3.1</storyId>
+    <title>Smart Pattern Memory - Pre-fill Last Workout</title>
+    <status>ready-for-dev</status>
+    <generatedAt>2025-11-17</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/sprint-3/3-1-smart-pattern-memory-pre-fill-last-workout.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>user logging a workout</asA>
+    <iWant>the app to pre-fill my last sets/reps/weight</iWant>
+    <soThat>I can log workouts in &lt;2 seconds per set</soThat>
+    <tasks>
+      <task id="1" ac-ref="AC1,AC2,AC3">
+        <description>Implement workout pre-fill query logic</description>
+        <subtasks>
+          <subtask>Create GetLastWorkoutUseCase to query last workout for exercise</subtask>
+          <subtask>Implement query on workout_sets table (exercise_id, user_id filters)</subtask>
+          <subtask>Order by created_at DESC, limit to last session (up to 10 sets)</subtask>
+          <subtask>Handle case where no previous workout exists (return empty list)</subtask>
+          <subtask>Optimize query performance (&lt;20ms target per tech spec)</subtask>
+          <subtask>Add index on (user_id, exercise_id, created_at) for fast lookup</subtask>
+        </subtasks>
+      </task>
+      <task id="2" ac-ref="AC1,AC2,AC3">
+        <description>Implement QuickLogWidget with pre-fill UI</description>
+        <subtasks>
+          <subtask>Create QuickLogWidget as ConsumerStatefulWidget</subtask>
+          <subtask>Load last workout data in initState() using GetLastWorkoutUseCase</subtask>
+          <subtask>Pre-fill form fields: exercise name, sets count, reps per set, weight per set</subtask>
+          <subtask>Show empty form state if first time logging exercise</subtask>
+          <subtask>Display "Last time: [date]" label when pre-fill data available</subtask>
+          <subtask>Handle loading state during data fetch (&lt;100ms per NFR-P4)</subtask>
+        </subtasks>
+      </task>
+      <task id="3" ac-ref="AC4,AC5">
+        <description>Implement swipe gestures and tap-to-edit interactions</description>
+        <subtasks>
+          <subtask>Add GestureDetector for vertical swipe on weight field</subtask>
+          <subtask>Swipe up increments weight by 5kg/10lbs (configurable by user preference)</subtask>
+          <subtask>Swipe down decrements weight by 5kg/10lbs (minimum 0)</subtask>
+          <subtask>Trigger HapticFeedback.selectionClick() on swipe</subtask>
+          <subtask>Implement tap-to-edit modal for reps (number picker)</subtask>
+          <subtask>Use large Inter SemiBold font for numbers (UX spec)</subtask>
+        </subtasks>
+      </task>
+      <task id="4" ac-ref="AC6,AC7">
+        <description>Implement set completion with haptic feedback</description>
+        <subtasks>
+          <subtask>Add checkmark button for set completion</subtask>
+          <subtask>Trigger HapticFeedback.lightImpact() on tap</subtask>
+          <subtask>Implement checkmark bounce animation (300ms, ease-out per UX spec)</subtask>
+          <subtask>Save set to workout_sets table on completion</subtask>
+          <subtask>Measure and optimize completion time (&lt;2s target)</subtask>
+          <subtask>Advance to next set automatically after completion</subtask>
+        </subtasks>
+      </task>
+      <task id="5" ac-ref="AC8,AC9">
+        <description>Implement offline-first data persistence and sync</description>
+        <subtasks>
+          <subtask>Save workout set to Drift (SQLite) first for instant feedback</subtask>
+          <subtask>Add workout set to sync queue for Supabase upload</subtask>
+          <subtask>Implement optimistic UI (show success immediately)</subtask>
+          <subtask>Handle offline mode (queue persists until online)</subtask>
+          <subtask>Implement sync when device comes online (WiFi/cellular check)</subtask>
+          <subtask>Add conflict resolution (timestamp-based, last write wins)</subtask>
+        </subtasks>
+      </task>
+      <task id="6" ac-ref="AC2">
+        <description>Implement pattern detection and similarity algorithm</description>
+        <subtasks>
+          <subtask>Create DetectWorkoutPatternUseCase for 80% similarity detection</subtask>
+          <subtask>Compare current workout exercises with last N workouts (30-day window)</subtask>
+          <subtask>Calculate similarity score (matching exercises / total exercises)</subtask>
+          <subtask>If similarity ≥80% → suggest pre-fill from pattern</subtask>
+          <subtask>Store detected patterns in workout_patterns table (optional optimization)</subtask>
+          <subtask>Ensure pattern detection completes in &lt;1s (performance constraint)</subtask>
+        </subtasks>
+      </task>
+      <task id="7" ac-ref="AC2">
+        <description>Implement settings toggle for auto-pre-fill</description>
+        <subtasks>
+          <subtask>Add settings option: "Auto-fill last workout" (default: ON)</subtask>
+          <subtask>Store preference in local cache (shared_preferences)</subtask>
+          <subtask>Sync preference to Supabase user_preferences table</subtask>
+          <subtask>Respect user preference when loading QuickLogWidget</subtask>
+          <subtask>Show manual "Load Last Workout" button if auto-fill disabled</subtask>
+        </subtasks>
+      </task>
+      <task id="8" ac-ref="ALL">
+        <description>Write comprehensive tests</description>
+        <subtasks>
+          <subtask>Unit tests: GetLastWorkoutUseCase query logic, pattern detection algorithm</subtask>
+          <subtask>Unit tests: Edge cases (no previous workout, changed exercise, 30+ day old data)</subtask>
+          <subtask>Widget tests: QuickLogWidget pre-fill display, swipe gestures, haptic feedback</subtask>
+          <subtask>Widget tests: Tap-to-edit interactions, checkmark animation</subtask>
+          <subtask>Integration test: End-to-end workout logging with pre-fill and sync</subtask>
+          <subtask>Performance tests: Query speed benchmark (&lt;20ms), pattern detection (&lt;1s)</subtask>
+          <subtask>Achieve 85%+ code coverage (critical feature per story requirements)</subtask>
+        </subtasks>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="AC1">
+      <text>User opens "Log Workout" modal</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC2">
+      <text>If exercise logged before → Pre-fill last session's data (exercise, sets, reps, weight)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC3">
+      <text>If first time → Show empty form</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC4">
+      <text>Swipe up/down on weight to increment/decrement (5kg/10lbs)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC5">
+      <text>Tap reps to edit (number picker)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC6">
+      <text>Tap checkmark → Set logged (&lt;2s target!)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC7">
+      <text>Haptic feedback on check (light tap)</text>
+      <priority>P1</priority>
+    </criterion>
+    <criterion id="AC8">
+      <text>Offline-first (works without internet)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC9">
+      <text>Data synced when online</text>
+      <priority>P0</priority>
+    </criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR30: Users can log workouts with sets, reps, and weight</section>
+        <snippet>Users can log workouts with sets, reps, and weight. Core fitness tracking functionality for MVP.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR31: System uses Smart Pattern Memory to pre-fill last workout data</section>
+        <snippet>Smart Pattern Memory pre-fills last workout data (sets, reps, weight) to enable &lt;2 second workout logging. Killer feature for user retention and habit formation.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/epics.md</path>
+        <title>Epic 3: Fitness Coach MVP - Story 3.1</title>
+        <section>Story 3.1: Smart Pattern Memory - Pre-fill Last Workout</section>
+        <snippet>As a user logging a workout, I want the app to pre-fill my last sets/reps/weight so that I can log workouts in &lt;2 seconds per set. Query last workout from Drift DB, use optimistic UI (save locally, sync later). Target: &lt;2s from "Log Workout" tap to set complete.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Hybrid Architecture (D1)</section>
+        <snippet>Feature-first architecture with clean architecture layers (presentation/domain/data). Fitness Coach module located at features/fitness_coach/. Use Riverpod for state management.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Offline-First Sync (D3)</section>
+        <snippet>Hybrid Sync pattern: Write-Through Cache + Sync Queue. Save to Drift (SQLite) first for instant feedback (&lt;100ms), then queue for Supabase sync when online. Offline operations must work seamlessly.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Database Schema - Fitness Tables</section>
+        <snippet>Fitness Module uses workouts table (workout sessions), workout_sets table (individual sets with exercise_id FK, set_number, reps, weight, notes). All tables must have RLS policies: USING (auth.uid() = user_id) for user data isolation.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/ux-design-specification.md</path>
+        <title>UX Design Specification</title>
+        <section>Fast Workout Logging UX</section>
+        <snippet>Goal: Log workout set in &lt;2 seconds. Smart Pattern Memory pre-fills last workout (exercise, sets, reps, weight). Swipe gestures for weight adjustment (avoid keyboard). Large Inter SemiBold font for numbers. Checkmark bounce animation for delight. Haptic feedback on check (light tap).</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/sprint-3/3-1-smart-pattern-memory-pre-fill-last-workout.md</path>
+        <title>Story 3.1: Smart Pattern Memory - Pre-fill Last Workout</title>
+        <section>Technical Implementation</section>
+        <snippet>Query last workout for exercise from workout_sets table. Pre-fill QuickLogWidget in initState(). Swipe gestures for weight increment/decrement with haptic feedback. Offline-first: save to Drift, queue for Supabase sync.</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/tech-spec-epic-3.md</path>
+        <title>Epic 3 Technical Specification</title>
+        <section>Story 3.1: Smart Pattern Memory</section>
+        <snippet>SmartPatternService with getLastWorkoutPattern(). Unit test: pattern query speed (&lt;20ms). Integration test: E2E pre-fill flow. Performance test: 1000 queries benchmark.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <!-- No existing code - greenfield project -->
+      <note>This is the first implementation story for the Fitness Coach module. No existing code to reference. Follow architecture patterns and create base structure at lib/features/fitness_coach/.</note>
+    </code>
+    <dependencies>
+      <flutter>
+        <sdk>3.38+</sdk>
+        <dart>3.10+</dart>
+      </flutter>
+      <packages>
+        <package name="flutter_riverpod" version="^3.0.0" usage="State management for workout logging and data flow" />
+        <package name="riverpod_annotation" version="^3.0.0" usage="Code generation for providers" />
+        <package name="drift" version="^2.14.0" usage="Local SQLite database for offline workout storage" />
+        <package name="drift_flutter" version="^0.1.0" usage="Flutter integration for Drift" />
+        <package name="sqlite3_flutter_libs" version="^0.5.0" usage="SQLite native libraries" />
+        <package name="path_provider" version="^2.1.0" usage="Get app directories for Drift database" />
+        <package name="supabase_flutter" version="^2.0.0" usage="Supabase client for auth and database sync" />
+        <package name="flutter_test" version="sdk" usage="Unit and widget testing framework" />
+        <package name="integration_test" version="sdk" usage="End-to-end testing framework" />
+      </packages>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint id="ARCH-1" type="architectural">
+      <description>Must follow Hybrid Architecture pattern (D1)</description>
+      <details>Create feature structure at lib/features/fitness_coach/ with presentation/, domain/, and data/ layers. Use clean architecture separation of concerns.</details>
+    </constraint>
+    <constraint id="ARCH-2" type="architectural">
+      <description>Offline-first implementation required (D3)</description>
+      <details>Save workout set to Drift (SQLite) first for instant feedback (&lt;100ms per NFR-P4). Queue for Supabase sync when online. Handle offline mode gracefully.</details>
+    </constraint>
+    <constraint id="ARCH-3" type="architectural">
+      <description>Use Riverpod for state management (D1, D6)</description>
+      <details>Create providers following feature-first structure. Use ConsumerStatefulWidget for QuickLogWidget. Providers should be in fitness_coach/presentation/providers/.</details>
+    </constraint>
+    <constraint id="DATA-1" type="data">
+      <description>Database schema must match specification</description>
+      <details>workout_sets table: id (UUID PK), workout_id (UUID FK workouts), exercise_id (UUID FK exercises), set_number (INT), reps (INT), weight (DECIMAL), unit (TEXT 'kg'/'lbs'), notes (TEXT nullable), created_at, updated_at. Index on (user_id, exercise_id, created_at) for fast pattern queries.</details>
+    </constraint>
+    <constraint id="DATA-2" type="data">
+      <description>Pre-fill applies to workouts &lt;30 days old</description>
+      <details>Query filter: WHERE created_at &gt;= NOW() - INTERVAL '30 days'. Prevents stale data from affecting pre-fill suggestions. Ensures pattern detection uses recent workout habits.</details>
+    </constraint>
+    <constraint id="DATA-3" type="data">
+      <description>Pattern detection requires 80% similarity threshold</description>
+      <details>Similarity calculation: (matching_exercises / total_exercises) * 100. If similarity ≥ 80% → suggest pre-fill. Algorithm must handle partial matches and exercise ordering.</details>
+    </constraint>
+    <constraint id="SEC-1" type="security">
+      <description>Row Level Security (RLS) policies required</description>
+      <details>Enable RLS on workout_sets table. Policy: CREATE POLICY "Users can only access own workout sets" ON workout_sets FOR ALL USING (auth.uid() = (SELECT user_id FROM workouts WHERE id = workout_id));</details>
+    </constraint>
+    <constraint id="SEC-2" type="security">
+      <description>Privacy: user's own workouts only</description>
+      <details>All queries must filter by user_id. Never expose other users' workout data. Pattern detection only analyzes current user's workout history.</details>
+    </constraint>
+    <constraint id="UX-1" type="ux">
+      <description>&lt;2 second set completion target</description>
+      <details>Time from "Log Workout" tap to set complete must be &lt;2s (95th percentile). Optimize for speed: pre-fill, swipe gestures, haptic feedback, optimistic UI.</details>
+    </constraint>
+    <constraint id="UX-2" type="ux">
+      <description>Swipe gestures for weight adjustment</description>
+      <details>Vertical swipe on weight field: up = increment, down = decrement. Increment size: 5kg or 10lbs based on user preference (default: 5kg). HapticFeedback.selectionClick() on each swipe. Large Inter SemiBold font for numbers.</details>
+    </constraint>
+    <constraint id="UX-3" type="ux">
+      <description>Checkmark bounce animation and haptic feedback</description>
+      <details>Checkmark tap triggers: 1) HapticFeedback.lightImpact(), 2) Bounce animation (300ms, ease-out), 3) Visual check fill. Provides satisfying micro-interaction for habit reinforcement.</details>
+    </constraint>
+    <constraint id="UX-4" type="ux">
+      <description>"Last time: [date]" label shown when pre-fill available</description>
+      <details>Display label above pre-filled data: "Last time: 3 days ago" or "Last time: Nov 14". Helps user understand source of pre-fill and builds trust in Smart Pattern Memory.</details>
+    </constraint>
+    <constraint id="UX-5" type="ux">
+      <description>User can turn off auto-pre-fill in settings</description>
+      <details>Settings toggle: "Auto-fill last workout" (default: ON). If disabled, show manual "Load Last Workout" button. Preference stored in user_preferences table and synced across devices.</details>
+    </constraint>
+    <constraint id="PERF-1" type="performance">
+      <description>Pattern detection &lt;1s</description>
+      <details>Entire pattern detection algorithm (query + similarity calculation + pre-fill load) must complete in &lt;1 second. Use indexed queries and efficient similarity algorithm.</details>
+    </constraint>
+    <constraint id="PERF-2" type="performance">
+      <description>Last workout query &lt;20ms</description>
+      <details>Query on workout_sets table with (user_id, exercise_id, created_at) index must execute in &lt;20ms (per tech spec). Limit to last session (max 10 sets) to minimize data transfer.</details>
+    </constraint>
+    <constraint id="PERF-3" type="performance">
+      <description>UI render time &lt;100ms</description>
+      <details>QuickLogWidget must render in &lt;100ms per NFR-P4. Optimize widget tree, use const constructors, avoid heavy computations in build(). Load data asynchronously.</details>
+    </constraint>
+    <constraint id="TEST-1" type="testing">
+      <description>85%+ code coverage required</description>
+      <details>Critical feature requires high test coverage. Follow 70/20/10 testing pyramid. Unit tests for use cases and pattern detection, widget tests for UI, integration test for E2E flow.</details>
+    </constraint>
+    <constraint id="TEST-2" type="testing">
+      <description>Pattern detection accuracy tests required</description>
+      <details>Test similarity calculation with various workout combinations: 100% match, 80% match, 79% match (no pre-fill), empty history, single exercise. Verify threshold logic works correctly.</details>
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>WorkoutSetEntity</name>
+      <kind>domain-entity</kind>
+      <signature>
+        class WorkoutSetEntity {
+          final String id;
+          final String workoutId;
+          final String exerciseId;
+          final int setNumber;
+          final int reps;
+          final double weight;
+          final String unit;        // 'kg' or 'lbs'
+          final String? notes;
+          final DateTime createdAt;
+          final DateTime updatedAt;
+        }
+      </signature>
+      <path>lib/features/fitness_coach/domain/entities/workout_set_entity.dart</path>
+      <notes>Use @freezed annotation for immutability and copyWith. Implement validation in constructor (reps &gt; 0, weight ≥ 0, unit must be 'kg' or 'lbs').</notes>
+    </interface>
+    <interface>
+      <name>WorkoutPatternEntity</name>
+      <kind>domain-entity</kind>
+      <signature>
+        class WorkoutPatternEntity {
+          final String id;
+          final String userId;
+          final List&lt;String&gt; exerciseIds;
+          final double similarityScore;  // 0.0-1.0
+          final DateTime lastDetectedAt;
+          final int occurrenceCount;
+        }
+      </signature>
+      <path>lib/features/fitness_coach/domain/entities/workout_pattern_entity.dart</path>
+      <notes>Optional entity for storing detected patterns. Used for optimization (cache frequent patterns). Not required for MVP but useful for performance.</notes>
+    </interface>
+    <interface>
+      <name>GetLastWorkoutUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class GetLastWorkoutUseCase {
+          Future&lt;Result&lt;List&lt;WorkoutSetEntity&gt;&gt;&gt; call({
+            required String userId,
+            required String exerciseId,
+          });
+        }
+      </signature>
+      <path>lib/features/fitness_coach/domain/usecases/get_last_workout_usecase.dart</path>
+      <notes>Returns Result&lt;T&gt; pattern (Success/Failure). Query workout_sets table filtered by user_id and exercise_id, ordered by created_at DESC, limit 10. Return empty list if no previous workout.</notes>
+    </interface>
+    <interface>
+      <name>DetectWorkoutPatternUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class DetectWorkoutPatternUseCase {
+          Future&lt;Result&lt;WorkoutPatternEntity?&gt;&gt; call({
+            required String userId,
+            required List&lt;String&gt; currentExerciseIds,
+          });
+        }
+      </signature>
+      <path>lib/features/fitness_coach/domain/usecases/detect_workout_pattern_usecase.dart</path>
+      <notes>Compare current workout with last N workouts (30-day window). Calculate similarity score. If ≥80% → return pattern, else return null. Must complete in &lt;1s.</notes>
+    </interface>
+    <interface>
+      <name>PreFillWorkoutUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class PreFillWorkoutUseCase {
+          Future&lt;Result&lt;List&lt;WorkoutSetEntity&gt;&gt;&gt; call({
+            required String userId,
+            required List&lt;String&gt; exerciseIds,
+          });
+        }
+      </signature>
+      <path>lib/features/fitness_coach/domain/usecases/pre_fill_workout_usecase.dart</path>
+      <notes>Orchestrates pattern detection and last workout query. Returns pre-fill data for all exercises in current workout. Respects user preference (auto-fill on/off).</notes>
+    </interface>
+    <interface>
+      <name>SaveWorkoutSetUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class SaveWorkoutSetUseCase {
+          Future&lt;Result&lt;WorkoutSetEntity&gt;&gt; call(WorkoutSetEntity workoutSet);
+        }
+      </signature>
+      <path>lib/features/fitness_coach/domain/usecases/save_workout_set_usecase.dart</path>
+      <notes>Save to Drift first (optimistic UI), then queue for Supabase sync. Return success immediately after Drift save (&lt;100ms). Handle offline mode.</notes>
+    </interface>
+    <interface>
+      <name>WorkoutSetRepository</name>
+      <kind>repository</kind>
+      <signature>
+        abstract class WorkoutSetRepository {
+          Future&lt;Result&lt;WorkoutSetEntity&gt;&gt; saveWorkoutSet(WorkoutSetEntity workoutSet);
+          Future&lt;Result&lt;List&lt;WorkoutSetEntity&gt;&gt;&gt; getLastWorkout(String userId, String exerciseId);
+          Future&lt;Result&lt;List&lt;WorkoutSetEntity&gt;&gt;&gt; getWorkoutSetsInDateRange(String userId, DateTime start, DateTime end);
+          Future&lt;Result&lt;WorkoutPatternEntity?&gt;&gt; detectPattern(String userId, List&lt;String&gt; exerciseIds);
+        }
+      </signature>
+      <path>lib/features/fitness_coach/domain/repositories/workout_set_repository.dart</path>
+      <notes>Implemented by WorkoutSetRepositoryImpl in data layer. Uses both DriftDataSource and SupabaseDataSource for offline-first sync.</notes>
+    </interface>
+    <interface>
+      <name>workout_sets table (Supabase PostgreSQL)</name>
+      <kind>database-table</kind>
+      <signature>
+        CREATE TABLE workout_sets (
+          id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+          workout_id UUID NOT NULL REFERENCES workouts(id) ON DELETE CASCADE,
+          exercise_id UUID NOT NULL REFERENCES exercises(id) ON DELETE CASCADE,
+          set_number INT NOT NULL CHECK (set_number &gt; 0),
+          reps INT NOT NULL CHECK (reps &gt; 0),
+          weight DECIMAL(6,2) NOT NULL CHECK (weight &gt;= 0),
+          unit TEXT NOT NULL CHECK (unit IN ('kg', 'lbs')),
+          notes TEXT,
+          created_at TIMESTAMPTZ DEFAULT NOW(),
+          updated_at TIMESTAMPTZ DEFAULT NOW()
+        );
+        CREATE INDEX idx_workout_sets_user_exercise_date
+          ON workout_sets(
+            (SELECT user_id FROM workouts WHERE id = workout_id),
+            exercise_id,
+            created_at DESC
+          );
+      </signature>
+      <path>supabase/migrations/</path>
+      <notes>Migration file for Supabase. Index on (user_id, exercise_id, created_at) optimizes last workout query. Include RLS policies in same migration.</notes>
+    </interface>
+    <interface>
+      <name>workout_sets table (Drift SQLite)</name>
+      <kind>database-table</kind>
+      <signature>
+        @DataClassName('WorkoutSetTable')
+        class WorkoutSets extends Table {
+          TextColumn get id => text()();
+          TextColumn get workoutId => text()();
+          TextColumn get exerciseId => text()();
+          IntColumn get setNumber => integer().check(setNumber.isBiggerOrEqualValue(1))();
+          IntColumn get reps => integer().check(reps.isBiggerOrEqualValue(1))();
+          RealColumn get weight => real().check(weight.isBiggerOrEqualValue(0))();
+          TextColumn get unit => text().check(unit.isIn(['kg', 'lbs']))();
+          TextColumn get notes => text().nullable()();
+          DateTimeColumn get createdAt => dateTime()();
+          DateTimeColumn get updatedAt => dateTime()();
+
+          @override
+          Set&lt;Column&gt; get primaryKey => {id};
+        }
+      </signature>
+      <path>lib/core/database/tables.drift.dart</path>
+      <notes>Drift table definition. Mirror of Supabase schema for offline-first architecture. Use drift code generation. Add index on (userId, exerciseId, createdAt) for performance.</notes>
+    </interface>
+    <interface>
+      <name>workout_patterns table (Optional - Supabase PostgreSQL)</name>
+      <kind>database-table</kind>
+      <signature>
+        CREATE TABLE workout_patterns (
+          id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+          user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+          exercise_ids UUID[] NOT NULL,
+          similarity_score DECIMAL(3,2) NOT NULL CHECK (similarity_score BETWEEN 0 AND 1),
+          last_detected_at TIMESTAMPTZ DEFAULT NOW(),
+          occurrence_count INT DEFAULT 1,
+          UNIQUE(user_id, exercise_ids)
+        );
+        CREATE INDEX idx_workout_patterns_user ON workout_patterns(user_id, last_detected_at DESC);
+      </signature>
+      <path>supabase/migrations/</path>
+      <notes>Optional table for caching detected patterns. Improves performance by avoiding recalculation. Not required for MVP but recommended for optimization.</notes>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Follow 70/20/10 testing pyramid: 70% unit tests (use cases, repositories, entities, pattern detection), 20% widget tests (UI components, state management, gestures), 10% integration tests (end-to-end flows). Use flutter_test for unit/widget tests, integration_test for E2E. Mock dependencies with mockito. Target 85%+ code coverage (critical feature). All acceptance criteria must have test coverage.
+    </standards>
+    <locations>
+      <location>test/features/fitness_coach/domain/usecases/</location>
+      <location>test/features/fitness_coach/domain/entities/</location>
+      <location>test/features/fitness_coach/data/repositories/</location>
+      <location>test/features/fitness_coach/presentation/widgets/</location>
+      <location>integration_test/features/fitness_coach/smart_pattern_memory_flow_test.dart</location>
+    </locations>
+    <ideas>
+      <test-idea ac-ref="AC2,AC3">
+        <description>Unit test: GetLastWorkoutUseCase with existing workout</description>
+        <approach>Mock WorkoutSetRepository. Insert 3 sets for exercise. Call GetLastWorkoutUseCase. Verify returns list with 3 WorkoutSetEntity objects ordered by set_number. Assert data matches inserted values.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3">
+        <description>Unit test: GetLastWorkoutUseCase with no previous workout</description>
+        <approach>Mock repository to return empty list. Call GetLastWorkoutUseCase for new exercise. Assert returns Success with empty list. Verify no exception thrown.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC2">
+        <description>Unit test: Pattern detection with 80% similarity</description>
+        <approach>Mock repository with last workout: [Squat, Bench, Deadlift, Row, OHP]. Current workout: [Squat, Bench, Deadlift, Row]. Calculate similarity: 4/4 = 100% (all current exercises match). Verify DetectWorkoutPatternUseCase returns pattern with score 1.0.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC2">
+        <description>Unit test: Pattern detection below 80% threshold</description>
+        <approach>Last workout: [Squat, Bench, Deadlift, Row, OHP]. Current workout: [Squat, Leg Press, Incline Bench]. Similarity: 1/3 = 33%. Verify returns null (no pattern detected).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC2">
+        <description>Unit test: 30-day window filter for pre-fill</description>
+        <approach>Insert workout 31 days ago. Call GetLastWorkoutUseCase. Verify returns empty list (workout too old). Insert workout 29 days ago. Verify returns workout data (within window).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4">
+        <description>Widget test: Swipe up increments weight by 5kg</description>
+        <approach>Render QuickLogWidget with pre-filled weight 100kg. Simulate vertical swipe up (negative dy). Verify weight updates to 105kg. Verify HapticFeedback.selectionClick() called.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4">
+        <description>Widget test: Swipe down decrements weight</description>
+        <approach>Render widget with weight 100kg. Simulate swipe down (positive dy). Verify weight updates to 95kg. Swipe down from 5kg. Verify weight stays at 0kg (minimum).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC5">
+        <description>Widget test: Tap reps opens number picker</description>
+        <approach>Render QuickLogWidget. Tap reps field. Verify number picker modal appears. Select new value (12 reps). Verify reps field updates to 12. Verify modal dismissed.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6,AC7">
+        <description>Widget test: Checkmark tap with haptic and animation</description>
+        <approach>Render widget with pre-filled set. Tap checkmark button. Verify HapticFeedback.lightImpact() called. Verify bounce animation triggered (AnimationController started). Verify set saved to repository.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1,AC2">
+        <description>Widget test: Pre-fill UI displays last workout data</description>
+        <approach>Mock GetLastWorkoutUseCase to return 3 sets (100kg x 8 reps). Render QuickLogWidget. Verify 3 set widgets displayed. Verify each shows correct weight and reps. Verify "Last time: [date]" label shown.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3">
+        <description>Widget test: Empty form for first-time exercise</description>
+        <approach>Mock GetLastWorkoutUseCase to return empty list. Render QuickLogWidget. Verify empty state message displayed: "Enter weight &amp; reps". Verify no pre-fill data. Verify form accepts manual input.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC8,AC9">
+        <description>Integration test: Offline workout logging and sync</description>
+        <approach>Set device offline (mock connectivity). Log workout set. Verify saved to Drift immediately. Verify appears in UI (optimistic update). Set device online. Wait for sync. Verify synced to Supabase. Verify sync queue cleared.</approach>
+      </test-idea>
+      <test-idea ac-ref="ALL">
+        <description>Integration test: Complete workout flow with Smart Pattern Memory</description>
+        <approach>Log workout: Squat, Bench, Deadlift (3x8 @ 100kg each). Complete workout. Next day, start new workout. Select Squat. Verify QuickLogWidget pre-fills 3x8 @ 100kg. Swipe up to 105kg. Tap checkmark. Verify set logged in &lt;2s.</approach>
+      </test-idea>
+      <test-idea ac-ref="PERF-1,PERF-2">
+        <description>Performance test: Query speed benchmark</description>
+        <approach>Insert 1000 workout sets across 100 workouts. Measure GetLastWorkoutUseCase query time. Assert average &lt; 20ms. Measure pattern detection time. Assert &lt; 1s for 30-day history (100 workouts).</approach>
+      </test-idea>
+      <test-idea ac-ref="UX-5">
+        <description>Unit test: Settings toggle for auto-pre-fill</description>
+        <approach>Set auto-fill preference to OFF. Call PreFillWorkoutUseCase. Verify returns empty list (no auto-fill). Set preference to ON. Verify returns pre-fill data. Test preference sync to Supabase.</approach>
+      </test-idea>
+      <test-idea ac-ref="SEC-2">
+        <description>Unit test: Privacy - only user's own workouts</description>
+        <approach>Create workout for User A. Call GetLastWorkoutUseCase as User B. Verify returns empty list (no access to User A's data). Insert workout for User B. Verify User B can retrieve own workout.</approach>
+      </test-idea>
+    </ideas>
+  </tests>
+</story-context>
