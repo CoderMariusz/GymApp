@@ -1,0 +1,496 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/4-1" v="1.0">
+  <metadata>
+    <epicId>4</epicId>
+    <storyId>4.1</storyId>
+    <title>Guided Meditation Library (20-30 MVP)</title>
+    <status>ready-for-dev</status>
+    <generatedAt>2025-11-17</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/sprint-4/4-1-guided-meditation-library-20-30-mvp.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>user seeking mindfulness</asA>
+    <iWant>access to 20-30 guided meditations</iWant>
+    <soThat>I can practice meditation with guidance</soThat>
+    <tasks>
+      <task id="1" ac-ref="AC1,AC2,AC3,AC9">
+        <description>Implement meditation library UI</description>
+        <subtasks>
+          <subtask>Create MeditationLibraryScreen widget with tab navigation</subtask>
+          <subtask>Implement category tabs (All, Stress Relief, Sleep, Focus, Anxiety)</subtask>
+          <subtask>Create MeditationCard widget with thumbnail, title, duration, category badge</subtask>
+          <subtask>Implement grid/list view toggle</subtask>
+          <subtask>Add loading shimmer effect for content loading</subtask>
+          <subtask>Implement pull-to-refresh for library updates</subtask>
+        </subtasks>
+      </task>
+      <task id="2" ac-ref="AC1,AC2">
+        <description>Create meditation content data structure and seed data</description>
+        <subtasks>
+          <subtask>Design meditation content model (id, title, description, duration, category, audio_url, thumbnail_url)</subtask>
+          <subtask>Create 20-30 meditation entries with varied durations (5-20 min)</subtask>
+          <subtask>Organize meditations across categories (Stress Relief: 6-8, Sleep: 6-8, Focus: 5-7, Anxiety: 5-7)</subtask>
+          <subtask>Source or generate audio files (MP3 format, 128kbps)</subtask>
+          <subtask>Create or source thumbnail images (300x300px, WEBP format)</subtask>
+        </subtasks>
+      </task>
+      <task id="3" ac-ref="AC4,AC5">
+        <description>Implement search and filter functionality</description>
+        <subtasks>
+          <subtask>Create search bar with debounced text input (300ms delay)</subtask>
+          <subtask>Implement real-time search filtering by title and description</subtask>
+          <subtask>Add duration filter (5-10 min, 10-15 min, 15-20 min)</subtask>
+          <subtask>Implement category filter chips with multi-select</subtask>
+          <subtask>Create filter bottom sheet UI</subtask>
+          <subtask>Add "Clear filters" button</subtask>
+        </subtasks>
+      </task>
+      <task id="4" ac-ref="AC6">
+        <description>Implement favorites functionality</description>
+        <subtasks>
+          <subtask>Create meditation_favorites table in Drift (local SQLite)</subtask>
+          <subtask>Create meditation_favorites table in Supabase with RLS policies</subtask>
+          <subtask>Implement toggleFavorite() use case</subtask>
+          <subtask>Add heart icon to MeditationCard with animation on tap</subtask>
+          <subtask>Create "Favorites" filter tab</subtask>
+          <subtask>Implement sync between Drift and Supabase for favorites</subtask>
+        </subtasks>
+      </task>
+      <task id="5" ac-ref="AC7,AC8">
+        <description>Implement audio streaming functionality</description>
+        <subtasks>
+          <subtask>Integrate just_audio package for audio playback</subtask>
+          <subtask>Implement MeditationAudioService with streaming support</subtask>
+          <subtask>Add audio preloading for smoother playback start (&lt;500ms)</subtask>
+          <subtask>Implement buffering indicator during stream loading</subtask>
+          <subtask>Add error handling for network failures with retry</subtask>
+          <subtask>Store audio URLs in Supabase Storage or CDN</subtask>
+        </subtasks>
+      </task>
+      <task id="6" ac-ref="AC8">
+        <description>Implement offline download (premium feature)</description>
+        <subtasks>
+          <subtask>Create meditation_downloads table in Drift</subtask>
+          <subtask>Implement downloadMeditation() use case with progress tracking</subtask>
+          <subtask>Add download button to MeditationCard with progress indicator</subtask>
+          <subtask>Store audio files in app documents directory</subtask>
+          <subtask>Implement tier check: show premium upsell if free user</subtask>
+          <subtask>Add "Downloaded" filter tab showing offline-available meditations</subtask>
+          <subtask>Implement download queue (max 3 concurrent downloads)</subtask>
+        </subtasks>
+      </task>
+      <task id="7" ac-ref="AC9">
+        <description>Implement completion tracking</description>
+        <subtasks>
+          <subtask>Create meditation_sessions table in Drift and Supabase</subtask>
+          <subtask>Track meditation completion (completed_at, duration_listened, meditation_id)</subtask>
+          <subtask>Show completion checkmark on MeditationCard</subtask>
+          <subtask>Add "Completed" count badge to card</subtask>
+          <subtask>Implement sync for session data across devices</subtask>
+        </subtasks>
+      </task>
+      <task id="8" ac-ref="ALL">
+        <description>Write comprehensive tests</description>
+        <subtasks>
+          <subtask>Unit tests: search/filter logic, favorites toggle, download queue</subtask>
+          <subtask>Widget tests: library UI, category tabs, search bar, filter chips</subtask>
+          <subtask>Integration test: end-to-end meditation browsing, favoriting, and download flow</subtask>
+          <subtask>Achieve 80%+ code coverage</subtask>
+        </subtasks>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="AC1">
+      <text>Library displays 20-30 guided meditations</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC2">
+      <text>Meditations range from 5-20 minutes duration</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC3">
+      <text>Categories: Stress Relief, Sleep, Focus, Anxiety</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC4">
+      <text>Search functionality by title/description</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC5">
+      <text>Filter by category and duration</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC6">
+      <text>Users can favorite meditations</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC7">
+      <text>Audio streaming works reliably</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC8">
+      <text>Offline download available for premium users</text>
+      <priority>P1</priority>
+    </criterion>
+    <criterion id="AC9">
+      <text>Completion tracking (shows completed meditations)</text>
+      <priority>P1</priority>
+    </criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR40: Guided Meditation Library</section>
+        <snippet>Meditation library must include 20-30 guided meditations (5-20 min) across categories: Stress Relief, Sleep, Focus, Anxiety. Audio streaming required. Offline download for premium tier.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR42: Meditation Audio Streaming</section>
+        <snippet>Audio must stream reliably with &lt;500ms start latency. Support for background playback. Offline download for premium users. Audio format: MP3 128kbps for bandwidth efficiency.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/epics.md</path>
+        <title>Epic 4: Mind &amp; Emotion - Story 4.1</title>
+        <section>Story 4.1: Guided Meditation Library</section>
+        <snippet>Implement meditation library with 20-30 meditations, categories, search/filter, favorites, audio streaming, and offline download (premium). Foundation for meditation player (Story 4.2).</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Feature-First Architecture (D1)</section>
+        <snippet>Mind &amp; Emotion module at features/mind_emotion/. Use clean architecture layers. Audio service in core/services/audio_service.dart. Supabase Storage for meditation audio files.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Offline-First Sync (D3)</section>
+        <snippet>Favorites and completion tracking sync via Drift-Supabase sync. Downloaded audio files stored locally in app documents directory. Online-first for library content (can cache).</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/monetization.md</path>
+        <title>Monetization Strategy</title>
+        <section>Premium Features - Mind &amp; Emotion</section>
+        <snippet>Free tier: stream all meditations. Premium tier: offline download unlimited meditations. Upsell on download button for free users with premium benefits modal.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <note>New Mind &amp; Emotion module. Create base structure at lib/features/mind_emotion/. Audio service may be reusable from core services if exists, otherwise create new.</note>
+    </code>
+    <dependencies>
+      <flutter>
+        <sdk>3.38+</sdk>
+        <dart>3.10+</dart>
+      </flutter>
+      <packages>
+        <package name="flutter_riverpod" version="^3.0.0" usage="State management for library UI and data flow" />
+        <package name="riverpod_annotation" version="^3.0.0" usage="Code generation for providers" />
+        <package name="drift" version="^2.14.0" usage="Local SQLite for favorites, downloads, sessions" />
+        <package name="supabase_flutter" version="^2.0.0" usage="Database sync and audio file storage" />
+        <package name="just_audio" version="^0.9.36" usage="Audio streaming and playback" />
+        <package name="just_audio_background" version="^0.0.1-beta.10" usage="Background audio playback support" />
+        <package name="audio_service" version="^0.18.12" usage="Background audio task management" />
+        <package name="cached_network_image" version="^3.3.0" usage="Thumbnail image caching" />
+        <package name="dio" version="^5.4.0" usage="Audio file download with progress tracking" />
+        <package name="path_provider" version="^2.1.0" usage="Get app directories for audio downloads" />
+        <package name="flutter_test" version="sdk" usage="Unit and widget testing" />
+      </packages>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint id="ARCH-1" type="architectural">
+      <description>Follow feature-first architecture pattern (D1)</description>
+      <details>Create Mind &amp; Emotion module at lib/features/mind_emotion/ with presentation/, domain/, data/ layers. Audio service in core/services/ for reusability.</details>
+    </constraint>
+    <constraint id="ARCH-2" type="architectural">
+      <description>Hybrid sync for favorites and completion tracking (D3)</description>
+      <details>Favorites and sessions save to Drift first, sync to Supabase when online. Library content fetched from Supabase, cached locally for offline browsing.</details>
+    </constraint>
+    <constraint id="DATA-1" type="data">
+      <description>Meditation content data structure</description>
+      <details>meditations table: id (UUID), title (TEXT), description (TEXT), duration_seconds (INT), category (ENUM), audio_url (TEXT), thumbnail_url (TEXT), created_at. Index on category for fast filtering.</details>
+    </constraint>
+    <constraint id="DATA-2" type="data">
+      <description>Audio file storage in Supabase Storage</description>
+      <details>Store audio files in Supabase Storage bucket "meditation-audio" with public access. File naming: {meditation_id}.mp3. Use CDN URL for streaming. MP3 format, 128kbps, mono for smaller file size.</details>
+    </constraint>
+    <constraint id="SEC-1" type="security">
+      <description>RLS policies for favorites and sessions</description>
+      <details>Enable RLS on meditation_favorites and meditation_sessions tables. Policy: USING (auth.uid() = user_id) for user data isolation. meditations table has public read access (no RLS).</details>
+    </constraint>
+    <constraint id="UX-1" type="ux">
+      <description>Audio streaming start latency &lt;500ms</description>
+      <details>Use audio preloading when user taps meditation card. Buffer first 5 seconds for instant playback. Show buffering indicator if network slow.</details>
+    </constraint>
+    <constraint id="UX-2" type="ux">
+      <description>Search debouncing for performance</description>
+      <details>Debounce search input by 300ms to avoid excessive filtering on every keystroke. Show loading indicator during search.</details>
+    </constraint>
+    <constraint id="UX-3" type="ux">
+      <description>Smooth favorite animation</description>
+      <details>Heart icon animates with scale + color transition on tap. Use AnimatedScale widget. Haptic feedback on favorite toggle (HapticFeedback.lightImpact()).</details>
+    </constraint>
+    <constraint id="TIER-1" type="business">
+      <description>Premium tier check for offline download</description>
+      <details>Check user tier before allowing download. Free users see premium upsell modal with benefits: "Download unlimited meditations for offline use. Upgrade to Premium." Implement tier check in domain layer.</details>
+    </constraint>
+    <constraint id="PERF-1" type="performance">
+      <description>Download queue management</description>
+      <details>Max 3 concurrent downloads to avoid network congestion. Queue additional downloads. Show progress bar for each download (0-100%). Cancel download on user request.</details>
+    </constraint>
+    <constraint id="PERF-2" type="performance">
+      <description>Library UI render time &lt;200ms</description>
+      <details>Use ListView.builder for efficient rendering. Thumbnail images cached with cached_network_image. Lazy loading for large libraries (pagination if &gt;100 meditations in future).</details>
+    </constraint>
+    <constraint id="TEST-1" type="testing">
+      <description>80%+ code coverage required</description>
+      <details>Unit tests for use cases, repositories, filters. Widget tests for library UI, search, categories. Integration test for complete meditation browsing and download flow.</details>
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>MeditationEntity</name>
+      <kind>domain-entity</kind>
+      <signature>
+        class MeditationEntity {
+          final String id;
+          final String title;
+          final String description;
+          final int durationSeconds;
+          final MeditationCategory category;
+          final String audioUrl;
+          final String thumbnailUrl;
+          final DateTime createdAt;
+          final bool isFavorited;
+          final bool isDownloaded;
+          final int completionCount;
+        }
+
+        enum MeditationCategory {
+          stressRelief,
+          sleep,
+          focus,
+          anxiety,
+        }
+      </signature>
+      <path>lib/features/mind_emotion/domain/entities/meditation_entity.dart</path>
+      <notes>Use @freezed for immutability. isFavorited/isDownloaded computed from separate tables. completionCount from sessions table.</notes>
+    </interface>
+    <interface>
+      <name>GetMeditationsUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class GetMeditationsUseCase {
+          Future&lt;Result&lt;List&lt;MeditationEntity&gt;&gt;&gt; call({
+            MeditationCategory? category,
+            String? searchQuery,
+            int? minDuration,
+            int? maxDuration,
+          });
+        }
+      </signature>
+      <path>lib/features/mind_emotion/domain/usecases/get_meditations_usecase.dart</path>
+      <notes>Returns filtered list based on parameters. Fetches from Supabase, merges with local favorites/download status.</notes>
+    </interface>
+    <interface>
+      <name>ToggleFavoriteUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class ToggleFavoriteUseCase {
+          Future&lt;Result&lt;bool&gt;&gt; call(String meditationId);
+        }
+      </signature>
+      <path>lib/features/mind_emotion/domain/usecases/toggle_favorite_usecase.dart</path>
+      <notes>Returns new favorite state (true/false). Saves to Drift first, syncs to Supabase. Handles offline gracefully.</notes>
+    </interface>
+    <interface>
+      <name>DownloadMeditationUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class DownloadMeditationUseCase {
+          Stream&lt;DownloadProgress&gt; call(String meditationId);
+        }
+
+        class DownloadProgress {
+          final int bytesReceived;
+          final int totalBytes;
+          final double percentage;
+          final DownloadStatus status;
+        }
+      </signature>
+      <path>lib/features/mind_emotion/domain/usecases/download_meditation_usecase.dart</path>
+      <notes>Returns stream for progress updates. Check tier before starting. Download audio to app documents. Save file path to meditation_downloads table.</notes>
+    </interface>
+    <interface>
+      <name>MeditationRepository</name>
+      <kind>repository</kind>
+      <signature>
+        abstract class MeditationRepository {
+          Future&lt;Result&lt;List&lt;MeditationEntity&gt;&gt;&gt; getMeditations();
+          Future&lt;Result&lt;MeditationEntity&gt;&gt; getMeditationById(String id);
+          Future&lt;Result&lt;void&gt;&gt; toggleFavorite(String userId, String meditationId);
+          Future&lt;Result&lt;List&lt;String&gt;&gt;&gt; getFavoriteIds(String userId);
+          Stream&lt;DownloadProgress&gt; downloadAudio(String audioUrl, String localPath);
+        }
+      </signature>
+      <path>lib/features/mind_emotion/domain/repositories/meditation_repository.dart</path>
+      <notes>Implemented by MeditationRepositoryImpl in data layer. Uses SupabaseDataSource for meditations, DriftDataSource for favorites/downloads.</notes>
+    </interface>
+    <interface>
+      <name>meditations table (Supabase)</name>
+      <kind>database-table</kind>
+      <signature>
+        CREATE TABLE meditations (
+          id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+          title TEXT NOT NULL,
+          description TEXT NOT NULL,
+          duration_seconds INT NOT NULL,
+          category TEXT NOT NULL CHECK (category IN ('stress_relief', 'sleep', 'focus', 'anxiety')),
+          audio_url TEXT NOT NULL,
+          thumbnail_url TEXT NOT NULL,
+          created_at TIMESTAMPTZ DEFAULT NOW()
+        );
+        CREATE INDEX idx_meditations_category ON meditations(category);
+        CREATE INDEX idx_meditations_duration ON meditations(duration_seconds);
+      </signature>
+      <path>supabase/migrations/</path>
+      <notes>Public read access (no RLS). Seed with 20-30 meditation entries. Audio files in Supabase Storage.</notes>
+    </interface>
+    <interface>
+      <name>meditation_favorites table (Supabase &amp; Drift)</name>
+      <kind>database-table</kind>
+      <signature>
+        CREATE TABLE meditation_favorites (
+          id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+          user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+          meditation_id UUID NOT NULL REFERENCES meditations(id) ON DELETE CASCADE,
+          created_at TIMESTAMPTZ DEFAULT NOW(),
+          UNIQUE(user_id, meditation_id)
+        );
+        CREATE INDEX idx_favorites_user ON meditation_favorites(user_id);
+      </signature>
+      <path>supabase/migrations/ and lib/core/database/tables.drift.dart</path>
+      <notes>RLS policy: USING (auth.uid() = user_id). Mirror in Drift for offline support. Sync bidirectionally.</notes>
+    </interface>
+    <interface>
+      <name>meditation_downloads table (Drift only)</name>
+      <kind>database-table</kind>
+      <signature>
+        @DataClassName('MeditationDownload')
+        class MeditationDownloads extends Table {
+          TextColumn get id => text()();
+          TextColumn get userId => text()();
+          TextColumn get meditationId => text()();
+          TextColumn get localFilePath => text()();
+          DateTimeColumn get downloadedAt => dateTime()();
+
+          @override
+          Set&lt;Column&gt; get primaryKey => {id};
+        }
+      </signature>
+      <path>lib/core/database/tables.drift.dart</path>
+      <notes>Local only table (no Supabase sync). Tracks downloaded audio files. Check if file exists on disk before marking as downloaded.</notes>
+    </interface>
+    <interface>
+      <name>meditation_sessions table (Supabase &amp; Drift)</name>
+      <kind>database-table</kind>
+      <signature>
+        CREATE TABLE meditation_sessions (
+          id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+          user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+          meditation_id UUID NOT NULL REFERENCES meditations(id) ON DELETE CASCADE,
+          duration_listened_seconds INT NOT NULL,
+          completed BOOLEAN DEFAULT FALSE,
+          completed_at TIMESTAMPTZ,
+          created_at TIMESTAMPTZ DEFAULT NOW()
+        );
+        CREATE INDEX idx_sessions_user_meditation ON meditation_sessions(user_id, meditation_id);
+      </signature>
+      <path>supabase/migrations/ and lib/core/database/tables.drift.dart</path>
+      <notes>RLS policy: USING (auth.uid() = user_id). Tracks completion for each meditation play. Used by Story 4.2 for completion tracking.</notes>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Follow 70/20/10 testing pyramid: 70% unit tests (use cases, repositories, entities, filters), 20% widget tests (library UI, search, category tabs, cards), 10% integration tests (end-to-end flows). Use flutter_test for unit/widget tests, integration_test for E2E. Mock audio streaming with test files. Target 80%+ code coverage.
+    </standards>
+    <locations>
+      <location>test/features/mind_emotion/domain/usecases/</location>
+      <location>test/features/mind_emotion/domain/entities/</location>
+      <location>test/features/mind_emotion/data/repositories/</location>
+      <location>test/features/mind_emotion/presentation/widgets/</location>
+      <location>integration_test/features/mind_emotion/meditation_library_flow_test.dart</location>
+    </locations>
+    <ideas>
+      <test-idea ac-ref="AC1,AC2,AC3">
+        <description>Unit test: GetMeditationsUseCase returns 20-30 meditations</description>
+        <approach>Mock repository with 25 meditation entries. Assert returned list has 25 items. Verify duration range 5-20 min (300-1200 seconds). Verify all 4 categories present.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4,AC5">
+        <description>Unit test: Search and filter logic</description>
+        <approach>Create list of 10 meditations. Apply search query "stress". Verify only matching meditations returned. Apply category filter "Sleep". Verify only sleep meditations returned. Test combined filters.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6">
+        <description>Unit test: ToggleFavoriteUseCase</description>
+        <approach>Mock repository. Call toggleFavorite with meditation ID. Verify repository.toggleFavorite called. Test toggle on → off → on states.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC7">
+        <description>Unit test: Audio streaming initiation</description>
+        <approach>Mock just_audio player. Call playMeditation(). Verify audio source set to correct URL. Verify play() called. Test buffering state handling.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC8">
+        <description>Unit test: DownloadMeditationUseCase checks tier</description>
+        <approach>Mock tier service to return "free". Call downloadMeditation(). Verify returns TierRestrictionError. Mock tier as "premium". Verify download starts successfully.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC8">
+        <description>Unit test: Download progress tracking</description>
+        <approach>Mock Dio download with progress callbacks. Stream progress: 25%, 50%, 75%, 100%. Verify DownloadProgress emitted with correct percentages. Verify file saved to documents directory.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC9">
+        <description>Unit test: Completion tracking increment</description>
+        <approach>Mock sessions repository. Record meditation completion. Verify session saved with completed=true, completed_at timestamp, full duration listened.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1,AC3">
+        <description>Widget test: Library displays category tabs</description>
+        <approach>Render MeditationLibraryScreen. Verify tabs present: All, Stress Relief, Sleep, Focus, Anxiety. Tap "Sleep" tab. Verify only sleep meditations displayed.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4">
+        <description>Widget test: Search bar filters meditations</description>
+        <approach>Render library with 10 meditations. Enter "focus" in search bar. Wait 300ms (debounce). Verify only meditations with "focus" in title/description shown.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6">
+        <description>Widget test: Favorite heart icon toggles</description>
+        <approach>Render MeditationCard with isFavorited=false. Tap heart icon. Verify icon animates. Verify state updates to isFavorited=true. Tap again. Verify returns to false.</approach>
+      </test-idea>
+      <test-idea ac-ref="ALL">
+        <description>Integration test: Browse, favorite, and download meditation</description>
+        <approach>Launch app. Navigate to Mind &amp; Emotion tab. Verify library loads. Tap category "Stress Relief". Favorite a meditation. Verify saved to database. Tap download (as premium user). Verify file downloaded to device. Verify meditation card shows "Downloaded" badge.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC7">
+        <description>Integration test: Audio streaming from library</description>
+        <approach>Select meditation from library. Tap play. Verify audio starts within 500ms. Verify player UI appears (Story 4.2 dependency). Play for 10 seconds. Pause. Verify session tracked.</approach>
+      </test-idea>
+    </ideas>
+  </tests>
+
+  <devAgentRecord>
+    <recordedAt>2025-11-17</recordedAt>
+    <status>ready-for-dev</status>
+    <agent>BMAD Dev Agent</agent>
+    <notes>Story context prepared and validated for development assignment</notes>
+  </devAgentRecord>
+
+  <created>
+    <author>BMAD Story Context Workflow</author>
+    <timestamp>2025-11-17</timestamp>
+  </created>
+</story-context>

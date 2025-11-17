@@ -1,0 +1,509 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>6</epicId>
+    <storyId>6.4</storyId>
+    <title>Celebration Animations (Confetti, Badge Pop)</title>
+    <status>ready-for-dev</status>
+    <generatedAt>2025-11-17</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/sprint-6/6-4-celebration-animations-confetti-badge-pop.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>user achieving a milestone</asA>
+    <iWant>a celebration animation</iWant>
+    <soThat>I feel rewarded and motivated</soThat>
+    <tasks>
+      <task id="1" ac-ref="AC1,AC2">
+        <description>Implement Lottie confetti animation system</description>
+        <subtasks>
+          <subtask>Add Lottie package to pubspec.yaml</subtask>
+          <subtask>Download confetti.json from LottieFiles (colorful, 2s duration, MIT license)</subtask>
+          <subtask>Add confetti.json to assets/animations/ directory</subtask>
+          <subtask>Create ConfettiAnimation widget that wraps Lottie.asset()</subtask>
+          <subtask>Configure animation duration: 2 seconds</subtask>
+          <subtask>Implement animation controller for play/stop control</subtask>
+        </subtasks>
+      </task>
+      <task id="2" ac-ref="AC1">
+        <description>Implement module-specific confetti colors</description>
+        <subtasks>
+          <subtask>Create multiple confetti variants: Orange (Fitness), Purple (Mind), Teal (Life Coach)</subtask>
+          <subtask>Use ColorFiltered widget to tint confetti based on module</subtask>
+          <subtask>Badge unlock: use module color based on streak type</subtask>
+          <subtask>PR achievement: use Orange (Fitness module)</subtask>
+          <subtask>Goal completion: use Teal (Life Coach module)</subtask>
+        </subtasks>
+      </task>
+      <task id="3" ac-ref="AC3">
+        <description>Implement badge pop animation with bounce effect</description>
+        <subtasks>
+          <subtask>Create BadgePopAnimation widget using AnimatedBuilder</subtask>
+          <subtask>Implement scale animation: badge zooms from 0.0 to 1.2 to 1.0</subtask>
+          <subtask>Use Curves.elasticOut for bounce effect (playful, not jarring)</subtask>
+          <subtask>Animation duration: 800ms total (400ms zoom, 400ms settle)</subtask>
+          <subtask>Add rotation animation: slight wobble for extra delight</subtask>
+        </subtasks>
+      </task>
+      <task id="4" ac-ref="AC4">
+        <description>Implement haptic feedback during celebration</description>
+        <subtasks>
+          <subtask>Add HapticFeedback.mediumImpact() when celebration starts</subtask>
+          <subtask>Trigger haptic at peak of badge pop (when scale = 1.2)</subtask>
+          <subtask>Test haptic on both iOS and Android devices</subtask>
+          <subtask>Ensure haptic doesn't repeat (trigger once per celebration)</subtask>
+        </subtasks>
+      </task>
+      <task id="5" ac-ref="AC5">
+        <description>Implement optional celebration sound effect</description>
+        <subtasks>
+          <subtask>Add sound asset: celebration_chime.mp3 (short, pleasant, &lt;50KB)</subtask>
+          <subtask>Integrate audio player package (just_audio or audioplayers)</subtask>
+          <subtask>Play sound when celebration starts (synchronized with confetti)</subtask>
+          <subtask>Check user preference: sound_enabled (default true, can disable in settings)</subtask>
+          <subtask>Respect system mute/silent mode</subtask>
+        </subtasks>
+      </task>
+      <task id="6" ac-ref="AC6">
+        <description>Implement dismissable celebration overlay</description>
+        <subtasks>
+          <subtask>Create CelebrationOverlay widget (full-screen overlay with gesture detector)</subtask>
+          <subtask>Allow tap anywhere to dismiss celebration early</subtask>
+          <subtask>Celebration auto-dismisses after animation completes (2s confetti + 0.8s badge pop)</subtask>
+          <subtask>Don't block user interaction completely (show dismiss hint: "Tap to continue")</subtask>
+          <subtask>Ensure celebration doesn't interfere with critical actions</subtask>
+        </subtasks>
+      </task>
+      <task id="7" ac-ref="AC1">
+        <description>Implement celebration trigger system</description>
+        <subtasks>
+          <subtask>Create TriggerCelebrationUseCase that coordinates animation, haptic, sound</subtask>
+          <subtask>Define CelebrationType enum: badgeUnlock, prAchievement, goalCompletion</subtask>
+          <subtask>Hook into badge award (Story 6.2) to trigger badgeUnlock celebration</subtask>
+          <subtask>Hook into PR achievement (Epic 3) to trigger prAchievement celebration</subtask>
+          <subtask>Hook into goal completion (Epic 2) to trigger goalCompletion celebration</subtask>
+        </subtasks>
+      </task>
+      <task id="8" ac-ref="AC1,AC2,AC3">
+        <description>Implement unified CelebrationModal widget</description>
+        <subtasks>
+          <subtask>Create CelebrationModal that combines confetti + badge pop + haptic + sound</subtask>
+          <subtask>Accept parameters: celebrationType, badgeIcon, celebrationText, moduleColor</subtask>
+          <subtask>Layer animations: confetti background, badge pop foreground</subtask>
+          <subtask>Show celebration text: "You earned the Silver Meditation Badge!" or "New PR: +5kg on Squat!"</subtask>
+          <subtask>Use LifeOS typography: Inter Bold for celebration text</subtask>
+        </subtasks>
+      </task>
+      <task id="9" ac-ref="ALL">
+        <description>Implement celebration preferences and settings</description>
+        <subtasks>
+          <subtask>Add celebration_sound_enabled to user_preferences table (default true)</subtask>
+          <subtask>Add "Celebration Sounds" toggle to Settings screen</subtask>
+          <subtask>Save preference to local database (Drift) and sync to Supabase</subtask>
+          <subtask>Check preference before playing sound (respect user choice)</subtask>
+        </subtasks>
+      </task>
+      <task id="10" ac-ref="ALL">
+        <description>Write comprehensive tests</description>
+        <subtasks>
+          <subtask>Unit tests: TriggerCelebrationUseCase - coordinates animation, haptic, sound</subtask>
+          <subtask>Unit tests: CelebrationType enum handling</subtask>
+          <subtask>Widget tests: ConfettiAnimation plays and completes</subtask>
+          <subtask>Widget tests: BadgePopAnimation scales with elastic curve</subtask>
+          <subtask>Widget tests: CelebrationModal displays correctly with all elements</subtask>
+          <subtask>Widget tests: Tap to dismiss celebration early</subtask>
+          <subtask>Widget tests: Auto-dismiss after animation completes</subtask>
+          <subtask>Integration test: Badge unlock → celebration modal → confetti + badge pop + haptic + sound</subtask>
+          <subtask>Integration test: PR achievement → celebration with orange confetti</subtask>
+          <subtask>Achieve 75%+ code coverage</subtask>
+        </subtasks>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="AC1">
+      <text>Confetti animation on: Badge unlock, PR achievement, Goal completion</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC2">
+      <text>Animation: Lottie confetti (colorful, 2 seconds)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC3">
+      <text>Badge pop: Badge icon zooms in with bounce effect</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC4">
+      <text>Haptic feedback: Medium vibration during celebration</text>
+      <priority>P1</priority>
+    </criterion>
+    <criterion id="AC5">
+      <text>Sound effect: Optional chime (can disable in settings)</text>
+      <priority>P1</priority>
+    </criterion>
+    <criterion id="AC6">
+      <text>Celebration doesn't block user (can dismiss early)</text>
+      <priority>P0</priority>
+    </criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR88: Celebration animations for achievements</section>
+        <snippet>System celebrates milestone achievements with animations (confetti, badge unlock). Lottie animations for visual polish. Haptic feedback for tactile response.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/epics.md</path>
+        <title>Epic 6: Gamification & Retention - Story 6.4</title>
+        <section>Story 6.4: Celebration Animations</section>
+        <snippet>Confetti on Badge unlock, PR achievement, Goal completion. Lottie confetti (2s). Badge pop with bounce. Haptic medium vibration. Optional sound. Dismissable early. Prerequisites: Story 6.2.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/ux-design-specification.md</path>
+        <title>UX Design Specification</title>
+        <section>Achievement Celebration Principle</section>
+        <snippet>Every milestone recognized (streaks, PRs, badges). Bold, energetic feedback (confetti animations). Progress always visible. Retention driven by visible progress and wins.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/ux-design-specification.md</path>
+        <title>UX Design Specification</title>
+        <section>Badge Unlock Celebration</section>
+        <snippet>Confetti colors: Match module theme (Orange for Fitness, Purple for Mind). Badge bounce: Elastic easing (playful, not jarring). Full-screen modal with celebration text.</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/sprint-6/6-4-celebration-animations-confetti-badge-pop.md</path>
+        <title>Story 6.4: Celebration Animations</title>
+        <section>Tech Stack</section>
+        <snippet>Lottie confetti.json, ScaleTransition for badge pop, HapticFeedback.mediumImpact(). Sound optional (can disable). Dismissable early.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <note>Celebration animations depend on Story 6.2 (Badges). Integration points with Epic 2 (goals), Epic 3 (PRs). Lottie animation assets needed.</note>
+      <existing>
+        <file>
+          <path>lib/features/gamification/domain/usecases/award_badge_usecase.dart</path>
+          <purpose>Badge award logic - will trigger celebration animation</purpose>
+        </file>
+        <file>
+          <path>lib/features/fitness/domain/usecases/record_pr_usecase.dart</path>
+          <purpose>PR achievement - will trigger celebration animation</purpose>
+        </file>
+        <file>
+          <path>lib/features/life_coach/domain/usecases/complete_goal_usecase.dart</path>
+          <purpose>Goal completion - will trigger celebration animation</purpose>
+        </file>
+      </existing>
+    </code>
+    <dependencies>
+      <flutter>
+        <sdk>3.38+</sdk>
+        <dart>3.10+</dart>
+      </flutter>
+      <packages>
+        <package name="flutter_riverpod" version="^3.0.0" usage="State management for celebration state" />
+        <package name="riverpod_annotation" version="^3.0.0" usage="Code generation for providers" />
+        <package name="lottie" version="^2.7.0" usage="Lottie animations for confetti" />
+        <package name="just_audio" version="^0.9.0" usage="Audio player for celebration sound effects" />
+        <package name="drift" version="^2.14.0" usage="Local storage for user preferences (sound enabled)" />
+        <package name="supabase_flutter" version="^2.0.0" usage="Supabase sync for preferences" />
+        <package name="freezed" version="^2.4.0" usage="Immutable entity code generation" />
+        <package name="freezed_annotation" version="^2.4.0" usage="Freezed annotations" />
+        <package name="flutter_test" version="sdk" usage="Unit and widget testing framework" />
+        <package name="integration_test" version="sdk" usage="End-to-end testing framework" />
+      </packages>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint id="ARCH-1" type="architectural">
+      <description>Must follow Hybrid Architecture pattern (D1)</description>
+      <details>Extend features/gamification/ structure. Add celebration-related widgets, use cases in clean architecture layers.</details>
+    </constraint>
+    <constraint id="ARCH-2" type="architectural">
+      <description>Use Riverpod for state management (D1, D6)</description>
+      <details>Celebration state should trigger modal display reactively. Providers for celebration preferences.</details>
+    </constraint>
+    <constraint id="UX-1" type="ux">
+      <description>Celebration must be delightful but not blocking</description>
+      <details>Full-screen overlay with confetti and badge pop. User can dismiss by tapping anywhere. Auto-dismiss after 2.8s (2s confetti + 0.8s badge pop). Show "Tap to continue" hint.</details>
+    </constraint>
+    <constraint id="UX-2" type="ux">
+      <description>Animation timing must feel natural</description>
+      <details>Confetti: 2 seconds (not too short, not too long). Badge pop: 800ms with elastic bounce. Haptic at peak of bounce. Sound synchronized with animation start.</details>
+    </constraint>
+    <constraint id="UX-3" type="ux">
+      <description>Module colors must be consistent</description>
+      <details>Orange (#FB923C) for Fitness, Purple (#A78BFA) for Mind, Teal (#14B8A6) for Life Coach. Confetti tinted to match module. Reinforces module identity.</details>
+    </constraint>
+    <constraint id="PERF-1" type="performance">
+      <description>Animation must be smooth (60fps)</description>
+      <details>Lottie animation hardware-accelerated. Keep confetti.json file size &lt;100KB. Test on low-end devices (Android 6.0). No dropped frames during animation.</details>
+    </constraint>
+    <constraint id="PERF-2" type="performance">
+      <description>Sound file must be small and fast-loading</description>
+      <details>celebration_chime.mp3 &lt;50KB. Preload sound on app start (cache in memory). Playback latency &lt;50ms. No delay between animation start and sound.</details>
+    </constraint>
+    <constraint id="ASSET-1" type="assets">
+      <description>Lottie animation asset required</description>
+      <details>Add confetti.json to assets/animations/. Source from LottieFiles (free, MIT license). Colorful confetti, 2-second duration, transparent background. Test rendering on both iOS and Android.</details>
+    </constraint>
+    <constraint id="ASSET-2" type="assets">
+      <description>Sound asset required</description>
+      <details>Add celebration_chime.mp3 to assets/sounds/. Pleasant, short (&lt;1s), uplifting tone. Source from Freesound (CC0 license). Test on both iOS and Android.</details>
+    </constraint>
+    <constraint id="A11Y-1" type="accessibility">
+      <description>Celebration must be accessible</description>
+      <details>Haptic feedback for users who can't hear sound. Visual confetti for users who can't feel haptic. Screen reader announces celebration: "Achievement unlocked: Silver Meditation Badge".</details>
+    </constraint>
+    <constraint id="BIZ-1" type="business-logic">
+      <description>Celebrations triggered automatically on achievements</description>
+      <details>Don't require user action to see celebration. Triggered immediately when badge awarded, PR achieved, goal completed. Instant gratification is key for motivation.</details>
+    </constraint>
+    <constraint id="BIZ-2" type="business-logic">
+      <description>User can disable sound but not confetti</description>
+      <details>Confetti animation always shows (core celebration experience). Sound is optional (user preference). Haptic always triggers (unless device doesn't support).</details>
+    </constraint>
+    <constraint id="TEST-1" type="testing">
+      <description>75%+ code coverage required</description>
+      <details>Follow 70/20/10 testing pyramid. Unit tests for celebration logic, widget tests for animations, integration tests for full flow. All AC must have test coverage.</details>
+    </constraint>
+    <constraint id="INTEG-1" type="integration">
+      <description>Must integrate with Story 6.2 badge awards</description>
+      <details>Hook into AwardBadgeUseCase. After badge created, trigger celebration with badgeUnlock type. Pass badge tier and type for display.</details>
+    </constraint>
+    <constraint id="INTEG-2" type="integration">
+      <description>Must integrate with Epic 3 PR achievements</description>
+      <details>Hook into PR recording logic. When new PR achieved, trigger celebration with prAchievement type. Show PR details: "+5kg on Squat".</details>
+    </constraint>
+    <constraint id="INTEG-3" type="integration">
+      <description>Must integrate with Epic 2 goal completions</description>
+      <details>Hook into goal completion logic. When goal completed, trigger celebration with goalCompletion type. Show goal title.</details>
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>CelebrationType</name>
+      <kind>domain-enum</kind>
+      <signature>
+        enum CelebrationType {
+          badgeUnlock,
+          prAchievement,
+          goalCompletion,
+        }
+      </signature>
+      <path>lib/features/gamification/domain/entities/celebration_type.dart</path>
+      <notes>Defines types of celebrations. Used to determine confetti color, celebration text, and icon.</notes>
+    </interface>
+    <interface>
+      <name>CelebrationConfig</name>
+      <kind>domain-entity</kind>
+      <signature>
+        @freezed
+        class CelebrationConfig with _$CelebrationConfig {
+          const factory CelebrationConfig({
+            required CelebrationType type,
+            required String title,
+            required String? subtitle,
+            required Color moduleColor,
+            String? iconEmoji,
+            bool? soundEnabled,
+          }) = _CelebrationConfig;
+
+          // Factory methods for specific celebration types
+          factory CelebrationConfig.badgeUnlock({
+            required BadgeTier tier,
+            required StreakType streakType,
+            bool? soundEnabled,
+          }) {
+            final tierEmoji = tier == BadgeTier.bronze ? '🥉'
+                            : tier == BadgeTier.silver ? '🥈'
+                            : '🥇';
+            final typeText = streakType == StreakType.workout ? 'Workout'
+                           : streakType == StreakType.meditation ? 'Meditation'
+                           : 'Check-in';
+            final color = streakType == StreakType.workout ? Colors.orange
+                        : streakType == StreakType.meditation ? Colors.purple
+                        : Colors.teal;
+
+            return CelebrationConfig(
+              type: CelebrationType.badgeUnlock,
+              title: '${tier.name.capitalize()} $typeText Badge',
+              subtitle: 'Achievement unlocked!',
+              moduleColor: color,
+              iconEmoji: tierEmoji,
+              soundEnabled: soundEnabled,
+            );
+          }
+
+          // Similar factory methods for prAchievement and goalCompletion
+        }
+      </signature>
+      <path>lib/features/gamification/domain/entities/celebration_config.dart</path>
+      <notes>Configuration object for celebration display. Contains all data needed to render celebration modal.</notes>
+    </interface>
+    <interface>
+      <name>TriggerCelebrationUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class TriggerCelebrationUseCase {
+          Future&lt;Result&lt;void&gt;&gt; call(CelebrationConfig config);
+        }
+      </signature>
+      <path>lib/features/gamification/domain/usecases/trigger_celebration_usecase.dart</path>
+      <notes>Coordinates celebration animation, haptic feedback, sound playback. Checks user preferences. Shows CelebrationModal.</notes>
+    </interface>
+    <interface>
+      <name>CelebrationModal</name>
+      <kind>widget</kind>
+      <signature>
+        class CelebrationModal extends ConsumerStatefulWidget {
+          final CelebrationConfig config;
+
+          const CelebrationModal({
+            Key? key,
+            required this.config,
+          }) : super(key: key);
+
+          @override
+          ConsumerState&lt;CelebrationModal&gt; createState() => _CelebrationModalState;
+        }
+      </signature>
+      <path>lib/features/gamification/presentation/widgets/celebration_modal.dart</path>
+      <notes>Full-screen modal with confetti animation, badge pop, celebration text. Dismissable by tap. Auto-dismisses after animation completes.</notes>
+    </interface>
+    <interface>
+      <name>ConfettiAnimation</name>
+      <kind>widget</kind>
+      <signature>
+        class ConfettiAnimation extends StatefulWidget {
+          final Color color;
+          final Duration duration;
+          final VoidCallback? onComplete;
+
+          const ConfettiAnimation({
+            Key? key,
+            required this.color,
+            this.duration = const Duration(seconds: 2),
+            this.onComplete,
+          }) : super(key: key);
+
+          @override
+          State&lt;ConfettiAnimation&gt; createState() => _ConfettiAnimationState;
+        }
+      </signature>
+      <path>lib/features/gamification/presentation/widgets/confetti_animation.dart</path>
+      <notes>Lottie confetti animation with color tinting. Plays once, calls onComplete callback when finished.</notes>
+    </interface>
+    <interface>
+      <name>BadgePopAnimation</name>
+      <kind>widget</kind>
+      <signature>
+        class BadgePopAnimation extends StatefulWidget {
+          final Widget child;
+          final Duration duration;
+          final VoidCallback? onPeak;
+
+          const BadgePopAnimation({
+            Key? key,
+            required this.child,
+            this.duration = const Duration(milliseconds: 800),
+            this.onPeak,
+          }) : super(key: key);
+
+          @override
+          State&lt;BadgePopAnimation&gt; createState() => _BadgePopAnimationState;
+        }
+      </signature>
+      <path>lib/features/gamification/presentation/widgets/badge_pop_animation.dart</path>
+      <notes>Scale animation with elastic bounce. Scales from 0.0 → 1.2 → 1.0. Calls onPeak at scale 1.2 (for haptic trigger).</notes>
+    </interface>
+    <interface>
+      <name>CelebrationSoundService</name>
+      <kind>service</kind>
+      <signature>
+        abstract class CelebrationSoundService {
+          Future&lt;void&gt; preloadSounds();
+          Future&lt;void&gt; playCelebrationSound();
+          Future&lt;void&gt; dispose();
+        }
+      </signature>
+      <path>lib/features/gamification/data/services/celebration_sound_service.dart</path>
+      <notes>Manages celebration sound playback. Preloads sound on app start. Checks user preferences before playing.</notes>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Follow 70/20/10 testing pyramid: 70% unit tests (use cases, services), 20% widget tests (UI components, animations), 10% integration tests (end-to-end flows). Use flutter_test for unit/widget tests, integration_test for E2E. Mock dependencies with mockito. Target 75%+ code coverage. All acceptance criteria must have test coverage.
+    </standards>
+    <locations>
+      <location>test/features/gamification/domain/usecases/</location>
+      <location>test/features/gamification/data/services/</location>
+      <location>test/features/gamification/presentation/widgets/</location>
+      <location>integration_test/features/gamification/celebration_flow_test.dart</location>
+    </locations>
+    <ideas>
+      <test-idea ac-ref="AC1">
+        <description>Unit test: TriggerCelebrationUseCase - badge unlock</description>
+        <approach>Given CelebrationConfig with type=badgeUnlock. When trigger celebration. Then verify confetti animation started, badge pop animation started, haptic triggered, sound played (if enabled).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1">
+        <description>Unit test: TriggerCelebrationUseCase - PR achievement</description>
+        <approach>Given CelebrationConfig with type=prAchievement, color=orange. When trigger. Then verify celebration shown with orange confetti.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC5">
+        <description>Unit test: Sound not played if disabled in settings</description>
+        <approach>Given soundEnabled=false in user preferences. When trigger celebration. Then verify sound NOT played, but confetti and haptic still triggered.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC2">
+        <description>Widget test: ConfettiAnimation plays and completes</description>
+        <approach>Render ConfettiAnimation with 2s duration. Verify Lottie animation starts. Wait 2s. Verify onComplete callback called.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3">
+        <description>Widget test: BadgePopAnimation scales with elastic curve</description>
+        <approach>Render BadgePopAnimation. Verify child widget scales from 0.0 to 1.2. Verify elastic curve applied (bounce effect). Verify scales to 1.0 at end.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4">
+        <description>Widget test: Haptic triggered at peak of badge pop</description>
+        <approach>Mock HapticFeedback. Render BadgePopAnimation. Verify haptic triggered when scale reaches 1.2 (peak). Verify only triggered once.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6">
+        <description>Widget test: CelebrationModal dismissable by tap</description>
+        <approach>Render CelebrationModal. Tap anywhere on screen. Verify modal dismissed immediately (animation stops, modal closes).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6">
+        <description>Widget test: CelebrationModal auto-dismisses after animation</description>
+        <approach>Render CelebrationModal. Don't tap. Wait 2.8s (2s confetti + 0.8s badge pop). Verify modal auto-dismissed.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1,AC2,AC3">
+        <description>Widget test: CelebrationModal displays all elements</description>
+        <approach>Render CelebrationModal with badge unlock config. Verify confetti animation visible. Verify badge icon displayed with emoji. Verify celebration text shown: "Silver Meditation Badge".</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1">
+        <description>Widget test: Module colors applied correctly</description>
+        <approach>Render celebration with Fitness module (orange). Verify confetti tinted orange. Render with Mind module (purple). Verify confetti tinted purple.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1,AC2,AC3,AC4,AC5">
+        <description>Integration test: Badge unlock triggers full celebration</description>
+        <approach>Award Silver Meditation Badge. Verify CelebrationModal shown. Verify confetti plays (purple). Verify badge pop animates. Verify haptic triggered. Verify sound played. Wait for auto-dismiss. Verify modal closed.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1">
+        <description>Integration test: PR achievement celebration with orange confetti</description>
+        <approach>Record new PR (+5kg Squat). Verify celebration triggered. Verify confetti is orange (Fitness color). Verify celebration text: "New PR: +5kg on Squat!".</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6">
+        <description>Integration test: Dismiss celebration early</description>
+        <approach>Trigger celebration. Immediately tap screen. Verify celebration dismissed before animation completes. Verify user can continue using app.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC5">
+        <description>Integration test: Disable sound in settings</description>
+        <approach>User disables celebration sounds in settings. Trigger celebration. Verify confetti and haptic still work, but sound NOT played.</approach>
+      </test-idea>
+    </ideas>
+  </tests>
+</story-context>

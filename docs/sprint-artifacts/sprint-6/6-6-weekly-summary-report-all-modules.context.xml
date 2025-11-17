@@ -1,0 +1,659 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>6</epicId>
+    <storyId>6.6</storyId>
+    <title>Weekly Summary Report (All Modules)</title>
+    <status>ready-for-dev</status>
+    <generatedAt>2025-11-17</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/sprint-6/6-6-weekly-summary-report-all-modules.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>user tracking progress across all modules</asA>
+    <iWant>a weekly summary report</iWant>
+    <soThat>I can see concrete evidence of my improvements</soThat>
+    <tasks>
+      <task id="1" ac-ref="AC3">
+        <description>Implement weekly report data model and database schema</description>
+        <subtasks>
+          <subtask>Create weekly_reports table in Drift (local SQLite)</subtask>
+          <subtask>Create weekly_reports table in Supabase (PostgreSQL) with RLS policies</subtask>
+          <subtask>Add columns: id, user_id, week_start_date, week_end_date, report_data (JSONB), created_at, updated_at</subtask>
+          <subtask>Add UNIQUE constraint on (user_id, week_start_date)</subtask>
+          <subtask>Create index on user_id and week_start_date for query performance</subtask>
+        </subtasks>
+      </task>
+      <task id="2" ac-ref="AC3">
+        <description>Implement WeeklyReportEntity and domain models</description>
+        <subtasks>
+          <subtask>Create WeeklyReportEntity with @freezed annotation</subtask>
+          <subtask>Create FitnessStats sub-entity (workoutsCompleted, prCount, totalVolume, volumeChangePercent)</subtask>
+          <subtask>Create MindStats sub-entity (meditationsCompleted, avgDuration, stressChange, moodAvg)</subtask>
+          <subtask>Create LifeCoachStats sub-entity (checkinsCompleted, goalsProgressed, planCompletionAvg)</subtask>
+          <subtask>Create StreakStats sub-entity (workoutStreak, meditationStreak, checkinStreak)</subtask>
+          <subtask>Add topInsight field (AI-generated insight: "Best workouts after 8+ hours sleep")</subtask>
+        </subtasks>
+      </task>
+      <task id="3" ac-ref="AC3">
+        <description>Implement data aggregation logic for Fitness module</description>
+        <subtasks>
+          <subtask>Create AggregateFitnessStatsUseCase - queries last 7 days of workouts</subtask>
+          <subtask>Count workouts completed (total workout sessions)</subtask>
+          <subtask>Count PRs achieved (new personal records)</subtask>
+          <subtask>Calculate total volume (sum of sets × reps × weight across all exercises)</subtask>
+          <subtask>Calculate volume change vs previous week (percentage increase/decrease)</subtask>
+          <subtask>Query from workouts and sets tables (Epic 3)</subtask>
+        </subtasks>
+      </task>
+      <task id="4" ac-ref="AC3">
+        <description>Implement data aggregation logic for Mind module</description>
+        <subtasks>
+          <subtask>Create AggregateMindStatsUseCase - queries last 7 days of meditations and moods</subtask>
+          <subtask>Count meditations completed</subtask>
+          <subtask>Calculate average meditation duration (minutes)</subtask>
+          <subtask>Calculate stress change vs previous week (percentage decrease/increase)</subtask>
+          <subtask>Calculate average mood rating (1-5 scale)</subtask>
+          <subtask>Query from meditations and check_ins tables (Epic 4, Epic 2)</subtask>
+        </subtasks>
+      </task>
+      <task id="5" ac-ref="AC3">
+        <description>Implement data aggregation logic for Life Coach module</description>
+        <subtasks>
+          <subtask>Create AggregateLifeCoachStatsUseCase - queries last 7 days of check-ins and goals</subtask>
+          <subtask>Count check-ins completed (X out of 7 days)</subtask>
+          <subtask>Calculate goals progressed (percentage of active goals with progress this week)</subtask>
+          <subtask>Calculate daily plan completion average (percentage of tasks completed)</subtask>
+          <subtask>Query from check_ins, goals, and daily_plans tables (Epic 2)</subtask>
+        </subtasks>
+      </task>
+      <task id="6" ac-ref="AC3">
+        <description>Implement streak stats aggregation</description>
+        <subtasks>
+          <subtask>Create AggregateStreakStatsUseCase - queries current streaks from streaks table</subtask>
+          <subtask>Fetch workout streak (current_streak value)</subtask>
+          <subtask>Fetch meditation streak (current_streak value)</subtask>
+          <subtask>Fetch check-in streak (current_streak value)</subtask>
+          <subtask>Include freeze availability status for context</subtask>
+        </subtasks>
+      </task>
+      <task id="7" ac-ref="AC4">
+        <description>Implement AI-generated top insight</description>
+        <subtasks>
+          <subtask>Create GenerateWeeklyInsightUseCase - analyzes weekly data for correlations</subtask>
+          <subtask>Look for patterns: workout performance vs sleep quality</subtask>
+          <subtask>Look for patterns: mood improvement vs meditation frequency</subtask>
+          <subtask>Look for patterns: plan completion vs check-in consistency</subtask>
+          <subtask>Generate insight text: "Best workouts after 8+ hours sleep" or "Meditation reduces stress by 23%"</subtask>
+          <subtask>Use rule-based logic or simple AI model (can enhance with ML later)</subtask>
+        </subtasks>
+      </task>
+      <task id="8" ac-ref="AC1,AC3">
+        <description>Implement Monday 6am weekly report generation cron job</description>
+        <subtasks>
+          <subtask>Create Supabase Edge Function for weekly report generation (triggered Monday 6am UTC)</subtask>
+          <subtask>For each user, aggregate stats from all modules (last 7 days)</subtask>
+          <subtask>Generate top insight using GenerateWeeklyInsightUseCase</subtask>
+          <subtask>Create WeeklyReportEntity and save to database</subtask>
+          <subtask>Queue push notification (Story 6.3 integration)</subtask>
+          <subtask>Handle timezone conversions (user's local Monday 6am)</subtask>
+          <subtask>Batch processing for performance (10,000 users)</subtask>
+        </subtasks>
+      </task>
+      <task id="9" ac-ref="AC2">
+        <description>Implement push notification for weekly report</description>
+        <subtasks>
+          <subtask>Send notification: "📊 Your week in review is ready!"</subtask>
+          <subtask>Add deep link to weekly report screen</subtask>
+          <subtask>User taps notification → Opens app → Navigates to weekly report</subtask>
+          <subtask>Check user notification preferences (can disable weekly reports)</subtask>
+        </subtasks>
+      </task>
+      <task id="10" ac-ref="AC3,AC5">
+        <description>Implement weekly report display screen</description>
+        <subtasks>
+          <subtask>Create WeeklyReportScreen widget (full-screen report)</subtask>
+          <subtask>Display header: "Week of [start date] - [end date]"</subtask>
+          <subtask>Display Fitness section: workouts, PRs (+XKG on exercise), volume (+X%)</subtask>
+          <subtask>Display Mind section: meditations, stress (-X%), mood avg (↑ from last week)</subtask>
+          <subtask>Display Life Coach section: check-ins (X/7), goals progressed (X%), plan completion (X% avg)</subtask>
+          <subtask>Display Streaks section: current streaks for all 3 types</subtask>
+          <subtask>Display Top Insight section: highlighted insight with icon</subtask>
+          <subtask>Use module colors: Orange (Fitness), Purple (Mind), Teal (Life Coach)</subtask>
+        </subtasks>
+      </task>
+      <task id="11" ac-ref="AC6">
+        <description>Implement shareable weekly report image</description>
+        <subtasks>
+          <subtask>Create WeeklySummaryCardTemplate widget (1080x1080px for social sharing)</subtask>
+          <subtask>Display key stats: workouts, meditations, check-ins, streaks, top insight</subtask>
+          <subtask>Use screenshot package to capture card as image</subtask>
+          <subtask>Add "Share Report" button (uses Story 6.5 sharing logic)</subtask>
+          <subtask>Generate image with LifeOS branding</subtask>
+        </subtasks>
+      </task>
+      <task id="12" ac-ref="AC7">
+        <description>Implement weekly report history</description>
+        <subtasks>
+          <subtask>Create WeeklyReportHistoryScreen - shows list of past weeks</subtask>
+          <subtask>Display reports in reverse chronological order (most recent first)</subtask>
+          <subtask>Tap report → Opens full report details</subtask>
+          <subtask>Store all reports in database (never deleted, permanent history)</subtask>
+          <subtask>Add "View Past Weeks" button on Home tab</subtask>
+        </subtasks>
+      </task>
+      <task id="13" ac-ref="ALL">
+        <description>Implement WeeklyReportRepository and data sources</description>
+        <subtasks>
+          <subtask>Create WeeklyReportRepository interface in domain layer</subtask>
+          <subtask>Implement WeeklyReportRepositoryImpl in data layer</subtask>
+          <subtask>Create DriftWeeklyReportDataSource for local storage</subtask>
+          <subtask>Create SupabaseWeeklyReportDataSource for cloud sync</subtask>
+          <subtask>Implement offline-first pattern: save locally, sync when online</subtask>
+        </subtasks>
+      </task>
+      <task id="14" ac-ref="ALL">
+        <description>Write comprehensive tests</description>
+        <subtasks>
+          <subtask>Unit tests: AggregateFitnessStatsUseCase - correct calculations (volume, PR count)</subtask>
+          <subtask>Unit tests: AggregateMindStatsUseCase - correct stress/mood calculations</subtask>
+          <subtask>Unit tests: AggregateLifeCoachStatsUseCase - correct check-in/goal stats</subtask>
+          <subtask>Unit tests: GenerateWeeklyInsightUseCase - generates valid insights</subtask>
+          <subtask>Widget tests: WeeklyReportScreen displays all sections correctly</subtask>
+          <subtask>Widget tests: WeeklyReportHistoryScreen shows past reports</subtask>
+          <subtask>Integration test: Monday 6am cron → Report generated → Notification sent → User opens report</subtask>
+          <subtask>Integration test: View report history → Tap past week → Display historical data</subtask>
+          <subtask>Achieve 75%+ code coverage</subtask>
+        </subtasks>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="AC1">
+      <text>Weekly report generated every Monday morning (6am)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC2">
+      <text>Push notification: "📊 Your week in review is ready!"</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC3">
+      <text>Report includes: Fitness (workouts, PRs, volume), Mind (meditations, stress -X%, mood avg), Life Coach (check-ins X/7, goals, plan completion), Streaks</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC4">
+      <text>Top insight: "Your best workouts happened after 8+ hours sleep. Prioritize sleep this week!"</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC5">
+      <text>Stats comparison to previous week (arrows ↑↓, percentage changes)</text>
+      <priority>P1</priority>
+    </criterion>
+    <criterion id="AC6">
+      <text>Report shareable (generate image, share to social media)</text>
+      <priority>P1</priority>
+    </criterion>
+    <criterion id="AC7">
+      <text>Report saved in history ("View Past Weeks")</text>
+      <priority>P0</priority>
+    </criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR90: Weekly summary reports</section>
+        <snippet>System generates weekly summary reports (concrete stats: +5kg squat, stress -23%, 4 workouts). Sent Monday morning with push notification. Shows progress across all modules.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/epics.md</path>
+        <title>Epic 6: Gamification & Retention - Story 6.6</title>
+        <section>Story 6.6: Weekly Summary Report</section>
+        <snippet>Generated Monday 6am. Push notification. Report: Fitness (workouts, PRs, volume), Mind (meditations, stress -X%, mood avg), Life Coach (check-ins X/7, goals, plan completion), Streaks. Top insight: "Best workouts after 8+ hours sleep". Shareable image. Saved in history. Prerequisites: Epic 2, 3, 4.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Cross-Module Data Aggregation</section>
+        <snippet>Weekly reports aggregate data from all modules. Use repository pattern to query multiple tables. Efficient SQL joins for performance.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/ux-design-specification.md</path>
+        <title>UX Design Specification</title>
+        <section>Progress Visualization</section>
+        <snippet>Progress always visible. Weekly summary reports with concrete stats. Use arrows (↑↓) and percentage changes for at-a-glance comparison.</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/sprint-6/6-6-weekly-summary-report-all-modules.md</path>
+        <title>Story 6.6: Weekly Summary Report</title>
+        <section>Tech Stack</section>
+        <snippet>Cron Monday 6am. Aggregate queries (7 days all modules). FCM notification. CREATE TABLE weekly_reports (user_id, week_start_date, report_data JSONB). Shareable image.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <note>Weekly reports depend on Epic 2 (Life Coach), Epic 3 (Fitness), Epic 4 (Mind), Epic 6 (Streaks). Cross-module data aggregation required.</note>
+      <existing>
+        <file>
+          <path>lib/features/fitness/domain/repositories/workout_repository.dart</path>
+          <purpose>Access to workout data for fitness stats aggregation</purpose>
+        </file>
+        <file>
+          <path>lib/features/mind/domain/repositories/meditation_repository.dart</path>
+          <purpose>Access to meditation data for mind stats aggregation</purpose>
+        </file>
+        <file>
+          <path>lib/features/life_coach/domain/repositories/checkin_repository.dart</path>
+          <purpose>Access to check-in data for life coach stats aggregation</purpose>
+        </file>
+        <file>
+          <path>lib/features/gamification/domain/repositories/streak_repository.dart</path>
+          <purpose>Access to streak data for streak stats aggregation</purpose>
+        </file>
+      </existing>
+    </code>
+    <dependencies>
+      <flutter>
+        <sdk>3.38+</sdk>
+        <dart>3.10+</dart>
+      </flutter>
+      <packages>
+        <package name="flutter_riverpod" version="^3.0.0" usage="State management for report state" />
+        <package name="riverpod_annotation" version="^3.0.0" usage="Code generation for providers" />
+        <package name="drift" version="^2.14.0" usage="Local SQLite database for offline report storage" />
+        <package name="drift_flutter" version="^0.1.0" usage="Flutter integration for Drift" />
+        <package name="sqlite3_flutter_libs" version="^0.5.0" usage="SQLite native libraries" />
+        <package name="supabase_flutter" version="^2.0.0" usage="Supabase client for database sync and Edge Functions" />
+        <package name="freezed" version="^2.4.0" usage="Immutable entity code generation" />
+        <package name="freezed_annotation" version="^2.4.0" usage="Freezed annotations" />
+        <package name="screenshot" version="^2.1.0" usage="Capture weekly report card as shareable image" />
+        <package name="share_plus" version="^7.2.0" usage="Share report images to social media" />
+        <package name="intl" version="^0.18.0" usage="Date formatting for week ranges" />
+        <package name="flutter_test" version="sdk" usage="Unit and widget testing framework" />
+        <package name="integration_test" version="sdk" usage="End-to-end testing framework" />
+      </packages>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint id="ARCH-1" type="architectural">
+      <description>Must follow Hybrid Architecture pattern (D1)</description>
+      <details>Create features/reports/ or extend features/gamification/ for weekly reports. Use clean architecture layers. Cross-module data access via repositories.</details>
+    </constraint>
+    <constraint id="ARCH-2" type="architectural">
+      <description>Offline-first implementation required (D3)</description>
+      <details>Save weekly reports to Drift (SQLite) first for instant access. Queue for Supabase sync when online. Reports viewable offline.</details>
+    </constraint>
+    <constraint id="ARCH-3" type="architectural">
+      <description>Use Riverpod for state management (D1, D6)</description>
+      <details>Report state should be observable. Report generation triggers UI updates. History list reactive to new reports.</details>
+    </constraint>
+    <constraint id="DATA-1" type="data">
+      <description>Database schema must match specification</description>
+      <details>weekly_reports table: id (UUID PK), user_id (UUID FK auth.users), week_start_date (DATE), week_end_date (DATE), report_data (JSONB), created_at, updated_at. UNIQUE(user_id, week_start_date). JSONB contains all stats.</details>
+    </constraint>
+    <constraint id="DATA-2" type="data">
+      <description>JSONB report_data structure</description>
+      <details>report_data JSONB: {fitness: {workouts, prs, volume, volumeChange}, mind: {meditations, avgDuration, stressChange, moodAvg}, lifeCoach: {checkins, goalsProgressed, planCompletion}, streaks: {workout, meditation, checkin}, topInsight: "text"}.</details>
+    </constraint>
+    <constraint id="SEC-1" type="security">
+      <description>Row Level Security (RLS) policies required</description>
+      <details>Enable RLS on weekly_reports table. Policy: CREATE POLICY "Users can only access own reports" ON weekly_reports FOR ALL USING (auth.uid() = user_id);</details>
+    </constraint>
+    <constraint id="BIZ-1" type="business-logic">
+      <description>Report generation timing: Monday 6am local time</description>
+      <details>Cron job runs Monday 6am UTC, but respects user timezone. User receives report at 6am their local time. Store user timezone or detect from device.</details>
+    </constraint>
+    <constraint id="BIZ-2" type="business-logic">
+      <description>Week definition: Monday to Sunday</description>
+      <details>Week starts Monday (ISO 8601 standard). Report covers Monday 00:00 to Sunday 23:59. Consistent with common calendar definition.</details>
+    </constraint>
+    <constraint id="BIZ-3" type="business-logic">
+      <description>All reports saved permanently</description>
+      <details>Never delete weekly reports. User can view entire history since account creation. Provides long-term progress tracking.</details>
+    </constraint>
+    <constraint id="BIZ-4" type="business-logic">
+      <description>Top insight must be actionable</description>
+      <details>Insight should guide user behavior: "Prioritize sleep" or "Meditate more". Not just observation: "You worked out 3 times". Motivational and specific.</details>
+    </constraint>
+    <constraint id="UX-1" type="ux">
+      <description>Report must be scannable</description>
+      <details>User should grasp progress in &lt;10 seconds. Use large numbers, color-coded arrows (↑ green, ↓ red), module colors. Visual hierarchy: most important stats first.</details>
+    </constraint>
+    <constraint id="UX-2" type="ux">
+      <description>Comparison to previous week essential</description>
+      <details>Show percentage changes: "Volume +15%" or "Stress -23%". Use arrows: ↑↓. User understands if they're improving or declining.</details>
+    </constraint>
+    <constraint id="UX-3" type="ux">
+      <description>Top insight must stand out</description>
+      <details>Highlighted section with icon (💡). Larger text. Eye-catching color (Teal). User notices insight first after scanning stats.</details>
+    </constraint>
+    <constraint id="PERF-1" type="performance">
+      <description>Data aggregation must be efficient</description>
+      <details>Monday 6am job should complete in &lt;60 seconds for 10,000 users. Use indexed queries, batch processing. Aggregate stats in parallel for multiple users.</details>
+    </constraint>
+    <constraint id="PERF-2" type="performance">
+      <description>Report display must be fast (&lt;500ms)</description>
+      <details>Load report from local database (Drift). No network calls for display. Pre-computed stats (no real-time calculation). Instant load on tap.</details>
+    </constraint>
+    <constraint id="TEST-1" type="testing">
+      <description>75%+ code coverage required</description>
+      <details>Follow 70/20/10 testing pyramid. Unit tests for aggregation logic, widget tests for UI, integration tests for full flow. All AC must have test coverage.</details>
+    </constraint>
+    <constraint id="INTEG-1" type="integration">
+      <description>Must integrate with Epic 2 (Life Coach)</description>
+      <details>Query check_ins table for check-in stats. Query goals table for goal progress. Query daily_plans for plan completion. Access via CheckinRepository and GoalRepository.</details>
+    </constraint>
+    <constraint id="INTEG-2" type="integration">
+      <description>Must integrate with Epic 3 (Fitness)</description>
+      <details>Query workouts table for workout count. Query exercises/sets for volume calculation. Query personal_records for PR count. Access via WorkoutRepository.</details>
+    </constraint>
+    <constraint id="INTEG-3" type="integration">
+      <description>Must integrate with Epic 4 (Mind)</description>
+      <details>Query meditations table for meditation stats. Query check_ins for mood/stress data. Access via MeditationRepository and CheckinRepository.</details>
+    </constraint>
+    <constraint id="INTEG-4" type="integration">
+      <description>Must integrate with Story 6.1 (Streaks)</description>
+      <details>Query streaks table for current streak values. Display all 3 streak types in report. Access via StreakRepository.</details>
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>WeeklyReportEntity</name>
+      <kind>domain-entity</kind>
+      <signature>
+        @freezed
+        class WeeklyReportEntity with _$WeeklyReportEntity {
+          const factory WeeklyReportEntity({
+            required String id,
+            required String userId,
+            required DateTime weekStartDate,
+            required DateTime weekEndDate,
+            required FitnessStats fitnessStats,
+            required MindStats mindStats,
+            required LifeCoachStats lifeCoachStats,
+            required StreakStats streakStats,
+            required String topInsight,
+            required DateTime createdAt,
+            required DateTime updatedAt,
+          }) = _WeeklyReportEntity;
+        }
+
+        @freezed
+        class FitnessStats with _$FitnessStats {
+          const factory FitnessStats({
+            required int workoutsCompleted,
+            required int prCount,
+            required double totalVolume,
+            required double volumeChangePercent,
+            List&lt;PrAchievement&gt;? prAchievements,
+          }) = _FitnessStats;
+        }
+
+        @freezed
+        class MindStats with _$MindStats {
+          const factory MindStats({
+            required int meditationsCompleted,
+            required int avgDurationMinutes,
+            required double stressChange,
+            required double moodAvg,
+            required double moodChange,
+          }) = _MindStats;
+        }
+
+        @freezed
+        class LifeCoachStats with _$LifeCoachStats {
+          const factory LifeCoachStats({
+            required int checkinsCompleted,
+            required int checkinsTotal, // out of 7
+            required double goalsProgressedPercent,
+            required double planCompletionAvg,
+          }) = _LifeCoachStats;
+        }
+
+        @freezed
+        class StreakStats with _$StreakStats {
+          const factory StreakStats({
+            required int workoutStreak,
+            required int meditationStreak,
+            required int checkinStreak,
+          }) = _StreakStats;
+        }
+      </signature>
+      <path>lib/features/reports/domain/entities/weekly_report_entity.dart</path>
+      <notes>Comprehensive weekly report data structure. Use @freezed for immutability. All stats pre-computed and stored in database.</notes>
+    </interface>
+    <interface>
+      <name>GenerateWeeklyReportUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class GenerateWeeklyReportUseCase {
+          Future&lt;Result&lt;WeeklyReportEntity&gt;&gt; call({
+            required String userId,
+            required DateTime weekStartDate,
+          });
+        }
+      </signature>
+      <path>lib/features/reports/domain/usecases/generate_weekly_report_usecase.dart</path>
+      <notes>Orchestrates data aggregation from all modules. Calls AggregateFitnessStats, AggregateMindStats, AggregateLifeCoachStats, AggregateStreakStats, GenerateWeeklyInsight. Returns complete WeeklyReportEntity.</notes>
+    </interface>
+    <interface>
+      <name>AggregateFitnessStatsUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class AggregateFitnessStatsUseCase {
+          Future&lt;Result&lt;FitnessStats&gt;&gt; call({
+            required String userId,
+            required DateTime startDate,
+            required DateTime endDate,
+          });
+        }
+      </signature>
+      <path>lib/features/reports/domain/usecases/aggregate_fitness_stats_usecase.dart</path>
+      <notes>Queries workouts, exercises, sets tables for date range. Calculates workouts completed, PR count, total volume, volume change vs previous week. Returns FitnessStats.</notes>
+    </interface>
+    <interface>
+      <name>AggregateMindStatsUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class AggregateMindStatsUseCase {
+          Future&lt;Result&lt;MindStats&gt;&gt; call({
+            required String userId,
+            required DateTime startDate,
+            required DateTime endDate,
+          });
+        }
+      </signature>
+      <path>lib/features/reports/domain/usecases/aggregate_mind_stats_usecase.dart</path>
+      <notes>Queries meditations, check_ins tables for date range. Calculates meditation count, avg duration, stress change, mood avg. Returns MindStats.</notes>
+    </interface>
+    <interface>
+      <name>AggregateLifeCoachStatsUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class AggregateLifeCoachStatsUseCase {
+          Future&lt;Result&lt;LifeCoachStats&gt;&gt; call({
+            required String userId,
+            required DateTime startDate,
+            required DateTime endDate,
+          });
+        }
+      </signature>
+      <path>lib/features/reports/domain/usecases/aggregate_life_coach_stats_usecase.dart</path>
+      <notes>Queries check_ins, goals, daily_plans tables for date range. Calculates check-ins completed (X/7), goals progressed, plan completion avg. Returns LifeCoachStats.</notes>
+    </interface>
+    <interface>
+      <name>AggregateStreakStatsUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class AggregateStreakStatsUseCase {
+          Future&lt;Result&lt;StreakStats&gt;&gt; call(String userId);
+        }
+      </signature>
+      <path>lib/features/reports/domain/usecases/aggregate_streak_stats_usecase.dart</path>
+      <notes>Queries streaks table for current streak values. Returns StreakStats with workout, meditation, checkin streak counts.</notes>
+    </interface>
+    <interface>
+      <name>GenerateWeeklyInsightUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class GenerateWeeklyInsightUseCase {
+          Future&lt;Result&lt;String&gt;&gt; call({
+            required WeeklyReportEntity report,
+            List&lt;WorkoutEntity&gt;? workouts,
+            List&lt;CheckinEntity&gt;? checkins,
+          });
+        }
+      </signature>
+      <path>lib/features/reports/domain/usecases/generate_weekly_insight_usecase.dart</path>
+      <notes>Analyzes report data for correlations. Example insights: "Best workouts after 8+ hours sleep", "Meditation reduces stress by 23%", "Consistent check-ins improve plan completion". Returns insight text string.</notes>
+    </interface>
+    <interface>
+      <name>WeeklyReportRepository</name>
+      <kind>repository</kind>
+      <signature>
+        abstract class WeeklyReportRepository {
+          Future&lt;Result&lt;WeeklyReportEntity&gt;&gt; saveReport(WeeklyReportEntity report);
+          Future&lt;Result&lt;WeeklyReportEntity?&gt;&gt; getReportForWeek(String userId, DateTime weekStartDate);
+          Future&lt;Result&lt;List&lt;WeeklyReportEntity&gt;&gt;&gt; getReportHistory(String userId);
+          Future&lt;Result&lt;WeeklyReportEntity?&gt;&gt; getLatestReport(String userId);
+        }
+      </signature>
+      <path>lib/features/reports/domain/repositories/weekly_report_repository.dart</path>
+      <notes>Implemented by WeeklyReportRepositoryImpl in data layer. Uses both DriftDataSource and SupabaseDataSource.</notes>
+    </interface>
+    <interface>
+      <name>weekly_reports table (Supabase PostgreSQL)</name>
+      <kind>database-table</kind>
+      <signature>
+        CREATE TABLE weekly_reports (
+          id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+          user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+          week_start_date DATE NOT NULL,
+          week_end_date DATE NOT NULL,
+          report_data JSONB NOT NULL,
+          created_at TIMESTAMPTZ DEFAULT NOW(),
+          updated_at TIMESTAMPTZ DEFAULT NOW(),
+          UNIQUE(user_id, week_start_date)
+        );
+        CREATE INDEX idx_weekly_reports_user_id ON weekly_reports(user_id);
+        CREATE INDEX idx_weekly_reports_user_week ON weekly_reports(user_id, week_start_date DESC);
+      </signature>
+      <path>supabase/migrations/</path>
+      <notes>Migration file will be created in Supabase migrations folder. Include RLS policies in same migration. JSONB stores all stats.</notes>
+    </interface>
+    <interface>
+      <name>weekly_reports table (Drift SQLite)</name>
+      <kind>database-table</kind>
+      <signature>
+        @DataClassName('WeeklyReportTable')
+        class WeeklyReports extends Table {
+          TextColumn get id => text()();
+          TextColumn get userId => text()();
+          DateTimeColumn get weekStartDate => dateTime()();
+          DateTimeColumn get weekEndDate => dateTime()();
+          TextColumn get reportData => text()(); // JSON string
+          DateTimeColumn get createdAt => dateTime()();
+          DateTimeColumn get updatedAt => dateTime()();
+
+          @override
+          Set&lt;Column&gt; get primaryKey => {id};
+        }
+      </signature>
+      <path>lib/core/database/tables.drift.dart</path>
+      <notes>Drift table definition. Mirror of Supabase schema for offline-first architecture. Store JSONB as JSON string.</notes>
+    </interface>
+    <interface>
+      <name>Supabase Edge Function: generate-weekly-reports</name>
+      <kind>edge-function</kind>
+      <signature>
+        // Deno Edge Function
+        Deno.serve(async (req) => {
+          // 1. Current time: Monday 6am (check user timezone)
+          // 2. Fetch all users who need weekly report
+          // 3. For each user:
+          //    a. Calculate week_start_date (last Monday) and week_end_date (last Sunday)
+          //    b. Call GenerateWeeklyReportUseCase
+          //    c. Save report to database
+          //    d. Send push notification
+          // 4. Log results (success count, failure count)
+        })
+      </signature>
+      <path>supabase/functions/generate-weekly-reports/index.ts</path>
+      <notes>Triggered by cron job Monday 6am (multiple timezones). Batches report generation for performance. Retries failed generations.</notes>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Follow 70/20/10 testing pyramid: 70% unit tests (use cases, repositories, aggregation logic), 20% widget tests (UI components, report display), 10% integration tests (end-to-end flows). Use flutter_test for unit/widget tests, integration_test for E2E. Mock dependencies with mockito. Target 75%+ code coverage. All acceptance criteria must have test coverage.
+    </standards>
+    <locations>
+      <location>test/features/reports/domain/usecases/</location>
+      <location>test/features/reports/data/repositories/</location>
+      <location>test/features/reports/presentation/screens/</location>
+      <location>integration_test/features/reports/weekly_report_flow_test.dart</location>
+    </locations>
+    <ideas>
+      <test-idea ac-ref="AC3">
+        <description>Unit test: AggregateFitnessStatsUseCase - correct calculations</description>
+        <approach>Given 5 workouts in past week (total volume 5000kg). When aggregate. Then workoutsCompleted=5, totalVolume=5000, volumeChangePercent calculated vs previous week.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3">
+        <description>Unit test: AggregateMindStatsUseCase - stress change calculation</description>
+        <approach>Given stress ratings: this week avg 3.0, last week avg 4.0. When aggregate. Then stressChange=-25% (improvement).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3">
+        <description>Unit test: AggregateLifeCoachStatsUseCase - check-ins count</description>
+        <approach>Given 5 check-ins completed out of 7 days. When aggregate. Then checkinsCompleted=5, checkinsTotal=7.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4">
+        <description>Unit test: GenerateWeeklyInsightUseCase - sleep correlation</description>
+        <approach>Given workouts with high performance after 8+ hours sleep. When generate insight. Then insight = "Best workouts after 8+ hours sleep. Prioritize sleep this week!"</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4">
+        <description>Unit test: GenerateWeeklyInsightUseCase - meditation impact</description>
+        <approach>Given stress decreased 23% with 5+ meditations. When generate insight. Then insight = "Meditation reduces stress by 23%. Keep it up!"</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3">
+        <description>Unit test: GenerateWeeklyReportUseCase orchestrates all aggregations</description>
+        <approach>Mock all aggregate use cases. Call GenerateWeeklyReportUseCase. Verify all use cases called. Verify WeeklyReportEntity created with all stats.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC7">
+        <description>Unit test: WeeklyReportRepository saves and retrieves reports</description>
+        <approach>Save WeeklyReportEntity to repository. Retrieve by week_start_date. Verify same data returned.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3,AC5">
+        <description>Widget test: WeeklyReportScreen displays all sections</description>
+        <approach>Render WeeklyReportScreen with report data. Verify Fitness section visible (workouts, PRs, volume). Verify Mind section (meditations, stress, mood). Verify Life Coach section (check-ins, goals). Verify Streaks section. Verify Top Insight highlighted.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC5">
+        <description>Widget test: Percentage changes and arrows displayed</description>
+        <approach>Render report with volume +15%. Verify "Volume +15%" text displayed. Verify ↑ green arrow shown. Render with stress -23%. Verify "Stress -23%" with ↓ arrow.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC7">
+        <description>Widget test: WeeklyReportHistoryScreen shows past reports</description>
+        <approach>Render history screen with 5 past reports. Verify 5 items displayed in reverse chronological order. Tap first report. Verify navigates to full report details.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1,AC2,AC3">
+        <description>Integration test: Monday 6am report generation</description>
+        <approach>Trigger generate-weekly-reports cron job. Verify report generated for user. Verify all stats calculated correctly. Verify report saved to database. Verify push notification sent: "📊 Your week in review is ready!"</approach>
+      </test-idea>
+      <test-idea ac-ref="AC2,AC3">
+        <description>Integration test: User opens report from notification</description>
+        <approach>Generate weekly report. Send notification. User taps notification. Verify app opens to WeeklyReportScreen. Verify report displays all sections.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6">
+        <description>Integration test: Share weekly report to social media</description>
+        <approach>Open weekly report. Tap "Share Report". Generate shareable image. Select WhatsApp. Verify share dialog opens with report image.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC7">
+        <description>Integration test: View report history</description>
+        <approach>Generate 3 weekly reports over 3 weeks. Open "View Past Weeks". Verify 3 reports shown. Tap Week 2 report. Verify historical data displayed correctly.</approach>
+      </test-idea>
+    </ideas>
+  </tests>
+</story-context>

@@ -1,7 +1,7 @@
 # Story 2.6: Streak Tracking (Check-ins)
 
 **Epic:** Epic 2 - Life Coach MVP
-**Priority:** P1 | **Status:** drafted | **Effort:** 3 SP
+**Priority:** P1 | **Status:** ready-for-dev | **Effort:** 3 SP
 
 ---
 
@@ -69,6 +69,11 @@ Deno.serve(async () => {
 **Prerequisites:** Story 2.1 (Morning Check-in), Story 2.5 (Evening Reflection)
 
 **Coverage Target:** 80%+
+
+---
+
+## Dev Agent Record
+**Context File:** 2-6-streak-tracking-check-ins.context.xml
 
 ---
 

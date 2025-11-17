@@ -1,0 +1,498 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>9</epicId>
+    <storyId>9.2</storyId>
+    <title>Notification Preferences</title>
+    <status>ready-for-dev</status>
+    <generatedAt>2025-11-17</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/sprint-9/9-2-notification-preferences.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>user</asA>
+    <iWant>to control all notification preferences in one place</iWant>
+    <soThat>I only receive the notifications I want</soThat>
+    <tasks>
+      <task id="1" ac-ref="AC1,AC2,AC3,AC4">
+        <description>Implement NotificationSettingsScreen UI</description>
+        <subtasks>
+          <subtask>Create NotificationSettingsScreen widget in settings feature</subtask>
+          <subtask>Add Section 1: Daily Reminders (morning check-in, evening reflection, workout, meditation)</subtask>
+          <subtask>Add Section 2: Alerts (streak alerts, cross-module insights, weekly summary)</subtask>
+          <subtask>Add Section 3: Quiet Hours (enable toggle, start/end time pickers)</subtask>
+          <subtask>Add Section 4: Testing ("Send Test Notification" button)</subtask>
+          <subtask>Implement toggle switches with optimistic UI</subtask>
+          <subtask>Implement time pickers for morning/evening reminder times</subtask>
+        </subtasks>
+      </task>
+      <task id="2" ac-ref="AC1,AC2">
+        <description>Implement notification type toggles with time pickers</description>
+        <subtasks>
+          <subtask>Create toggle for morning check-in reminder with time picker (default: 8am)</subtask>
+          <subtask>Create toggle for evening reflection reminder with time picker (default: 8pm)</subtask>
+          <subtask>Create toggle for workout reminder</subtask>
+          <subtask>Create toggle for meditation reminder</subtask>
+          <subtask>Create toggle for streak alerts</subtask>
+          <subtask>Create toggle for cross-module insights (with "Max 1/day" note)</subtask>
+          <subtask>Create toggle for weekly summary</subtask>
+        </subtasks>
+      </task>
+      <task id="3" ac-ref="AC3,AC4">
+        <description>Implement quiet hours functionality</description>
+        <subtasks>
+          <subtask>Create QuietHoursService for quiet hours logic</subtask>
+          <subtask>Add enable/disable quiet hours toggle</subtask>
+          <subtask>Add start time picker (default: 10pm)</subtask>
+          <subtask>Add end time picker (default: 7am)</subtask>
+          <subtask>Display note: "No notifications during quiet hours"</subtask>
+          <subtask>Implement quiet hours check in notification scheduling logic</subtask>
+          <subtask>Skip notifications during quiet hours (queue for after quiet hours)</subtask>
+        </subtasks>
+      </task>
+      <task id="4" ac-ref="AC5">
+        <description>Implement "Send Test Notification" functionality</description>
+        <subtasks>
+          <subtask>Add "Send Test Notification" button at bottom</subtask>
+          <subtask>Implement test notification service</subtask>
+          <subtask>Send immediate push notification: "Test notification from LifeOS"</subtask>
+          <subtask>Check notification permissions before sending</subtask>
+          <subtask>Show error if permissions not granted</subtask>
+        </subtasks>
+      </task>
+      <task id="5" ac-ref="AC6,AC7">
+        <description>Implement notification settings persistence and sync</description>
+        <subtasks>
+          <subtask>Create notification_settings table in Supabase</subtask>
+          <subtask>Create notification_settings table in Drift (local SQLite)</subtask>
+          <subtask>Implement NotificationSettingsRepository</subtask>
+          <subtask>Save settings to local database first (optimistic UI)</subtask>
+          <subtask>Sync to Supabase in background</subtask>
+          <subtask>Load settings on app start and apply to notification scheduler</subtask>
+        </subtasks>
+      </task>
+      <task id="6" ac-ref="AC1,AC2">
+        <description>Integrate with notification scheduling service</description>
+        <subtasks>
+          <subtask>Create NotificationSchedulerService</subtask>
+          <subtask>Schedule morning check-in notification at user-selected time</subtask>
+          <subtask>Schedule evening reflection notification at user-selected time</subtask>
+          <subtask>Cancel scheduled notifications when disabled</subtask>
+          <subtask>Reschedule notifications when time changed</subtask>
+          <subtask>Integrate quiet hours check before sending notifications</subtask>
+        </subtasks>
+      </task>
+      <task id="7" ac-ref="ALL">
+        <description>Write comprehensive tests</description>
+        <subtasks>
+          <subtask>Unit tests: NotificationSettingsService, QuietHoursService, NotificationSchedulerService</subtask>
+          <subtask>Unit tests: Quiet hours logic (time range checks, cross-midnight scenarios)</subtask>
+          <subtask>Widget tests: NotificationSettingsScreen, toggle switches, time pickers</subtask>
+          <subtask>Integration test: Change notification time → verify scheduled at new time</subtask>
+          <subtask>Integration test: Enable quiet hours → verify notifications skipped during quiet hours</subtask>
+          <subtask>Integration test: Test notification button sends notification immediately</subtask>
+          <subtask>Achieve 80%+ code coverage</subtask>
+        </subtasks>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="AC1">
+      <text>User can enable/disable each notification type (morning check-in, evening reflection, workout, meditation, streak alerts, cross-module insights, weekly summary)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC2">
+      <text>User can set custom time for morning/evening reminders (time picker)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC3">
+      <text>User can enable/disable quiet hours (default: 10pm - 7am)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC4">
+      <text>User can customize quiet hours start/end time</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC5">
+      <text>"Send Test Notification" button to verify settings</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC6">
+      <text>Settings persist across app restarts</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC7">
+      <text>Changes sync to backend immediately (optimistic UI)</text>
+      <priority>P0</priority>
+    </criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR120: Notification preferences management</section>
+        <snippet>Users can control all notification types from centralized settings screen. Support custom times for daily reminders, quiet hours to prevent notifications during sleep, and test notification to verify settings.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/epics.md</path>
+        <title>Epic 9: Settings &amp; Profile - Story 9.2</title>
+        <section>Story 9.2: Notification Preferences</section>
+        <snippet>User can enable/disable each notification type (morning check-in, evening reflection, workout, meditation, streak alerts, insights, weekly summary), set custom times for reminders, configure quiet hours (10pm-7am default), and test notifications. Prerequisites: Epic 8 (notification system). Technical: notification_settings table, local/cloud sync, notification scheduler integration.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Notification Architecture</section>
+        <snippet>Local notification scheduling using flutter_local_notifications. Cross-platform support (iOS/Android). Quiet hours logic prevents notifications during user-defined sleep hours. Settings synced to cloud for cross-device consistency.</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/sprint-9/9-2-notification-preferences.md</path>
+        <title>Story 9.2: Notification Preferences</title>
+        <section>Database Schema</section>
+        <snippet>notification_settings table with columns: user_id, morning_checkin_enabled, morning_checkin_time, evening_reflection_enabled, evening_reflection_time, workout_reminder_enabled, meditation_reminder_enabled, streak_alerts_enabled, insight_notifications_enabled, weekly_summary_enabled, quiet_hours_enabled, quiet_hours_start, quiet_hours_end.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <file>
+        <path>lib/features/settings/presentation/pages/notification_settings_screen.dart</path>
+        <description>Notification settings screen with all notification type toggles and quiet hours</description>
+      </file>
+      <file>
+        <path>lib/features/settings/domain/services/notification_settings_service.dart</path>
+        <description>Service for managing notification settings (enable/disable, update times)</description>
+      </file>
+      <file>
+        <path>lib/features/settings/domain/services/quiet_hours_service.dart</path>
+        <description>Service for quiet hours logic (check if current time is in quiet hours)</description>
+      </file>
+      <file>
+        <path>lib/features/settings/domain/services/notification_scheduler_service.dart</path>
+        <description>Service for scheduling local notifications based on user settings</description>
+      </file>
+      <file>
+        <path>lib/features/settings/data/repositories/notification_settings_repository.dart</path>
+        <description>Repository for notification settings persistence (local + cloud sync)</description>
+      </file>
+    </code>
+    <dependencies>
+      <flutter>
+        <sdk>3.38+</sdk>
+        <dart>3.10+</dart>
+      </flutter>
+      <packages>
+        <package name="flutter_riverpod" version="^3.0.0" usage="State management for notification settings" />
+        <package name="riverpod_annotation" version="^3.0.0" usage="Code generation for providers" />
+        <package name="supabase_flutter" version="^2.0.0" usage="Supabase client for settings sync" />
+        <package name="drift" version="^2.14.0" usage="Local SQLite database for offline settings storage" />
+        <package name="flutter_local_notifications" version="^16.0.0" usage="Cross-platform local notifications scheduling" />
+        <package name="timezone" version="^0.9.0" usage="Timezone support for scheduled notifications" />
+        <package name="permission_handler" version="^11.0.0" usage="Request notification permissions" />
+        <package name="flutter_test" version="sdk" usage="Unit and widget testing framework" />
+        <package name="integration_test" version="sdk" usage="End-to-end testing framework" />
+      </packages>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint id="ARCH-1" type="architectural">
+      <description>Must follow Hybrid Architecture pattern (D1)</description>
+      <details>Create feature structure at lib/features/settings/ with presentation/, domain/, and data/ layers. Use clean architecture separation of concerns.</details>
+    </constraint>
+    <constraint id="ARCH-2" type="architectural">
+      <description>Offline-first implementation required (D3)</description>
+      <details>Save notification settings to Drift (SQLite) first for instant feedback. Queue for Supabase sync when online. Load settings from local database on app start.</details>
+    </constraint>
+    <constraint id="ARCH-3" type="architectural">
+      <description>Use Riverpod for state management (D1, D6)</description>
+      <details>Create providers following feature-first structure. Use ConsumerWidget for settings screen. Providers should be in settings/presentation/providers/.</details>
+    </constraint>
+    <constraint id="DATA-1" type="data">
+      <description>Database schema must match specification</description>
+      <details>notification_settings table: user_id (UUID PK FK), morning_checkin_enabled (BOOLEAN), morning_checkin_time (TIME), evening_reflection_enabled (BOOLEAN), evening_reflection_time (TIME), workout_reminder_enabled (BOOLEAN), meditation_reminder_enabled (BOOLEAN), streak_alerts_enabled (BOOLEAN), insight_notifications_enabled (BOOLEAN), weekly_summary_enabled (BOOLEAN), quiet_hours_enabled (BOOLEAN), quiet_hours_start (TIME), quiet_hours_end (TIME), updated_at (TIMESTAMPTZ).</details>
+    </constraint>
+    <constraint id="SEC-1" type="security">
+      <description>Row Level Security (RLS) policies required</description>
+      <details>Enable RLS on notification_settings table. Policy: CREATE POLICY "Users can only access own notification settings" ON notification_settings FOR ALL USING (auth.uid() = user_id);</details>
+    </constraint>
+    <constraint id="UX-1" type="ux">
+      <description>Quiet hours default: 10pm - 7am</description>
+      <details>When user enables quiet hours for first time, default start time to 22:00 (10pm) and end time to 07:00 (7am). Display times in user's local timezone using 12-hour format with AM/PM.</details>
+    </constraint>
+    <constraint id="UX-2" type="ux">
+      <description>Time picker for reminder customization</description>
+      <details>Morning check-in and evening reflection toggles show time picker when enabled. Use native time picker (showTimePicker in Flutter). Default: morning 8am, evening 8pm. Display selected time next to toggle.</details>
+    </constraint>
+    <constraint id="UX-3" type="ux">
+      <description>Cross-module insights note</description>
+      <details>Cross-module insights toggle should display subtitle: "Max 1/day" to inform users they won't be spammed with insights. Insights are high-value, low-frequency notifications.</details>
+    </constraint>
+    <constraint id="UX-4" type="ux">
+      <description>Test notification feedback</description>
+      <details>"Send Test Notification" button at bottom of screen. On tap, send immediate notification: "Test notification from LifeOS 🧪". Show toast: "Test notification sent!" If notification permission not granted, show error: "Please enable notifications in device settings."</details>
+    </constraint>
+    <constraint id="UX-5" type="ux">
+      <description>Optimistic UI for all toggles</description>
+      <details>Toggle switches update immediately when user taps (optimistic UI). Settings saved to local database instantly. Sync to Supabase happens in background. No loading spinners on toggle interactions.</details>
+    </constraint>
+    <constraint id="NOTIF-1" type="notification">
+      <description>Quiet hours enforcement logic</description>
+      <details>Before scheduling/sending any notification, check if current time is within quiet hours range. If yes, skip notification. For scheduled notifications (morning/evening), reschedule to after quiet hours end time. Handle cross-midnight quiet hours (e.g., 10pm - 7am).</details>
+    </constraint>
+    <constraint id="NOTIF-2" type="notification">
+      <description>Notification rescheduling on time change</description>
+      <details>When user changes morning check-in time from 8am to 7am, cancel existing scheduled notification and reschedule at 7am. Use flutter_local_notifications zonedSchedule for accurate timing with timezone support.</details>
+    </constraint>
+    <constraint id="NOTIF-3" type="notification">
+      <description>Notification permission handling</description>
+      <details>Check notification permission before scheduling or sending notifications. If not granted, show permission request dialog. If user denies, disable all notification toggles and show banner: "Notifications disabled. Enable in device settings to receive reminders."</details>
+    </constraint>
+    <constraint id="PERF-1" type="performance">
+      <description>Settings save &lt;100ms</description>
+      <details>Save settings to local Drift database in &lt;100ms for instant UI feedback. Background sync to Supabase should complete in &lt;500ms but not block UI.</details>
+    </constraint>
+    <constraint id="PERF-2" type="performance">
+      <description>Notification scheduling &lt;200ms</description>
+      <details>Schedule or reschedule notifications in &lt;200ms after settings change. Use efficient scheduling algorithms. Cancel old notifications before rescheduling to avoid duplicates.</details>
+    </constraint>
+    <constraint id="TEST-1" type="testing">
+      <description>80%+ code coverage required</description>
+      <details>Follow 70/20/10 testing pyramid. Unit tests for use cases and services, widget tests for UI, integration tests for notification scheduling. All AC must have test coverage.</details>
+    </constraint>
+    <constraint id="TEST-2" type="testing">
+      <description>Quiet hours edge cases testing</description>
+      <details>Test quiet hours logic for edge cases: cross-midnight range (10pm-7am), same start/end time, notifications scheduled during quiet hours, timezone changes. Ensure notifications never sent during quiet hours.</details>
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>NotificationSettingsEntity</name>
+      <kind>domain-entity</kind>
+      <signature>
+        class NotificationSettingsEntity {
+          final String userId;
+          final bool morningCheckinEnabled;
+          final TimeOfDay? morningCheckinTime;
+          final bool eveningReflectionEnabled;
+          final TimeOfDay? eveningReflectionTime;
+          final bool workoutReminderEnabled;
+          final bool meditationReminderEnabled;
+          final bool streakAlertsEnabled;
+          final bool insightNotificationsEnabled;
+          final bool weeklySummaryEnabled;
+          final bool quietHoursEnabled;
+          final TimeOfDay? quietHoursStart;
+          final TimeOfDay? quietHoursEnd;
+          final DateTime updatedAt;
+        }
+      </signature>
+      <path>lib/features/settings/domain/entities/notification_settings_entity.dart</path>
+      <notes>Use @freezed annotation for immutability and copyWith. Include validation for time ranges. Default times: morning 8am, evening 8pm, quiet hours 10pm-7am.</notes>
+    </interface>
+    <interface>
+      <name>UpdateNotificationSettingsUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class UpdateNotificationSettingsUseCase {
+          Future&lt;Result&lt;void&gt;&gt; call({
+            required NotificationSettingsEntity settings,
+          });
+        }
+      </signature>
+      <path>lib/features/settings/domain/usecases/update_notification_settings_usecase.dart</path>
+      <notes>Saves settings to local database first, then syncs to Supabase. Triggers notification rescheduling if times changed. Returns Result&lt;T&gt; (Success/Failure).</notes>
+    </interface>
+    <interface>
+      <name>SendTestNotificationUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class SendTestNotificationUseCase {
+          Future&lt;Result&lt;void&gt;&gt; call();
+        }
+      </signature>
+      <path>lib/features/settings/domain/usecases/send_test_notification_usecase.dart</path>
+      <notes>Checks notification permission. Sends immediate test notification: "Test notification from LifeOS 🧪". Returns Failure if permission not granted.</notes>
+    </interface>
+    <interface>
+      <name>QuietHoursService</name>
+      <kind>service</kind>
+      <signature>
+        abstract class QuietHoursService {
+          bool isInQuietHours(TimeOfDay currentTime, TimeOfDay start, TimeOfDay end);
+          DateTime? getNextAllowedTime(DateTime currentTime, TimeOfDay quietEnd);
+        }
+      </signature>
+      <path>lib/features/settings/domain/services/quiet_hours_service.dart</path>
+      <notes>Handles quiet hours logic including cross-midnight scenarios (e.g., 10pm-7am). Returns next allowed time for notification scheduling.</notes>
+    </interface>
+    <interface>
+      <name>NotificationSchedulerService</name>
+      <kind>service</kind>
+      <signature>
+        abstract class NotificationSchedulerService {
+          Future&lt;void&gt; scheduleMorningCheckin(TimeOfDay time);
+          Future&lt;void&gt; scheduleEveningReflection(TimeOfDay time);
+          Future&lt;void&gt; cancelMorningCheckin();
+          Future&lt;void&gt; cancelEveningReflection();
+          Future&lt;void&gt; sendTestNotification();
+        }
+      </signature>
+      <path>lib/features/settings/domain/services/notification_scheduler_service.dart</path>
+      <notes>Wraps flutter_local_notifications for scheduling. Integrates with QuietHoursService. Uses zonedSchedule for accurate timing with timezone support.</notes>
+    </interface>
+    <interface>
+      <name>NotificationSettingsRepository</name>
+      <kind>repository</kind>
+      <signature>
+        abstract class NotificationSettingsRepository {
+          Future&lt;Result&lt;NotificationSettingsEntity&gt;&gt; getSettings(String userId);
+          Future&lt;Result&lt;void&gt;&gt; saveSettings(NotificationSettingsEntity settings);
+        }
+      </signature>
+      <path>lib/features/settings/domain/repositories/notification_settings_repository.dart</path>
+      <notes>Implemented by NotificationSettingsRepositoryImpl in data layer. Uses both DriftDataSource and SupabaseDataSource for offline-first sync.</notes>
+    </interface>
+    <interface>
+      <name>notification_settings table (Supabase PostgreSQL)</name>
+      <kind>database-table</kind>
+      <signature>
+        CREATE TABLE notification_settings (
+          user_id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+          morning_checkin_enabled BOOLEAN DEFAULT true,
+          morning_checkin_time TIME DEFAULT '08:00:00',
+          evening_reflection_enabled BOOLEAN DEFAULT true,
+          evening_reflection_time TIME DEFAULT '20:00:00',
+          workout_reminder_enabled BOOLEAN DEFAULT true,
+          meditation_reminder_enabled BOOLEAN DEFAULT true,
+          streak_alerts_enabled BOOLEAN DEFAULT true,
+          insight_notifications_enabled BOOLEAN DEFAULT true,
+          weekly_summary_enabled BOOLEAN DEFAULT true,
+          quiet_hours_enabled BOOLEAN DEFAULT false,
+          quiet_hours_start TIME DEFAULT '22:00:00',
+          quiet_hours_end TIME DEFAULT '07:00:00',
+          updated_at TIMESTAMPTZ DEFAULT NOW()
+        );
+      </signature>
+      <path>supabase/migrations/</path>
+      <notes>Migration file will be created in Supabase migrations folder. Include RLS policies in same migration: USING (auth.uid() = user_id).</notes>
+    </interface>
+    <interface>
+      <name>notification_settings table (Drift SQLite)</name>
+      <kind>database-table</kind>
+      <signature>
+        @DataClassName('NotificationSettingTable')
+        class NotificationSettings extends Table {
+          TextColumn get userId => text()();
+          BoolColumn get morningCheckinEnabled => boolean().withDefault(const Constant(true))();
+          TextColumn get morningCheckinTime => text().withDefault(const Constant('08:00'))();
+          BoolColumn get eveningReflectionEnabled => boolean().withDefault(const Constant(true))();
+          TextColumn get eveningReflectionTime => text().withDefault(const Constant('20:00'))();
+          BoolColumn get workoutReminderEnabled => boolean().withDefault(const Constant(true))();
+          BoolColumn get meditationReminderEnabled => boolean().withDefault(const Constant(true))();
+          BoolColumn get streakAlertsEnabled => boolean().withDefault(const Constant(true))();
+          BoolColumn get insightNotificationsEnabled => boolean().withDefault(const Constant(true))();
+          BoolColumn get weeklySummaryEnabled => boolean().withDefault(const Constant(true))();
+          BoolColumn get quietHoursEnabled => boolean().withDefault(const Constant(false))();
+          TextColumn get quietHoursStart => text().withDefault(const Constant('22:00'))();
+          TextColumn get quietHoursEnd => text().withDefault(const Constant('07:00'))();
+          DateTimeColumn get updatedAt => dateTime()();
+
+          @override
+          Set&lt;Column&gt; get primaryKey => {userId};
+        }
+      </signature>
+      <path>lib/core/database/tables.drift.dart</path>
+      <notes>Drift table definition. Mirror of Supabase schema for offline-first architecture. Store times as strings (HH:mm format) for simplicity.</notes>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Follow 70/20/10 testing pyramid: 70% unit tests (use cases, services, repositories, entities), 20% widget tests (UI components, toggles, time pickers, state management), 10% integration tests (end-to-end notification scheduling flows). Use flutter_test for unit/widget tests, integration_test for E2E. Mock dependencies with mockito. Target 80%+ code coverage. All acceptance criteria must have test coverage.
+    </standards>
+    <locations>
+      <location>test/features/settings/domain/usecases/</location>
+      <location>test/features/settings/domain/services/</location>
+      <location>test/features/settings/data/repositories/</location>
+      <location>test/features/settings/presentation/pages/</location>
+      <location>integration_test/features/settings/notification_settings_flow_test.dart</location>
+    </locations>
+    <ideas>
+      <test-idea ac-ref="AC1">
+        <description>Unit test: UpdateNotificationSettingsUseCase saves all notification types</description>
+        <approach>Create NotificationSettingsEntity with all toggles enabled. Call usecase. Verify repository.saveSettings() called with correct entity. Assert Success result.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC2">
+        <description>Unit test: Morning check-in time change triggers rescheduling</description>
+        <approach>Mock NotificationSchedulerService. Update morning_checkin_time from 8am to 7am. Verify cancelMorningCheckin() called. Verify scheduleMorningCheckin(7am) called. Assert Success.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3,AC4">
+        <description>Unit test: QuietHoursService cross-midnight logic</description>
+        <approach>Test isInQuietHours(23:30, 22:00, 07:00) → assert true (11:30pm is in quiet hours). Test isInQuietHours(08:00, 22:00, 07:00) → assert false (8am is not in quiet hours). Test isInQuietHours(06:30, 22:00, 07:00) → assert true (6:30am is in quiet hours).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3">
+        <description>Unit test: Quiet hours default values</description>
+        <approach>Create new NotificationSettingsEntity with quiet hours enabled. Verify quietHoursStart defaults to 22:00 (10pm). Verify quietHoursEnd defaults to 07:00 (7am).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC5">
+        <description>Unit test: SendTestNotificationUseCase checks permissions</description>
+        <approach>Mock permission_handler to return denied. Call SendTestNotificationUseCase. Assert Failure with "Notification permission not granted" error. Verify notification not sent.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC5">
+        <description>Unit test: SendTestNotificationUseCase sends notification</description>
+        <approach>Mock permission_handler to return granted. Mock NotificationSchedulerService. Call usecase. Verify sendTestNotification() called. Assert Success.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6">
+        <description>Unit test: Settings persist to local database</description>
+        <approach>Save NotificationSettingsEntity to repository. Query Drift database directly. Verify all fields saved correctly. Verify settings loadable after app restart simulation.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC7">
+        <description>Unit test: Settings sync to Supabase after local save</description>
+        <approach>Mock Supabase client. Save settings. Verify local save completes first (&lt;100ms). Verify Supabase sync triggered in background. Verify optimistic UI pattern.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1,AC2">
+        <description>Widget test: NotificationSettingsScreen displays all toggles</description>
+        <approach>Render NotificationSettingsScreen. Verify Section 1 (Daily Reminders) contains: morning check-in toggle, evening reflection toggle, workout toggle, meditation toggle. Verify Section 2 (Alerts) contains: streak alerts toggle, insights toggle, weekly summary toggle. Verify Section 3 (Quiet Hours) contains: enable toggle, start/end time pickers.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1">
+        <description>Widget test: Toggle switches work with optimistic UI</description>
+        <approach>Render screen. Tap morning check-in toggle to disable. Verify toggle updates immediately (no loading). Verify settings saved to database. Tap again to enable. Verify toggle updates instantly.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC2">
+        <description>Widget test: Time picker appears for morning/evening reminders</description>
+        <approach>Render screen. Tap morning check-in time display. Verify showTimePicker dialog appears. Select 7:00 AM. Verify time updates in UI. Verify notification rescheduled at new time.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3,AC4">
+        <description>Widget test: Quiet hours section displays correctly</description>
+        <approach>Render screen. Verify quiet hours toggle disabled by default. Enable toggle. Verify start/end time pickers appear. Verify default times: 10:00 PM - 7:00 AM. Tap start time. Change to 11:00 PM. Verify updated in UI.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC5">
+        <description>Widget test: Test notification button sends notification</description>
+        <approach>Render screen. Scroll to bottom. Tap "Send Test Notification" button. Mock notification service. Verify sendTestNotification() called. Verify toast appears: "Test notification sent!"</approach>
+      </test-idea>
+      <test-idea ac-ref="AC5">
+        <description>Widget test: Test notification shows error if permission denied</description>
+        <approach>Mock permission denied. Render screen. Tap "Send Test Notification". Verify error dialog: "Please enable notifications in device settings." Verify notification not sent.</approach>
+      </test-idea>
+      <test-idea ac-ref="ALL">
+        <description>Integration test: Complete notification settings flow</description>
+        <approach>Launch app. Navigate to Notification Settings. Disable morning check-in → verify no morning notification scheduled. Re-enable and set time to 7am → verify notification scheduled at 7am. Enable quiet hours (10pm-7am) → verify notifications during quiet hours are skipped. Tap "Send Test Notification" → verify notification received. Restart app → verify settings persisted.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC2">
+        <description>Integration test: Notification rescheduling on time change</description>
+        <approach>Schedule morning check-in at 8am. Verify notification pending at 8am. Change time to 7am. Verify old notification cancelled. Verify new notification scheduled at 7am. Wait until 7am (simulate) → verify notification fires.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3,AC4">
+        <description>Integration test: Quiet hours enforcement</description>
+        <approach>Set quiet hours 10pm-7am. Schedule notification at 11pm. Verify notification not sent (quiet hours active). Reschedule to 8am. Verify notification sent (outside quiet hours). Simulate notification scheduled at 6:30am → verify postponed to 7am (after quiet hours end).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6,AC7">
+        <description>Integration test: Settings sync across devices</description>
+        <approach>Device A: Change morning check-in time to 7am. Verify saved to Supabase. Device B: Open app. Verify settings synced from Supabase. Verify morning check-in time shows 7am on Device B.</approach>
+      </test-idea>
+    </ideas>
+  </tests>
+</story-context>

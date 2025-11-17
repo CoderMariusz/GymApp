@@ -1,5 +1,5 @@
 # Story 4.4: CBT Chat with AI (1/day free, unlimited premium)
-**Epic:** 4 - Mind & Emotion | **P0** | **4 SP** | **drafted**
+**Epic:** 4 - Mind & Emotion | **P0** | **4 SP** | **ready-for-dev**
 
 ## User Story
 **As a** user with negative thoughts, **I want** CBT-trained AI chat, **So that** I reframe thinking and feel better.
@@ -31,3 +31,9 @@ CREATE TABLE cbt_conversations (
 const prompt = "You are a CBT therapist. Help identify cognitive distortions..."
 ```
 **Dependencies:** Epic 1 | **Coverage:** 80%+
+
+## Dev Agent Record
+
+- **Status Updated to ready-for-dev:** 2025-11-17
+- **Dev Agent:** Claude Haiku 4.5
+- **Purpose:** Ready for development phase

@@ -1,0 +1,546 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>3</epicId>
+    <storyId>3.5</storyId>
+    <title>Progress Charts (Strength, Volume, PRs)</title>
+    <status>ready-for-dev</status>
+    <generatedAt>2025-11-17</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/sprint-3/3-5-progress-charts-strength-volume-prs.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>user tracking fitness progress</asA>
+    <iWant>to see visual charts of my strength gains</iWant>
+    <soThat>I understand my progress over time and stay motivated</soThat>
+    <tasks>
+      <task id="1" ac-ref="AC1">
+        <description>Implement Progress Charts screen UI</description>
+        <subtasks>
+          <subtask>Create ProgressChartsScreen widget (StatefulWidget)</subtask>
+          <subtask>Add bottom navigation item "Progress" in Fitness tab</subtask>
+          <subtask>Implement screen header with title "Your Progress"</subtask>
+          <subtask>Create tabbed interface: "Strength" and "Volume" tabs</subtask>
+          <subtask>Add filter controls: exercise dropdown and date range selector</subtask>
+          <subtask>Add export button (share icon) in app bar</subtask>
+        </subtasks>
+      </task>
+      <task id="2" ac-ref="AC2,AC6">
+        <description>Implement 1RM progression line chart</description>
+        <subtasks>
+          <subtask>Create StrengthProgressChart widget using fl_chart LineChart</subtask>
+          <subtask>Implement Calculate1RMUseCase using Brzycki formula: 1RM = weight × (36 / (37 - reps))</subtask>
+          <subtask>Fetch workout sets data filtered by exercise and date range</subtask>
+          <subtask>Calculate 1RM for each workout session</subtask>
+          <subtask>Plot line chart with FlSpot data points (date, 1RM)</subtask>
+          <subtask>Add PR markers (star icons) on chart at peak points</subtask>
+          <subtask>Implement chart touch interactions (show tooltip with exact values)</subtask>
+          <subtask>Style chart: orange gradient line, grid lines, axis labels</subtask>
+        </subtasks>
+      </task>
+      <task id="3" ac-ref="AC3,AC6">
+        <description>Implement weekly volume bar chart</description>
+        <subtasks>
+          <subtask>Create VolumeProgressChart widget using fl_chart BarChart</subtask>
+          <subtask>Implement GetWeeklyVolumeUseCase: volume = SUM(reps × weight) per week</subtask>
+          <subtask>Aggregate workout sets by week (ISO week grouping)</subtask>
+          <subtask>Calculate total volume (kg lifted) for each week</subtask>
+          <subtask>Plot bar chart with BarChartRodData (week number, volume)</subtask>
+          <subtask>Style bars with gradient fill, rounded tops</subtask>
+          <subtask>Add horizontal grid lines for volume scale</subtask>
+          <subtask>Implement touch interactions (show tooltip with week date range and volume)</subtask>
+        </subtasks>
+      </task>
+      <task id="4" ac-ref="AC4,AC5">
+        <description>Implement PR detection and display</description>
+        <subtasks>
+          <subtask>Create GetPRsUseCase to fetch personal records from database</subtask>
+          <subtask>Create personal_records materialized view in Supabase</subtask>
+          <subtask>Query: SELECT user_id, exercise_id, MAX(weight) as max_weight, MAX(created_at) as achieved_at GROUP BY user_id, exercise_id</subtask>
+          <subtask>Implement isNewPR() method to detect new PRs after set completion</subtask>
+          <subtask>Create PRCelebrationWidget with confetti animation (confetti package)</subtask>
+          <subtask>Display PR badge with star icon and "NEW PR!" text</subtask>
+          <subtask>Store PR achievements in local cache for performance</subtask>
+          <subtask>Highlight PRs on charts with star markers</subtask>
+        </subtasks>
+      </task>
+      <task id="5" ac-ref="AC6">
+        <description>Implement chart filtering controls</description>
+        <subtasks>
+          <subtask>Create exercise dropdown using DropdownButton with all user exercises</subtask>
+          <subtask>Fetch exercise list from exercises table</subtask>
+          <subtask>Create date range selector with preset options: 1m, 3m, 6m, 1y, All</subtask>
+          <subtask>Implement DateRangeFilter widget with chip selection</subtask>
+          <subtask>Update chart data on filter change (reactive state management)</subtask>
+          <subtask>Add loading state while fetching filtered data</subtask>
+          <subtask>Persist filter selections in local state (Riverpod)</subtask>
+        </subtasks>
+      </task>
+      <task id="6" ac-ref="AC7">
+        <description>Implement chart export functionality</description>
+        <subtasks>
+          <subtask>Create ExportChartUseCase to generate image from chart</subtask>
+          <subtask>Use RepaintBoundary widget to capture chart as image</subtask>
+          <subtask>Convert widget to PNG using RenderRepaintBoundary.toImage()</subtask>
+          <subtask>Implement share functionality using share_plus package</subtask>
+          <subtask>Add export options: Save to gallery, Share to social media</subtask>
+          <subtask>Set image quality to 1440x1080px (high resolution for sharing)</subtask>
+          <subtask>Add watermark with app logo (optional)</subtask>
+          <subtask>Handle permissions for gallery save (photo_manager package)</subtask>
+        </subtasks>
+      </task>
+      <task id="7" ac-ref="AC2,AC3">
+        <description>Implement data aggregation and caching</description>
+        <subtasks>
+          <subtask>Create GetProgressDataUseCase to fetch and aggregate workout data</subtask>
+          <subtask>Implement efficient SQL queries with date range filtering</subtask>
+          <subtask>Add database indices: CREATE INDEX idx_workout_sets_user_exercise_date ON workout_sets(user_id, exercise_id, created_at DESC)</subtask>
+          <subtask>Cache aggregated data in memory using Riverpod state</subtask>
+          <subtask>Implement incremental data loading (pagination for large datasets)</subtask>
+          <subtask>Optimize weekly volume calculation: single query with GROUP BY week</subtask>
+          <subtask>Refresh materialized view for PRs on data change</subtask>
+        </subtasks>
+      </task>
+      <task id="8" ac-ref="ALL">
+        <description>Write comprehensive tests</description>
+        <subtasks>
+          <subtask>Unit tests: Calculate1RMUseCase with Brzycki formula edge cases</subtask>
+          <subtask>Unit tests: GetWeeklyVolumeUseCase aggregation accuracy</subtask>
+          <subtask>Unit tests: GetPRsUseCase PR detection logic</subtask>
+          <subtask>Widget tests: StrengthProgressChart renders correctly</subtask>
+          <subtask>Widget tests: VolumeProgressChart bar calculations</subtask>
+          <subtask>Widget tests: Filter controls update chart data</subtask>
+          <subtask>Widget tests: Export functionality generates image</subtask>
+          <subtask>Integration test: Complete progress viewing and filtering flow</subtask>
+          <subtask>Achieve 75%+ code coverage</subtask>
+        </subtasks>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="AC1">
+      <text>Progress screen accessible from Fitness tab → "Progress" navigation</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC2">
+      <text>Line chart displays 1RM progression per exercise using Brzycki formula</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC3">
+      <text>Bar chart shows weekly volume (SUM of reps × weight) in kg</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC4">
+      <text>Personal records (PRs) list shows heaviest weight per exercise</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC5">
+      <text>PR celebrations with confetti animation and badge when new PR achieved</text>
+      <priority>P1</priority>
+    </criterion>
+    <criterion id="AC6">
+      <text>Filter by exercise (dropdown) and date range (1m, 3m, 6m, 1y, All)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC7">
+      <text>Export chart as image for sharing to social media</text>
+      <priority>P1</priority>
+    </criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR38: Progress tracking with visual charts</section>
+        <snippet>Users must be able to visualize their strength progress through line charts (1RM progression) and bar charts (weekly volume). Charts must support filtering by exercise and date range. Target: &lt;1s chart render time.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR41: Personal records (PRs) tracking and celebrations</section>
+        <snippet>System detects new PRs automatically when user logs a set with higher weight than previous max. Display confetti celebration and award PR badge. PRs highlighted on charts with star icons.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/epics.md</path>
+        <title>Epic 3: Fitness Coach MVP - Story 3.5</title>
+        <section>Story 3.5: Progress Charts (Strength, Volume, PRs)</section>
+        <snippet>Visual progress tracking with line charts for 1RM progression, bar charts for weekly volume, and PR detection. Uses fl_chart library. Prerequisites: Story 3.3 (Workout data), Story 3.4 (History).</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Hybrid Architecture (D1)</section>
+        <snippet>Feature-first architecture with clean architecture layers (presentation/domain/data). Fitness Coach module located at features/fitness_coach/. Use Riverpod for state management.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Database Schema - Fitness Coach Tables</section>
+        <snippet>Fitness Coach uses workout_sets table for logging, exercises table for exercise library, and personal_records materialized view for PR tracking. Add indices on (user_id, exercise_id, created_at) for chart query performance.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/ux-design-specification.md</path>
+        <title>UX Design Specification</title>
+        <section>Progress Charts UX</section>
+        <snippet>Charts use orange brand color for strength, blue for volume. Line charts show dots for data points, smooth curves. Bar charts with rounded tops, gradient fill. Filter chips at top: exercise dropdown + date range pills (1m, 3m, 6m, 1y, All). Export button (share icon) in app bar.</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/sprint-3/3-5-progress-charts-strength-volume-prs.md</path>
+        <title>Story 3.5: Progress Charts (Strength, Volume, PRs)</title>
+        <section>Technical Implementation - PR Detection</section>
+        <snippet>Create materialized view personal_records with MAX(weight) per user_id and exercise_id. Refresh view after each set logged. Use isNewPR() method to detect PRs in real-time and trigger celebration animation.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <dependency id="workout-data" story="3.3">
+        <path>lib/features/fitness_coach/domain/entities/workout_set_entity.dart</path>
+        <description>WorkoutSet entity with reps, weight, exercise_id, created_at fields required for chart data</description>
+      </dependency>
+      <dependency id="workout-repository" story="3.3">
+        <path>lib/features/fitness_coach/domain/repositories/workout_repository.dart</path>
+        <description>Repository to query workout_sets table with date range filters</description>
+      </dependency>
+      <dependency id="exercise-entity" story="3.1">
+        <path>lib/features/fitness_coach/domain/entities/exercise_entity.dart</path>
+        <description>Exercise entity for dropdown filtering</description>
+      </dependency>
+    </code>
+    <dependencies>
+      <flutter>
+        <sdk>3.38+</sdk>
+        <dart>3.10+</dart>
+      </flutter>
+      <packages>
+        <package name="fl_chart" version="^0.68.0" usage="High-performance charts library for line and bar charts" />
+        <package name="flutter_riverpod" version="^3.0.0" usage="State management for chart data and filters" />
+        <package name="riverpod_annotation" version="^3.0.0" usage="Code generation for providers" />
+        <package name="confetti" version="^0.7.0" usage="Confetti animation for PR celebrations" />
+        <package name="share_plus" version="^7.0.0" usage="Cross-platform sharing for chart export" />
+        <package name="path_provider" version="^2.1.0" usage="Get app directories for image export" />
+        <package name="drift" version="^2.14.0" usage="Local SQLite database for workout data queries" />
+        <package name="supabase_flutter" version="^2.0.0" usage="Supabase client for materialized view queries" />
+        <package name="intl" version="^0.19.0" usage="Date formatting and ISO week calculations" />
+        <package name="flutter_test" version="sdk" usage="Unit and widget testing framework" />
+        <package name="integration_test" version="sdk" usage="End-to-end testing framework" />
+      </packages>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint id="ARCH-1" type="architectural">
+      <description>Must follow Hybrid Architecture pattern (D1)</description>
+      <details>Create feature structure at lib/features/fitness_coach/ with presentation/, domain/, and data/ layers. Charts in presentation/widgets/, use cases in domain/usecases/.</details>
+    </constraint>
+    <constraint id="ARCH-2" type="architectural">
+      <description>Use Riverpod for state management (D1, D6)</description>
+      <details>Create providers for chart data, filters, and export state. Use AsyncNotifierProvider for chart data fetching. Providers at fitness_coach/presentation/providers/.</details>
+    </constraint>
+    <constraint id="DATA-1" type="data">
+      <description>Materialized view for PR queries</description>
+      <details>CREATE MATERIALIZED VIEW personal_records AS SELECT user_id, exercise_id, MAX(weight) as max_weight, MAX(created_at) as achieved_at FROM workout_sets GROUP BY user_id, exercise_id. REFRESH MATERIALIZED VIEW personal_records after set insertion.</details>
+    </constraint>
+    <constraint id="DATA-2" type="data">
+      <description>Database indices for chart performance</description>
+      <details>CREATE INDEX idx_workout_sets_user_exercise_date ON workout_sets(user_id, exercise_id, created_at DESC). CREATE INDEX idx_workout_sets_user_date ON workout_sets(user_id, created_at DESC) for volume aggregation.</details>
+    </constraint>
+    <constraint id="MATH-1" type="calculation">
+      <description>1RM calculation using Brzycki formula</description>
+      <details>1RM = weight × (36 / (37 - reps)). Only calculate for reps ≤ 12 (formula accuracy). For reps > 12, use weight only. Handle edge case: reps = 37 (division by zero).</details>
+    </constraint>
+    <constraint id="MATH-2" type="calculation">
+      <description>Weekly volume aggregation formula</description>
+      <details>Volume = SUM(reps × weight) per ISO week. Use DateTime.weekday and ISO 8601 week numbering. Group by EXTRACT(WEEK FROM created_at) in SQL query for performance.</details>
+    </constraint>
+    <constraint id="UX-1" type="ux">
+      <description>Chart rendering performance &lt;1s</description>
+      <details>Charts must render within 1 second. Optimize data queries with indices. Cache aggregated data in memory. Use const constructors for chart widgets. Limit data points to 100 max per chart.</details>
+    </constraint>
+    <constraint id="UX-2" type="ux">
+      <description>PR celebration animation timing</description>
+      <details>Confetti animation plays for 3 seconds. Display PR badge with haptic feedback (HapticFeedback.mediumImpact()). Play celebration sound (optional). Show toast: "New PR! [exercise]: [weight]kg"</details>
+    </constraint>
+    <constraint id="UX-3" type="ux">
+      <description>Chart interactions and tooltips</description>
+      <details>Line chart: tap data point to show tooltip with date and 1RM value. Bar chart: tap bar to show week range and volume. Tooltips auto-dismiss after 3s or on chart touch elsewhere.</details>
+    </constraint>
+    <constraint id="PERF-1" type="performance">
+      <description>SQL query optimization for date ranges</description>
+      <details>Use WHERE created_at BETWEEN start_date AND end_date with index. For "All" range, use WHERE created_at > '1970-01-01' or omit WHERE clause. Limit queries to 1000 rows max, paginate if needed.</details>
+    </constraint>
+    <constraint id="PERF-2" type="performance">
+      <description>Chart image export quality and size</description>
+      <details>Export at 1440x1080px (3:2 aspect ratio) for social media. PNG format with 95% quality. Target file size &lt;500KB. Use image compression if needed. Export time &lt;2s.</details>
+    </constraint>
+    <constraint id="TEST-1" type="testing">
+      <description>75%+ code coverage required</description>
+      <details>Follow 70/20/10 testing pyramid. Unit tests for use cases (1RM calculation, volume aggregation, PR detection), widget tests for charts, integration test for full flow. All AC must have test coverage.</details>
+    </constraint>
+    <constraint id="TEST-2" type="testing">
+      <description>Brzycki formula accuracy validation</description>
+      <details>Unit test 1RM calculation with known values: (100kg, 10 reps) → 133.3kg 1RM. Test edge cases: reps=1 (1RM=weight), reps=37 (error), reps>37 (error). Accuracy: ±1kg tolerance.</details>
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>ProgressDataEntity</name>
+      <kind>domain-entity</kind>
+      <signature>
+        class ProgressDataEntity {
+          final String exerciseId;
+          final String exerciseName;
+          final List&lt;DataPoint&gt; dataPoints;
+          final PersonalRecord? currentPR;
+        }
+
+        class DataPoint {
+          final DateTime date;
+          final double value; // 1RM or volume
+          final bool isPR;
+        }
+      </signature>
+      <path>lib/features/fitness_coach/domain/entities/progress_data_entity.dart</path>
+      <notes>Use @freezed annotation for immutability. DataPoint value is 1RM for strength chart, volume for volume chart.</notes>
+    </interface>
+    <interface>
+      <name>PersonalRecord</name>
+      <kind>domain-entity</kind>
+      <signature>
+        class PersonalRecord {
+          final String id;
+          final String userId;
+          final String exerciseId;
+          final double maxWeight;
+          final DateTime achievedAt;
+        }
+      </signature>
+      <path>lib/features/fitness_coach/domain/entities/personal_record.dart</path>
+      <notes>Mirrors materialized view personal_records. Use @freezed for immutability.</notes>
+    </interface>
+    <interface>
+      <name>Calculate1RMUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class Calculate1RMUseCase {
+          double call({
+            required double weight,
+            required int reps,
+          });
+        }
+      </signature>
+      <path>lib/features/fitness_coach/domain/usecases/calculate_1rm_usecase.dart</path>
+      <notes>Implements Brzycki formula: 1RM = weight × (36 / (37 - reps)). Throws FormulaException for reps ≥ 37. Returns weight for reps = 1.</notes>
+    </interface>
+    <interface>
+      <name>GetProgressDataUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class GetProgressDataUseCase {
+          Future&lt;Result&lt;ProgressDataEntity&gt;&gt; call({
+            required String userId,
+            required String exerciseId,
+            required DateRange dateRange,
+            required ChartType chartType, // strength or volume
+          });
+        }
+      </signature>
+      <path>lib/features/fitness_coach/domain/usecases/get_progress_data_usecase.dart</path>
+      <notes>Fetches workout sets, calculates 1RM or volume, aggregates by day/week. Returns Result&lt;T&gt; pattern (Success/Failure). Handles empty data gracefully.</notes>
+    </interface>
+    <interface>
+      <name>GetPRsUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class GetPRsUseCase {
+          Future&lt;Result&lt;List&lt;PersonalRecord&gt;&gt;&gt; call({
+            required String userId,
+            String? exerciseId, // null = all exercises
+          });
+        }
+      </signature>
+      <path>lib/features/fitness_coach/domain/usecases/get_prs_usecase.dart</path>
+      <notes>Queries personal_records materialized view. Returns list of PRs ordered by achievedAt DESC. Cache results for 5 minutes.</notes>
+    </interface>
+    <interface>
+      <name>DetectNewPRUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class DetectNewPRUseCase {
+          Future&lt;Result&lt;PersonalRecord?&gt;&gt; call({
+            required String userId,
+            required String exerciseId,
+            required double weight,
+          });
+        }
+      </signature>
+      <path>lib/features/fitness_coach/domain/usecases/detect_new_pr_usecase.dart</path>
+      <notes>Compares weight against current PR. Returns new PersonalRecord if weight > current max, else null. Triggers materialized view refresh.</notes>
+    </interface>
+    <interface>
+      <name>ExportChartUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class ExportChartUseCase {
+          Future&lt;Result&lt;String&gt;&gt; call({
+            required GlobalKey repaintBoundaryKey,
+            required String fileName,
+          });
+        }
+      </signature>
+      <path>lib/features/fitness_coach/domain/usecases/export_chart_usecase.dart</path>
+      <notes>Captures RepaintBoundary as PNG image. Saves to app temp directory. Returns file path. Use share_plus to share file.</notes>
+    </interface>
+    <interface>
+      <name>ProgressRepository</name>
+      <kind>repository</kind>
+      <signature>
+        abstract class ProgressRepository {
+          Future&lt;Result&lt;List&lt;WorkoutSet&gt;&gt;&gt; getWorkoutSets({
+            required String userId,
+            required String exerciseId,
+            required DateTime startDate,
+            required DateTime endDate,
+          });
+
+          Future&lt;Result&lt;List&lt;PersonalRecord&gt;&gt;&gt; getPersonalRecords({
+            required String userId,
+            String? exerciseId,
+          });
+
+          Future&lt;Result&lt;void&gt;&gt; refreshPRsView();
+        }
+      </signature>
+      <path>lib/features/fitness_coach/domain/repositories/progress_repository.dart</path>
+      <notes>Implemented by ProgressRepositoryImpl in data layer. Uses both DriftDataSource and SupabaseDataSource for queries.</notes>
+    </interface>
+    <interface>
+      <name>personal_records materialized view (Supabase PostgreSQL)</name>
+      <kind>database-view</kind>
+      <signature>
+        CREATE MATERIALIZED VIEW personal_records AS
+        SELECT
+          user_id,
+          exercise_id,
+          MAX(weight) as max_weight,
+          MAX(created_at) FILTER (WHERE weight = MAX(weight)) as achieved_at
+        FROM workout_sets
+        GROUP BY user_id, exercise_id;
+
+        CREATE UNIQUE INDEX idx_prs_user_exercise ON personal_records(user_id, exercise_id);
+      </signature>
+      <path>supabase/migrations/</path>
+      <notes>Materialized view for PR queries. Refresh with REFRESH MATERIALIZED VIEW CONCURRENTLY personal_records after set insert. RLS policies inherit from workout_sets.</notes>
+    </interface>
+    <interface>
+      <name>StrengthProgressChart</name>
+      <kind>widget</kind>
+      <signature>
+        class StrengthProgressChart extends ConsumerWidget {
+          final List&lt;DataPoint&gt; dataPoints;
+          final Function(DataPoint) onPointTap;
+
+          Widget build(BuildContext context, WidgetRef ref) {
+            return LineChart(LineChartData(
+              lineBarsData: [
+                LineChartBarData(
+                  spots: dataPoints.map((d) => FlSpot(d.date.millisecondsSinceEpoch.toDouble(), d.value)).toList(),
+                  color: AppColors.orange,
+                  dotData: FlDotData(show: true),
+                ),
+              ],
+            ));
+          }
+        }
+      </signature>
+      <path>lib/features/fitness_coach/presentation/widgets/strength_progress_chart.dart</path>
+      <notes>Uses fl_chart LineChart. Wrap in RepaintBoundary for export. Add star markers for PR data points. Implement LineTouchData for tooltips.</notes>
+    </interface>
+    <interface>
+      <name>VolumeProgressChart</name>
+      <kind>widget</kind>
+      <signature>
+        class VolumeProgressChart extends ConsumerWidget {
+          final List&lt;DataPoint&gt; dataPoints;
+          final Function(DataPoint) onBarTap;
+
+          Widget build(BuildContext context, WidgetRef ref) {
+            return BarChart(BarChartData(
+              barGroups: dataPoints.map((d) => BarChartGroupData(
+                x: d.date.weekday,
+                barRods: [BarChartRodData(toY: d.value, color: AppColors.blue)],
+              )).toList(),
+            ));
+          }
+        }
+      </signature>
+      <path>lib/features/fitness_coach/presentation/widgets/volume_progress_chart.dart</path>
+      <notes>Uses fl_chart BarChart. Bars grouped by week. Rounded bar tops with gradient. Implement BarTouchData for tooltips showing week range and volume.</notes>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Follow 70/20/10 testing pyramid: 70% unit tests (use cases, calculations, entities), 20% widget tests (charts, UI components), 10% integration tests (end-to-end flows). Use flutter_test for unit/widget tests, integration_test for E2E. Mock dependencies with mockito. Target 75%+ code coverage. All acceptance criteria must have test coverage.
+    </standards>
+    <locations>
+      <location>test/features/fitness_coach/domain/usecases/</location>
+      <location>test/features/fitness_coach/domain/entities/</location>
+      <location>test/features/fitness_coach/data/repositories/</location>
+      <location>test/features/fitness_coach/presentation/widgets/</location>
+      <location>integration_test/features/fitness_coach/progress_charts_flow_test.dart</location>
+    </locations>
+    <ideas>
+      <test-idea ac-ref="AC2">
+        <description>Unit test: Calculate1RMUseCase Brzycki formula accuracy</description>
+        <approach>Test known values: (100kg, 10 reps) → 133.3kg, (80kg, 5 reps) → 91.4kg, (60kg, 1 rep) → 60kg. Test edge cases: reps=37 throws FormulaException, reps>37 throws error. Assert ±1kg tolerance.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3">
+        <description>Unit test: Weekly volume aggregation accuracy</description>
+        <approach>Create test data: 5 sets across 2 weeks (Week 1: 3 sets, Week 2: 2 sets). Calculate expected volumes. Assert GetWeeklyVolumeUseCase returns correct weekly totals with ISO week grouping.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4,AC5">
+        <description>Unit test: DetectNewPRUseCase PR detection logic</description>
+        <approach>Mock ProgressRepository with current PR (100kg). Test new weight 105kg → returns new PersonalRecord. Test weight 95kg → returns null. Test first PR (no existing) → returns new PersonalRecord.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC2">
+        <description>Unit test: GetProgressDataUseCase date range filtering</description>
+        <approach>Mock repository with 100 workout sets across 1 year. Request 1m range. Assert returned data contains only sets from last 30 days. Test all ranges: 1m, 3m, 6m, 1y, All.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC2">
+        <description>Widget test: StrengthProgressChart renders line chart</description>
+        <approach>Create StrengthProgressChart with test data (10 points). Verify LineChart widget present. Verify line color is orange. Verify 10 data points plotted. Test PR markers present for PR points.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3">
+        <description>Widget test: VolumeProgressChart renders bar chart</description>
+        <approach>Create VolumeProgressChart with 8 weeks of data. Verify BarChart widget present. Verify 8 bars rendered. Verify bar color is blue. Test tooltip appears on bar tap.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6">
+        <description>Widget test: Filter controls update chart data</description>
+        <approach>Render ProgressChartsScreen. Select "Bench Press" from exercise dropdown. Verify chart updates with bench press data. Select "3m" date range. Verify chart shows only 3 months of data.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC7">
+        <description>Widget test: Export chart generates image</description>
+        <approach>Mock ExportChartUseCase. Render chart with RepaintBoundary. Tap export button. Verify ExportChartUseCase called with correct key. Verify share dialog opens (mock share_plus).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC5">
+        <description>Widget test: PR celebration animation displays</description>
+        <approach>Trigger new PR detection (mock DetectNewPRUseCase returns new PR). Verify ConfettiWidget animates. Verify PR badge displays with "NEW PR!" text and star icon. Verify toast appears with PR details.</approach>
+      </test-idea>
+      <test-idea ac-ref="ALL">
+        <description>Integration test: Complete progress viewing flow</description>
+        <approach>Launch app. Navigate to Fitness tab → Progress. Select "Squat" exercise. Select "6m" date range. Verify line chart displays with correct data. Tap data point, verify tooltip appears. Tap export, verify image saved. Test end-to-end with real database.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4,AC5">
+        <description>Integration test: PR detection and celebration flow</description>
+        <approach>Log workout set with weight exceeding current PR. Verify personal_records view refreshed. Verify confetti animation plays. Verify PR badge appears. Navigate to Progress screen, verify PR marked on chart with star.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC2">
+        <description>Performance test: Chart rendering time &lt;1s</description>
+        <approach>Create dataset with 100 data points. Measure time from filter change to chart render complete. Assert render time &lt;1000ms. Test with 500 points (pagination), assert &lt;1500ms.</approach>
+      </test-idea>
+    </ideas>
+  </tests>
+</story-context>

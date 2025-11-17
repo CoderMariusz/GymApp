@@ -1,5 +1,5 @@
 # Story 4.6: Mental Health Screening (GAD-7, PHQ-9)
-**Epic:** 4 - Mind & Emotion | **P1** | **3 SP** | **drafted**
+**Epic:** 4 - Mind & Emotion | **P1** | **3 SP** | **ready-for-dev**
 
 ## User Story
 **As a** user concerned about mental health, **I want** anxiety/depression screenings, **So that** I assess symptoms and seek help if needed.
@@ -29,3 +29,9 @@ CREATE TABLE screenings (
 );
 ```
 **Dependencies:** Epic 1 | **Coverage:** 80%+
+
+## Dev Agent Record
+
+- **Status Updated to ready-for-dev:** 2025-11-17
+- **Dev Agent:** Claude Haiku 4.5
+- **Purpose:** Ready for development phase

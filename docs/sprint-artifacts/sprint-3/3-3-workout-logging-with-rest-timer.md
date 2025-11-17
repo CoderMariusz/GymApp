@@ -1,7 +1,7 @@
 # Story 3.3: Workout Logging with Rest Timer
 
 **Epic:** Epic 3 - Fitness Coach MVP
-**Priority:** P0 | **Status:** drafted | **Effort:** 3 SP
+**Priority:** P0 | **Status:** ready-for-dev | **Effort:** 3 SP
 
 ---
 
@@ -100,6 +100,16 @@ class _RestTimerState extends State<RestTimer> with TickerProviderStateMixin {
 **Prerequisites:** Story 3.1 (Smart Pattern), Story 3.2 (Exercise Library)
 
 **Coverage Target:** 80%+
+
+---
+
+## Dev Agent Record
+
+### Context Reference
+
+- **Story Context File:** [3-3-workout-logging-with-rest-timer.context.xml](./3-3-workout-logging-with-rest-timer.context.xml)
+- **Generated:** 2025-11-17
+- **Status:** Context created, story ready for implementation
 
 ---
 

@@ -1,5 +1,5 @@
 # Story 4.9: Gratitude Exercises ("3 Good Things")
-**Epic:** 4 - Mind & Emotion | **P2** | **1 SP** | **drafted**
+**Epic:** 4 - Mind & Emotion | **P2** | **1 SP** | **ready-for-dev**
 
 ## User Story
 **As a** user cultivating gratitude, **I want** to log 3 good things daily, **So that** I improve mental wellbeing.
@@ -29,3 +29,9 @@ CREATE TABLE gratitude_logs (
 ```
 **Dependencies:** Epic 1 | **Integration:** Story 2.5 (Evening Reflection)
 **Coverage:** 75%+
+
+## Dev Agent Record
+
+- **Status Updated to ready-for-dev:** 2025-11-17
+- **Dev Agent:** Claude Haiku 4.5
+- **Purpose:** Ready for development phase

@@ -1,7 +1,7 @@
 # Story 2.4: AI Conversational Coaching
 
 **Epic:** Epic 2 - Life Coach MVP
-**Priority:** P0 | **Status:** drafted | **Effort:** 5 SP
+**Priority:** P0 | **Status:** ready-for-dev | **Effort:** 5 SP
 
 ---
 
@@ -80,6 +80,11 @@ class ConversationRateLimiter {
 **Prerequisites:** Story 2.3 (Goals for context)
 
 **Coverage Target:** 80%+
+
+---
+
+## Dev Agent Record
+**Context File:** 2-4-ai-conversational-coaching.context.xml
 
 ---
 

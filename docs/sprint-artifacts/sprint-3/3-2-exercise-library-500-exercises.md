@@ -1,7 +1,7 @@
 # Story 3.2: Exercise Library (500+ Exercises)
 
 **Epic:** Epic 3 - Fitness Coach MVP
-**Priority:** P0 | **Status:** drafted | **Effort:** 3 SP
+**Priority:** P0 | **Status:** ready-for-dev | **Effort:** 3 SP
 
 ---
 
@@ -99,6 +99,16 @@ INSERT INTO exercises (name, category, muscle_groups, instructions) VALUES
 **Blocks:** Story 3.1 (Smart Pattern needs exercises)
 
 **Coverage Target:** 80%+
+
+---
+
+## Dev Agent Record
+
+### Context Reference
+
+- **Story Context File:** [3-2-exercise-library-500-exercises.context.xml](./3-2-exercise-library-500-exercises.context.xml)
+- **Generated:** 2025-11-17
+- **Status:** Context created, story ready for implementation
 
 ---
 

@@ -1,0 +1,720 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>2</epicId>
+    <storyId>2.10</storyId>
+    <title>Weekly Summary Report (Life Coach)</title>
+    <status>ready-for-dev</status>
+    <generatedAt>2025-11-17</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/sprint-2/2-10-weekly-summary-report-life-coach.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>user reflecting on my week</asA>
+    <iWant>to receive an automated weekly summary with insights</iWant>
+    <soThat>I understand my progress and patterns over time</soThat>
+    <tasks>
+      <task id="1" ac-ref="AC1,AC2">
+        <description>Implement scheduled weekly report generation (Sunday 6pm)</description>
+        <subtasks>
+          <subtask>Create Supabase Edge Function for weekly report generation</subtask>
+          <subtask>Configure cron job to trigger every Sunday at 6pm</subtask>
+          <subtask>Implement getAllActiveUsers() to fetch users who haven't opted out</subtask>
+          <subtask>Create generateWeeklyReport() function to aggregate week's data</subtask>
+          <subtask>Calculate check-ins completed (7/7 days tracking)</subtask>
+          <subtask>Calculate avg mood, energy, and sleep quality scores</subtask>
+          <subtask>Calculate goals progress percentage</subtask>
+          <subtask>Calculate daily plan completion rate</subtask>
+          <subtask>Count AI conversation interactions</subtask>
+          <subtask>Handle timezone considerations for Sunday 6pm per user</subtask>
+        </subtasks>
+      </task>
+      <task id="2" ac-ref="AC3,AC4">
+        <description>Implement AI-generated insights and recommendations</description>
+        <subtasks>
+          <subtask>Create GenerateWeeklyInsightUseCase</subtask>
+          <subtask>Aggregate week's data: check-ins, mood/energy/sleep patterns, goal progress</subtask>
+          <subtask>Send context to Claude API for insight generation</subtask>
+          <subtask>Generate top accomplishment from completed goals and tasks</subtask>
+          <subtask>Generate 3-5 actionable recommendations for next week</subtask>
+          <subtask>Implement fallback insights if AI service unavailable</subtask>
+          <subtask>Cache generated insights to avoid regeneration</subtask>
+        </subtasks>
+      </task>
+      <task id="3" ac-ref="AC2,AC5">
+        <description>Implement email notification system</description>
+        <subtasks>
+          <subtask>Create SendWeeklySummaryEmailUseCase</subtask>
+          <subtask>Design email template (HTML) with summary highlights</subtask>
+          <subtask>Include: check-in count, avg scores, top insight, CTA to view full report</subtask>
+          <subtask>Integrate with email service (Resend, SendGrid, or Supabase Edge Function)</subtask>
+          <subtask>Implement email delivery queue for reliability</subtask>
+          <subtask>Handle email delivery failures with retry logic (3 attempts)</subtask>
+          <subtask>Track email delivery status in database</subtask>
+        </subtasks>
+      </task>
+      <task id="4" ac-ref="AC6">
+        <description>Implement in-app modal report display (Monday morning)</description>
+        <subtasks>
+          <subtask>Create WeeklyReportModal widget</subtask>
+          <subtask>Check on app open if new report available (generated Sunday, not yet viewed)</subtask>
+          <subtask>Display full report: check-ins, scores, goals progress, completion rate, AI conversations</subtask>
+          <subtask>Show trend indicators (↑↓ from previous week)</subtask>
+          <subtask>Display AI-generated insight and recommendations</subtask>
+          <subtask>Add "Share Report" button</subtask>
+          <subtask>Add "Dismiss" action and mark report as viewed</subtask>
+        </subtasks>
+      </task>
+      <task id="5" ac-ref="AC7,AC8">
+        <description>Implement report sharing (image/PDF generation)</description>
+        <subtasks>
+          <subtask>Create report template design for image export (1080x1920px)</subtask>
+          <subtask>Implement image generation using canvas/screenshot API</subtask>
+          <subtask>Implement PDF generation with report data</subtask>
+          <subtask>Include branding, user stats, insights, and QR code to app</subtask>
+          <subtask>Integrate with share sheet (share_plus package)</subtask>
+          <subtask>Support sharing to: Instagram Story, Twitter, email, save to device</subtask>
+          <subtask>Handle image/PDF generation errors gracefully</subtask>
+        </subtasks>
+      </task>
+      <task id="6" ac-ref="AC9">
+        <description>Implement report persistence and history</description>
+        <subtasks>
+          <subtask>Create weekly_reports table in Supabase</subtask>
+          <subtask>Create weekly_reports table in Drift (local SQLite)</subtask>
+          <subtask>Implement saveWeeklyReport() use case</subtask>
+          <subtask>Store report_data as JSONB with all metrics and insights</subtask>
+          <subtask>Create "View Past Weeks" screen in History tab</subtask>
+          <subtask>Display reports in reverse chronological order</subtask>
+          <subtask>Allow viewing historical reports with full details</subtask>
+          <subtask>Implement offline access to past reports</subtask>
+        </subtasks>
+      </task>
+      <task id="7" ac-ref="AC10">
+        <description>Implement notification preferences and opt-out</description>
+        <subtasks>
+          <subtask>Add weekly_report_notifications field to user_preferences table</subtask>
+          <subtask>Create settings toggle in app: "Weekly Summary Notifications"</subtask>
+          <subtask>Include opt-out link in email footer</subtask>
+          <subtask>Respect notification preferences in cron job</subtask>
+          <subtask>Store opt-out timestamp for GDPR compliance</subtask>
+          <subtask>Allow re-enabling notifications from settings</subtask>
+        </subtasks>
+      </task>
+      <task id="8" ac-ref="AC2">
+        <description>Implement push notification system</description>
+        <subtasks>
+          <subtask>Configure Firebase Cloud Messaging (FCM) for push notifications</subtask>
+          <subtask>Send push notification after report generation: "Your week in review is ready! 📊"</subtask>
+          <subtask>Deep link notification to open weekly report modal</subtask>
+          <subtask>Handle notification permissions (request on first use)</subtask>
+          <subtask>Track notification delivery status</subtask>
+          <subtask>Respect user's push notification preferences</subtask>
+        </subtasks>
+      </task>
+      <task id="9" ac-ref="ALL">
+        <description>Write comprehensive tests</description>
+        <subtasks>
+          <subtask>Unit tests: Weekly report data aggregation accuracy</subtask>
+          <subtask>Unit tests: GenerateWeeklyReportUseCase with various data scenarios</subtask>
+          <subtask>Unit tests: AI insight generation (mock Claude API)</subtask>
+          <subtask>Unit tests: Email template rendering</subtask>
+          <subtask>Widget tests: WeeklyReportModal display and interactions</subtask>
+          <subtask>Widget tests: Report sharing functionality</subtask>
+          <subtask>Integration tests: End-to-end report generation flow</subtask>
+          <subtask>Integration tests: Cron job execution and timing</subtask>
+          <subtask>Integration tests: Email delivery with retry logic</subtask>
+          <subtask>Integration tests: Opt-out functionality</subtask>
+          <subtask>Achieve 75%+ code coverage</subtask>
+        </subtasks>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="AC1">
+      <text>Weekly summary report generated automatically every Sunday at 6pm</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC2">
+      <text>Push notification sent: "Your week in review is ready! 📊"</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC3">
+      <text>Email notification sent with summary highlights and link to full report</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC4">
+      <text>Report includes: check-ins completed (7/7), avg mood/energy/sleep scores, goals progress %, daily plan completion rate, AI conversations count</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC5">
+      <text>Report includes: top accomplishment, AI-generated insight, actionable recommendations for next week</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC6">
+      <text>In-app modal shows full report on next app open (Monday morning)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC7">
+      <text>User can share report as image (1080x1920px, optimized for social media)</text>
+      <priority>P1</priority>
+    </criterion>
+    <criterion id="AC8">
+      <text>User can export report as PDF</text>
+      <priority>P1</priority>
+    </criterion>
+    <criterion id="AC9">
+      <text>Report saved in History tab under "View Past Weeks"</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC10">
+      <text>User can opt-out of weekly notifications (email and push) from settings</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC11">
+      <text>Report shows trend indicators (↑↓ compared to previous week)</text>
+      <priority>P1</priority>
+    </criterion>
+    <criterion id="AC12">
+      <text>GDPR compliant: user data aggregation and storage follows privacy policy</text>
+      <priority>P0</priority>
+    </criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR29: Weekly progress summaries with AI insights</section>
+        <snippet>Weekly summary reports must aggregate check-in data, goal progress, and task completion. AI generates personalized insights and recommendations. Reports sent via push/email notification. Target: Sunday 6pm generation.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR90: Report sharing and export</section>
+        <snippet>Users can share weekly reports as images (social media optimized) or PDF. Include branding, key metrics, insights, and QR code. Support Instagram Story, Twitter, email sharing.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/epics.md</path>
+        <title>Epic 2: Life Coach MVP - Story 2.10</title>
+        <section>Story 2.10: Weekly Summary Report</section>
+        <snippet>Automated weekly summary report with AI-generated insights. Generated Sunday 6pm, delivered via push/email. In-app modal on Monday. Shareable as image/PDF. Saved in history. Prerequisites: All Sprint 2 stories.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Scheduled Jobs (D8)</section>
+        <snippet>Use Supabase Edge Functions with pg_cron for scheduled jobs. Weekly report generation runs Sunday 6pm. Handle timezone per user. Implement idempotency to prevent duplicate generation.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Email Service Integration</section>
+        <snippet>Use Resend or SendGrid for transactional emails. Edge Function triggers email after report generation. Implement retry logic (3 attempts). Track delivery status in database. Include unsubscribe link for GDPR compliance.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Push Notifications (D9)</section>
+        <snippet>Firebase Cloud Messaging (FCM) for push notifications. Send after report generation. Deep link to report modal. Respect user preferences. Track delivery status.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/ux-design-specification.md</path>
+        <title>UX Design Specification</title>
+        <section>Weekly Report UX</section>
+        <snippet>Modal card with full report on Monday morning app open. Show metrics with trend indicators (↑↓). AI insight prominently displayed. "Share" and "Dismiss" actions. Report design: clean, visual, inspirational. Image export optimized for Instagram Story (1080x1920px).</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/sprint-2/2-10-weekly-summary-report-life-coach.md</path>
+        <title>Story 2.10: Weekly Summary Report</title>
+        <section>Technical Implementation</section>
+        <snippet>Cron job (Monday 6am) generates weekly reports. Database: weekly_reports table with JSONB report_data. Aggregates: check-ins, goals, plan completion, mood/energy/sleep averages. AI generates top insight.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <reference>
+        <path>lib/features/life_coach/domain/usecases/save_checkin_usecase.dart</path>
+        <relevance>Check-in data source for weekly aggregation</relevance>
+        <note>Weekly report aggregates check-ins from past 7 days. Use getCheckinsForDateRange() to fetch data.</note>
+      </reference>
+      <reference>
+        <path>lib/features/life_coach/domain/repositories/checkin_repository.dart</path>
+        <relevance>Repository interface for fetching check-in data</relevance>
+        <note>Implement getCheckinsForDateRange(userId, startDate, endDate) for weekly data retrieval.</note>
+      </reference>
+      <reference>
+        <path>lib/features/life_coach/domain/repositories/goal_repository.dart</path>
+        <relevance>Goal progress data for weekly report</relevance>
+        <note>Calculate goal progress percentage: (completed goals / total goals) * 100. Include in report.</note>
+      </reference>
+      <reference>
+        <path>lib/features/life_coach/domain/repositories/daily_plan_repository.dart</path>
+        <relevance>Daily plan completion data for weekly report</relevance>
+        <note>Calculate avg daily plan completion rate: sum(completed_tasks / total_tasks) / 7 days.</note>
+      </reference>
+    </code>
+    <dependencies>
+      <flutter>
+        <sdk>3.38+</sdk>
+        <dart>3.10+</dart>
+      </flutter>
+      <packages>
+        <package name="flutter_riverpod" version="^3.0.0" usage="State management for weekly report modal and data flow" />
+        <package name="riverpod_annotation" version="^3.0.0" usage="Code generation for providers" />
+        <package name="drift" version="^2.14.0" usage="Local SQLite database for offline report storage" />
+        <package name="supabase_flutter" version="^2.0.0" usage="Supabase client for database and Edge Functions" />
+        <package name="share_plus" version="^7.0.0" usage="Share report as image/PDF to social media and other apps" />
+        <package name="pdf" version="^3.10.0" usage="Generate PDF reports for export" />
+        <package name="flutter_widget_to_image" version="^0.1.0" usage="Convert report widget to image for sharing" />
+        <package name="firebase_messaging" version="^14.0.0" usage="Push notifications via Firebase Cloud Messaging" />
+        <package name="http" version="^1.1.0" usage="HTTP client for API calls (Claude, email service)" />
+        <package name="intl" version="^0.18.0" usage="Date formatting and timezone handling" />
+        <package name="flutter_test" version="sdk" usage="Unit and widget testing framework" />
+        <package name="integration_test" version="sdk" usage="End-to-end testing framework" />
+        <package name="mockito" version="^5.4.0" usage="Mocking dependencies for tests" />
+      </packages>
+      <external>
+        <service name="Supabase Edge Functions" usage="Weekly report generation cron job (Sunday 6pm)" />
+        <service name="Supabase pg_cron" usage="Scheduled job trigger for Edge Function" />
+        <service name="Claude API (Anthropic)" usage="AI-generated insights and recommendations" />
+        <service name="Resend / SendGrid" usage="Email delivery service for weekly summaries" />
+        <service name="Firebase Cloud Messaging" usage="Push notifications for report availability" />
+      </external>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint id="ARCH-1" type="architectural">
+      <description>Must follow Hybrid Architecture pattern (D1)</description>
+      <details>Create weekly report components in lib/features/life_coach/ with presentation/, domain/, and data/ layers. Follow clean architecture separation.</details>
+    </constraint>
+    <constraint id="ARCH-2" type="architectural">
+      <description>Offline-first for viewing historical reports</description>
+      <details>Store weekly reports in Drift (SQLite) for offline access. Sync to Supabase for cross-device availability. Users must be able to view past reports without internet.</details>
+    </constraint>
+    <constraint id="SCHED-1" type="scheduling">
+      <description>Report generation timing: Sunday 6pm per user's timezone</description>
+      <details>Use pg_cron to trigger Edge Function every hour. Edge Function checks users whose local time is 6pm Sunday. Handle timezone conversions correctly. Implement idempotency to prevent duplicate generation.</details>
+    </constraint>
+    <constraint id="SCHED-2" type="scheduling">
+      <description>Report generation must complete within 5 minutes</description>
+      <details>Limit batch processing to prevent timeout. If &gt;1000 active users, implement queue-based processing. Monitor Edge Function execution time.</details>
+    </constraint>
+    <constraint id="DATA-1" type="data">
+      <description>Database schema must match specification</description>
+      <details>weekly_reports table: id (UUID PK), user_id (UUID FK auth.users), week_start_date (DATE), week_end_date (DATE), report_data (JSONB), viewed (BOOLEAN default false), email_sent (BOOLEAN default false), email_sent_at (TIMESTAMPTZ nullable), created_at (TIMESTAMPTZ). UNIQUE(user_id, week_start_date).</details>
+    </constraint>
+    <constraint id="DATA-2" type="data">
+      <description>Report data aggregation accuracy</description>
+      <details>Week defined as Monday 00:00 to Sunday 23:59. Count check-ins completed (0-7). Calculate averages with null handling (only count days with data). Goals progress: (goals_completed / total_active_goals) * 100. Daily plan completion: avg(completed_tasks / total_tasks) over 7 days.</details>
+    </constraint>
+    <constraint id="SEC-1" type="security">
+      <description>Row Level Security (RLS) policies required</description>
+      <details>Enable RLS on weekly_reports table. Policy: CREATE POLICY "Users can only access own reports" ON weekly_reports FOR ALL USING (auth.uid() = user_id);</details>
+    </constraint>
+    <constraint id="SEC-2" type="security">
+      <description>GDPR compliance for data retention</description>
+      <details>Store user consent for email/push notifications. Include unsubscribe link in emails. Delete reports when user deletes account. Provide data export functionality. Store opt-out timestamp.</details>
+    </constraint>
+    <constraint id="AI-1" type="ai-quality">
+      <description>AI insight generation quality standards</description>
+      <details>Use Claude 3.5 Sonnet for insight generation. Prompt must include: week's data summary, previous week comparison, user's goals. Insights should be: actionable, specific, encouraging, evidence-based. Fallback to template-based insights if AI unavailable. Max token limit: 500.</details>
+    </constraint>
+    <constraint id="AI-2" type="ai-quality">
+      <description>AI insight generation timeout</description>
+      <details>Claude API timeout: 10 seconds. Implement retry logic (2 attempts). If both fail, use fallback template insights. Cache successful insights to avoid regeneration on modal re-open.</details>
+    </constraint>
+    <constraint id="EMAIL-1" type="email">
+      <description>Email delivery reliability</description>
+      <details>Use transactional email service (Resend/SendGrid) with retry logic. Retry 3 times with exponential backoff (1min, 5min, 15min). Track delivery status in weekly_reports.email_sent. Log failures for monitoring.</details>
+    </constraint>
+    <constraint id="EMAIL-2" type="email">
+      <description>Email template design</description>
+      <details>Mobile-responsive HTML template. Include: branding, key metrics (check-ins, avg scores), top insight (truncated), CTA button "View Full Report" (deep link to app), unsubscribe footer. Test across email clients (Gmail, Outlook, Apple Mail).</details>
+    </constraint>
+    <constraint id="NOTIF-1" type="notification">
+      <description>Push notification delivery</description>
+      <details>Send FCM notification after report generation. Payload: title="Your week in review is ready! 📊", body="Tap to see your progress and insights". Deep link: gymapp://weekly-report?id={report_id}. Handle notification permissions gracefully.</details>
+    </constraint>
+    <constraint id="NOTIF-2" type="notification">
+      <description>Notification preferences</description>
+      <details>User can disable: weekly_email, weekly_push independently. Store in user_preferences table. Respect preferences in report generation flow. Provide toggle in Settings &gt; Notifications.</details>
+    </constraint>
+    <constraint id="SHARE-1" type="sharing">
+      <description>Image generation for social sharing</description>
+      <details>Generate 1080x1920px image (9:16 aspect ratio) optimized for Instagram Story. Include: gradient background, app branding, key metrics with icons, AI insight quote, QR code to app. Use flutter_widget_to_image for rendering. Handle image generation errors gracefully.</details>
+    </constraint>
+    <constraint id="SHARE-2" type="sharing">
+      <description>PDF export quality</description>
+      <details>Generate multi-page PDF with: cover page (branding, date range), metrics page (charts/graphs), insights page (AI recommendations), footer (app info). Use pdf package. Max file size: 2MB. Handle PDF generation errors gracefully.</details>
+    </constraint>
+    <constraint id="UX-1" type="ux">
+      <description>Modal display timing (Monday morning)</description>
+      <details>Check on app open (any day) if new report available (generated Sunday, viewed=false). Show modal immediately on Monday morning. Allow dismissal. Mark as viewed after dismissal. Don't show again until next report.</details>
+    </constraint>
+    <constraint id="UX-2" type="ux">
+      <description>Report history navigation</description>
+      <details>Create "View Past Weeks" in History tab. Display reports in reverse chronological order (newest first). Show: week date range, key metrics preview, "View Details" button. Support pagination if &gt;20 reports.</details>
+    </constraint>
+    <constraint id="PERF-1" type="performance">
+      <description>Report generation performance</description>
+      <details>Single user report generation must complete in &lt;3 seconds. Optimize database queries with proper indexes. Batch AI insight generation if processing multiple users. Monitor Edge Function cold start time.</details>
+    </constraint>
+    <constraint id="PERF-2" type="performance">
+      <description>Modal load time</description>
+      <details>Weekly report modal must load in &lt;500ms. Fetch report data from local Drift database first. Use cached AI insights. Lazy load share functionality (PDF/image generation on demand).</details>
+    </constraint>
+    <constraint id="TEST-1" type="testing">
+      <description>75%+ code coverage required</description>
+      <details>Follow 70/20/10 testing pyramid. Unit tests for data aggregation, AI insight generation, email/push services. Widget tests for modal UI. Integration tests for full flow including cron job simulation.</details>
+    </constraint>
+    <constraint id="TEST-2" type="testing">
+      <description>Cron job testing strategy</description>
+      <details>Mock pg_cron trigger in tests. Test report generation for various scenarios: 0 check-ins, partial week, full week, no goals, completed goals. Test timezone handling. Test idempotency (duplicate generation prevention).</details>
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>WeeklyReportEntity</name>
+      <kind>domain-entity</kind>
+      <signature>
+        class WeeklyReportEntity {
+          final String id;
+          final String userId;
+          final DateTime weekStartDate;
+          final DateTime weekEndDate;
+          final int checkinsCompleted;      // 0-7
+          final double avgMood;             // 1.0-5.0
+          final double avgEnergy;           // 1.0-5.0
+          final double avgSleep;            // 1.0-5.0
+          final int goalsProgressPercent;   // 0-100
+          final double dailyPlanCompletionRate; // 0.0-1.0
+          final int aiConversationsCount;
+          final String topAccomplishment;
+          final String aiInsight;
+          final List&lt;String&gt; recommendations;
+          final bool viewed;
+          final bool emailSent;
+          final DateTime? emailSentAt;
+          final DateTime createdAt;
+        }
+      </signature>
+      <path>lib/features/life_coach/domain/entities/weekly_report_entity.dart</path>
+      <notes>Use @freezed annotation for immutability. Handle null averages (if no data for metric). Recommendations should be 3-5 actionable items.</notes>
+    </interface>
+    <interface>
+      <name>GenerateWeeklyReportUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class GenerateWeeklyReportUseCase {
+          Future&lt;Result&lt;WeeklyReportEntity&gt;&gt; call({
+            required String userId,
+            required DateTime weekStartDate,
+            required DateTime weekEndDate,
+          });
+        }
+      </signature>
+      <path>lib/features/life_coach/domain/usecases/generate_weekly_report_usecase.dart</path>
+      <notes>Aggregates data from check_ins, goals, daily_plans tables. Calls AI service for insight generation. Returns Result&lt;T&gt; pattern. Implements caching to avoid regeneration.</notes>
+    </interface>
+    <interface>
+      <name>SendWeeklySummaryEmailUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class SendWeeklySummaryEmailUseCase {
+          Future&lt;Result&lt;bool&gt;&gt; call({
+            required String userId,
+            required String userEmail,
+            required WeeklyReportEntity report,
+          });
+        }
+      </signature>
+      <path>lib/features/life_coach/domain/usecases/send_weekly_summary_email_usecase.dart</path>
+      <notes>Renders email template with report data. Calls email service API. Implements retry logic (3 attempts). Updates email_sent status in database.</notes>
+    </interface>
+    <interface>
+      <name>GenerateWeeklyInsightUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class GenerateWeeklyInsightUseCase {
+          Future&lt;Result&lt;WeeklyInsight&gt;&gt; call({
+            required String userId,
+            required WeeklyReportData data,
+          });
+        }
+      </signature>
+      <path>lib/features/life_coach/domain/usecases/generate_weekly_insight_usecase.dart</path>
+      <notes>Calls Claude API with week's data. Returns WeeklyInsight(topAccomplishment, aiInsight, recommendations). Implements fallback template insights. 10-second timeout.</notes>
+    </interface>
+    <interface>
+      <name>ShareWeeklyReportUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class ShareWeeklyReportUseCase {
+          Future&lt;Result&lt;String&gt;&gt; generateImage(WeeklyReportEntity report);
+          Future&lt;Result&lt;String&gt;&gt; generatePDF(WeeklyReportEntity report);
+          Future&lt;Result&lt;void&gt;&gt; share(String filePath, ShareType type);
+        }
+      </signature>
+      <path>lib/features/life_coach/domain/usecases/share_weekly_report_usecase.dart</path>
+      <notes>Generates image (1080x1920px) or PDF. Returns file path. Integrates with share_plus for sharing. Handles generation errors gracefully.</notes>
+    </interface>
+    <interface>
+      <name>WeeklyReportRepository</name>
+      <kind>repository</kind>
+      <signature>
+        abstract class WeeklyReportRepository {
+          Future&lt;Result&lt;WeeklyReportEntity&gt;&gt; saveReport(WeeklyReportEntity report);
+          Future&lt;Result&lt;WeeklyReportEntity?&gt;&gt; getReportForWeek(String userId, DateTime weekStart);
+          Future&lt;Result&lt;List&lt;WeeklyReportEntity&gt;&gt;&gt; getAllReports(String userId);
+          Future&lt;Result&lt;WeeklyReportEntity?&gt;&gt; getLatestUnviewedReport(String userId);
+          Future&lt;Result&lt;void&gt;&gt; markAsViewed(String reportId);
+        }
+      </signature>
+      <path>lib/features/life_coach/domain/repositories/weekly_report_repository.dart</path>
+      <notes>Implemented by WeeklyReportRepositoryImpl in data layer. Uses both DriftDataSource and SupabaseDataSource for offline-first sync.</notes>
+    </interface>
+    <interface>
+      <name>weekly_reports table (Supabase PostgreSQL)</name>
+      <kind>database-table</kind>
+      <signature>
+        CREATE TABLE weekly_reports (
+          id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+          user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+          week_start_date DATE NOT NULL,
+          week_end_date DATE NOT NULL,
+          report_data JSONB NOT NULL,
+          viewed BOOLEAN DEFAULT false,
+          email_sent BOOLEAN DEFAULT false,
+          email_sent_at TIMESTAMPTZ,
+          created_at TIMESTAMPTZ DEFAULT NOW(),
+          UNIQUE(user_id, week_start_date)
+        );
+        CREATE INDEX idx_weekly_reports_user_date ON weekly_reports(user_id, week_start_date DESC);
+        CREATE INDEX idx_weekly_reports_user_viewed ON weekly_reports(user_id, viewed) WHERE viewed = false;
+      </signature>
+      <path>supabase/migrations/</path>
+      <notes>report_data JSONB stores all metrics: checkinsCompleted, avgMood, avgEnergy, avgSleep, goalsProgressPercent, dailyPlanCompletionRate, aiConversationsCount, topAccomplishment, aiInsight, recommendations. Include RLS policies.</notes>
+    </interface>
+    <interface>
+      <name>weekly_reports table (Drift SQLite)</name>
+      <kind>database-table</kind>
+      <signature>
+        @DataClassName('WeeklyReportTable')
+        class WeeklyReports extends Table {
+          TextColumn get id => text()();
+          TextColumn get userId => text()();
+          DateTimeColumn get weekStartDate => dateTime()();
+          DateTimeColumn get weekEndDate => dateTime()();
+          TextColumn get reportData => text()(); // JSON string
+          BoolColumn get viewed => boolean().withDefault(const Constant(false))();
+          BoolColumn get emailSent => boolean().withDefault(const Constant(false))();
+          DateTimeColumn get emailSentAt => dateTime().nullable()();
+          DateTimeColumn get createdAt => dateTime()();
+
+          @override
+          Set&lt;Column&gt; get primaryKey => {id};
+        }
+      </signature>
+      <path>lib/core/database/tables.drift.dart</path>
+      <notes>Mirror of Supabase schema for offline-first. reportData stored as JSON string, parsed to WeeklyReportEntity in repository layer.</notes>
+    </interface>
+    <interface>
+      <name>user_preferences.weekly_report_notifications</name>
+      <kind>database-column</kind>
+      <signature>
+        ALTER TABLE user_preferences ADD COLUMN weekly_report_email BOOLEAN DEFAULT true;
+        ALTER TABLE user_preferences ADD COLUMN weekly_report_push BOOLEAN DEFAULT true;
+        ALTER TABLE user_preferences ADD COLUMN weekly_report_opted_out_at TIMESTAMPTZ;
+      </signature>
+      <path>supabase/migrations/</path>
+      <notes>Add notification preference columns to existing user_preferences table. Track opt-out timestamp for GDPR compliance.</notes>
+    </interface>
+    <interface>
+      <name>Weekly Report Generation Edge Function</name>
+      <kind>edge-function</kind>
+      <signature>
+        // supabase/functions/generate-weekly-reports/index.ts
+        Deno.serve(async (req) => {
+          const users = await getAllActiveUsersForTimeSlot();
+          for (const user of users) {
+            const report = await generateWeeklyReport(user.id);
+            await saveReport(report);
+            if (user.preferences.weekly_report_email) {
+              await sendEmail(user.email, report);
+            }
+            if (user.preferences.weekly_report_push) {
+              await sendPushNotification(user.id, report);
+            }
+          }
+          return new Response(JSON.stringify({ processed: users.length }));
+        });
+      </signature>
+      <path>supabase/functions/generate-weekly-reports/index.ts</path>
+      <notes>Triggered by pg_cron every hour. Checks users in 6pm Sunday timezone. Implements idempotency check. Processes users in batches to prevent timeout.</notes>
+    </interface>
+    <interface>
+      <name>pg_cron schedule</name>
+      <kind>cron-job</kind>
+      <signature>
+        SELECT cron.schedule(
+          'generate-weekly-reports',
+          '0 * * * *',  -- Every hour
+          $$
+          SELECT net.http_post(
+            url := 'https://[project-ref].supabase.co/functions/v1/generate-weekly-reports',
+            headers := '{"Authorization": "Bearer [anon-key]"}'::jsonb
+          ) AS request_id;
+          $$
+        );
+      </signature>
+      <path>supabase/migrations/</path>
+      <notes>Cron job runs hourly. Edge Function filters users whose local time is Sunday 6pm. Handles timezone conversion within Edge Function.</notes>
+    </interface>
+    <interface>
+      <name>Email Service API (Resend)</name>
+      <kind>external-api</kind>
+      <signature>
+        POST https://api.resend.com/emails
+        Headers: { Authorization: "Bearer [API_KEY]" }
+        Body: {
+          from: "LifeOS &lt;reports@lifeos.app&gt;",
+          to: "user@example.com",
+          subject: "Your Week in Review 📊",
+          html: "[email template]"
+        }
+      </signature>
+      <path>N/A (external service)</path>
+      <notes>Use Resend for email delivery. Implement retry logic with exponential backoff. Track delivery status via webhooks.</notes>
+    </interface>
+    <interface>
+      <name>Firebase Cloud Messaging API</name>
+      <kind>external-api</kind>
+      <signature>
+        POST https://fcm.googleapis.com/v1/projects/[project-id]/messages:send
+        Body: {
+          message: {
+            token: "[user-fcm-token]",
+            notification: {
+              title: "Your week in review is ready! 📊",
+              body: "Tap to see your progress and insights"
+            },
+            data: {
+              type: "weekly_report",
+              reportId: "[report-id]"
+            }
+          }
+        }
+      </signature>
+      <path>N/A (external service)</path>
+      <notes>Send push notification after report generation. Deep link opens weekly report modal. Handle token refresh and notification permissions.</notes>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Follow 70/20/10 testing pyramid: 70% unit tests (use cases, data aggregation, repositories, entities), 20% widget tests (modal UI, share functionality), 10% integration tests (end-to-end flows including cron simulation). Use flutter_test for unit/widget tests, integration_test for E2E. Mock dependencies with mockito. Target 75%+ code coverage. All acceptance criteria must have test coverage.
+    </standards>
+    <locations>
+      <location>test/features/life_coach/domain/usecases/</location>
+      <location>test/features/life_coach/domain/entities/</location>
+      <location>test/features/life_coach/data/repositories/</location>
+      <location>test/features/life_coach/presentation/widgets/</location>
+      <location>integration_test/features/life_coach/weekly_report_flow_test.dart</location>
+      <location>supabase/functions/generate-weekly-reports/index.test.ts</location>
+    </locations>
+    <ideas>
+      <test-idea ac-ref="AC1,AC4">
+        <description>Unit test: GenerateWeeklyReportUseCase - data aggregation accuracy</description>
+        <approach>Mock repositories with 7 days of check-in data. Verify report calculates: checkinsCompleted=7, correct avgMood/avgEnergy/avgSleep (sum/7), goalsProgressPercent=(2/3)*100=67, dailyPlanCompletionRate=avg(completion_rates). Assert all metrics match expected values.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4">
+        <description>Unit test: GenerateWeeklyReportUseCase - partial week data</description>
+        <approach>Mock repositories with only 3 check-ins (Mon, Wed, Fri). Verify checkinsCompleted=3. Verify averages calculated correctly (sum/3, not sum/7). Verify no division-by-zero errors.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4">
+        <description>Unit test: GenerateWeeklyReportUseCase - zero data scenario</description>
+        <approach>Mock repositories with no check-ins, no goals, no plans. Verify report generated with: checkinsCompleted=0, avgMood/avgEnergy/avgSleep=null, goalsProgressPercent=0, dailyPlanCompletionRate=0. Assert no exceptions thrown.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC5">
+        <description>Unit test: GenerateWeeklyInsightUseCase - AI insight generation</description>
+        <approach>Mock Claude API with successful response. Pass WeeklyReportData with sample metrics. Verify insight contains: topAccomplishment (string), aiInsight (150-300 chars), recommendations (list of 3-5 strings). Assert API called with correct prompt.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC5">
+        <description>Unit test: GenerateWeeklyInsightUseCase - fallback insights on AI failure</description>
+        <approach>Mock Claude API to throw timeout exception. Verify fallback template insights returned. Assert insight quality: not empty, actionable, relevant to data. Verify no exception propagated to caller.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3">
+        <description>Unit test: SendWeeklySummaryEmailUseCase - email delivery success</description>
+        <approach>Mock email service API with 200 OK response. Call use case with report data. Verify email sent with correct: recipient, subject, HTML body (contains metrics). Verify email_sent=true updated in database.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3">
+        <description>Unit test: SendWeeklySummaryEmailUseCase - retry logic on failure</description>
+        <approach>Mock email service to fail twice, succeed on third attempt. Verify retry logic executes 3 times with exponential backoff (1min, 5min, 15min delays). Verify email_sent=true after successful retry.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC2">
+        <description>Unit test: Push notification delivery</description>
+        <approach>Mock FCM API with successful response. Send notification with report ID. Verify notification payload: title="Your week in review is ready! 📊", data.reportId=[id]. Verify deep link URL correct.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6">
+        <description>Widget test: WeeklyReportModal displays all metrics</description>
+        <approach>Render WeeklyReportModal with sample report data. Verify all metrics displayed: check-ins (7/7), avg scores (4.2, 3.8, 4.0), goals progress (67%), plan completion (89%), AI conversations (12). Verify trend indicators (↑↓) shown.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6,AC9">
+        <description>Widget test: WeeklyReportModal dismiss and mark as viewed</description>
+        <approach>Render modal. Tap "Dismiss" button. Verify modal dismissed. Verify markAsViewed() called with correct report ID. Verify modal does not appear again on next app open.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC7,AC8">
+        <description>Widget test: Share report functionality</description>
+        <approach>Render modal. Tap "Share" button. Verify share options displayed (Image, PDF). Select "Image". Verify generateImage() called. Mock image file path returned. Verify share sheet opened with image path.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC7">
+        <description>Unit test: Image generation for social sharing</description>
+        <approach>Call generateImage() with report data. Verify image generated with dimensions 1080x1920px. Verify image contains: branding, key metrics, AI insight quote, QR code. Assert file saved to temp directory.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC8">
+        <description>Unit test: PDF export generation</description>
+        <approach>Call generatePDF() with report data. Verify PDF generated with multiple pages: cover, metrics, insights. Verify PDF file size &lt;2MB. Assert file saved to temp directory. Verify no exceptions on generation.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC10">
+        <description>Unit test: Notification preferences opt-out</description>
+        <approach>Set user preferences: weekly_report_email=false, weekly_report_push=false. Verify report generated but no email sent, no push notification sent. Assert opt-out timestamp recorded in database.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC10">
+        <description>Widget test: Settings toggle for notification preferences</description>
+        <approach>Render Settings screen. Find "Weekly Summary Notifications" toggle. Toggle off. Verify preferences updated in database: weekly_report_email=false. Toggle on. Verify preferences updated: weekly_report_email=true.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1">
+        <description>Integration test: Cron job timing and execution</description>
+        <approach>Mock pg_cron trigger at Sunday 6pm. Simulate Edge Function execution. Verify report generated for active users. Verify users in correct timezone processed. Verify idempotency (no duplicate reports if run twice).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1,AC4,AC5">
+        <description>Integration test: End-to-end report generation flow</description>
+        <approach>Seed database with 7 days of check-ins, 3 goals (2 completed), 7 daily plans. Trigger report generation. Verify report saved to database with correct metrics. Verify AI insight generated. Verify report retrievable via getLatestUnviewedReport().</approach>
+      </test-idea>
+      <test-idea ac-ref="AC2,AC3">
+        <description>Integration test: Email and push notification delivery</description>
+        <approach>Generate report for user with notifications enabled. Verify email sent to user's email address. Verify push notification sent with correct payload. Verify email_sent=true in database. Mock external services (Resend, FCM).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6">
+        <description>Integration test: Modal display on Monday morning</description>
+        <approach>Seed database with report generated Sunday (viewed=false). Open app on Monday morning. Verify WeeklyReportModal displayed automatically. Dismiss modal. Verify viewed=true in database. Reopen app. Verify modal not shown again.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC9">
+        <description>Integration test: Report history navigation</description>
+        <approach>Seed database with 5 weekly reports. Navigate to History tab &gt; "View Past Weeks". Verify reports displayed in reverse chronological order (newest first). Tap report. Verify full report details displayed.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC12">
+        <description>Integration test: GDPR compliance - data deletion</description>
+        <approach>Create user with 3 weekly reports. Trigger account deletion. Verify all weekly reports deleted (CASCADE on user_id FK). Verify no orphaned data remains in database.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1">
+        <description>Unit test: Timezone handling for Sunday 6pm</description>
+        <approach>Test users in different timezones (UTC, PST, JST). Mock current time as Sunday 6pm in each timezone. Verify only users in correct timezone selected for report generation. Verify timezone conversion accuracy.</approach>
+      </test-idea>
+    </ideas>
+  </tests>
+</story-context>

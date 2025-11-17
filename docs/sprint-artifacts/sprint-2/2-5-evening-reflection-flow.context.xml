@@ -1,0 +1,528 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>2</epicId>
+    <storyId>2.5</storyId>
+    <title>Evening Reflection Flow</title>
+    <status>ready-for-dev</status>
+    <generatedAt>2025-11-17</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/sprint-2/2-5-evening-reflection-flow.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>user ending my day</asA>
+    <iWant>to complete an evening reflection</iWant>
+    <soThat>I can review accomplishments and prepare for tomorrow</soThat>
+    <tasks>
+      <task id="1" ac-ref="AC1,AC2,AC3,AC4,AC5,AC7,AC9">
+        <description>Implement evening reflection modal UI</description>
+        <subtasks>
+          <subtask>Create EveningReflectionModal widget (StatefulWidget)</subtask>
+          <subtask>Display daily plan completion checkboxes (auto-filled from daily_plans table)</subtask>
+          <subtask>Calculate and display completion percentage</subtask>
+          <subtask>Add "What went well today?" text field for accomplishments</subtask>
+          <subtask>Add "What's important tomorrow?" text field for priorities</subtask>
+          <subtask>Add optional "3 good things today" gratitude prompt with 3 input fields</subtask>
+          <subtask>Add "Save Reflection" CTA button</subtask>
+          <subtask>Add "Skip for today" text link at bottom</subtask>
+          <subtask>Configure modal to prevent swipe-down dismissal</subtask>
+        </subtasks>
+      </task>
+      <task id="2" ac-ref="AC1">
+        <description>Implement notification scheduling system</description>
+        <subtasks>
+          <subtask>Create EveningReflectionScheduler service</subtask>
+          <subtask>Integrate with flutter_local_notifications package</subtask>
+          <subtask>Schedule daily notification at user-configured time (default 8pm)</subtask>
+          <subtask>Store notification preference in user_settings table</subtask>
+          <subtask>Handle notification tap to open reflection modal</subtask>
+          <subtask>Implement notification opt-out setting</subtask>
+        </subtasks>
+      </task>
+      <task id="3" ac-ref="AC6,AC9">
+        <description>Implement reflection data persistence</description>
+        <subtasks>
+          <subtask>Create reflections table in Drift (local SQLite)</subtask>
+          <subtask>Create reflections table in Supabase (PostgreSQL) with RLS policies</subtask>
+          <subtask>Implement saveReflection() use case</subtask>
+          <subtask>Add UNIQUE constraint on (user_id, date) to prevent duplicates</subtask>
+          <subtask>Implement data sync between Drift and Supabase</subtask>
+        </subtasks>
+      </task>
+      <task id="4" ac-ref="AC2,AC6">
+        <description>Implement completion tracking logic</description>
+        <subtasks>
+          <subtask>Fetch today's daily plan from daily_plans table</subtask>
+          <subtask>Calculate completion percentage from checked tasks</subtask>
+          <subtask>Auto-fill checkboxes based on task completion status</subtask>
+          <subtask>Allow user to manually adjust completion checkboxes</subtask>
+          <subtask>Store final completion_rate in reflections table</subtask>
+        </subtasks>
+      </task>
+      <task id="5" ac-ref="AC8">
+        <description>Integrate with AI daily plan generation</description>
+        <subtasks>
+          <subtask>Pass reflection data to AI generation service for next day</subtask>
+          <subtask>Include accomplishments, tomorrow priorities, and completion rate</subtask>
+          <subtask>Create ReflectionContextProvider for AI context</subtask>
+          <subtask>Handle graceful degradation if no reflection available</subtask>
+        </subtasks>
+      </task>
+      <task id="6" ac-ref="AC9">
+        <description>Implement reflection history view</description>
+        <subtasks>
+          <subtask>Create ReflectionHistoryScreen widget</subtask>
+          <subtask>Display list of past reflections with dates and completion rates</subtask>
+          <subtask>Add tap to view full reflection details</subtask>
+          <subtask>Implement infinite scroll pagination for performance</subtask>
+          <subtask>Add filter by date range functionality</subtask>
+        </subtasks>
+      </task>
+      <task id="7" ac-ref="AC1,AC9">
+        <description>Implement modal trigger logic</description>
+        <subtasks>
+          <subtask>Check if reflection completed for today on notification tap</subtask>
+          <subtask>Show modal when user opens app via notification</subtask>
+          <subtask>Store reflection completion state in local cache</subtask>
+          <subtask>Handle "Skip for today" action (don't show again today)</subtask>
+          <subtask>Prevent duplicate reflections for same date</subtask>
+        </subtasks>
+      </task>
+      <task id="8" ac-ref="ALL">
+        <description>Write comprehensive tests</description>
+        <subtasks>
+          <subtask>Unit tests: saveReflection use case, completion calculation, validation</subtask>
+          <subtask>Widget tests: reflection form, completion checkboxes, modal display</subtask>
+          <subtask>Unit tests: notification scheduling logic and timing accuracy</subtask>
+          <subtask>Integration test: complete end-to-end reflection flow with sync</subtask>
+          <subtask>Achieve 80%+ code coverage</subtask>
+        </subtasks>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="AC1">
+      <text>Prompt appears at set time (default 8pm, customizable)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC2">
+      <text>User reviews daily plan completion (auto-filled checkboxes)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC3">
+      <text>User adds accomplishments ("What went well today?")</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC4">
+      <text>User notes tomorrow priorities ("What's important tomorrow?")</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC5">
+      <text>Optional gratitude prompt ("3 good things today")</text>
+      <priority>P1</priority>
+    </criterion>
+    <criterion id="AC6">
+      <text>Reflection saves to DB (completion %, accomplishments, tomorrow, gratitude)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC7">
+      <text>"Skip for today" option</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC8">
+      <text>Data used by AI for next day's plan</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC9">
+      <text>Target completion time: &lt;2 minutes</text>
+      <priority>P0</priority>
+    </criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR26: Evening reflection with completion review</section>
+        <snippet>Evening reflection must capture daily plan completion percentage, accomplishments, tomorrow's priorities, and optional gratitude entries. Scheduled notification at user-configured time (default 8pm). Target completion time: &lt;2 minutes.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR28: Reflection data used for AI personalization</section>
+        <snippet>AI daily plan generation uses reflection data (accomplishments, completion rate, tomorrow priorities) to adapt next day's plan. High completion rate → maintain difficulty, low completion → reduce tasks.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/epics.md</path>
+        <title>Epic 2: Life Coach MVP - Story 2.5</title>
+        <section>Story 2.5: Evening Reflection Flow</section>
+        <snippet>Complete evening reflection flow with daily plan review, accomplishments, tomorrow priorities, gratitude prompts, and notification scheduling. Prerequisites: Story 2.2 (Daily Plan).</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Hybrid Architecture (D1)</section>
+        <snippet>Feature-first architecture with clean architecture layers (presentation/domain/data). Life Coach module located at features/life_coach/. Use Riverpod for state management.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Offline-First Sync (D3)</section>
+        <snippet>Hybrid Sync pattern: Write-Through Cache + Sync Queue. Save to Drift (SQLite) first for instant feedback (&lt;100ms), then queue for Supabase sync when online. Offline operations must work seamlessly.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Notification System</section>
+        <snippet>Use flutter_local_notifications for scheduled notifications. Support iOS and Android notification channels. Allow users to customize notification times and opt out. Handle notification taps with deep linking.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/ux-design-specification.md</path>
+        <title>UX Design Specification</title>
+        <section>Evening Reflection UX</section>
+        <snippet>Modal card (swipe-down disabled - must complete or skip). Show completion % prominently. Auto-fill checkboxes from daily plan. Text areas for accomplishments and tomorrow priorities. Optional gratitude section (collapsible). Target: &lt;2 minutes completion.</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/sprint-2/2-5-evening-reflection-flow.md</path>
+        <title>Story 2.5: Evening Reflection Flow</title>
+        <section>Database Schema</section>
+        <snippet>reflections table with columns: id (UUID), user_id (UUID FK), date (DATE), completion_rate (INT 0-100), accomplishments (TEXT), tomorrow_priorities (TEXT), gratitude (TEXT nullable), created_at. UNIQUE(user_id, date). RLS policies for user isolation.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <dependency>
+        <story>2.2</story>
+        <description>Daily Plan generation required for completion review</description>
+        <interfaces>DailyPlanEntity, daily_plans table</interfaces>
+      </dependency>
+      <dependency>
+        <story>2.1</story>
+        <description>Morning Check-in modal pattern can be reused</description>
+        <interfaces>Modal UI patterns, skip logic, database sync</interfaces>
+      </dependency>
+      <note>Reuse modal patterns from Story 2.1 (Morning Check-in). Adapt UI for evening reflection context. Ensure consistency in UX patterns.</note>
+    </code>
+    <dependencies>
+      <flutter>
+        <sdk>3.38+</sdk>
+        <dart>3.10+</dart>
+      </flutter>
+      <packages>
+        <package name="flutter_riverpod" version="^3.0.0" usage="State management for reflection modal and data flow" />
+        <package name="riverpod_annotation" version="^3.0.0" usage="Code generation for providers" />
+        <package name="drift" version="^2.14.0" usage="Local SQLite database for offline reflection storage" />
+        <package name="drift_flutter" version="^0.1.0" usage="Flutter integration for Drift" />
+        <package name="sqlite3_flutter_libs" version="^0.5.0" usage="SQLite native libraries" />
+        <package name="path_provider" version="^2.1.0" usage="Get app directories for Drift database" />
+        <package name="supabase_flutter" version="^2.0.0" usage="Supabase client for auth and database sync" />
+        <package name="flutter_local_notifications" version="^17.0.0" usage="Schedule evening reflection notifications" />
+        <package name="timezone" version="^0.9.0" usage="Handle timezone-aware notification scheduling" />
+        <package name="flutter_test" version="sdk" usage="Unit and widget testing framework" />
+        <package name="integration_test" version="sdk" usage="End-to-end testing framework" />
+      </packages>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint id="ARCH-1" type="architectural">
+      <description>Must follow Hybrid Architecture pattern (D1)</description>
+      <details>Extend existing life_coach feature structure at lib/features/life_coach/ with presentation/, domain/, and data/ layers. Use clean architecture separation of concerns.</details>
+    </constraint>
+    <constraint id="ARCH-2" type="architectural">
+      <description>Offline-first implementation required (D3)</description>
+      <details>Save reflection to Drift (SQLite) first for instant feedback (&lt;100ms per NFR-P4). Queue for Supabase sync when online. Handle offline mode gracefully.</details>
+    </constraint>
+    <constraint id="ARCH-3" type="architectural">
+      <description>Use Riverpod for state management (D1, D6)</description>
+      <details>Create providers following feature-first structure. Use ConsumerStatefulWidget for reflection modal. Providers should be in life_coach/presentation/providers/.</details>
+    </constraint>
+    <constraint id="DATA-1" type="data">
+      <description>Database schema must match specification</description>
+      <details>reflections table: id (UUID PK), user_id (UUID FK auth.users), date (DATE), completion_rate (INT 0-100 CHECK), accomplishments (TEXT), tomorrow_priorities (TEXT), gratitude (TEXT nullable), created_at. UNIQUE(user_id, date).</details>
+    </constraint>
+    <constraint id="DATA-2" type="data">
+      <description>Must fetch daily plan for completion review</description>
+      <details>Query daily_plans table for today's date to display tasks and auto-fill checkboxes. Handle case where no daily plan exists for today (e.g., user skipped morning check-in).</details>
+    </constraint>
+    <constraint id="SEC-1" type="security">
+      <description>Row Level Security (RLS) policies required</description>
+      <details>Enable RLS on reflections table. Policy: CREATE POLICY "Users can only access own reflections" ON reflections FOR ALL USING (auth.uid() = user_id);</details>
+    </constraint>
+    <constraint id="SEC-2" type="security">
+      <description>GDPR compliance for reflection data</description>
+      <details>Reflection data is personal and sensitive. Support data export (JSON format) and deletion (CASCADE from user_id FK). Include in GDPR data export API.</details>
+    </constraint>
+    <constraint id="UX-1" type="ux">
+      <description>2-minute completion time target</description>
+      <details>Modal must be quick to complete. Pre-fill data where possible (completion checkboxes). Minimal friction. Measure 95th percentile completion time (&lt;120 seconds).</details>
+    </constraint>
+    <constraint id="UX-2" type="ux">
+      <description>Modal cannot be dismissed by swipe-down</description>
+      <details>User must either complete reflection or tap "Skip for today". Configure modal with barrierDismissible: false and WillPopScope to prevent accidental dismissal.</details>
+    </constraint>
+    <constraint id="UX-3" type="ux">
+      <description>Notification scheduling accuracy</description>
+      <details>Use timezone-aware scheduling. Default 8pm local time. Allow user customization in 15-minute increments. Handle timezone changes and daylight saving time transitions.</details>
+    </constraint>
+    <constraint id="UX-4" type="ux">
+      <description>Reflection history accessibility</description>
+      <details>Reflection history must be accessible from Profile tab or History view. Display completion trends over time. Support quick navigation to specific dates.</details>
+    </constraint>
+    <constraint id="PERF-1" type="performance">
+      <description>Modal render time &lt;100ms</description>
+      <details>Modal must appear instantly on notification tap. Optimize widget tree, avoid heavy computations in build(). Use const constructors where possible. Lazy-load history view.</details>
+    </constraint>
+    <constraint id="PERF-2" type="performance">
+      <description>Completion calculation performance</description>
+      <details>Calculate completion percentage efficiently. Use simple formula: (completed_tasks / total_tasks) * 100. Cache result in reflections table. Don't recalculate on every render.</details>
+    </constraint>
+    <constraint id="NOTIF-1" type="notification">
+      <description>Notification opt-out support</description>
+      <details>Allow users to disable evening reflection notifications in settings. Default: enabled. Respect system notification permissions. Handle permission denials gracefully.</details>
+    </constraint>
+    <constraint id="NOTIF-2" type="notification">
+      <description>Notification channel configuration</description>
+      <details>Android: Create "Evening Reflection" notification channel with importance HIGH. iOS: Request notification permissions on first use. Include actionable notification buttons if supported.</details>
+    </constraint>
+    <constraint id="TEST-1" type="testing">
+      <description>80%+ code coverage required</description>
+      <details>Follow 70/20/10 testing pyramid. Unit tests for use cases, widget tests for UI, integration test for full flow. All AC must have test coverage. Test notification scheduling edge cases.</details>
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>ReflectionEntity</name>
+      <kind>domain-entity</kind>
+      <signature>
+        class ReflectionEntity {
+          final String id;
+          final String userId;
+          final DateTime date;
+          final int completionRate;       // 0-100
+          final String accomplishments;
+          final String tomorrowPriorities;
+          final String? gratitude;         // Optional, nullable
+          final DateTime createdAt;
+        }
+      </signature>
+      <path>lib/features/life_coach/domain/entities/reflection_entity.dart</path>
+      <notes>Use @freezed annotation for immutability and copyWith. Implement validation in constructor (completionRate must be 0-100). Gratitude is optional.</notes>
+    </interface>
+    <interface>
+      <name>SaveReflectionUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class SaveReflectionUseCase {
+          Future&lt;Result&lt;ReflectionEntity&gt;&gt; call(ReflectionEntity reflection);
+        }
+      </signature>
+      <path>lib/features/life_coach/domain/usecases/save_reflection_usecase.dart</path>
+      <notes>Returns Result&lt;T&gt; pattern (Success/Failure). Save to Drift first, then queue for Supabase sync. Handle network errors gracefully.</notes>
+    </interface>
+    <interface>
+      <name>GetReflectionHistoryUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class GetReflectionHistoryUseCase {
+          Future&lt;Result&lt;List&lt;ReflectionEntity&gt;&gt;&gt; call({
+            required String userId,
+            DateTime? startDate,
+            DateTime? endDate,
+            int? limit,
+            int? offset,
+          });
+        }
+      </signature>
+      <path>lib/features/life_coach/domain/usecases/get_reflection_history_usecase.dart</path>
+      <notes>Supports pagination via limit/offset. Date range filtering optional. Returns reflections ordered by date DESC.</notes>
+    </interface>
+    <interface>
+      <name>CalculateCompletionRateUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class CalculateCompletionRateUseCase {
+          int call({
+            required List&lt;Task&gt; tasks,
+            required List&lt;String&gt; completedTaskIds,
+          });
+        }
+      </signature>
+      <path>lib/features/life_coach/domain/usecases/calculate_completion_rate_usecase.dart</path>
+      <notes>Pure function. Returns percentage 0-100. Formula: (completedTaskIds.length / tasks.length) * 100. Handle empty tasks list gracefully (return 0).</notes>
+    </interface>
+    <interface>
+      <name>EveningReflectionScheduler</name>
+      <kind>service</kind>
+      <signature>
+        abstract class EveningReflectionScheduler {
+          Future&lt;void&gt; scheduleNotification({
+            required TimeOfDay time,
+            bool enabled = true,
+          });
+          Future&lt;void&gt; cancelNotification();
+          Future&lt;bool&gt; isScheduled();
+        }
+      </signature>
+      <path>lib/features/life_coach/domain/services/evening_reflection_scheduler.dart</path>
+      <notes>Implemented using flutter_local_notifications. Handle timezone conversions. Store schedule preference in user_settings table.</notes>
+    </interface>
+    <interface>
+      <name>ReflectionRepository</name>
+      <kind>repository</kind>
+      <signature>
+        abstract class ReflectionRepository {
+          Future&lt;Result&lt;ReflectionEntity&gt;&gt; saveReflection(ReflectionEntity reflection);
+          Future&lt;Result&lt;ReflectionEntity?&gt;&gt; getReflectionForDate(String userId, DateTime date);
+          Future&lt;Result&lt;List&lt;ReflectionEntity&gt;&gt;&gt; getReflectionHistory({
+            required String userId,
+            DateTime? startDate,
+            DateTime? endDate,
+            int? limit,
+            int? offset,
+          });
+        }
+      </signature>
+      <path>lib/features/life_coach/domain/repositories/reflection_repository.dart</path>
+      <notes>Implemented by ReflectionRepositoryImpl in data layer. Uses both DriftDataSource and SupabaseDataSource.</notes>
+    </interface>
+    <interface>
+      <name>reflections table (Supabase PostgreSQL)</name>
+      <kind>database-table</kind>
+      <signature>
+        CREATE TABLE reflections (
+          id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+          user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+          date DATE NOT NULL,
+          completion_rate INT CHECK (completion_rate BETWEEN 0 AND 100),
+          accomplishments TEXT,
+          tomorrow_priorities TEXT,
+          gratitude TEXT,
+          created_at TIMESTAMPTZ DEFAULT NOW(),
+          UNIQUE(user_id, date)
+        );
+        CREATE INDEX idx_reflections_user_date ON reflections(user_id, date DESC);
+      </signature>
+      <path>supabase/migrations/</path>
+      <notes>Migration file will be created in Supabase migrations folder. Include RLS policies in same migration. Index on (user_id, date DESC) for fast history queries.</notes>
+    </interface>
+    <interface>
+      <name>reflections table (Drift SQLite)</name>
+      <kind>database-table</kind>
+      <signature>
+        @DataClassName('ReflectionTable')
+        class Reflections extends Table {
+          TextColumn get id => text()();
+          TextColumn get userId => text()();
+          DateTimeColumn get date => dateTime()();
+          IntColumn get completionRate => integer().check(completionRate.isBetweenValues(0, 100))();
+          TextColumn get accomplishments => text()();
+          TextColumn get tomorrowPriorities => text()();
+          TextColumn get gratitude => text().nullable()();
+          DateTimeColumn get createdAt => dateTime()();
+
+          @override
+          Set&lt;Column&gt; get primaryKey => {id};
+        }
+      </signature>
+      <path>lib/core/database/tables.drift.dart</path>
+      <notes>Drift table definition. Mirror of Supabase schema for offline-first architecture. Use drift code generation.</notes>
+    </interface>
+    <interface>
+      <name>user_settings table extension</name>
+      <kind>database-table</kind>
+      <signature>
+        ALTER TABLE user_settings ADD COLUMN evening_reflection_time TIME DEFAULT '20:00:00';
+        ALTER TABLE user_settings ADD COLUMN evening_reflection_enabled BOOLEAN DEFAULT true;
+      </signature>
+      <path>supabase/migrations/</path>
+      <notes>Extend existing user_settings table to store notification preferences. Include in both Supabase and Drift schemas.</notes>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Follow 70/20/10 testing pyramid: 70% unit tests (use cases, repositories, entities), 20% widget tests (UI components, state management), 10% integration tests (end-to-end flows). Use flutter_test for unit/widget tests, integration_test for E2E. Mock dependencies with mockito. Target 80%+ code coverage. All acceptance criteria must have test coverage.
+    </standards>
+    <locations>
+      <location>test/features/life_coach/domain/usecases/</location>
+      <location>test/features/life_coach/domain/entities/</location>
+      <location>test/features/life_coach/data/repositories/</location>
+      <location>test/features/life_coach/presentation/widgets/</location>
+      <location>test/features/life_coach/domain/services/</location>
+      <location>integration_test/features/life_coach/evening_reflection_flow_test.dart</location>
+    </locations>
+    <ideas>
+      <test-idea ac-ref="AC6">
+        <description>Unit test: ReflectionEntity validation</description>
+        <approach>Test that completionRate throws exception if outside 0-100 range. Test gratitude is nullable. Test copyWith immutability.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6">
+        <description>Unit test: SaveReflectionUseCase success case</description>
+        <approach>Mock ReflectionRepository. Verify saveReflection() called with correct entity. Assert Success result returned.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6">
+        <description>Unit test: SaveReflectionUseCase handles network failure</description>
+        <approach>Mock repository to throw NetworkException. Assert Failure result returned with error message. Verify data saved locally despite network failure.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC2,AC6">
+        <description>Unit test: CalculateCompletionRateUseCase accuracy</description>
+        <approach>Test with 10 tasks, 7 completed → expect 70%. Test with 0 tasks → expect 0%. Test with all completed → expect 100%. Test rounding behavior.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1">
+        <description>Unit test: EveningReflectionScheduler notification timing</description>
+        <approach>Mock flutter_local_notifications. Schedule notification at 8:00pm. Verify notification created with correct time, title, body. Test timezone conversion.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1">
+        <description>Unit test: Notification cancellation</description>
+        <approach>Schedule notification, then cancel. Verify isScheduled() returns false. Verify no notification appears at scheduled time.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC2,AC3,AC4,AC5">
+        <description>Widget test: Reflection modal displays all fields</description>
+        <approach>Render EveningReflectionModal. Verify completion checkboxes visible. Verify "What went well today?" field. Verify "What's important tomorrow?" field. Verify gratitude section (collapsible).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC2">
+        <description>Widget test: Completion checkboxes auto-filled from daily plan</description>
+        <approach>Mock daily plan with 5 tasks, 3 completed. Render modal. Verify 3 checkboxes checked, 2 unchecked. Verify completion rate displays 60%.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC7">
+        <description>Widget test: Modal shows and handles skip action</description>
+        <approach>Render EveningReflectionModal. Verify modal displayed. Tap "Skip for today". Verify modal dismissed and no data saved.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6">
+        <description>Widget test: Save button triggers reflection save</description>
+        <approach>Fill in accomplishments, tomorrow priorities. Tap "Save Reflection". Verify saveReflection() called with correct data. Verify modal dismissed.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC9">
+        <description>Widget test: Reflection history view displays past reflections</description>
+        <approach>Mock 10 reflections in repository. Render ReflectionHistoryScreen. Verify 10 items displayed with dates and completion rates. Tap on item, verify detail view opens.</approach>
+      </test-idea>
+      <test-idea ac-ref="ALL">
+        <description>Integration test: Complete evening reflection flow</description>
+        <approach>Mock notification tap at 8pm. Verify modal appears. Set completion checkboxes. Enter accomplishments="Finished project". Enter tomorrow="Plan sprint". Enter gratitude="Good health, family, progress". Tap Save. Verify reflection saved to database. Verify sync to Supabase. Verify modal dismissed.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1,AC6">
+        <description>Integration test: Notification scheduling and delivery</description>
+        <approach>Schedule notification for specific time. Fast-forward time to trigger. Verify notification appears with correct title/body. Tap notification. Verify app opens to reflection modal.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC8">
+        <description>Integration test: Reflection data passed to AI</description>
+        <approach>Save reflection with tomorrow_priorities="Gym, coding". Next day, trigger morning check-in and plan generation. Verify AI receives reflection context. Verify plan includes gym and coding tasks.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6">
+        <description>Integration test: Reflection syncs across devices</description>
+        <approach>Save reflection on Device A. Mock Supabase realtime sync. Verify reflection appears on Device B in history view. Test offline save → online sync flow.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1">
+        <description>Unit test: Modal trigger logic - show only once per day</description>
+        <approach>Mock local cache with today's reflection. Verify modal does not appear on notification tap. Clear cache, verify modal appears.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC9">
+        <description>Performance test: 2-minute completion time</description>
+        <approach>Measure time from modal open to save. Simulate user input at realistic speed. Assert 95th percentile &lt;120 seconds. Identify and optimize bottlenecks.</approach>
+      </test-idea>
+    </ideas>
+  </tests>
+</story-context>

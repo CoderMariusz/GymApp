@@ -1,0 +1,431 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/4.11" v="1.0">
+  <metadata>
+    <epicId>4</epicId>
+    <storyId>4.11</storyId>
+    <title>Mood-Workout Correlation Insights</title>
+    <status>ready-for-dev</status>
+    <generatedAt>2025-11-17</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/sprint-4/4-11-mood-workout-correlation-insights.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>user tracking mood and workouts</asA>
+    <iWant>see correlation insights</iWant>
+    <soThat>I understand how exercise affects mood</soThat>
+    <tasks>
+      <task id="1" ac-ref="AC1,AC2">
+        <description>Implement Pearson correlation calculation</description>
+        <subtasks>
+          <subtask>Create CalculateMoodWorkoutCorrelationUseCase</subtask>
+          <subtask>Fetch mood data (last 30 days) from mood_logs table</subtask>
+          <subtask>Fetch workout data (last 30 days) from workout_sessions table</subtask>
+          <subtask>Align data by date (create paired observations)</subtask>
+          <subtask>Implement Pearson correlation coefficient formula: r = Σ[(x-x̄)(y-ȳ)] / √[Σ(x-x̄)²Σ(y-ȳ)²]</subtask>
+          <subtask>Calculate p-value for statistical significance (p &lt; 0.05)</subtask>
+          <subtask>Return correlation value (-1.0 to 1.0) and significance flag</subtask>
+        </subtasks>
+      </task>
+      <task id="2" ac-ref="AC2,AC3">
+        <description>Generate human-readable insight text</description>
+        <subtasks>
+          <subtask>Create insight template based on correlation strength</subtask>
+          <subtask>Strong positive (r > 0.5): "Mood improves 23% on workout days"</subtask>
+          <subtask>Moderate positive (0.3 &lt; r ≤ 0.5): "Exercise shows moderate mood boost"</subtask>
+          <subtask>Weak/none (-0.3 ≤ r ≤ 0.3): "No clear correlation detected yet"</subtask>
+          <subtask>Negative (r &lt; -0.3): "Mood lower on workout days - check intensity"</subtask>
+          <subtask>Include sample size and confidence in message</subtask>
+        </subtasks>
+      </task>
+      <task id="3" ac-ref="AC3,AC4">
+        <description>Implement correlation visualization chart</description>
+        <subtasks>
+          <subtask>Create MoodWorkoutCorrelationChart widget using fl_chart package</subtask>
+          <subtask>Display scatter plot: X-axis = workout days (boolean), Y-axis = mood (1-5)</subtask>
+          <subtask>Show two box plots: mood on workout days vs non-workout days</subtask>
+          <subtask>Add trend line if correlation is significant (p &lt; 0.05)</subtask>
+          <subtask>Display correlation coefficient (r) and interpretation label</subtask>
+          <subtask>Add color coding: green (positive), gray (none), red (negative)</subtask>
+        </subtasks>
+      </task>
+      <task id="4" ac-ref="AC4,AC6">
+        <description>Implement minimum data requirement check</description>
+        <subtasks>
+          <subtask>Validate minimum 14 days of paired data (mood + workout status)</subtask>
+          <subtask>Show "Collecting data..." state if &lt;14 days</subtask>
+          <subtask>Display progress indicator: "7 of 14 days collected"</subtask>
+          <subtask>Recommend user to log mood and workouts consistently</subtask>
+          <subtask>Handle edge case: all workout days or all non-workout days (no variance)</subtask>
+        </subtasks>
+      </task>
+      <task id="5" ac-ref="AC5,AC6">
+        <description>Implement weekly refresh and persistence</description>
+        <subtasks>
+          <subtask>Create detected_patterns table in Supabase</subtask>
+          <subtask>Store pattern: type='mood_workout_correlation', value (r), significance (p-value), detected_at, expires_at</subtask>
+          <subtask>Calculate correlation on first app open after 7 days (rolling window)</subtask>
+          <subtask>Refresh every Sunday at 00:00 (weekly recalculation)</subtask>
+          <subtask>Cache insight in Drift for offline access</subtask>
+          <subtask>Show last updated timestamp: "Last updated: 3 days ago"</subtask>
+        </subtasks>
+      </task>
+      <task id="6" ac-ref="AC6">
+        <description>Save insights to detected_patterns table</description>
+        <subtasks>
+          <subtask>Create DetectedPatternEntity (id, user_id, type, value, insight_text, significance, detected_at)</subtask>
+          <subtask>Save correlation result to detected_patterns table with RLS policies</subtask>
+          <subtask>Implement pattern versioning (overwrite old pattern if new one calculated)</subtask>
+          <subtask>Query patterns for display in Insights dashboard</subtask>
+          <subtask>Support multiple pattern types for future extensibility (sleep-stress, nutrition-energy)</subtask>
+        </subtasks>
+      </task>
+      <task id="7" ac-ref="ALL">
+        <description>Write comprehensive tests</description>
+        <subtasks>
+          <subtask>Unit tests: Pearson correlation calculation (various scenarios), p-value calculation</subtask>
+          <subtask>Unit tests: Insight text generation (all correlation strengths)</subtask>
+          <subtask>Unit tests: Minimum data requirement validation</subtask>
+          <subtask>Widget tests: Correlation chart rendering, box plots, trend line</subtask>
+          <subtask>Integration test: Full correlation flow from data fetch to insight display</subtask>
+          <subtask>Achieve 80%+ code coverage</subtask>
+        </subtasks>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="AC1">
+      <text>Pearson correlation calculated between mood and workout occurrence</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC2">
+      <text>Insight text displays correlation strength ("Mood improves 23% on workout days")</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC3">
+      <text>Chart visualization shows mood distribution (workout days vs non-workout days)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC4">
+      <text>Minimum 14 days of data required before showing correlation</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC5">
+      <text>Correlation refreshes weekly (every Sunday at 00:00)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC6">
+      <text>Insight saved to detected_patterns table with timestamp and significance</text>
+      <priority>P0</priority>
+    </criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR53: Mood-Workout correlation insights</section>
+        <snippet>Mind & Emotion module calculates Pearson correlation between mood and workout occurrence. Display insight: "Mood improves X% on workout days". Requires minimum 14 days paired data. Refresh weekly. Save to detected_patterns table for long-term tracking.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/epics.md</path>
+        <title>Epic 4: Mind & Emotion MVP - Story 4.11</title>
+        <section>Story 4.11: Mood-Workout Correlation Insights</section>
+        <snippet>Implement statistical correlation analysis between mood logs and workout sessions using Pearson coefficient. Generate human-readable insights and visualization. Prerequisites: Epic 3 (Fitness MVP) for workout data, Epic 4 stories 4.1-4.3 for mood tracking.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Cross-Module Analytics</section>
+        <snippet>Analytics features query data across modules. Mood-workout correlation reads from mind_emotion.mood_logs and fitness.workout_sessions. Use database views for cross-module queries. Store insights in detected_patterns table for reuse in dashboards.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/ux-design-specification.md</path>
+        <title>UX Design Specification</title>
+        <section>Correlation Insights UX</section>
+        <snippet>Insight card in Mind & Emotion dashboard. Header: "Workout Impact on Mood". Body: correlation text with percentage. Chart: box plot comparison (workout days vs non-workout). Color: green (positive), gray (neutral), red (negative). Update frequency: weekly.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <reference>
+        <path>lib/features/mind_emotion/mood/</path>
+        <description>Mood tracking module (from stories 4.1-4.3)</description>
+        <notes>Read mood_logs data for correlation calculation. Reuse mood entity and repository patterns.</notes>
+      </reference>
+      <reference>
+        <path>lib/features/fitness/workout/</path>
+        <description>Fitness workout tracking (from Epic 3)</description>
+        <notes>Read workout_sessions data for correlation calculation. Check if workout occurred on each date (boolean).</notes>
+      </reference>
+    </code>
+    <dependencies>
+      <flutter>
+        <sdk>3.38+</sdk>
+        <dart>3.10+</dart>
+      </flutter>
+      <packages>
+        <package name="flutter_riverpod" version="^3.0.0" usage="State management for correlation insights and caching" />
+        <package name="drift" version="^2.14.0" usage="Local cache for insights and data queries" />
+        <package name="supabase_flutter" version="^2.0.0" usage="Query mood_logs and workout_sessions, save to detected_patterns" />
+        <package name="fl_chart" version="^0.66.0" usage="Chart visualization for correlation (box plot, scatter)" />
+        <package name="collection" version="^1.18.0" usage="Statistics utilities (mean, standard deviation)" />
+        <package name="intl" version="^0.18.0" usage="Date formatting for paired data alignment" />
+      </packages>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint id="ARCH-1" type="architectural">
+      <description>Must follow feature-first architecture pattern</description>
+      <details>Add insights feature at lib/features/mind_emotion/insights/ with presentation/, domain/, and data/ layers. Use case: CalculateMoodWorkoutCorrelationUseCase.</details>
+    </constraint>
+    <constraint id="ARCH-2" type="architectural">
+      <description>Cross-module data access pattern</description>
+      <details>Use repository pattern to access mood_logs (MindEmotion) and workout_sessions (Fitness). Create InsightsRepository that depends on both MoodRepository and WorkoutRepository. Follow dependency injection with Riverpod.</details>
+    </constraint>
+    <constraint id="STAT-1" type="statistical">
+      <description>Pearson correlation formula</description>
+      <details>r = Σ[(x-x̄)(y-ȳ)] / √[Σ(x-x̄)²Σ(y-ȳ)²]. X = workout occurred (0/1), Y = mood (1-5). Calculate p-value for significance test (two-tailed t-test). Report correlation only if p &lt; 0.05 (95% confidence).</details>
+    </constraint>
+    <constraint id="STAT-2" type="statistical">
+      <description>Minimum sample size requirement</description>
+      <details>Require minimum 14 paired observations (mood + workout status on same date). Statistical power calculation: n=14 detects r=0.5 with 80% power. Show "collecting data" state if n &lt; 14.</details>
+    </constraint>
+    <constraint id="DATA-1" type="data">
+      <description>Data alignment for paired observations</description>
+      <details>Align mood_logs and workout_sessions by date (ignore time). Create paired dataset: [(date, mood, workout_occurred)]. Exclude dates missing either mood or workout data.</details>
+    </constraint>
+    <constraint id="DATA-2" type="data">
+      <description>detected_patterns table schema</description>
+      <details>detected_patterns table: id (UUID PK), user_id (UUID FK), pattern_type (TEXT: 'mood_workout_correlation'), value (JSONB: {r, p_value, n}), insight_text (TEXT), detected_at (TIMESTAMPTZ), expires_at (TIMESTAMPTZ, 7 days). UNIQUE(user_id, pattern_type) for upsert.</details>
+    </constraint>
+    <constraint id="UX-1" type="ux">
+      <description>Insight text clarity and actionability</description>
+      <details>Use plain language. Positive: "Mood improves 23% on workout days!" Negative: "Mood tends to be lower on workout days. Consider reducing workout intensity." None: "Keep logging to discover patterns (7 of 14 days)."</details>
+    </constraint>
+    <constraint id="UX-2" type="ux">
+      <description>Chart visualization requirements</description>
+      <details>Use box plot (fl_chart BoxPlot). Two boxes: "Workout Days" (median, Q1, Q3, outliers) and "Non-Workout Days". Show sample sizes (n_workout, n_non_workout). Add trend line if correlation significant.</details>
+    </constraint>
+    <constraint id="PERF-1" type="performance">
+      <description>Correlation calculation performance</description>
+      <details>Optimize for large datasets (up to 365 days). Use streaming calculation (single pass). Target: &lt;500ms for 1 year of data. Cache result for 7 days to avoid recalculation.</details>
+    </constraint>
+    <constraint id="TEST-1" type="testing">
+      <description>80%+ code coverage required</description>
+      <details>Test Pearson calculation with known datasets (r=0, r=1, r=-1). Test edge cases (no variance, insufficient data, all same mood). Test p-value calculation. Test insight text generation for all correlation ranges.</details>
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>MoodWorkoutCorrelationEntity</name>
+      <kind>domain-entity</kind>
+      <signature>
+        class MoodWorkoutCorrelationEntity {
+          final String userId;
+          final double correlationCoefficient; // Pearson r (-1.0 to 1.0)
+          final double pValue; // Statistical significance (0.0 to 1.0)
+          final int sampleSize; // Number of paired observations
+          final bool isSignificant; // pValue &lt; 0.05
+          final String insightText; // Human-readable insight
+          final CorrelationStrength strength; // STRONG_POSITIVE | MODERATE_POSITIVE | WEAK | MODERATE_NEGATIVE | STRONG_NEGATIVE
+          final DateTime calculatedAt;
+        }
+      </signature>
+      <path>lib/features/mind_emotion/insights/domain/entities/mood_workout_correlation_entity.dart</path>
+      <notes>Use @freezed annotation. strength enum derived from correlationCoefficient. insightText generated based on r and strength.</notes>
+    </interface>
+    <interface>
+      <name>PairedObservation</name>
+      <kind>domain-entity</kind>
+      <signature>
+        class PairedObservation {
+          final DateTime date;
+          final int mood; // 1-5
+          final bool workoutOccurred; // true if workout session on this date
+        }
+      </signature>
+      <path>lib/features/mind_emotion/insights/domain/entities/paired_observation.dart</path>
+      <notes>Internal data structure for correlation calculation. Create list of paired observations aligned by date.</notes>
+    </interface>
+    <interface>
+      <name>CalculateMoodWorkoutCorrelationUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class CalculateMoodWorkoutCorrelationUseCase {
+          Future&lt;Result&lt;MoodWorkoutCorrelationEntity&gt;&gt; call({
+            required String userId,
+            required DateTime startDate, // default: 30 days ago
+            required DateTime endDate, // default: today
+          });
+        }
+      </signature>
+      <path>lib/features/mind_emotion/insights/domain/usecases/calculate_mood_workout_correlation_usecase.dart</path>
+      <notes>1. Fetch mood logs and workout sessions. 2. Align by date. 3. Calculate Pearson r and p-value. 4. Generate insight text. 5. Return MoodWorkoutCorrelationEntity. Handle insufficient data (n &lt; 14).</notes>
+    </interface>
+    <interface>
+      <name>SaveDetectedPatternUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class SaveDetectedPatternUseCase {
+          Future&lt;Result&lt;void&gt;&gt; call({
+            required String userId,
+            required String patternType, // 'mood_workout_correlation'
+            required Map&lt;String, dynamic&gt; value, // {r, p_value, n}
+            required String insightText,
+            required DateTime detectedAt,
+          });
+        }
+      </signature>
+      <path>lib/features/mind_emotion/insights/domain/usecases/save_detected_pattern_usecase.dart</path>
+      <notes>Upsert to detected_patterns table. Set expires_at = detectedAt + 7 days. Use UNIQUE(user_id, pattern_type) constraint for upsert.</notes>
+    </interface>
+    <interface>
+      <name>InsightsRepository</name>
+      <kind>repository</kind>
+      <signature>
+        abstract class InsightsRepository {
+          Future&lt;Result&lt;List&lt;PairedObservation&gt;&gt;&gt; getPairedData(String userId, DateTime start, DateTime end);
+          Future&lt;Result&lt;MoodWorkoutCorrelationEntity&gt;&gt; calculateCorrelation(List&lt;PairedObservation&gt; data);
+          Future&lt;Result&lt;void&gt;&gt; savePattern(DetectedPatternEntity pattern);
+          Future&lt;Result&lt;DetectedPatternEntity?&gt;&gt; getPattern(String userId, String patternType);
+        }
+      </signature>
+      <path>lib/features/mind_emotion/insights/domain/repositories/insights_repository.dart</path>
+      <notes>Implemented by InsightsRepositoryImpl. Depends on MoodRepository and WorkoutRepository for data fetching. Uses StatisticsService for Pearson calculation.</notes>
+    </interface>
+    <interface>
+      <name>StatisticsService</name>
+      <kind>service</kind>
+      <signature>
+        abstract class StatisticsService {
+          double calculatePearsonCorrelation(List&lt;double&gt; x, List&lt;double&gt; y);
+          double calculatePValue(double r, int n); // Two-tailed t-test
+          double calculateMean(List&lt;double&gt; values);
+          double calculateStandardDeviation(List&lt;double&gt; values);
+        }
+      </signature>
+      <path>lib/core/statistics/statistics_service.dart</path>
+      <notes>Core statistics service. Pearson formula: r = cov(x,y) / (σx * σy). P-value: t = r * sqrt(n-2) / sqrt(1-r²), then lookup t-distribution.</notes>
+    </interface>
+    <interface>
+      <name>detected_patterns table (Supabase PostgreSQL)</name>
+      <kind>database-table</kind>
+      <signature>
+        CREATE TABLE detected_patterns (
+          id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+          user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+          pattern_type TEXT NOT NULL CHECK (pattern_type IN ('mood_workout_correlation', 'sleep_stress_correlation', 'nutrition_energy_correlation')),
+          value JSONB NOT NULL, -- {r: 0.65, p_value: 0.023, n: 28}
+          insight_text TEXT NOT NULL,
+          detected_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+          expires_at TIMESTAMPTZ NOT NULL, -- detected_at + 7 days
+          created_at TIMESTAMPTZ DEFAULT NOW(),
+          updated_at TIMESTAMPTZ DEFAULT NOW(),
+          UNIQUE(user_id, pattern_type)
+        );
+        CREATE INDEX idx_patterns_user_type ON detected_patterns(user_id, pattern_type);
+        CREATE INDEX idx_patterns_expires ON detected_patterns(expires_at);
+      </signature>
+      <path>supabase/migrations/</path>
+      <notes>Include RLS policies: USING (auth.uid() = user_id). UNIQUE constraint enables upsert. Add cleanup job for expired patterns (&gt;30 days old).</notes>
+    </interface>
+    <interface>
+      <name>Cross-module view for paired data</name>
+      <kind>database-view</kind>
+      <signature>
+        CREATE VIEW mood_workout_paired AS
+        SELECT
+          m.user_id,
+          m.date,
+          m.mood,
+          CASE WHEN w.id IS NOT NULL THEN 1 ELSE 0 END as workout_occurred
+        FROM mood_logs m
+        LEFT JOIN (
+          SELECT DISTINCT user_id, DATE(started_at) as date
+          FROM workout_sessions
+        ) w ON m.user_id = w.user_id AND m.date = w.date
+        ORDER BY m.user_id, m.date;
+      </signature>
+      <path>supabase/migrations/</path>
+      <notes>Materialized view for performance. Refresh daily at 00:00. Query this view instead of joining tables on each request. Include RLS: WHERE user_id = auth.uid().</notes>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Follow 70/20/10 testing pyramid: 70% unit tests (Pearson calculation, p-value, insight text, data alignment), 20% widget tests (chart rendering, insight card), 10% integration tests (end-to-end correlation flow). Use flutter_test for unit/widget tests, integration_test for E2E. Mock dependencies with mockito. Target 80%+ code coverage. Test statistical edge cases (perfect correlation, no correlation, negative correlation).
+    </standards>
+    <locations>
+      <location>test/features/mind_emotion/insights/domain/usecases/</location>
+      <location>test/core/statistics/statistics_service_test.dart</location>
+      <location>test/features/mind_emotion/insights/data/repositories/</location>
+      <location>test/features/mind_emotion/insights/presentation/widgets/</location>
+      <location>integration_test/features/mind_emotion/correlation_insights_test.dart</location>
+    </locations>
+    <ideas>
+      <test-idea ac-ref="AC1">
+        <description>Unit test: Pearson correlation - perfect positive</description>
+        <approach>Mock paired data: mood=[1,2,3,4,5], workout=[0,0,0,1,1]. Calculate r. Verify r ≈ 0.86 (strong positive). Verify isSignificant = true (p &lt; 0.05 for n=5).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1">
+        <description>Unit test: Pearson correlation - perfect negative</description>
+        <approach>Mock paired data: mood=[5,4,3,2,1], workout=[0,0,0,1,1]. Calculate r. Verify r ≈ -0.86 (strong negative). Generate insight: "Mood lower on workout days".</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1">
+        <description>Unit test: Pearson correlation - no correlation</description>
+        <approach>Mock paired data: mood=[3,3,3,3,3], workout=[0,1,0,1,0]. Calculate r. Verify r ≈ 0 (no correlation). Generate insight: "No clear correlation detected".</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1">
+        <description>Unit test: P-value calculation</description>
+        <approach>Known dataset: r=0.5, n=20. Calculate p-value. Verify p ≈ 0.026 (significant). Known dataset: r=0.3, n=10. Calculate p-value. Verify p ≈ 0.40 (not significant).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4">
+        <description>Unit test: Insufficient data handling</description>
+        <approach>Mock paired data with n=10 (less than 14). Call CalculateMoodWorkoutCorrelationUseCase. Verify error returned: "InsufficientDataError: Need 14 days, have 10".</approach>
+      </test-idea>
+      <test-idea ac-ref="AC2">
+        <description>Unit test: Insight text generation - strong positive</description>
+        <approach>Mock r=0.72, p=0.01, n=25. Generate insight. Verify text contains "Mood improves" and percentage calculation. Verify strength = STRONG_POSITIVE.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC2">
+        <description>Unit test: Insight text generation - moderate negative</description>
+        <approach>Mock r=-0.42, p=0.03, n=20. Generate insight. Verify text contains "Mood tends to be lower on workout days" and recommendation to check intensity.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3">
+        <description>Widget test: Correlation chart renders box plots</description>
+        <approach>Mock correlation data with mood distributions (workout: [4,5,4,5], non-workout: [2,3,2,3]). Render MoodWorkoutCorrelationChart. Verify two box plots displayed. Verify labels "Workout Days" and "Non-Workout Days".</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3">
+        <description>Widget test: Chart color coding</description>
+        <approach>Mock positive correlation (r=0.6). Render chart. Verify green color used. Mock negative correlation (r=-0.5). Verify red color used. Mock no correlation (r=0.1). Verify gray color used.</approach>
+      </test-idea>
+      <test-idea ac-ref="ALL">
+        <description>Integration test: Complete correlation flow</description>
+        <approach>Seed database: 20 mood logs (10 workout days: avg mood 4.2, 10 non-workout days: avg mood 3.1). Navigate to Insights. Trigger correlation calculation. Verify insight displayed: "Mood improves X% on workout days". Verify chart shows box plots. Verify correlation saved to detected_patterns table.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC5">
+        <description>Integration test: Weekly refresh</description>
+        <approach>Mock correlation calculated 8 days ago (expired). Open app. Verify fresh correlation calculated. Verify old pattern updated in database with new detected_at and expires_at.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4">
+        <description>Widget test: Collecting data state</description>
+        <approach>Mock n=7 (insufficient). Render insight widget. Verify "Collecting data..." message. Verify progress indicator: "7 of 14 days collected". Verify chart not displayed.</approach>
+      </test-idea>
+    </ideas>
+  </tests>
+
+  <devAgentRecord>
+    <recordedAt>2025-11-17</recordedAt>
+    <status>ready-for-dev</status>
+    <agent>BMAD Dev Agent</agent>
+    <notes>Story context prepared and validated for development assignment</notes>
+  </devAgentRecord>
+
+  <created>
+    <author>BMAD Story Context Workflow</author>
+    <timestamp>2025-11-17</timestamp>
+  </created>
+</story-context>

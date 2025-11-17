@@ -1,0 +1,364 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>7</epicId>
+    <storyId>7.5</storyId>
+    <title>14-Day Trial (All Premium Features)</title>
+    <status>ready-for-dev</status>
+    <generatedAt>2025-11-17</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/sprint-7/7-5-14-day-trial-all-premium-features.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>new user completing onboarding</asA>
+    <iWant>to try all premium features free for 14 days</iWant>
+    <soThat>I can experience the full app value before deciding to subscribe</soThat>
+    <tasks>
+      <task id="1" ac-ref="AC1,AC2">
+        <description>Implement trial activation on onboarding completion</description>
+        <subtasks>
+          <subtask>Auto-activate trial after onboarding (no credit card required)</subtask>
+          <subtask>Set trial_end_date = NOW() + INTERVAL '14 days'</subtask>
+          <subtask>Set trial_active = true flag in user_settings</subtask>
+          <subtask>Sync to Supabase immediately (don't queue)</subtask>
+          <subtask>Show "14-Day Premium Trial Activated!" confirmation</subtask>
+        </subtasks>
+      </task>
+      <task id="2" ac-ref="AC2,AC3">
+        <description>Define premium trial features</description>
+        <subtasks>
+          <subtask>Fitness: Smart Pattern Detection, all workout templates, advanced analytics</subtask>
+          <subtask>Mind: Full meditation library, unlimited CBT with GPT-4</subtask>
+          <subtask>Life Coach: Unlimited goals, unlimited AI chat with GPT-4</subtask>
+          <subtask>Document premium feature access during trial</subtask>
+        </subtasks>
+      </task>
+      <task id="3" ac-ref="AC4">
+        <description>Implement trial countdown UI</description>
+        <subtasks>
+          <subtask>Show "X days left in trial" banner in app header</subtask>
+          <subtask>Update countdown daily at midnight</subtask>
+          <subtask>Display in prominent but non-intrusive location</subtask>
+          <subtask>Make countdown tappable to show trial details modal</subtask>
+          <subtask>Hide countdown after trial ends</subtask>
+        </subtasks>
+      </task>
+      <task id="4" ac-ref="AC5">
+        <description>Implement trial reminder push notification</description>
+        <subtasks>
+          <subtask>Schedule push notification 3 days before trial end</subtask>
+          <subtask>Message: "Your premium trial ends in 3 days. Subscribe to keep unlimited access."</subtask>
+          <subtask>Deep link to subscription screen on tap</subtask>
+          <subtask>Use local notification (scheduled, not server-sent)</subtask>
+          <subtask>Only send if user granted notification permission</subtask>
+        </subtasks>
+      </task>
+      <task id="5" ac-ref="AC6,AC7">
+        <description>Implement trial expiration handling</description>
+        <subtasks>
+          <subtask>Create daily cron job to check trial expirations (Supabase Edge Function)</subtask>
+          <subtask>On expiration: Set trial_active = false, revert subscription_tier to 'free'</subtask>
+          <subtask>Ensure NO data loss on trial end (goals, workouts, mood entries preserved)</subtask>
+          <subtask>Apply free tier limits gracefully (e.g., goals >3 become read-only)</subtask>
+          <subtask>Show "Trial ended" modal on next app open with subscribe option</subtask>
+        </subtasks>
+      </task>
+      <task id="6" ac-ref="AC8">
+        <description>Implement subscribe during trial flow</description>
+        <subtasks>
+          <subtask>Allow subscription purchase at any time during trial</subtask>
+          <subtask>On subscription: End trial immediately, activate paid subscription</subtask>
+          <subtask>Set trial_active = false, subscription_tier = 'standard'|'premium'</subtask>
+          <subtask>Clear trial_end_date, set subscription_end_date based on billing</subtask>
+          <subtask>Show "Subscription activated! Trial ended early." confirmation</subtask>
+        </subtasks>
+      </task>
+      <task id="7" ac-ref="AC3,AC6">
+        <description>Implement feature gate logic for trial users</description>
+        <subtasks>
+          <subtask>Update FeatureGateService: if (NOW() &lt; trial_end_date || tier == 'premium') { allow }</subtask>
+          <subtask>Trial users get premium feature access regardless of tier='free'</subtask>
+          <subtask>After trial ends, enforce free tier limits</subtask>
+          <subtask>Cache trial status locally for offline access</subtask>
+        </subtasks>
+      </task>
+      <task id="8" ac-ref="ALL">
+        <description>Write comprehensive tests</description>
+        <subtasks>
+          <subtask>Unit tests: Trial activation, expiration logic, feature gate checks</subtask>
+          <subtask>Widget tests: Trial countdown banner, reminder notification, expiration modal</subtask>
+          <subtask>Integration test: Complete onboarding → trial activation → feature access → expiration → free tier revert</subtask>
+          <subtask>Achieve 80%+ code coverage</subtask>
+        </subtasks>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="AC1">
+      <text>Trial auto-starts after onboarding completion (no credit card required)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC2">
+      <text>Trial includes all premium features: Fitness (Smart Pattern, all templates), Mind (full library, unlimited GPT-4 CBT), Life Coach (unlimited goals/AI)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC3">
+      <text>Feature gate checks: if (NOW() &lt; trial_end_date || tier == 'premium') { allow }</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC4">
+      <text>Countdown banner shows "X days left in trial" updated daily</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC5">
+      <text>Push notification reminder 3 days before trial end</text>
+      <priority>P1</priority>
+    </criterion>
+    <criterion id="AC6">
+      <text>Trial end reverts to free tier with NO data loss</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC7">
+      <text>Cron job checks trial expiration daily and updates user status</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC8">
+      <text>Can subscribe anytime during trial (ends trial, activates subscription)</text>
+      <priority>P0</priority>
+    </criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR45: 14-day premium trial</section>
+        <snippet>All users get 14-day trial of all premium features after onboarding. No credit card. Auto-starts on completion. Countdown shown. Reminder 3 days before end. Graceful revert to free tier, no data loss.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR48: Trial expiration handling</section>
+        <snippet>On trial end: Revert to free tier limits. Goals >3 become read-only (not deleted). AI chat switches to Llama. Premium features locked. Show subscribe modal. NO data loss. Users should feel respected, not punished.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/epics.md</path>
+        <title>Epic 7: Onboarding &amp; Subscriptions</title>
+        <section>Story 7.5: 14-Day Trial</section>
+        <snippet>Trial system with activation, countdown, reminders, and graceful expiration. Foundation for conversion funnel.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Supabase Edge Functions (D4)</section>
+        <snippet>Cron jobs for scheduled tasks: Trial expiration checks (daily at 00:00 UTC), subscription renewals, notification scheduling. Edge Functions run on Deno, access Supabase DB directly.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/ux-design-specification.md</path>
+        <title>UX Design Specification</title>
+        <section>Trial Experience UX</section>
+        <snippet>Trial countdown prominent but not anxiety-inducing. "13 days left" not "Only 13 days!". Reminder helpful, not pushy. Expiration graceful, not punitive. Emphasize data preservation: "Your data is safe, upgrade to continue premium features".</snippet>
+      </doc>
+    </docs>
+    <code>
+      <reference>
+        <path>lib/core/services/feature_gate_service.dart</path>
+        <description>Feature gate service from Story 7.4</description>
+        <note>Extend to check trial_end_date in addition to subscription_tier.</note>
+      </reference>
+    </code>
+    <dependencies>
+      <flutter>
+        <sdk>3.38+</sdk>
+        <dart>3.10+</dart>
+      </flutter>
+      <packages>
+        <package name="flutter_local_notifications" version="^16.0.0" usage="Schedule trial reminder notification" />
+        <package name="flutter_riverpod" version="^3.0.0" usage="Trial state management" />
+        <package name="drift" version="^2.14.0" usage="Local trial status caching" />
+        <package name="supabase_flutter" version="^2.0.0" usage="Trial status sync" />
+      </packages>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint id="ARCH-1" type="architectural">
+      <description>Trial status must work offline</description>
+      <details>Cache trial_end_date locally in Drift. Feature gates check local cache first. Sync to Supabase when online. Offline trial expiration handled on next sync.</details>
+    </constraint>
+    <constraint id="ARCH-2" type="architectural">
+      <description>Cron job for trial expiration</description>
+      <details>Supabase Edge Function runs daily at 00:00 UTC. Query users WHERE trial_active=true AND trial_end_date &lt; NOW(). Update to trial_active=false, tier='free'. Log changes.</details>
+    </constraint>
+    <constraint id="DATA-1" type="data">
+      <description>NO data loss on trial expiration</description>
+      <details>Critical constraint. All user data preserved: goals (even if >3), workouts, mood entries, meditations. Only access is limited, never deletion. Implement graceful degradation (e.g., goals 4-10 read-only).</details>
+    </constraint>
+    <constraint id="DATA-2" type="data">
+      <description>Trial activation immediate and reliable</description>
+      <details>Set trial_end_date on onboarding completion. Sync to Supabase immediately (not queued). Verify activation before proceeding. Critical for user experience.</details>
+    </constraint>
+    <constraint id="UX-1" type="ux">
+      <description>Trial countdown helpful, not anxiety-inducing</description>
+      <details>Use neutral language: "13 days left in your trial" not "Only 13 days left!". No countdown timer (days only, not hours/minutes). Subtle color (not red/urgent).</details>
+    </constraint>
+    <constraint id="UX-2" type="ux">
+      <description>Reminder notification helpful, not pushy</description>
+      <details>3-day reminder: "Your premium trial ends in 3 days. Subscribe to keep unlimited access." Not guilt/urgency. Helpful reminder, not sales pressure.</details>
+    </constraint>
+    <constraint id="UX-3" type="ux">
+      <description>Expiration modal respectful</description>
+      <details>"Your trial has ended. Your data is safe! Upgrade to continue enjoying premium features." Show what they're losing, emphasize data safety. Positive framing.</details>
+    </constraint>
+    <constraint id="SEC-1" type="security">
+      <description>Trial bypass prevention</description>
+      <details>Enforce trial limits server-side (Supabase RLS + Edge Functions). Don't trust client-side date checks only. Prevent users manipulating local time to extend trial.</details>
+    </constraint>
+    <constraint id="TEST-1" type="testing">
+      <description>80%+ code coverage required</description>
+      <details>Test trial activation, countdown, expiration, data preservation. Test edge cases: subscribe during trial, offline expiration, etc.</details>
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>ActivateTrialUseCase (from Story 7.3)</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class ActivateTrialUseCase {
+          Future&lt;Result&lt;DateTime&gt;&gt; call();
+        }
+      </signature>
+      <path>lib/features/onboarding/domain/usecases/activate_trial_usecase.dart</path>
+      <notes>Sets trial_end_date = NOW() + 14 days, trial_active = true. Returns trial end date.</notes>
+    </interface>
+    <interface>
+      <name>GetTrialStatusUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class GetTrialStatusUseCase {
+          Future&lt;Result&lt;TrialStatus&gt;&gt; call();
+        }
+      </signature>
+      <path>lib/core/domain/usecases/get_trial_status_usecase.dart</path>
+      <notes>Returns trial status: active (with days remaining), expired, or never_activated.</notes>
+    </interface>
+    <interface>
+      <name>ScheduleTrialReminderUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class ScheduleTrialReminderUseCase {
+          Future&lt;Result&lt;void&gt;&gt; call(DateTime trialEndDate);
+        }
+      </signature>
+      <path>lib/core/domain/usecases/schedule_trial_reminder_usecase.dart</path>
+      <notes>Schedules local push notification 3 days before trial end. Uses flutter_local_notifications.</notes>
+    </interface>
+    <interface>
+      <name>HandleTrialExpirationUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class HandleTrialExpirationUseCase {
+          Future&lt;Result&lt;void&gt;&gt; call();
+        }
+      </signature>
+      <path>lib/core/domain/usecases/handle_trial_expiration_usecase.dart</path>
+      <notes>Called on app launch if trial expired. Sets trial_active=false, tier='free'. Shows expiration modal.</notes>
+    </interface>
+    <interface>
+      <name>TrialStatus entity</name>
+      <kind>domain-entity</kind>
+      <signature>
+        class TrialStatus {
+          final bool isActive;
+          final DateTime? endDate;
+          final int? daysRemaining;
+          final bool hasExpired;
+        }
+      </signature>
+      <path>lib/core/domain/entities/trial_status.dart</path>
+      <notes>Represents current trial state. Used for UI display and feature gate checks.</notes>
+    </interface>
+    <interface>
+      <name>user_settings table updates (Supabase)</name>
+      <kind>database-table</kind>
+      <signature>
+        ALTER TABLE user_settings ADD COLUMN trial_active BOOLEAN DEFAULT false;
+        ALTER TABLE user_settings ADD COLUMN trial_end_date TIMESTAMPTZ;
+        ALTER TABLE user_settings ADD COLUMN trial_started_at TIMESTAMPTZ;
+      </signature>
+      <path>supabase/migrations/</path>
+      <notes>Add trial tracking columns to user_settings. trial_end_date set on activation.</notes>
+    </interface>
+    <interface>
+      <name>Trial expiration Edge Function</name>
+      <kind>edge-function</kind>
+      <signature>
+        // supabase/functions/check-trial-expirations/index.ts
+        Deno.serve(async () => {
+          // Query: SELECT * FROM user_settings WHERE trial_active=true AND trial_end_date &lt; NOW()
+          // Update: trial_active=false, subscription_tier='free'
+          // Log: trial_expirations table for analytics
+        });
+      </signature>
+      <path>supabase/functions/check-trial-expirations/index.ts</path>
+      <notes>Cron job (daily 00:00 UTC). Updates expired trials. Logs for analytics.</notes>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Follow 70/20/10 testing pyramid. Target 80%+ code coverage. Test trial lifecycle: activation → usage → expiration. Test edge cases.
+    </standards>
+    <locations>
+      <location>test/core/domain/usecases/trial_usecases_test.dart</location>
+      <location>test/core/services/feature_gate_service_test.dart</location>
+      <location>test/core/presentation/widgets/trial_countdown_banner_test.dart</location>
+      <location>integration_test/features/subscriptions/trial_lifecycle_test.dart</location>
+    </locations>
+    <ideas>
+      <test-idea ac-ref="AC1">
+        <description>Unit test: Trial auto-activation on onboarding</description>
+        <approach>Complete onboarding. Verify ActivateTrialUseCase called. Verify trial_end_date = NOW() + 14 days. Verify trial_active = true.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC2,AC3">
+        <description>Unit test: Feature access during trial</description>
+        <approach>Set tier='free', trial_active=true, trial_end_date in future. Attempt premium features. Verify all accessible. Test Smart Pattern, unlimited goals, GPT-4 AI.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3">
+        <description>Unit test: Feature gate checks trial status</description>
+        <approach>Mock FeatureGateService. Test: if (NOW() &lt; trial_end_date || tier=='premium') returns true. Test after expiration returns false for premium features.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4">
+        <description>Widget test: Trial countdown banner displays</description>
+        <approach>Set trial_end_date = NOW() + 13 days. Render app header. Verify "13 days left in trial" banner shown. Test daily update logic.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC5">
+        <description>Unit test: Trial reminder notification scheduling</description>
+        <approach>Activate trial. Verify local notification scheduled for trial_end_date - 3 days. Test notification content and deep link.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6,AC7">
+        <description>Integration test: Trial expiration with data preservation</description>
+        <approach>Create user with 5 goals, workouts, mood entries. Expire trial (mock date). Verify tier='free', trial_active=false. Verify all 5 goals still exist (goals 4-5 read-only). Verify no data deleted.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC7">
+        <description>Unit test: Cron job expiration logic</description>
+        <approach>Mock Supabase Edge Function. Create 3 users: trial active (not expired), trial active (expired), trial inactive. Run cron. Verify only expired user updated to trial_active=false.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC8">
+        <description>Integration test: Subscribe during trial</description>
+        <approach>Activate trial (13 days left). Purchase subscription. Verify trial_active=false, subscription_tier='premium', trial_end_date cleared. Verify subscription_end_date set based on billing.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6">
+        <description>Widget test: Trial expiration modal</description>
+        <approach>Set trial expired. Open app. Verify "Your trial has ended" modal appears. Check "Your data is safe" message. Verify subscribe CTA. Test dismiss modal.</approach>
+      </test-idea>
+      <test-idea ac-ref="ALL">
+        <description>Integration test: Full trial lifecycle</description>
+        <approach>Complete onboarding → trial activates. Use premium features 5 days. Receive 3-day reminder. Mock date to expiration. Verify free tier revert. Verify data preserved. Subscribe after expiration.</approach>
+      </test-idea>
+    </ideas>
+  </tests>
+</story-context>

@@ -1,0 +1,459 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>4</epicId>
+    <storyId>4.7</storyId>
+    <title>Breathing Exercises (5 Techniques)</title>
+    <status>ready-for-dev</status>
+    <generatedAt>2025-11-17</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/sprint-4/4-7-breathing-exercises-5-techniques.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>user needing stress relief</asA>
+    <iWant>to practice guided breathing exercises</iWant>
+    <soThat>I can calm down quickly in 2-5 minutes</soThat>
+    <tasks>
+      <task id="1" ac-ref="AC1,AC2">
+        <description>Implement 5 breathing technique algorithms</description>
+        <subtasks>
+          <subtask>Box Breathing (4-4-4-4): Inhale 4s, Hold 4s, Exhale 4s, Hold 4s (stress relief)</subtask>
+          <subtask>4-7-8 Breathing: Inhale 4s, Hold 7s, Exhale 8s (sleep aid)</subtask>
+          <subtask>Calm Breathing (5-5): Inhale 5s, Exhale 5s (general relaxation)</subtask>
+          <subtask>Energizing Breathing: Inhale 3s, Hold 2s, Exhale 2s (energy boost)</subtask>
+          <subtask>Sleep Prep Breathing: Inhale 4s, Hold 6s, Exhale 8s (bedtime)</subtask>
+          <subtask>Create BreathingTechnique enum with timing configurations</subtask>
+        </subtasks>
+      </task>
+      <task id="2" ac-ref="AC3,AC4">
+        <description>Implement visual circle animation</description>
+        <subtasks>
+          <subtask>Create animated circle widget that expands/contracts with breath cycle</subtask>
+          <subtask>Inhale: Circle expands from 60% to 100% size</subtask>
+          <subtask>Hold: Circle maintains size (pulsing glow effect)</subtask>
+          <subtask>Exhale: Circle contracts from 100% to 60% size</subtask>
+          <subtask>Use smooth easing curves (Curves.easeInOut)</subtask>
+          <subtask>Display instruction text in center: "Breathe In", "Hold", "Breathe Out"</subtask>
+          <subtask>Add countdown timer showing remaining duration</subtask>
+        </subtasks>
+      </task>
+      <task id="3" ac-ref="AC4">
+        <description>Implement haptic feedback patterns</description>
+        <subtasks>
+          <subtask>Create HapticPatternService for breathing rhythms</subtask>
+          <subtask>Inhale start: HapticFeedback.lightImpact()</subtask>
+          <subtask>Hold start: HapticFeedback.mediumImpact()</subtask>
+          <subtask>Exhale start: HapticFeedback.lightImpact()</subtask>
+          <subtask>Cycle complete: HapticFeedback.heavyImpact()</subtask>
+          <subtask>Add settings toggle to enable/disable haptics</subtask>
+        </subtasks>
+      </task>
+      <task id="4" ac-ref="AC5">
+        <description>Implement duration selection</description>
+        <subtasks>
+          <subtask>Create duration picker: 2 minutes, 5 minutes, 10 minutes</subtask>
+          <subtask>Calculate breath cycles based on technique and duration</subtask>
+          <subtask>Display estimated cycles count: "~15 breath cycles"</subtask>
+          <subtask>Add custom duration option (1-30 minutes)</subtask>
+          <subtask>Store last selected duration as user preference</subtask>
+        </subtasks>
+      </task>
+      <task id="5" ac-ref="AC1,AC2,AC3,AC4,AC5">
+        <description>Implement breathing exercise screen UI</description>
+        <subtasks>
+          <subtask>Create BreathingExerciseScreen with technique selection</subtask>
+          <subtask>Display 5 technique cards with icons and descriptions</subtask>
+          <subtask>Show recommended use case for each technique</subtask>
+          <subtask>Create BreathingSessionScreen with full-screen animation</subtask>
+          <subtask>Add pause/resume functionality</subtask>
+          <subtask>Add "End Session" button with confirmation</subtask>
+          <subtask>Display current cycle count (Cycle 3/15)</subtask>
+        </subtasks>
+      </task>
+      <task id="6" ac-ref="AC6">
+        <description>Implement completion tracking</description>
+        <subtasks>
+          <subtask>Create breathing_sessions table (technique, duration, completed, timestamp)</subtask>
+          <subtask>Save session on completion (not on early exit)</subtask>
+          <subtask>Display completion message: "Great work! 5 minutes of calm."</subtask>
+          <subtask>Track total minutes of breathing practice</subtask>
+          <subtask>Create BreathingHistoryScreen with calendar view</subtask>
+          <subtask>Show streak counter (consecutive days practiced)</subtask>
+        </subtasks>
+      </task>
+      <task id="7" ac-ref="AC7">
+        <description>Implement session without audio</description>
+        <subtasks>
+          <subtask>No audio narration (visual + haptic only)</subtask>
+          <subtask>Ensure animations are smooth and clear</subtask>
+          <subtask>Optimize for silent environments (meetings, public spaces)</subtask>
+          <subtask>Test session with device on silent mode</subtask>
+        </subtasks>
+      </task>
+      <task id="8" ac-ref="ALL">
+        <description>Implement offline-first breathing sessions</description>
+        <subtasks>
+          <subtask>All breathing logic runs locally (no network required)</subtask>
+          <subtask>Save completed sessions to Drift (SQLite)</subtask>
+          <subtask>Sync session history to Supabase when online</subtask>
+          <subtask>Handle background/foreground transitions gracefully</subtask>
+        </subtasks>
+      </task>
+      <task id="9" ac-ref="ALL">
+        <description>Write comprehensive tests</description>
+        <subtasks>
+          <subtask>Unit tests: Breathing cycle timing calculations, duration to cycles conversion</subtask>
+          <subtask>Widget tests: Circle animation, instruction text changes, pause/resume</subtask>
+          <subtask>Integration test: Complete breathing session (2 min Box Breathing)</subtask>
+          <subtask>Test haptic feedback patterns (mock HapticFeedback)</subtask>
+          <subtask>Achieve 80%+ code coverage</subtask>
+        </subtasks>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="AC1">
+      <text>5 breathing techniques: Box (4-4-4-4), 4-7-8, Calm (5-5), Energizing, Sleep Prep</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC2">
+      <text>Each technique has correct timing pattern and recommended use case</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC3">
+      <text>Visual circle animation expands/contracts with breath cycle</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC4">
+      <text>Haptic feedback at phase transitions (inhale, hold, exhale)</text>
+      <priority>P1</priority>
+    </criterion>
+    <criterion id="AC5">
+      <text>Duration selection: 2 minutes, 5 minutes, 10 minutes</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC6">
+      <text>Completion tracking: Sessions saved with technique, duration, timestamp</text>
+      <priority>P1</priority>
+    </criterion>
+    <criterion id="AC7">
+      <text>No audio narration (visual + haptic guidance only)</text>
+      <priority>P0</priority>
+    </criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR52: Breathing exercises for stress relief</section>
+        <snippet>Implement 5 breathing techniques (Box, 4-7-8, Calm, Energizing, Sleep Prep) with visual circle animation and haptic feedback. Duration: 2/5/10 min. No audio narration. Track completion.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>NFR-UX3: Calm, distraction-free experiences</section>
+        <snippet>Mindfulness features (breathing, meditation) must minimize distractions. Visual-only guidance (no audio required). Haptic feedback for phase transitions. Full-screen immersive UI.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/epics.md</path>
+        <title>Epic 4: Mind & Emotion - Story 4.7</title>
+        <section>Story 4.7: Breathing Exercises (5 Techniques)</section>
+        <snippet>Guided breathing with 5 techniques, visual animations, haptic feedback, duration selection, and completion tracking. No audio narration. Prerequisites: Epic 1 (data sync).</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Offline-First Architecture</section>
+        <snippet>Breathing exercises run entirely locally (no network). Session history syncs to Supabase when online. All logic in Flutter (no backend dependencies).</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/ux-design-specification.md</path>
+        <title>UX Design Specification</title>
+        <section>Breathing Exercise UX</section>
+        <snippet>Full-screen circle animation (center). Circle expands/contracts smoothly. Instruction text: "Breathe In", "Hold", "Breathe Out". Countdown timer top-right. Pause button bottom-center. Calming gradient background (blues/purples).</snippet>
+      </doc>
+      <doc>
+        <path>external</path>
+        <title>Breathing Techniques Research</title>
+        <section>Evidence-Based Breathing Patterns</section>
+        <snippet>Box Breathing (4-4-4-4): Used by Navy SEALs for stress management. 4-7-8 Breathing: Developed by Dr. Andrew Weil for sleep. 5-5 Calm Breathing: Resonance frequency breathing (coherent breathing). Energizing: Quick inhale/short exhale increases alertness.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <note>Breathing exercises are new for Epic 4. Create at lib/features/breathing/. Use Flutter animations (AnimationController, Tween). No audio package needed (visual + haptic only).</note>
+    </code>
+    <dependencies>
+      <flutter>
+        <sdk>3.38+</sdk>
+        <dart>3.10+</dart>
+      </flutter>
+      <packages>
+        <package name="flutter_riverpod" version="^3.0.0" usage="State management for breathing sessions" />
+        <package name="drift" version="^2.14.0" usage="Local SQLite for session history" />
+        <package name="flutter" version="sdk" usage="Built-in HapticFeedback API" />
+        <package name="intl" version="^0.19.0" usage="Duration formatting for history" />
+      </packages>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint id="TIMING-1" type="functional">
+      <description>Accurate breath cycle timing</description>
+      <details>Use precise timing for each technique. Box: 4-4-4-4 (16s total). 4-7-8: 4-7-8 (19s total). Calm: 5-5 (10s total). Energizing: 3-2-2 (7s total). Sleep Prep: 4-6-8 (18s total). Use Ticker for frame-accurate timing.</details>
+    </constraint>
+    <constraint id="TIMING-2" type="functional">
+      <description>Duration to cycle calculation</description>
+      <details>2 minutes Box Breathing: 120s / 16s = ~7 cycles. 5 minutes: ~18 cycles. 10 minutes: ~37 cycles. Calculate cycles dynamically based on technique and duration.</details>
+    </constraint>
+    <constraint id="ANIM-1" type="animation">
+      <description>Smooth circle expansion/contraction</description>
+      <details>Use AnimationController with duration matching breath phase. Inhale: Curves.easeInOut for smooth expansion. Exhale: Curves.easeInOut for contraction. Hold: No size change, add subtle pulsing glow effect.</details>
+    </constraint>
+    <constraint id="ANIM-2" type="animation">
+      <description>60 FPS animation performance</description>
+      <details>Maintain 60 FPS during full-screen animation. Optimize widget rebuilds. Use RepaintBoundary for circle animation. Avoid unnecessary setState() calls.</details>
+    </constraint>
+    <constraint id="HAPTIC-1" type="haptic">
+      <description>Haptic feedback pattern design</description>
+      <details>Inhale: lightImpact() (subtle). Hold: mediumImpact() (noticeable). Exhale: lightImpact() (subtle). Cycle complete: heavyImpact() (satisfying). Test on physical devices (haptics don't work in simulator).</details>
+    </constraint>
+    <constraint id="UX-1" type="ux">
+      <description>Full-screen immersive experience</description>
+      <details>Hide system UI (status bar, navigation bar) during session. Use SystemChrome.setEnabledSystemUIMode(). Full-screen circle animation. Calming gradient background. Minimal UI elements.</details>
+    </constraint>
+    <constraint id="UX-2" type="ux">
+      <description>Clear visual instruction text</description>
+      <details>Display instruction in center of circle: "Breathe In", "Hold", "Breathe Out". Large font (24pt). High contrast text. Fade transition between instructions (300ms).</details>
+    </constraint>
+    <constraint id="UX-3" type="ux">
+      <description>Pause/resume functionality</description>
+      <details>Tap anywhere on screen to pause. Show pause overlay with "Resume" and "End Session" buttons. Preserve current cycle position on pause. Resume continues from same point in cycle.</details>
+    </constraint>
+    <constraint id="DATA-1" type="data">
+      <description>Breathing sessions table schema</description>
+      <details>breathing_sessions table: id (UUID), user_id (UUID FK), technique (ENUM), duration_minutes (INT), cycles_completed (INT), completed (BOOLEAN), created_at. Only save completed sessions (not early exits).</details>
+    </constraint>
+    <constraint id="PERF-1" type="performance">
+      <description>Instant session start (&lt;100ms)</description>
+      <details>Breathing logic is local (no network). Session starts immediately on technique selection. Pre-calculate cycle timings. No loading states.</details>
+    </constraint>
+    <constraint id="OFFLINE-1" type="offline">
+      <description>100% offline functionality</description>
+      <details>All breathing exercises work offline. No network requests during session. Sync session history when online. Handle airplane mode gracefully.</details>
+    </constraint>
+    <constraint id="TEST-1" type="testing">
+      <description>Test timing accuracy</description>
+      <details>Verify Box Breathing cycle = 16s ± 100ms. Test animation sync with breath phases. Mock Ticker for deterministic tests. Test pause/resume preserves state.</details>
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>BreathingTechnique</name>
+      <kind>enum-config</kind>
+      <signature>
+        enum BreathingTechnique {
+          box,         // 4-4-4-4 (stress relief)
+          fourSevenEight,  // 4-7-8 (sleep aid)
+          calm,        // 5-5 (relaxation)
+          energizing,  // 3-2-2 (energy boost)
+          sleepPrep,   // 4-6-8 (bedtime)
+        }
+
+        class BreathingPattern {
+          final int inhaleSeconds;
+          final int holdSeconds;
+          final int exhaleSeconds;
+          final String name;
+          final String description;
+          final String useCase;
+        }
+      </signature>
+      <path>lib/features/breathing/domain/entities/breathing_technique.dart</path>
+      <notes>Map each enum to BreathingPattern config. Use case examples: "Best for stress relief", "Helps you fall asleep", etc.</notes>
+    </interface>
+    <interface>
+      <name>BreathingSessionEntity</name>
+      <kind>domain-entity</kind>
+      <signature>
+        class BreathingSessionEntity {
+          final String id;
+          final String userId;
+          final BreathingTechnique technique;
+          final int durationMinutes;
+          final int cyclesCompleted;
+          final bool completed;  // true if finished, false if early exit
+          final DateTime createdAt;
+        }
+      </signature>
+      <path>lib/features/breathing/domain/entities/breathing_session_entity.dart</path>
+      <notes>Only save if completed = true. Track cyclesCompleted for partial sessions.</notes>
+    </interface>
+    <interface>
+      <name>BreathingController</name>
+      <kind>controller</kind>
+      <signature>
+        class BreathingController {
+          Stream&lt;BreathingState&gt; startSession({
+            required BreathingTechnique technique,
+            required int durationMinutes,
+          });
+
+          void pause();
+          void resume();
+          void stop();
+        }
+
+        class BreathingState {
+          final BreathingPhase phase;  // inhale, hold, exhale
+          final int currentCycle;
+          final int totalCycles;
+          final double phaseProgress;  // 0.0 - 1.0
+          final String instruction;    // "Breathe In", "Hold", "Breathe Out"
+        }
+
+        enum BreathingPhase { inhale, hold, exhale }
+      </signature>
+      <path>lib/features/breathing/presentation/controllers/breathing_controller.dart</path>
+      <notes>Use Ticker and AnimationController for precise timing. Emit state updates every frame for smooth animation.</notes>
+    </interface>
+    <interface>
+      <name>HapticPatternService</name>
+      <kind>service</kind>
+      <signature>
+        abstract class HapticPatternService {
+          void triggerInhaleStart();   // lightImpact()
+          void triggerHoldStart();     // mediumImpact()
+          void triggerExhaleStart();   // lightImpact()
+          void triggerCycleComplete(); // heavyImpact()
+        }
+      </signature>
+      <path>lib/features/breathing/domain/services/haptic_pattern_service.dart</path>
+      <notes>Use Flutter's built-in HapticFeedback API. Check platform support (iOS/Android). Respect user's haptic settings.</notes>
+    </interface>
+    <interface>
+      <name>CompleteBreathingSessionUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class CompleteBreathingSessionUseCase {
+          Future&lt;Result&lt;BreathingSessionEntity&gt;&gt; call({
+            required BreathingTechnique technique,
+            required int durationMinutes,
+            required int cyclesCompleted,
+          });
+        }
+      </signature>
+      <path>lib/features/breathing/domain/usecases/complete_breathing_session_usecase.dart</path>
+      <notes>Save completed session to Drift, queue Supabase sync. Return session entity.</notes>
+    </interface>
+    <interface>
+      <name>GetBreathingHistoryUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class GetBreathingHistoryUseCase {
+          Future&lt;Result&lt;BreathingHistoryStats&gt;&gt; call();
+        }
+
+        class BreathingHistoryStats {
+          final List&lt;BreathingSessionEntity&gt; recentSessions;
+          final int totalMinutes;
+          final int currentStreak;  // consecutive days
+          final Map&lt;DateTime, int&gt; calendarData;  // date -> minutes
+        }
+      </signature>
+      <path>lib/features/breathing/domain/usecases/get_breathing_history_usecase.dart</path>
+      <notes>Calculate streak from consecutive days with sessions. Return calendar data for calendar heatmap visualization.</notes>
+    </interface>
+    <interface>
+      <name>breathing_sessions table (Supabase PostgreSQL)</name>
+      <kind>database-table</kind>
+      <signature>
+        CREATE TABLE breathing_sessions (
+          id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+          user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+          technique TEXT NOT NULL CHECK (technique IN ('box', 'fourSevenEight', 'calm', 'energizing', 'sleepPrep')),
+          duration_minutes INT NOT NULL,
+          cycles_completed INT NOT NULL,
+          completed BOOLEAN DEFAULT true,
+          created_at TIMESTAMPTZ DEFAULT NOW()
+        );
+        CREATE INDEX idx_breathing_sessions_user ON breathing_sessions(user_id, created_at DESC);
+      </signature>
+      <path>supabase/migrations/</path>
+      <notes>RLS policies for user isolation. Only store completed sessions for accurate tracking.</notes>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Follow 70/20/10 testing pyramid. Emphasize timing accuracy and animation smoothness. Use flutter_test for unit/widget tests. Mock Ticker for deterministic animation tests. Test on physical devices for haptics. Target 80%+ code coverage.
+    </standards>
+    <locations>
+      <location>test/features/breathing/domain/entities/</location>
+      <location>test/features/breathing/presentation/controllers/</location>
+      <location>test/features/breathing/presentation/widgets/</location>
+      <location>integration_test/features/breathing/breathing_session_flow_test.dart</location>
+    </locations>
+    <ideas>
+      <test-idea ac-ref="AC1,AC2">
+        <description>Unit test: Breathing pattern timing calculations</description>
+        <approach>Test Box Breathing: 4+4+4+4 = 16s cycle. Test 2 min = 120s / 16s = 7.5 cycles. Test 5 min = 18.75 cycles. Round up for partial cycles.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1">
+        <description>Unit test: BreathingPattern configuration</description>
+        <approach>Verify Box technique: inhale=4, hold=4, exhale=4. Verify 4-7-8: inhale=4, hold=7, exhale=8. Test all 5 techniques have valid configs.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3">
+        <description>Widget test: Circle animation expands/contracts</description>
+        <approach>Mock AnimationController. Set progress to 0.0 (exhale). Verify circle size = 60%. Set progress to 1.0 (inhale). Verify circle size = 100%.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3">
+        <description>Widget test: Instruction text changes with phase</description>
+        <approach>Start session. Verify "Breathe In" displayed. Advance to hold phase. Verify "Hold" displayed. Advance to exhale. Verify "Breathe Out" displayed.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4">
+        <description>Unit test: Haptic feedback triggers at transitions</description>
+        <approach>Mock HapticFeedback. Start session. Verify lightImpact() called on inhale start. Verify mediumImpact() called on hold start. Verify lightImpact() called on exhale start. Verify heavyImpact() called on cycle complete.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC5">
+        <description>Unit test: Duration selection and cycle calculation</description>
+        <approach>Select 2 min Box Breathing. Verify totalCycles = 7. Select 5 min. Verify totalCycles = 18. Select 10 min. Verify totalCycles = 37.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6">
+        <description>Integration test: Complete breathing session</description>
+        <approach>Start 2 min Box Breathing session. Fast-forward time through 7 cycles. Verify completion message displayed. Verify session saved to database with completed=true, cycles=7.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6">
+        <description>Integration test: Early exit does not save session</description>
+        <approach>Start 5 min session. Complete 3 cycles. Tap "End Session". Verify confirmation dialog. Confirm early exit. Verify no session saved to database.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3">
+        <description>Widget test: Pause/resume functionality</description>
+        <approach>Start session. Advance to cycle 2, inhale phase. Tap pause. Verify animation stopped. Verify pause overlay displayed. Tap resume. Verify animation continues from cycle 2, inhale phase.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC7">
+        <description>Integration test: No audio during session</description>
+        <approach>Verify no audio packages imported. Start session with device on silent. Verify session runs normally (visual + haptic only). No audio playback errors.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1,AC2,AC3">
+        <description>Widget test: All 5 techniques work correctly</description>
+        <approach>For each technique (Box, 4-7-8, Calm, Energizing, Sleep Prep): Start session, verify timing matches pattern, verify animation completes cycle, verify instruction text correct.</approach>
+      </test-idea>
+    </ideas>
+  </tests>
+
+  <devAgentRecord>
+    <recordedAt>2025-11-17</recordedAt>
+    <status>ready-for-dev</status>
+    <agent>BMAD Dev Agent</agent>
+    <notes>Story context prepared and validated for development assignment</notes>
+  </devAgentRecord>
+
+  <created>
+    <author>BMAD Story Context Workflow</author>
+    <timestamp>2025-11-17</timestamp>
+  </created>
+</story-context>

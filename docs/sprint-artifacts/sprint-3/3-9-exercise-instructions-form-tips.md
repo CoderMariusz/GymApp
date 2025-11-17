@@ -1,7 +1,7 @@
 # Story 3.9: Exercise Instructions & Form Tips
 
 **Epic:** Epic 3 - Fitness Coach MVP
-**Priority:** P2 | **Status:** drafted | **Effort:** 2 SP
+**Priority:** P2 | **Status:** ready-for-dev | **Effort:** 2 SP
 
 ---
 
@@ -59,6 +59,16 @@ WHERE name = 'Bench Press';
 **Prerequisites:** Story 3.2 (Exercise Library)
 
 **Coverage Target:** 75%+
+
+---
+
+## Dev Agent Record
+
+### Context Reference
+
+- **Story Context File:** [3-9-exercise-instructions-form-tips.context.xml](./3-9-exercise-instructions-form-tips.context.xml)
+- **Generated:** 2025-11-17
+- **Status:** Context created, story ready for implementation
 
 ---
 

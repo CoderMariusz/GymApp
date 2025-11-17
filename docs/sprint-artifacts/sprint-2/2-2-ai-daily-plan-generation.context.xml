@@ -1,0 +1,672 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>2</epicId>
+    <storyId>2.2</storyId>
+    <title>AI Daily Plan Generation</title>
+    <status>ready-for-dev</status>
+    <generatedAt>2025-11-17</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/sprint-2/2-2-ai-daily-plan-generation.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>user who completed morning check-in</asA>
+    <iWant>the AI to generate a personalized daily plan</iWant>
+    <soThat>I know what to focus on today</soThat>
+    <tasks>
+      <task id="1" ac-ref="AC1,AC3,AC4,AC5,AC9">
+        <description>Implement AI orchestration Edge Function</description>
+        <subtasks>
+          <subtask>Create Supabase Edge Function at supabase/functions/generate-daily-plan/</subtask>
+          <subtask>Implement tier-based AI model selection (Free: Llama-3, Standard: Claude-3, Premium: GPT-4)</subtask>
+          <subtask>Fetch user context: active goals, scheduled workouts, stress levels</subtask>
+          <subtask>Build AI prompt with mood, energy, sleep quality, goals, workouts, stress</subtask>
+          <subtask>Call AI service with timeout handling (10s max)</subtask>
+          <subtask>Parse AI response into structured task list (5-8 tasks)</subtask>
+          <subtask>Generate insight text based on sleep quality and mood</subtask>
+          <subtask>Save daily plan to database with AI model used</subtask>
+        </subtasks>
+      </task>
+      <task id="2" ac-ref="AC2,AC4">
+        <description>Implement context-aware AI prompt engineering</description>
+        <subtasks>
+          <subtask>Create prompt builder that incorporates user mood and energy levels</subtask>
+          <subtask>Adapt task count based on energy (high energy = 7-8 tasks, low = 5-6 tasks)</subtask>
+          <subtask>Include user's active goals in prompt context</subtask>
+          <subtask>Include scheduled workouts and adjust plan accordingly</subtask>
+          <subtask>Include stress levels from Mind module for holistic planning</subtask>
+          <subtask>Format prompt with clear structure: context + constraints + output format</subtask>
+        </subtasks>
+      </task>
+      <task id="3" ac-ref="AC6,AC7">
+        <description>Implement daily plan persistence and display</description>
+        <subtasks>
+          <subtask>Create daily_plans table in Drift (local SQLite) with JSONB tasks</subtask>
+          <subtask>Create daily_plans table in Supabase with RLS policies</subtask>
+          <subtask>Implement saveDailyPlan() use case</subtask>
+          <subtask>Add UNIQUE constraint on (user_id, date) to prevent duplicates</subtask>
+          <subtask>Implement getDailyPlan() to fetch plan for Home tab display</subtask>
+          <subtask>Create UI component to display tasks with checkboxes</subtask>
+          <subtask>Implement task completion toggle functionality</subtask>
+        </subtasks>
+      </task>
+      <task id="4" ac-ref="AC9,AC10">
+        <description>Implement fallback template and error handling</description>
+        <subtasks>
+          <subtask>Create fallback daily plan template (5 default tasks)</subtask>
+          <subtask>Implement timeout detection (10s limit for AI generation)</subtask>
+          <subtask>Show fallback plan if AI service fails or times out</subtask>
+          <subtask>Log AI generation failures for monitoring</subtask>
+          <subtask>Add retry mechanism (1 retry attempt on timeout)</subtask>
+          <subtask>Display user-friendly error message: "Using template plan today"</subtask>
+        </subtasks>
+      </task>
+      <task id="5" ac-ref="AC8">
+        <description>Implement tier-based AI service integration</description>
+        <subtasks>
+          <subtask>Create AIServiceFactory to route to correct AI provider based on tier</subtask>
+          <subtask>Implement LlamaAIService for Free tier (target &lt;3s)</subtask>
+          <subtask>Implement ClaudeAIService for Standard tier (target &lt;4s)</subtask>
+          <subtask>Implement GPT4AIService for Premium tier (target &lt;4s)</subtask>
+          <subtask>Add API key management for each AI provider</subtask>
+          <subtask>Implement common AIService interface for consistent API</subtask>
+        </subtasks>
+      </task>
+      <task id="6" ac-ref="AC1,AC2,AC3,AC4">
+        <description>Implement DailyPlanEntity and domain logic</description>
+        <subtasks>
+          <subtask>Create DailyPlanEntity with id, userId, date, tasks[], insight, aiModel</subtask>
+          <subtask>Create TaskEntity with id, title, completed, time fields</subtask>
+          <subtask>Implement GenerateDailyPlanUseCase with mood/energy/sleepQuality params</subtask>
+          <subtask>Implement GetDailyPlanUseCase to retrieve plan for display</subtask>
+          <subtask>Implement UpdateTaskStatusUseCase for checkbox toggles</subtask>
+        </subtasks>
+      </task>
+      <task id="7" ac-ref="AC5">
+        <description>Implement AI-generated insights</description>
+        <subtasks>
+          <subtask>Parse sleep quality from check-in data (1-5 scale)</subtask>
+          <subtask>Generate insight text: "Your sleep was [quality]. [personalized message]"</subtask>
+          <subtask>Adapt insight based on mood + energy combination</subtask>
+          <subtask>Store insight in daily_plans.insight field</subtask>
+          <subtask>Display insight prominently in daily plan UI</subtask>
+        </subtasks>
+      </task>
+      <task id="8" ac-ref="ALL">
+        <description>Write comprehensive tests</description>
+        <subtasks>
+          <subtask>Unit tests: GenerateDailyPlanUseCase with various mood/energy combinations</subtask>
+          <subtask>Unit tests: AI prompt builder with different contexts (goals, workouts, stress)</subtask>
+          <subtask>Unit tests: Fallback template activation on AI timeout</subtask>
+          <subtask>Unit tests: Tier-based AI model selection logic</subtask>
+          <subtask>Widget tests: Daily plan display with checkboxes, task completion</subtask>
+          <subtask>Integration test: End-to-end AI plan generation after check-in</subtask>
+          <subtask>Integration test: Fallback template when AI service unavailable</subtask>
+          <subtask>Achieve 75%+ code coverage</subtask>
+        </subtasks>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="AC1">
+      <text>AI analyzes: mood, energy, sleep, stress (from Mind module), workouts (from Fitness)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC2">
+      <text>AI generates 5-8 tasks/suggestions</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC3">
+      <text>Plan considers user's active goals</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC4">
+      <text>Plan adapts to mood (high energy = more tasks, low = lighter day)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC5">
+      <text>Insight shown: "Your sleep was good (4/5). Great foundation for a productive day!"</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC6">
+      <text>Plan saves to database, visible on Home tab</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC7">
+      <text>Items can be marked complete (checkboxes)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC8">
+      <text>AI model based on tier (Free: Llama, Standard: Claude, Premium: GPT-4)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC9">
+      <text>Timeout handling: If AI fails, show fallback template</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC10">
+      <text>Generation time &lt;3s (Llama), &lt;4s (Claude/GPT-4)</text>
+      <priority>P1</priority>
+    </criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR6: AI-powered daily plan generation</section>
+        <snippet>AI generates personalized daily plan based on morning check-in data (mood, energy, sleep), user goals, and scheduled activities. Plan includes 5-8 actionable tasks tailored to user's current state. Low energy days get lighter plans, high energy days get more ambitious tasks.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR7: Context-aware AI personalization</section>
+        <snippet>AI plan generation uses multiple context sources: active goals from Goal module, scheduled workouts from Fitness module, stress levels from Mind module. AI adapts recommendations based on holistic user state, not just isolated data points.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR10: Tier-based AI model access</section>
+        <snippet>Free tier: Llama-3 (open-source, fast, good quality). Standard tier: Claude-3 (Anthropic, better reasoning). Premium tier: GPT-4 (OpenAI, highest quality). All tiers must deliver plans within 3-4 seconds. Fallback to template plan if AI service fails.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/epics.md</path>
+        <title>Epic 2: Life Coach MVP - Story 2.2</title>
+        <section>Story 2.2: AI Daily Plan Generation</section>
+        <snippet>After morning check-in, AI generates personalized daily plan with 5-8 tasks. Plan adapts to mood/energy/sleep. Includes insight text. Saves to database for Home tab display. Tier-based AI model. Fallback template on timeout. Prerequisites: Story 2.1 (Morning Check-in).</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Supabase Edge Functions (D4)</section>
+        <snippet>Use Edge Functions for AI orchestration. Benefits: serverless scaling, TypeScript/Deno runtime, low latency (&lt;100ms cold start), secure API key management. Deploy to supabase/functions/. Use Supabase client for database access within function.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>AI Integration Strategy</section>
+        <snippet>AI calls must have timeout protection (10s max). Always implement fallback behavior. Use streaming responses when possible for perceived speed. Cache AI responses to reduce costs. Log all AI calls for analytics and debugging.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Database Schema - Life Coach Tables</section>
+        <snippet>daily_plans table: id (UUID), user_id (UUID FK), date (DATE), tasks (JSONB array), insight (TEXT), ai_model (TEXT), created_at, updated_at. Tasks JSONB: [{id, title, completed, time}]. UNIQUE(user_id, date). RLS: USING (auth.uid() = user_id).</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/ux-design-specification.md</path>
+        <title>UX Design Specification</title>
+        <section>Daily Plan Display</section>
+        <snippet>Daily plan displayed on Home tab as card. Show insight text at top (bold, 14pt). List 5-8 tasks with checkboxes. Completed tasks get strikethrough + opacity 0.6. Time shown on right (e.g., "09:00"). Plan regenerates daily. Previous plans archived.</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/sprint-2/2-1-morning-check-in-flow.md</path>
+        <title>Story 2.1: Morning Check-in Flow</title>
+        <section>Integration with AI Daily Plan</section>
+        <snippet>After user submits check-in ("Generate My Plan" CTA), trigger AI plan generation. Pass mood, energy, sleep_quality to GenerateDailyPlanUseCase. Show loading state: "Generating your perfect day..." Navigate to Home tab after plan generated.</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/sprint-2/2-2-ai-daily-plan-generation.md</path>
+        <title>Story 2.2: AI Daily Plan Generation</title>
+        <section>Edge Function Implementation</section>
+        <snippet>Edge Function at supabase/functions/generate-daily-plan/. Accepts userId, mood, energy, sleepQuality. Fetches goals, workouts, stress. Selects AI model based on tier. Builds context-rich prompt. Calls AI API. Parses response. Saves to daily_plans table. Returns plan JSON.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <!-- Cross-module dependencies -->
+      <existing-code>
+        <file>
+          <path>lib/features/life_coach/domain/usecases/generate_daily_plan_usecase.dart</path>
+          <purpose>Interface created in Story 2.1, needs implementation in this story</purpose>
+          <snippet>
+            abstract class GenerateDailyPlanUseCase {
+              Future&lt;Result&lt;DailyPlanEntity&gt;&gt; call({
+                required int mood,
+                required int energy,
+                required int sleepQuality,
+              });
+            }
+          </snippet>
+        </file>
+        <file>
+          <path>lib/features/life_coach/domain/entities/checkin_entity.dart</path>
+          <purpose>Provides check-in data (mood, energy, sleepQuality) as input to AI generation</purpose>
+          <note>Created in Story 2.1. Use mood/energy/sleepQuality fields to build AI prompt context.</note>
+        </file>
+        <file>
+          <path>lib/features/goals/domain/repositories/goals_repository.dart</path>
+          <purpose>Fetch active goals for AI context (AC3)</purpose>
+          <note>Assumes Goals module exists from Epic 1. If not available, mock for now and integrate later.</note>
+        </file>
+        <file>
+          <path>lib/features/fitness/domain/repositories/workouts_repository.dart</path>
+          <purpose>Fetch scheduled workouts for AI context (AC1)</purpose>
+          <note>Assumes Fitness module exists from Epic 1. If not available, mock for now and integrate later.</note>
+        </file>
+        <file>
+          <path>lib/features/mind/domain/repositories/stress_repository.dart</path>
+          <purpose>Fetch stress levels for AI context (AC1)</purpose>
+          <note>Assumes Mind module exists. If not available, mock for now and integrate later.</note>
+        </file>
+      </existing-code>
+    </code>
+    <dependencies>
+      <flutter>
+        <sdk>3.38+</sdk>
+        <dart>3.10+</dart>
+      </flutter>
+      <packages>
+        <package name="flutter_riverpod" version="^3.0.0" usage="State management for daily plan display and updates" />
+        <package name="riverpod_annotation" version="^3.0.0" usage="Code generation for providers" />
+        <package name="drift" version="^2.14.0" usage="Local SQLite database for offline daily plan storage" />
+        <package name="drift_flutter" version="^0.1.0" usage="Flutter integration for Drift" />
+        <package name="sqlite3_flutter_libs" version="^0.5.0" usage="SQLite native libraries" />
+        <package name="supabase_flutter" version="^2.0.0" usage="Supabase client for Edge Function calls and database sync" />
+        <package name="http" version="^1.1.0" usage="HTTP client for AI service API calls" />
+        <package name="dio" version="^5.3.0" usage="Advanced HTTP client with timeout and retry support" />
+        <package name="freezed_annotation" version="^2.4.0" usage="Immutable entity generation" />
+        <package name="json_annotation" version="^4.8.1" usage="JSON serialization for AI responses" />
+        <package name="flutter_test" version="sdk" usage="Unit and widget testing framework" />
+        <package name="integration_test" version="sdk" usage="End-to-end testing framework" />
+        <package name="mockito" version="^5.4.2" usage="Mocking for unit tests" />
+      </packages>
+      <external-services>
+        <service name="Anthropic Claude API" version="3.0" usage="Standard tier AI model for daily plan generation" />
+        <service name="OpenAI GPT-4 API" version="gpt-4-turbo" usage="Premium tier AI model for highest quality plans" />
+        <service name="Llama 3 API" version="3.0" usage="Free tier AI model via Groq/Together AI" />
+      </external-services>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint id="ARCH-1" type="architectural">
+      <description>Use Supabase Edge Functions for AI orchestration</description>
+      <details>Create Edge Function at supabase/functions/generate-daily-plan/. Edge Functions provide serverless scaling, secure API key management, and low latency. All AI logic should run server-side, not client-side.</details>
+    </constraint>
+    <constraint id="ARCH-2" type="architectural">
+      <description>Offline-first implementation for daily plans</description>
+      <details>Save generated plan to Drift (SQLite) first for instant access. Sync to Supabase when online. User can view plan offline. Implement sync queue for plan updates (task completions).</details>
+    </constraint>
+    <constraint id="ARCH-3" type="architectural">
+      <description>Follow clean architecture for domain layer</description>
+      <details>DailyPlanEntity and TaskEntity in domain/entities/. GenerateDailyPlanUseCase in domain/usecases/. DailyPlanRepository interface in domain/repositories/. Implementation in data/ layer.</details>
+    </constraint>
+    <constraint id="AI-1" type="ai-integration">
+      <description>Tier-based AI model routing</description>
+      <details>Free tier → Llama-3 (via Groq/Together AI). Standard tier → Claude-3 (Anthropic). Premium tier → GPT-4 (OpenAI). Fetch user tier from subscriptions table. Model selection must be configurable via environment variables.</details>
+    </constraint>
+    <constraint id="AI-2" type="ai-integration">
+      <description>Context-aware prompt engineering</description>
+      <details>Prompt must include: (1) User state: mood, energy, sleep quality. (2) Active goals with progress. (3) Scheduled workouts for the day. (4) Recent stress levels. (5) Constraints: Generate 5-8 tasks, adapt task count to energy level. Use structured output format for parsing.</details>
+    </constraint>
+    <constraint id="AI-3" type="ai-integration">
+      <description>AI response parsing and validation</description>
+      <details>AI must return JSON with: tasks[] (id, title, time), insight (string). Validate: 5-8 tasks, each task has title, time is valid (HH:MM format). If validation fails, use fallback template. Log parsing errors for monitoring.</details>
+    </constraint>
+    <constraint id="PERF-1" type="performance">
+      <description>AI generation time limits</description>
+      <details>Llama-3: target &lt;3s, timeout 5s. Claude-3: target &lt;4s, timeout 6s. GPT-4: target &lt;4s, timeout 6s. Use Dio with connectTimeout and receiveTimeout. Show progress indicator during generation.</details>
+    </constraint>
+    <constraint id="PERF-2" type="performance">
+      <description>Fallback template on timeout</description>
+      <details>If AI call exceeds timeout OR returns error, use fallback template (5 generic tasks). Show user-friendly message: "Using a template plan today. AI is taking a break!" Log failures for debugging.</details>
+    </constraint>
+    <constraint id="DATA-1" type="data">
+      <description>Database schema for daily_plans table</description>
+      <details>daily_plans: id (UUID PK), user_id (UUID FK auth.users), date (DATE), tasks (JSONB), insight (TEXT), ai_model (TEXT), created_at, updated_at. Tasks JSONB: [{id: UUID, title: string, completed: bool, time: string}]. UNIQUE(user_id, date). Index on (user_id, date DESC).</details>
+    </constraint>
+    <constraint id="SEC-1" type="security">
+      <description>Row Level Security (RLS) on daily_plans table</description>
+      <details>Enable RLS. Policy: CREATE POLICY "Users can only access own plans" ON daily_plans FOR ALL USING (auth.uid() = user_id); Ensure Edge Function authenticates user before generating plan.</details>
+    </constraint>
+    <constraint id="SEC-2" type="security">
+      <description>Secure AI API key management</description>
+      <details>Store API keys in Supabase Vault or Edge Function secrets. NEVER expose keys to client. Use environment variables: ANTHROPIC_API_KEY, OPENAI_API_KEY, LLAMA_API_KEY. Rotate keys regularly.</details>
+    </constraint>
+    <constraint id="UX-1" type="ux">
+      <description>Daily plan display on Home tab</description>
+      <details>Show plan as card on Home screen. Insight text at top (bold, ~14pt). Task list with Material checkboxes. Completed tasks: strikethrough + opacity 0.6. Time on right (gray, 12pt). Empty state: "Complete morning check-in to generate your plan!"</details>
+    </constraint>
+    <constraint id="UX-2" type="ux">
+      <description>Loading state during AI generation</description>
+      <details>Show loading overlay with animated spinner + text: "Generating your perfect day..." Display for duration of AI call (2-4s). Prevent user interaction during generation. Timeout after 6s with error message.</details>
+    </constraint>
+    <constraint id="UX-3" type="ux">
+      <description>Task completion interaction</description>
+      <details>Tap checkbox to toggle task completion. Immediate visual feedback (strikethrough animation). Save to local DB (Drift) instantly. Sync to Supabase in background. Haptic feedback on toggle (HapticFeedback.lightImpact()).</details>
+    </constraint>
+    <constraint id="TEST-1" type="testing">
+      <description>75%+ code coverage for AI logic</description>
+      <details>AI generation is complex. Test: (1) Prompt builder with various contexts. (2) AI model selection by tier. (3) Timeout handling. (4) Fallback template activation. (5) Response parsing. (6) Task completion updates. Mock external AI APIs in tests.</details>
+    </constraint>
+    <constraint id="TEST-2" type="testing">
+      <description>Integration test for end-to-end flow</description>
+      <details>Test: User completes check-in → AI generates plan → Plan displays on Home tab → User marks task complete → Completion syncs to DB. Mock AI API to return deterministic response. Verify plan data in both Drift and Supabase.</details>
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>DailyPlanEntity</name>
+      <kind>domain-entity</kind>
+      <signature>
+        class DailyPlanEntity {
+          final String id;
+          final String userId;
+          final DateTime date;
+          final List&lt;TaskEntity&gt; tasks;
+          final String insight;
+          final String aiModel; // "llama-3", "claude-3", "gpt-4"
+          final DateTime createdAt;
+          final DateTime updatedAt;
+        }
+      </signature>
+      <path>lib/features/life_coach/domain/entities/daily_plan_entity.dart</path>
+      <notes>Use @freezed annotation for immutability and copyWith. Validate tasks.length is 5-8 in constructor. TaskEntity is separate entity (see below).</notes>
+    </interface>
+    <interface>
+      <name>TaskEntity</name>
+      <kind>domain-entity</kind>
+      <signature>
+        class TaskEntity {
+          final String id;
+          final String title;
+          final bool completed;
+          final String? time; // Optional time (HH:MM format, e.g., "09:00")
+        }
+      </signature>
+      <path>lib/features/life_coach/domain/entities/task_entity.dart</path>
+      <notes>Use @freezed annotation. Time is optional string in HH:MM format. Validate time format if provided. completed defaults to false.</notes>
+    </interface>
+    <interface>
+      <name>GenerateDailyPlanUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class GenerateDailyPlanUseCase {
+          Future&lt;Result&lt;DailyPlanEntity&gt;&gt; call({
+            required int mood,
+            required int energy,
+            required int sleepQuality,
+          });
+        }
+
+        // Implementation
+        class GenerateDailyPlanUseCaseImpl implements GenerateDailyPlanUseCase {
+          final DailyPlanRepository repository;
+          final AIService aiService;
+          final GoalsRepository goalsRepository;
+          final WorkoutsRepository workoutsRepository;
+          final StressRepository stressRepository;
+
+          @override
+          Future&lt;Result&lt;DailyPlanEntity&gt;&gt; call({...});
+        }
+      </signature>
+      <path>lib/features/life_coach/domain/usecases/generate_daily_plan_usecase.dart</path>
+      <notes>Interface created in Story 2.1. Implement in this story. Fetches context (goals, workouts, stress), builds prompt, calls AI service, parses response, saves to repository. Returns Result&lt;T&gt; pattern (Success/Failure).</notes>
+    </interface>
+    <interface>
+      <name>GetDailyPlanUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class GetDailyPlanUseCase {
+          Future&lt;Result&lt;DailyPlanEntity?&gt;&gt; call({
+            required String userId,
+            required DateTime date,
+          });
+        }
+      </signature>
+      <path>lib/features/life_coach/domain/usecases/get_daily_plan_usecase.dart</path>
+      <notes>Fetches daily plan for specific user and date. Used by Home tab to display plan. Returns null if no plan exists for that date. Checks Drift first (offline-first), falls back to Supabase.</notes>
+    </interface>
+    <interface>
+      <name>UpdateTaskStatusUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class UpdateTaskStatusUseCase {
+          Future&lt;Result&lt;void&gt;&gt; call({
+            required String dailyPlanId,
+            required String taskId,
+            required bool completed,
+          });
+        }
+      </signature>
+      <path>lib/features/life_coach/domain/usecases/update_task_status_usecase.dart</path>
+      <notes>Updates task completion status. Saves to Drift immediately for instant feedback, queues Supabase sync. Returns Result&lt;void&gt;. Updates tasks JSONB array in daily_plans table.</notes>
+    </interface>
+    <interface>
+      <name>DailyPlanRepository</name>
+      <kind>repository</kind>
+      <signature>
+        abstract class DailyPlanRepository {
+          Future&lt;Result&lt;DailyPlanEntity&gt;&gt; saveDailyPlan(DailyPlanEntity plan);
+          Future&lt;Result&lt;DailyPlanEntity?&gt;&gt; getDailyPlan(String userId, DateTime date);
+          Future&lt;Result&lt;void&gt;&gt; updateTaskStatus(String planId, String taskId, bool completed);
+          Future&lt;Result&lt;List&lt;DailyPlanEntity&gt;&gt;&gt; getPlansForDateRange(String userId, DateTime start, DateTime end);
+        }
+      </signature>
+      <path>lib/features/life_coach/domain/repositories/daily_plan_repository.dart</path>
+      <notes>Implemented by DailyPlanRepositoryImpl in data layer. Uses both DriftDataSource (local) and SupabaseDataSource (remote) with offline-first sync strategy.</notes>
+    </interface>
+    <interface>
+      <name>AIService</name>
+      <kind>service</kind>
+      <signature>
+        abstract class AIService {
+          Future&lt;AIResponse&gt; generateDailyPlan({
+            required String prompt,
+            Duration timeout = const Duration(seconds: 6),
+          });
+        }
+
+        class AIResponse {
+          final List&lt;TaskEntity&gt; tasks;
+          final String insight;
+          final String model;
+        }
+      </signature>
+      <path>lib/core/services/ai_service.dart</path>
+      <notes>Abstract interface for AI services. Implementations: LlamaAIService, ClaudeAIService, GPT4AIService. AIServiceFactory creates correct implementation based on user tier. Timeout enforced with Dio.</notes>
+    </interface>
+    <interface>
+      <name>AIServiceFactory</name>
+      <kind>factory</kind>
+      <signature>
+        class AIServiceFactory {
+          static AIService create({required UserTier tier}) {
+            switch (tier) {
+              case UserTier.free:
+                return LlamaAIService();
+              case UserTier.standard:
+                return ClaudeAIService();
+              case UserTier.premium:
+                return GPT4AIService();
+            }
+          }
+        }
+      </signature>
+      <path>lib/core/services/ai_service_factory.dart</path>
+      <notes>Factory pattern for tier-based AI service selection. UserTier enum: free, standard, premium. Fetch tier from Supabase subscriptions table or user metadata.</notes>
+    </interface>
+    <interface>
+      <name>daily_plans table (Supabase PostgreSQL)</name>
+      <kind>database-table</kind>
+      <signature>
+        CREATE TABLE daily_plans (
+          id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+          user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+          date DATE NOT NULL,
+          tasks JSONB NOT NULL, -- [{id, title, completed, time}]
+          insight TEXT NOT NULL,
+          ai_model TEXT NOT NULL, -- 'llama-3', 'claude-3', 'gpt-4'
+          created_at TIMESTAMPTZ DEFAULT NOW(),
+          updated_at TIMESTAMPTZ DEFAULT NOW(),
+          UNIQUE(user_id, date)
+        );
+        CREATE INDEX idx_daily_plans_user_date ON daily_plans(user_id, date DESC);
+
+        -- RLS policies
+        ALTER TABLE daily_plans ENABLE ROW LEVEL SECURITY;
+        CREATE POLICY "Users can only access own plans" ON daily_plans FOR ALL USING (auth.uid() = user_id);
+      </signature>
+      <path>supabase/migrations/</path>
+      <notes>Tasks JSONB structure: [{id: "uuid", title: "string", completed: bool, time: "HH:MM"}]. Insight is AI-generated text. ai_model tracks which AI generated the plan for analytics.</notes>
+    </interface>
+    <interface>
+      <name>daily_plans table (Drift SQLite)</name>
+      <kind>database-table</kind>
+      <signature>
+        @DataClassName('DailyPlanTable')
+        class DailyPlans extends Table {
+          TextColumn get id => text()();
+          TextColumn get userId => text()();
+          DateTimeColumn get date => dateTime()();
+          TextColumn get tasks => text()(); // JSON string
+          TextColumn get insight => text()();
+          TextColumn get aiModel => text()();
+          DateTimeColumn get createdAt => dateTime()();
+          DateTimeColumn get updatedAt => dateTime()();
+
+          @override
+          Set&lt;Column&gt; get primaryKey => {id};
+        }
+      </signature>
+      <path>lib/core/database/tables.drift.dart</path>
+      <notes>Mirror of Supabase schema for offline-first. tasks stored as JSON string, parsed to List&lt;TaskEntity&gt; in repository. Use dart:convert for JSON serialization.</notes>
+    </interface>
+    <interface>
+      <name>generate-daily-plan Edge Function</name>
+      <kind>edge-function</kind>
+      <signature>
+        // supabase/functions/generate-daily-plan/index.ts
+        Deno.serve(async (req) => {
+          const { userId, mood, energy, sleepQuality } = await req.json();
+
+          // Authenticate user
+          const user = await authenticateUser(req);
+          if (!user) return new Response('Unauthorized', { status: 401 });
+
+          // Fetch context
+          const tier = await getUserTier(userId);
+          const goals = await getActiveGoals(userId);
+          const workouts = await getScheduledWorkouts(userId);
+          const stress = await getStressLevel(userId);
+
+          // Select AI model
+          const model = selectAIModel(tier);
+
+          // Build prompt
+          const prompt = buildPrompt({ mood, energy, sleepQuality, goals, workouts, stress });
+
+          // Call AI with timeout
+          const plan = await callAI(model, prompt, { timeout: 6000 });
+
+          // Save to database
+          await saveDailyPlan(userId, plan);
+
+          return Response.json({ plan });
+        });
+      </signature>
+      <path>supabase/functions/generate-daily-plan/index.ts</path>
+      <notes>Edge Function handles AI orchestration. Authenticates user, fetches context from multiple modules, calls appropriate AI service, saves result. Returns plan JSON to client. Implements timeout and fallback logic.</notes>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Follow 70/20/10 testing pyramid: 70% unit tests (use cases, repositories, entities, AI services), 20% widget tests (UI components, daily plan display, task checkboxes), 10% integration tests (end-to-end AI generation flow). Use flutter_test for unit/widget tests, integration_test for E2E. Mock AI APIs with mockito. Target 75%+ code coverage. All acceptance criteria must have test coverage.
+    </standards>
+    <locations>
+      <location>test/features/life_coach/domain/usecases/</location>
+      <location>test/features/life_coach/domain/entities/</location>
+      <location>test/features/life_coach/data/repositories/</location>
+      <location>test/features/life_coach/presentation/widgets/</location>
+      <location>test/core/services/ai_service_test.dart</location>
+      <location>integration_test/features/life_coach/ai_daily_plan_flow_test.dart</location>
+    </locations>
+    <ideas>
+      <test-idea ac-ref="AC1,AC2,AC3,AC4">
+        <description>Unit test: GenerateDailyPlanUseCase with high energy mood</description>
+        <approach>Mock mood=5, energy=5, sleepQuality=4. Mock goals, workouts. Verify AI service called with correct prompt. Verify plan has 7-8 tasks (high energy). Assert Success result returned.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1,AC2,AC4">
+        <description>Unit test: GenerateDailyPlanUseCase with low energy mood</description>
+        <approach>Mock mood=2, energy=2, sleepQuality=2. Verify AI service called. Verify plan has 5-6 tasks (low energy = lighter day). Assert tasks are less ambitious.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3">
+        <description>Unit test: AI prompt includes active goals</description>
+        <approach>Mock GoalsRepository to return 2 active goals. Generate plan. Verify prompt builder includes goal titles and progress in context string.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1">
+        <description>Unit test: AI prompt includes workouts and stress</description>
+        <approach>Mock WorkoutsRepository with 1 scheduled workout. Mock StressRepository with stress=3. Verify prompt includes workout time and stress level in context.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC5">
+        <description>Unit test: AI insight generation based on sleep quality</description>
+        <approach>Test various sleep quality values (1-5). Verify insight text adapts: sleepQuality=1 → "Your sleep was poor. Take it easy today!", sleepQuality=5 → "Your sleep was excellent! Great foundation!"</approach>
+      </test-idea>
+      <test-idea ac-ref="AC8">
+        <description>Unit test: Tier-based AI model selection</description>
+        <approach>Test AIServiceFactory.create(). Free tier → returns LlamaAIService. Standard tier → returns ClaudeAIService. Premium tier → returns GPT4AIService.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC9">
+        <description>Unit test: Fallback template on AI timeout</description>
+        <approach>Mock AI service to throw TimeoutException after 6s. Verify GenerateDailyPlanUseCase returns fallback template (5 generic tasks). Verify ai_model field set to "fallback".</approach>
+      </test-idea>
+      <test-idea ac-ref="AC9">
+        <description>Unit test: Fallback template on AI error</description>
+        <approach>Mock AI service to throw Exception (API error). Verify use case catches error and returns fallback template. Log error for debugging.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC10">
+        <description>Unit test: AI generation time measurement</description>
+        <approach>Mock each AI service (Llama, Claude, GPT-4). Measure duration of generateDailyPlan() call. Assert Llama &lt;3s, Claude/GPT-4 &lt;4s. Use fake timers for deterministic testing.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6">
+        <description>Unit test: DailyPlanEntity validation</description>
+        <approach>Test DailyPlanEntity constructor. Verify tasks.length must be 5-8 (throws exception if outside range). Test freezed copyWith and equality.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6,AC7">
+        <description>Unit test: UpdateTaskStatusUseCase</description>
+        <approach>Mock DailyPlanRepository. Call UpdateTaskStatusUseCase with taskId and completed=true. Verify repository.updateTaskStatus called. Assert Success result.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC7">
+        <description>Widget test: Daily plan display with checkboxes</description>
+        <approach>Render DailyPlanWidget with mock DailyPlanEntity (5 tasks). Verify insight text displayed at top. Verify 5 checkboxes rendered. Tap checkbox. Verify onTaskToggle callback called.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC7">
+        <description>Widget test: Task completion visual feedback</description>
+        <approach>Render task list. Tap checkbox to complete task. Verify task title has strikethrough (TextDecoration.lineThrough). Verify opacity reduced to 0.6.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6">
+        <description>Widget test: Empty state when no plan exists</description>
+        <approach>Render DailyPlanWidget with null plan. Verify empty state message: "Complete morning check-in to generate your plan!" Verify CTA button to open check-in modal.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC10">
+        <description>Widget test: Loading state during AI generation</description>
+        <approach>Trigger plan generation. Verify loading overlay appears with "Generating your perfect day..." text. Verify animated spinner visible. Mock AI delay of 2s, verify loading dismissed after completion.</approach>
+      </test-idea>
+      <test-idea ac-ref="ALL">
+        <description>Integration test: End-to-end AI plan generation</description>
+        <approach>Complete morning check-in with mood=4, energy=5, sleep=4. Mock AI API to return deterministic plan (6 tasks). Verify plan saved to Drift and Supabase. Verify plan displayed on Home tab. Mark 2 tasks complete. Verify updates synced.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC9">
+        <description>Integration test: Fallback template on AI failure</description>
+        <approach>Complete check-in. Mock AI API to return 500 error. Verify fallback template (5 tasks) displayed. Verify user sees message: "Using a template plan today." Verify plan saved with ai_model="fallback".</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6,AC7">
+        <description>Integration test: Daily plan persistence and retrieval</description>
+        <approach>Generate plan on Day 1. Close app. Reopen app on Day 1. Verify same plan displayed (from Drift). Mark task complete offline. Go online. Verify completion synced to Supabase.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1,AC3">
+        <description>Unit test: Cross-module context fetching</description>
+        <approach>Mock GoalsRepository, WorkoutsRepository, StressRepository. Call GenerateDailyPlanUseCase. Verify all repositories queried. Verify context data passed to AI prompt builder.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC2">
+        <description>Unit test: AI response parsing validation</description>
+        <approach>Mock AI service to return malformed JSON (e.g., 3 tasks instead of 5-8). Verify use case rejects response and uses fallback template. Log validation error.</approach>
+      </test-idea>
+    </ideas>
+  </tests>
+</story-context>

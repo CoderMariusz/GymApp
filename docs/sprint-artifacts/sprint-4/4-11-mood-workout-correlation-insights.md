@@ -1,5 +1,5 @@
 # Story 4.11: Mood & Workout Correlation Insights
-**Epic:** 4 - Mind & Emotion | **P1** | **2 SP** | **drafted**
+**Epic:** 4 - Mind & Emotion | **P1** | **2 SP** | **ready-for-dev**
 
 ## User Story
 **As a** user tracking mood and workouts, **I want** to see correlations, **So that** I understand how exercise affects mental health.
@@ -28,3 +28,9 @@ GROUP BY m.date;
 -- Pearson correlation coefficient
 ```
 **Dependencies:** 4.3 (Mood), Epic 3 (Fitness) | **Coverage:** 75%+
+
+## Dev Agent Record
+
+- **Status Updated to ready-for-dev:** 2025-11-17
+- **Dev Agent:** Claude Haiku 4.5
+- **Purpose:** Ready for development phase

@@ -1,0 +1,584 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>1</epicId>
+    <storyId>1.5</storyId>
+    <title>Data Sync Across Devices</title>
+    <status>ready-for-dev</status>
+    <generatedAt>2025-11-17</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/sprint-1/1-5-data-sync-across-devices.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>user with multiple devices</asA>
+    <iWant>my data synced in real-time</iWant>
+    <soThat>I can seamlessly switch between my phone and tablet</soThat>
+    <tasks>
+      <task id="1" ac-ref="AC1,AC2,AC3,AC4,AC5">
+        <description>Implement offline-first local database with Drift</description>
+        <subtasks>
+          <subtask>Create Drift database schema mirroring Supabase tables (workouts, mood_logs, goals, meditation_sessions)</subtask>
+          <subtask>Add sync_queue table in Drift for tracking pending syncs</subtask>
+          <subtask>Implement write-through cache pattern: save to Drift first for instant feedback</subtask>
+          <subtask>Create database access layer with typed queries and migrations</subtask>
+          <subtask>Implement local-first reads for &lt;100ms response time</subtask>
+        </subtasks>
+      </task>
+      <task id="2" ac-ref="AC5,AC6">
+        <description>Implement sync queue and offline write handling</description>
+        <subtasks>
+          <subtask>Create SyncQueue service with enqueueWrite() and processPendingSync() methods</subtask>
+          <subtask>Implement priority-based queue (critical vs non-critical operations)</subtask>
+          <subtask>Add sync item status tracking (pending, syncing, completed, failed)</subtask>
+          <subtask>Implement exponential backoff retry logic for failed syncs</subtask>
+          <subtask>Handle network error scenarios gracefully without blocking UI</subtask>
+        </subtasks>
+      </task>
+      <task id="3" ac-ref="AC1,AC2,AC3,AC4">
+        <description>Implement Supabase Realtime subscriptions</description>
+        <subtasks>
+          <subtask>Setup Realtime subscriptions for workouts table</subtask>
+          <subtask>Setup Realtime subscriptions for mood_logs table</subtask>
+          <subtask>Setup Realtime subscriptions for goals table</subtask>
+          <subtask>Setup Realtime subscriptions for meditation_sessions table</subtask>
+          <subtask>Implement subscription lifecycle management (subscribe on app start, unsubscribe on app pause)</subtask>
+          <subtask>Handle incoming Realtime events and update local Drift database</subtask>
+        </subtasks>
+      </task>
+      <task id="4" ac-ref="AC6">
+        <description>Implement conflict resolution with last-write-wins strategy</description>
+        <subtasks>
+          <subtask>Add updated_at timestamp to all synced entities</subtask>
+          <subtask>Compare timestamps when conflict detected during sync</subtask>
+          <subtask>Implement last-write-wins logic: newest timestamp wins</subtask>
+          <subtask>Update local database with remote data if remote is newer</subtask>
+          <subtask>Log conflict resolution events for debugging</subtask>
+        </subtasks>
+      </task>
+      <task id="5" ac-ref="AC7">
+        <description>Implement sync status indicator UI</description>
+        <subtasks>
+          <subtask>Create SyncStatus enum (synced, syncing, offline)</subtask>
+          <subtask>Implement syncStatusProvider with Riverpod</subtask>
+          <subtask>Add cloud icon indicator to navigation bar</subtask>
+          <subtask>Show "Offline mode" banner when no internet connection</subtask>
+          <subtask>Update status in real-time based on connectivity and queue state</subtask>
+          <subtask>Add syncing animation during active sync operations</subtask>
+        </subtasks>
+      </task>
+      <task id="6" ac-ref="AC1,AC2,AC3,AC4,AC5">
+        <description>Implement opportunistic sync lifecycle</description>
+        <subtasks>
+          <subtask>Trigger sync on app launch/resume using WidgetsBindingObserver</subtask>
+          <subtask>Monitor connectivity changes with Connectivity package</subtask>
+          <subtask>Trigger sync when connectivity restored (WiFi preferred)</subtask>
+          <subtask>Implement battery-friendly sync (no background polling)</subtask>
+          <subtask>Ensure &lt;5s sync latency for realtime updates (NFR-P5)</subtask>
+        </subtasks>
+      </task>
+      <task id="7" ac-ref="ALL">
+        <description>Write comprehensive tests for sync functionality</description>
+        <subtasks>
+          <subtask>Unit tests: SyncQueue enqueue/process operations</subtask>
+          <subtask>Unit tests: Conflict resolution logic with timestamp comparison</subtask>
+          <subtask>Unit tests: Realtime subscription handling and local DB updates</subtask>
+          <subtask>Integration test: Offline write → queue → online sync → Supabase</subtask>
+          <subtask>Integration test: Realtime sync updates across simulated devices</subtask>
+          <subtask>Integration test: Conflict resolution with concurrent edits</subtask>
+          <subtask>Achieve 75%+ code coverage for sync logic</subtask>
+        </subtasks>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="AC1">
+      <text>Workout data synced via Supabase Realtime (&lt;5s latency)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC2">
+      <text>Mood logs synced across devices</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC3">
+      <text>Goals synced across devices</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC4">
+      <text>Meditation progress synced across devices</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC5">
+      <text>Sync works offline (queued, synced when online)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC6">
+      <text>Conflict resolution: Last-write-wins</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC7">
+      <text>Sync status indicator in app (syncing/synced/offline)</text>
+      <priority>P0</priority>
+    </criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR98: Data sync across devices (realtime)</section>
+        <snippet>System syncs user data across devices using Supabase Realtime. All user data (workouts, mood logs, goals, meditation sessions) must sync in real-time with &lt;5s latency. Offline operations queued and synced when connectivity restored.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>NFR-P5: Offline-first support</section>
+        <snippet>Data must be accessible without internet connection. Offline mode must work seamlessly with max 10s degradation (target: &lt;100ms for local operations). All writes go to local database first for instant feedback.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/epics.md</path>
+        <title>Epic 1: Core Platform Foundation - Story 1.5</title>
+        <section>Story 1.5: Data Sync Across Devices</section>
+        <snippet>Implement real-time data sync across devices with offline support. Prerequisites: Story 1.1 (user accounts), Story 1.2 (authentication). Blocks all data-heavy features (workouts, mood, goals, meditations).</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Decision 3: Offline-First Sync Strategy</section>
+        <snippet>Hybrid Write-Through Cache + Sync Queue pattern. Write to Drift (local SQLite) first for instant feedback (&lt;100ms), queue sync item, then opportunistic sync to Supabase when online. Last-write-wins conflict resolution based on updated_at timestamp.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Decision 11: Background Sync Strategy</section>
+        <snippet>Opportunistic Sync triggered by app lifecycle events (app launch, resume, connectivity restored). No background polling for battery efficiency (&lt;5% in 8h target). WiFi-preferred for large data transfers.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>PostgreSQL Schema (Supabase)</section>
+        <snippet>All user data tables (workouts, mood_logs, goals, meditation_sessions) have RLS policies. Realtime enabled via ALTER PUBLICATION supabase_realtime ADD TABLE for each user table. Timestamp-based conflict resolution.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Drift (SQLite) Mirror</section>
+        <snippet>Local Drift database mirrors Supabase PostgreSQL schema. Synchronization: Write locally first → Queue for Supabase sync. Read locally first → Fallback to Supabase if cache miss. Conflict resolution: Last-write-wins based on updated_at timestamp.</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/sprint-1/1-5-data-sync-across-devices.md</path>
+        <title>Story 1.5: Data Sync Across Devices</title>
+        <section>Technical Implementation</section>
+        <snippet>Hybrid Sync (Write-Through Cache + Sync Queue) architecture. Local database (Drift/SQLite) for all user tables. Sync queue for offline writes. Supabase Realtime subscriptions for incoming changes. Opportunistic sync on app lifecycle events.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <note>Core platform foundation - sync infrastructure will be used by all modules. No existing sync code. Create base structure at lib/core/sync/ and lib/core/database/. Follow Hybrid Sync pattern (D3) from architecture.</note>
+    </code>
+    <dependencies>
+      <flutter>
+        <sdk>3.38+</sdk>
+        <dart>3.10+</dart>
+      </flutter>
+      <packages>
+        <package name="drift" version="^2.14.0" usage="Local SQLite ORM for offline-first data storage and sync queue" />
+        <package name="drift_flutter" version="^0.1.0" usage="Flutter integration for Drift database" />
+        <package name="sqlite3_flutter_libs" version="^0.5.0" usage="SQLite native libraries for iOS/Android" />
+        <package name="path_provider" version="^2.1.0" usage="Get app directories for Drift database file storage" />
+        <package name="path" version="^1.8.0" usage="Path manipulation utilities" />
+        <package name="supabase_flutter" version="^2.0.0" usage="Supabase client for Realtime subscriptions and remote sync" />
+        <package name="connectivity_plus" version="^5.0.0" usage="Monitor network connectivity for opportunistic sync" />
+        <package name="flutter_riverpod" version="^3.0.0" usage="State management for sync status and connectivity" />
+        <package name="riverpod_annotation" version="^3.0.0" usage="Code generation for sync providers" />
+        <package name="flutter_test" version="sdk" usage="Unit and widget testing framework" />
+        <package name="integration_test" version="sdk" usage="End-to-end sync testing across simulated devices" />
+        <package name="mockito" version="^5.4.0" usage="Mock dependencies for unit tests" />
+      </packages>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint id="ARCH-1" type="architectural">
+      <description>Must follow Hybrid Sync pattern (D3)</description>
+      <details>Implement Write-Through Cache + Sync Queue architecture. All writes go to Drift (local SQLite) first for instant feedback (&lt;100ms per NFR-P4), then queue for background sync to Supabase. Never block UI on network operations.</details>
+    </constraint>
+    <constraint id="ARCH-2" type="architectural">
+      <description>Opportunistic sync only, no background polling (D11)</description>
+      <details>Trigger sync only on app lifecycle events (launch, resume) and connectivity changes. No WorkManager or background polling. Battery usage must be &lt;5% in 8h (NFR-P6). WiFi-preferred for sync operations.</details>
+    </constraint>
+    <constraint id="PERF-1" type="performance">
+      <description>Realtime sync latency &lt;5s (NFR-P5)</description>
+      <details>Supabase Realtime subscriptions must deliver updates within 5 seconds. Measure p95 latency from write on Device A to update on Device B. Optimize by filtering subscription events to user's data only.</details>
+    </constraint>
+    <constraint id="PERF-2" type="performance">
+      <description>Offline write operations &lt;100ms (NFR-P4)</description>
+      <details>Local Drift writes must complete in &lt;100ms for instant UI feedback. Use batch operations for multiple writes. Index frequently queried columns (user_id, created_at, updated_at).</details>
+    </constraint>
+    <constraint id="PERF-3" type="performance">
+      <description>Battery usage &lt;5% in 8 hours (NFR-P6)</description>
+      <details>Sync operations must not drain battery. No background polling, opportunistic sync only. Measure battery consumption over 8-hour period with typical usage (10 sync events). Use WiFi-preferred strategy.</details>
+    </constraint>
+    <constraint id="DATA-1" type="data">
+      <description>Drift schema must mirror Supabase schema</description>
+      <details>Local Drift tables (workouts, mood_logs, goals, meditation_sessions, sync_queue) must exactly match Supabase PostgreSQL schema. Include same columns, data types, and constraints. Add sync_queue table for tracking pending syncs.</details>
+    </constraint>
+    <constraint id="DATA-2" type="data">
+      <description>Last-write-wins conflict resolution</description>
+      <details>Compare updated_at timestamps when conflict detected. Newest timestamp always wins. Log conflicts for debugging. User notification not required (simple strategy for MVP). Update local database if remote is newer.</details>
+    </constraint>
+    <constraint id="DATA-3" type="data">
+      <description>Enable Realtime on all user tables</description>
+      <details>Run SQL migration: ALTER PUBLICATION supabase_realtime ADD TABLE workouts; (repeat for mood_logs, goals, meditation_sessions). Verify Realtime events firing correctly using Supabase dashboard.</details>
+    </constraint>
+    <constraint id="SEC-1" type="security">
+      <description>Row Level Security (RLS) policies required</description>
+      <details>All synced tables must have RLS enabled. Policy: CREATE POLICY "Users can only access own data" ON [table] FOR ALL USING (auth.uid() = user_id); Prevents cross-user data leaks during sync.</details>
+    </constraint>
+    <constraint id="UX-1" type="ux">
+      <description>Sync status indicator always visible</description>
+      <details>Cloud icon in navigation bar showing sync status: synced (✅), syncing (animated), offline (⚠️). "Offline mode" banner when no internet (reassuring tone, not alarming). No user action required - sync is automatic.</details>
+    </constraint>
+    <constraint id="UX-2" type="ux">
+      <description>No data loss in offline mode</description>
+      <details>All offline operations must be queued and synced when online. If sync fails after 3 retries, persist in queue and retry on next app launch. User must never lose data due to connectivity issues.</details>
+    </constraint>
+    <constraint id="TEST-1" type="testing">
+      <description>75%+ code coverage required (complex sync logic)</description>
+      <details>Sync logic is critical infrastructure. Higher coverage required than standard 70%. Unit tests for queue operations, conflict resolution, Realtime handlers. Integration tests for multi-device scenarios.</details>
+    </constraint>
+    <constraint id="DEP-1" type="dependency">
+      <description>Requires Story 1.1 and 1.2 completed</description>
+      <details>User accounts (Story 1.1) and authentication (Story 1.2) must be implemented first. Sync requires user_id for RLS policies and data isolation. Cannot sync without authenticated user session.</details>
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>AppDatabase</name>
+      <kind>database-class</kind>
+      <signature>
+        @DriftDatabase(tables: [
+          Workouts,
+          MoodLogs,
+          Goals,
+          MeditationSessions,
+          SyncQueue,
+        ])
+        class AppDatabase extends _$AppDatabase {
+          AppDatabase(QueryExecutor e) : super(e);
+
+          @override
+          int get schemaVersion => 1;
+
+          // Add migration strategy for future schema changes
+          @override
+          MigrationStrategy get migration => MigrationStrategy(
+            onCreate: (Migrator m) async {
+              await m.createAll();
+            },
+          );
+        }
+      </signature>
+      <path>lib/core/database/app_database.dart</path>
+      <notes>Central Drift database definition. All user data tables defined here. Use @DriftDatabase annotation for code generation. Mirror Supabase schema exactly.</notes>
+    </interface>
+    <interface>
+      <name>SyncQueue</name>
+      <kind>service</kind>
+      <signature>
+        class SyncQueue {
+          final AppDatabase _database;
+          final SupabaseClient _supabase;
+
+          Future&lt;void&gt; enqueueWrite(SyncItem item) async {
+            // Add to sync_queue table with pending status
+            // Mark as priority: HIGH for critical operations
+            // Trigger sync if online
+          }
+
+          Future&lt;void&gt; processPendingSync() async {
+            final pendingItems = await _database.getPendingSyncItems();
+            for (final item in pendingItems) {
+              try {
+                await _syncToSupabase(item);
+                await _database.markSyncComplete(item.id);
+              } catch (e) {
+                await _handleSyncError(item, e);
+              }
+            }
+          }
+
+          Future&lt;void&gt; _syncToSupabase(SyncItem item) async {
+            // Sync item to Supabase based on operation type (insert/update/delete)
+          }
+
+          Future&lt;void&gt; _handleSyncError(SyncItem item, dynamic error) async {
+            // Exponential backoff retry logic
+            // Mark as failed after 3 retries, will retry on next app launch
+          }
+        }
+      </signature>
+      <path>lib/core/sync/sync_queue.dart</path>
+      <notes>Manages offline write queue and sync to Supabase. Priority-based queue (critical vs non-critical). Exponential backoff retry for failures.</notes>
+    </interface>
+    <interface>
+      <name>RealtimeSync</name>
+      <kind>service</kind>
+      <signature>
+        class RealtimeSync {
+          final AppDatabase _database;
+          final SupabaseClient _supabase;
+          final List&lt;RealtimeChannel&gt; _subscriptions = [];
+
+          void subscribeToChanges(String userId) {
+            // Subscribe to workouts table
+            final workoutsChannel = _supabase
+              .from('workouts')
+              .stream(primaryKey: ['id'])
+              .eq('user_id', userId)
+              .listen((List&lt;Map&lt;String, dynamic&gt;&gt; data) {
+                _updateLocalDatabase('workouts', data);
+              });
+            _subscriptions.add(workoutsChannel);
+
+            // Repeat for mood_logs, goals, meditation_sessions
+          }
+
+          Future&lt;void&gt; _updateLocalDatabase(String table, List&lt;Map&lt;String, dynamic&gt;&gt; data) async {
+            // Update local Drift database with remote changes
+            // Check updated_at timestamp for conflict resolution
+          }
+
+          void unsubscribeAll() {
+            for (final subscription in _subscriptions) {
+              subscription.cancel();
+            }
+            _subscriptions.clear();
+          }
+        }
+      </signature>
+      <path>lib/core/sync/realtime_sync.dart</path>
+      <notes>Manages Supabase Realtime subscriptions for all user tables. Updates local Drift database on incoming events. Lifecycle: subscribe on app start, unsubscribe on pause.</notes>
+    </interface>
+    <interface>
+      <name>SyncService</name>
+      <kind>service</kind>
+      <signature>
+        class SyncService with WidgetsBindingObserver {
+          final SyncQueue _syncQueue;
+          final RealtimeSync _realtimeSync;
+          final Connectivity _connectivity;
+
+          void initializeSync(String userId) {
+            // Setup app lifecycle observer
+            WidgetsBinding.instance.addObserver(this);
+
+            // Subscribe to Realtime changes
+            _realtimeSync.subscribeToChanges(userId);
+
+            // Monitor connectivity changes
+            _connectivity.onConnectivityChanged.listen((result) {
+              if (result != ConnectivityResult.none) {
+                _syncNow();
+              }
+            });
+
+            // Initial sync on startup
+            _syncNow();
+          }
+
+          @override
+          void didChangeAppLifecycleState(AppLifecycleState state) {
+            if (state == AppLifecycleState.resumed) {
+              _syncNow();
+            }
+          }
+
+          Future&lt;void&gt; _syncNow() async {
+            await _syncQueue.processPendingSync();
+          }
+
+          void dispose() {
+            WidgetsBinding.instance.removeObserver(this);
+            _realtimeSync.unsubscribeAll();
+          }
+        }
+      </signature>
+      <path>lib/core/sync/sync_service.dart</path>
+      <notes>Main sync orchestrator. Manages sync lifecycle (app resume, connectivity changes). Opportunistic sync only, no polling. Battery-friendly implementation.</notes>
+    </interface>
+    <interface>
+      <name>ConflictResolver</name>
+      <kind>service</kind>
+      <signature>
+        class ConflictResolver {
+          T resolveConflict&lt;T extends Timestamped&gt;(T local, T remote) {
+            // Last-write-wins: compare updated_at timestamps
+            if (remote.updatedAt.isAfter(local.updatedAt)) {
+              // Remote is newer, use remote version
+              return remote;
+            } else {
+              // Local is newer or equal, keep local version
+              return local;
+            }
+          }
+
+          void logConflict&lt;T&gt;(String table, String id, T local, T remote, T resolved) {
+            // Log conflict resolution for debugging
+            // Include: table, id, local_timestamp, remote_timestamp, winner
+          }
+        }
+
+        abstract class Timestamped {
+          DateTime get updatedAt;
+        }
+      </signature>
+      <path>lib/core/sync/conflict_resolver.dart</path>
+      <notes>Simple last-write-wins conflict resolution. Compare updated_at timestamps. Log all conflicts for debugging. Future: add user-facing conflict UI if needed.</notes>
+    </interface>
+    <interface>
+      <name>syncStatusProvider</name>
+      <kind>riverpod-provider</kind>
+      <signature>
+        enum SyncStatus { synced, syncing, offline }
+
+        @riverpod
+        class SyncStatusNotifier extends _$SyncStatusNotifier {
+          @override
+          SyncStatus build() {
+            // Check connectivity
+            final connectivity = ref.watch(connectivityProvider);
+
+            // Check pending queue
+            final pendingCount = ref.watch(pendingSyncCountProvider);
+
+            if (connectivity == ConnectivityResult.none) {
+              return SyncStatus.offline;
+            } else if (pendingCount > 0) {
+              return SyncStatus.syncing;
+            } else {
+              return SyncStatus.synced;
+            }
+          }
+        }
+      </signature>
+      <path>lib/core/sync/providers/sync_status_provider.dart</path>
+      <notes>Riverpod provider for sync status. Updates in real-time based on connectivity and queue state. Used by UI to display sync indicator.</notes>
+    </interface>
+    <interface>
+      <name>sync_queue table (Drift SQLite)</name>
+      <kind>database-table</kind>
+      <signature>
+        @DataClassName('SyncQueueItem')
+        class SyncQueue extends Table {
+          TextColumn get id => text()();
+          TextColumn get userId => text()();
+          TextColumn get tableName => text()();
+          TextColumn get operation => text()(); // 'insert', 'update', 'delete'
+          TextColumn get data => text()(); // JSON serialized entity
+          IntColumn get priority => integer()(); // 0 = critical, 1 = high, 2 = normal
+          TextColumn get status => text()(); // 'pending', 'syncing', 'completed', 'failed'
+          IntColumn get retryCount => integer().withDefault(const Constant(0))();
+          DateTimeColumn get createdAt => dateTime()();
+          DateTimeColumn get lastAttemptAt => dateTime().nullable()();
+
+          @override
+          Set&lt;Column&gt; get primaryKey => {id};
+        }
+      </signature>
+      <path>lib/core/database/tables/sync_queue.drift.dart</path>
+      <notes>Drift table for tracking offline writes. Priority-based queue. Retry count for exponential backoff. Status tracking for debugging.</notes>
+    </interface>
+    <interface>
+      <name>Realtime Configuration (Supabase SQL)</name>
+      <kind>database-migration</kind>
+      <signature>
+        -- Enable Realtime on all user tables
+        ALTER PUBLICATION supabase_realtime ADD TABLE workouts;
+        ALTER PUBLICATION supabase_realtime ADD TABLE mood_logs;
+        ALTER PUBLICATION supabase_realtime ADD TABLE goals;
+        ALTER PUBLICATION supabase_realtime ADD TABLE meditation_sessions;
+
+        -- Add updated_at trigger for automatic timestamp updates
+        CREATE OR REPLACE FUNCTION update_updated_at_column()
+        RETURNS TRIGGER AS $$
+        BEGIN
+          NEW.updated_at = NOW();
+          RETURN NEW;
+        END;
+        $$ language 'plpgsql';
+
+        CREATE TRIGGER update_workouts_updated_at BEFORE UPDATE ON workouts
+          FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+        -- Repeat for other tables
+      </signature>
+      <path>supabase/migrations/YYYYMMDDHHMMSS_enable_realtime_sync.sql</path>
+      <notes>Supabase migration to enable Realtime and automatic timestamp updates. Required for conflict resolution and sync functionality.</notes>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Follow 70/20/10 testing pyramid with higher coverage (75%+) for sync logic due to complexity and criticality. Unit tests: sync queue operations, conflict resolution, Realtime handlers. Integration tests: multi-device scenarios, offline-to-online sync. Mock Supabase client and connectivity for deterministic tests. Test edge cases: concurrent edits, network failures, app lifecycle transitions.
+    </standards>
+    <locations>
+      <location>test/core/sync/</location>
+      <location>test/core/database/</location>
+      <location>integration_test/sync/multi_device_sync_test.dart</location>
+      <location>integration_test/sync/offline_sync_test.dart</location>
+      <location>integration_test/sync/conflict_resolution_test.dart</location>
+    </locations>
+    <ideas>
+      <test-idea ac-ref="AC5">
+        <description>Unit test: SyncQueue enqueues write when offline</description>
+        <approach>Mock Connectivity to return ConnectivityResult.none. Call enqueueWrite() with workout entity. Verify item added to sync_queue table with status='pending'. Verify processPendingSync() not called while offline.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC5">
+        <description>Unit test: SyncQueue processes pending items when online</description>
+        <approach>Mock Connectivity to return ConnectivityResult.wifi. Add 3 pending items to sync_queue. Call processPendingSync(). Verify all items synced to Supabase. Verify items marked as status='completed'.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6">
+        <description>Unit test: ConflictResolver uses last-write-wins strategy</description>
+        <approach>Create local entity with updatedAt = now(). Create remote entity with updatedAt = now() - 1 hour. Call resolveConflict(). Verify local entity returned (newer). Test reverse scenario (remote newer).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1,AC2,AC3,AC4">
+        <description>Unit test: RealtimeSync updates local database on incoming event</description>
+        <approach>Mock Supabase Realtime stream. Emit workout update event. Verify _updateLocalDatabase() called with correct data. Verify local Drift database updated with new workout data.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC7">
+        <description>Unit test: SyncStatusProvider returns correct status</description>
+        <approach>Mock connectivity = none, pendingCount = 5. Verify status = SyncStatus.offline. Mock connectivity = wifi, pendingCount = 2. Verify status = SyncStatus.syncing. Mock connectivity = wifi, pendingCount = 0. Verify status = SyncStatus.synced.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC5">
+        <description>Integration test: Offline workout logged syncs when online</description>
+        <approach>Set device offline. Log workout. Verify saved to local Drift database. Verify added to sync_queue. Set device online. Wait for sync. Verify workout synced to Supabase. Verify sync_queue item marked completed.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1">
+        <description>Integration test: Realtime sync updates across devices</description>
+        <approach>Simulate Device A and Device B (two Supabase clients). Log workout on Device A. Subscribe to Realtime on Device B. Verify Device B receives update within 5s. Verify local database on Device B updated with workout.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6">
+        <description>Integration test: Conflict resolution works correctly</description>
+        <approach>Create workout on Device A at T0. Update workout on Device A at T1 (offline). Update same workout on Device B at T2 (online). Device A comes online. Verify Device B version wins (newer timestamp). Verify Device A local database updated.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1,AC5">
+        <description>Integration test: Sync latency &lt;5s (p95)</description>
+        <approach>Run 100 sync operations. Measure time from write on Device A to Realtime update on Device B. Calculate p95 latency. Assert p95 &lt; 5000ms (NFR-P5 requirement).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC5">
+        <description>Integration test: Retry logic for failed syncs</description>
+        <approach>Mock Supabase to return network error. Enqueue sync item. Verify retry attempt after exponential backoff. Mock 3 consecutive failures. Verify item marked as failed. Verify retry on next app launch.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC7">
+        <description>Widget test: Sync status indicator displays correctly</description>
+        <approach>Mock syncStatusProvider = SyncStatus.synced. Verify cloud icon shows ✅. Mock SyncStatus.syncing. Verify animated syncing icon. Mock SyncStatus.offline. Verify offline banner displayed with reassuring message.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC5">
+        <description>Integration test: No data loss in offline mode</description>
+        <approach>Set device offline. Log 10 workouts. Verify all saved to local Drift database. Verify 10 items in sync_queue. Set device online. Wait for sync. Verify all 10 workouts synced to Supabase. Verify no data loss.</approach>
+      </test-idea>
+    </ideas>
+  </tests>
+</story-context>

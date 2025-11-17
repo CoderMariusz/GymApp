@@ -1,0 +1,407 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>8</epicId>
+    <storyId>8.3</storyId>
+    <title>Streak Alerts (About to Break, Freeze, Milestone)</title>
+    <status>ready-for-dev</status>
+    <generatedAt>2025-11-17</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/sprint-8/8-3-streak-alerts-about-to-break-freeze-milestone.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>user with active streaks</asA>
+    <iWant>to receive alerts when my streak is at risk or I achieve a milestone</iWant>
+    <soThat>I can maintain my progress and celebrate achievements</soThat>
+    <tasks>
+      <task id="1" ac-ref="AC1,AC2">
+        <description>Implement streak-at-risk alert system</description>
+        <subtasks>
+          <subtask>Create CheckStreakStatusUseCase to query active streaks</subtask>
+          <subtask>Query workouts, meditations, check-ins to identify incomplete activities</subtask>
+          <subtask>Schedule alert check at 8:00pm daily</subtask>
+          <subtask>Generate alert message: "🔥 Streak Alert! Your X-day [activity] streak is about to break. [Action] now!"</subtask>
+          <subtask>Send notification via send-notification Edge Function</subtask>
+          <subtask>Deep link to relevant module: lifeos://workout, lifeos://meditation, lifeos://check-in</subtask>
+        </subtasks>
+      </task>
+      <task id="2" ac-ref="AC3,AC4">
+        <description>Implement streak freeze logic</description>
+        <subtasks>
+          <subtask>Query streak_freezes table to check available freezes (max 2/week)</subtask>
+          <subtask>If freeze available AND user hasn't completed activity, auto-apply freeze</subtask>
+          <subtask>Don't send "about to break" alert if freeze auto-applied</subtask>
+          <subtask>Send freeze notification: "Streak freeze used! You have X freezes left this week."</subtask>
+          <subtask>Update streak_freezes table (used_at timestamp, remaining count)</subtask>
+          <subtask>Deep link to streaks screen: lifeos://streaks to view freeze status</subtask>
+        </subtasks>
+      </task>
+      <task id="3" ac-ref="AC5,AC6">
+        <description>Implement milestone celebration alerts</description>
+        <subtasks>
+          <subtask>Query streaks table to detect milestone achievements (7, 14, 30, 60, 90, 180, 365 days)</subtask>
+          <subtask>Trigger alert when streak reaches milestone day</subtask>
+          <subtask>Generate message: "🎉 Milestone! You've reached a X-day [activity] streak. [Badge] badge unlocked!"</subtask>
+          <subtask>Include badge name and tier (Bronze: 7, Silver: 30, Gold: 90, Platinum: 365)</subtask>
+          <subtask>Send notification with celebration emoji and encouraging message</subtask>
+          <subtask>Deep link to badges screen: lifeos://badges/{badgeId} to view earned badge</subtask>
+        </subtasks>
+      </task>
+      <task id="4" ac-ref="AC7">
+        <description>Create Supabase Edge Function for streak alerts</description>
+        <subtasks>
+          <subtask>Create check-streaks-and-alert Edge Function (runs daily at 8:00pm)</subtask>
+          <subtask>Query all active streaks from streaks table</subtask>
+          <subtask>For each streak: check if activity completed today</subtask>
+          <subtask>If not completed: check freeze availability → auto-apply or send alert</subtask>
+          <subtask>Check for milestone achievements → send celebration notification</subtask>
+          <subtask>Set up pg_cron job to run function daily at 8:00pm</subtask>
+        </subtasks>
+      </task>
+      <task id="5" ac-ref="AC7">
+        <description>Add streak alert settings UI</description>
+        <subtasks>
+          <subtask>Add "Streak Alerts" toggle to NotificationSettingsScreen</subtask>
+          <subtask>Add separate toggles for: "About to break" alerts, "Freeze used" notifications, "Milestone celebrations"</subtask>
+          <subtask>Implement updateStreakAlertSettings() use case</subtask>
+          <subtask>Sync settings to Supabase on toggle</subtask>
+          <subtask>Show "Test Streak Alert" button to preview notification</subtask>
+        </subtasks>
+      </task>
+      <task id="6" ac-ref="AC6">
+        <description>Implement deep linking for streak alerts</description>
+        <subtasks>
+          <subtask>Workout streak alert → lifeos://workout (start workout)</subtask>
+          <subtask>Meditation streak alert → lifeos://meditation (start meditation)</subtask>
+          <subtask>Check-in streak alert → lifeos://check-in (open check-in modal)</subtask>
+          <subtask>Freeze notification → lifeos://streaks (view all streaks)</subtask>
+          <subtask>Milestone alert → lifeos://badges/{badgeId} (view earned badge)</subtask>
+          <subtask>Register deep link routes in DeepLinkService</subtask>
+        </subtasks>
+      </task>
+      <task id="7" ac-ref="ALL">
+        <description>Write comprehensive tests</description>
+        <subtasks>
+          <subtask>Unit tests: CheckStreakStatusUseCase, freeze logic, milestone detection</subtask>
+          <subtask>Widget tests: Streak alert settings UI, toggles</subtask>
+          <subtask>Integration test: Streak at risk → alert sent → tap → navigate to module</subtask>
+          <subtask>Integration test: Freeze auto-applied → notification sent → alert suppressed</subtask>
+          <subtask>Integration test: Milestone reached → celebration notification → badge screen opens</subtask>
+          <subtask>Achieve 75%+ code coverage</subtask>
+        </subtasks>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="AC1">
+      <text>Streak alert sent at 8pm if activity not completed today</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC2">
+      <text>Alert message: "🔥 Streak Alert! Your 15-day meditation streak is about to break. Meditate now!"</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC3">
+      <text>Alert NOT sent if freeze available (automatic freeze used instead)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC4">
+      <text>Freeze notification sent: "Streak freeze used! You have 0 freezes left this week."</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC5">
+      <text>Milestone alert sent: "🎉 Milestone! You've reached a 30-day workout streak. Silver badge unlocked!"</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC6">
+      <text>Tapping notification opens relevant module or badge screen</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC7">
+      <text>User can disable streak alerts in settings</text>
+      <priority>P1</priority>
+    </criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR106: Streak alerts</section>
+        <snippet>System sends streak alerts at 8pm if activity not done. Message: "🔥 Streak Alert! Your 15-day meditation streak is about to break. Meditate now!". Alert NOT sent if freeze available (auto-freeze used). Freeze notification: "Freeze used! 0 left this week". Milestone alert: "🎉 30-day workout streak. Silver badge unlocked!".</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/epics.md</path>
+        <title>Epic 8: Notifications & Engagement - Story 8.3</title>
+        <section>Story 8.3: Streak Alerts</section>
+        <snippet>Implement streak alerts for at-risk streaks (8pm check). Auto-apply freeze if available. Send freeze notification. Celebrate milestones (7, 30, 90, 365 days) with badge unlock. Tap notification opens module or badge screen. User can disable in settings.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/epics.md</path>
+        <title>Epic 6: Gamification & Retention - Story 6.1</title>
+        <section>Story 6.1: Streak System</section>
+        <snippet>Streaks track consecutive days of activity (workouts, meditations, check-ins). Max 2 freezes per week (Monday reset). Freezes auto-applied if available. Milestones: 7, 14, 30, 60, 90, 180, 365 days. Badge unlocked at milestones.</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/sprint-8/8-1-push-notification-infrastructure.md</path>
+        <title>Story 8.1: Push Notification Infrastructure</title>
+        <section>Notification Categories</section>
+        <snippet>Notification category: Streaks. User can enable/disable streak notifications in settings. Deep links: lifeos://workout, lifeos://meditation, lifeos://streaks, lifeos://badges/{id}.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <reference>
+        <path>lib/core/notifications/services/fcm_service.dart</path>
+        <description>FCM service from Story 8.1. Use for sending streak alert notifications.</description>
+      </reference>
+      <reference>
+        <path>lib/core/notifications/services/deep_link_service.dart</path>
+        <description>Deep link service from Story 8.1. Register streak alert deep link routes.</description>
+      </reference>
+      <reference>
+        <path>lib/features/gamification/domain/usecases/get_streaks_usecase.dart</path>
+        <description>Query active streaks from Story 6.1. Check streak status and completion.</description>
+      </reference>
+      <reference>
+        <path>lib/features/gamification/domain/usecases/apply_streak_freeze_usecase.dart</path>
+        <description>Auto-apply streak freeze from Story 6.1. Checks available freezes (max 2/week).</description>
+      </reference>
+      <reference>
+        <path>lib/features/gamification/domain/usecases/check_milestone_usecase.dart</path>
+        <description>Detect milestone achievements from Story 6.2. Returns badge info (name, tier).</description>
+      </reference>
+    </code>
+    <dependencies>
+      <flutter>
+        <sdk>3.38+</sdk>
+        <dart>3.10+</dart>
+      </flutter>
+      <packages>
+        <package name="firebase_messaging" version="^14.7.0" usage="Send streak alert notifications via FCM" />
+        <package name="flutter_local_notifications" version="^16.3.0" usage="Display streak alert notifications" />
+        <package name="flutter_riverpod" version="^3.0.0" usage="State management for streak alert settings" />
+        <package name="drift" version="^2.14.0" usage="Local SQLite database for streak alert settings (offline-first)" />
+        <package name="supabase_flutter" version="^2.0.0" usage="Supabase client for sync and Edge Functions" />
+        <package name="flutter_test" version="sdk" usage="Unit and widget testing framework" />
+        <package name="integration_test" version="sdk" usage="End-to-end testing framework" />
+      </packages>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint id="ARCH-1" type="architectural">
+      <description>Must follow Hybrid Architecture pattern</description>
+      <details>Create streak alert logic at lib/core/notifications/domain/usecases/. Use existing FCMService and DeepLinkService from Story 8.1. Integrate with gamification module streaks from Epic 6.</details>
+    </constraint>
+    <constraint id="ARCH-2" type="architectural">
+      <description>Offline-first implementation required</description>
+      <details>Streak alert settings stored in Drift (SQLite) first for instant feedback. Sync to Supabase when online. Alerts sent via Supabase Edge Functions (server-side scheduling at 8pm).</details>
+    </constraint>
+    <constraint id="DATA-1" type="data">
+      <description>Must integrate with existing streak schema</description>
+      <details>Query streaks table from Story 6.1: id, user_id, activity_type, current_streak, last_activity_date, freezes_used_this_week, created_at, updated_at. Query streak_freezes table for freeze availability.</details>
+    </constraint>
+    <constraint id="SEC-1" type="security">
+      <description>Row Level Security (RLS) policies required</description>
+      <details>Use existing RLS policies on streaks and streak_freezes tables. Alert settings stored in notification_settings table (RLS from Story 8.1).</details>
+    </constraint>
+    <constraint id="LOGIC-1" type="business-logic">
+      <description>Freeze auto-application logic</description>
+      <details>Check freezes_used_this_week &lt; 2. If available, auto-apply freeze (update last_activity_date, increment freezes_used_this_week). Don't send "about to break" alert. Send freeze notification instead. Freezes reset every Monday at midnight.</details>
+    </constraint>
+    <constraint id="LOGIC-2" type="business-logic">
+      <description>Milestone detection logic</description>
+      <details>Check if current_streak matches milestone values: 7, 14, 30, 60, 90, 180, 365. Trigger milestone alert on exact match. Award badge (Bronze: 7, Silver: 30, Gold: 90, Platinum: 365). Don't send duplicate milestone alerts (check milestone_alerts_sent table).</details>
+    </constraint>
+    <constraint id="UX-1" type="ux">
+      <description>Alert messages must be urgent but encouraging</description>
+      <details>Use 🔥 emoji for urgency. Include streak length to show progress. Action-oriented CTA: "Meditate now!", "Complete workout!", "Do your check-in!". Personalize with activity name.</details>
+    </constraint>
+    <constraint id="UX-2" type="ux">
+      <description>Milestone celebrations must be joyful</description>
+      <details>Use 🎉 emoji. Highlight achievement: "You've reached a 30-day workout streak!". Mention badge unlock: "Silver badge unlocked!". Deep link to badge screen to view achievement.</details>
+    </constraint>
+    <constraint id="TIMING-1" type="timing">
+      <description>Alert timing must be 8:00pm user local time</description>
+      <details>Store user timezone in user_settings. Schedule alerts at 8pm local time. Edge Function uses timezone-aware scheduling. Handle DST transitions correctly.</details>
+    </constraint>
+    <constraint id="TEST-1" type="testing">
+      <description>75%+ code coverage required</description>
+      <details>Follow 70/20/10 testing pyramid. Unit tests for freeze logic and milestone detection, widget tests for settings UI, integration test for full alert flow (at-risk → alert/freeze → navigate).</details>
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>CheckStreakStatusUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class CheckStreakStatusUseCase {
+          Future&lt;Result&lt;StreakStatus&gt;&gt; call({
+            required String userId,
+            required String activityType, // 'workout', 'meditation', 'check_in'
+          });
+        }
+
+        class StreakStatus {
+          final bool isAtRisk;
+          final int currentStreak;
+          final bool freezeAvailable;
+          final DateTime? lastActivityDate;
+        }
+      </signature>
+      <path>lib/core/notifications/domain/usecases/check_streak_status_usecase.dart</path>
+      <notes>Queries streaks table. Checks if activity completed today. Returns StreakStatus with at-risk flag and freeze availability.</notes>
+    </interface>
+    <interface>
+      <name>SendStreakAlertUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class SendStreakAlertUseCase {
+          Future&lt;Result&lt;void&gt;&gt; call({
+            required String userId,
+            required String activityType,
+            required int streakLength,
+            required StreakAlertType alertType,
+          });
+        }
+
+        enum StreakAlertType {
+          aboutToBreak,
+          freezeUsed,
+          milestoneAchieved
+        }
+      </signature>
+      <path>lib/core/notifications/domain/usecases/send_streak_alert_usecase.dart</path>
+      <notes>Sends streak alert notification. Generates message based on alertType. Calls send-notification Edge Function. Handles deep linking.</notes>
+    </interface>
+    <interface>
+      <name>DetectStreakMilestoneUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class DetectStreakMilestoneUseCase {
+          Future&lt;Result&lt;MilestoneInfo?&gt;&gt; call({
+            required String userId,
+            required String activityType,
+            required int currentStreak,
+          });
+        }
+
+        class MilestoneInfo {
+          final int days;
+          final String badgeName;
+          final String badgeTier; // 'bronze', 'silver', 'gold', 'platinum'
+          final String badgeId;
+        }
+      </signature>
+      <path>lib/core/notifications/domain/usecases/detect_streak_milestone_usecase.dart</path>
+      <notes>Checks if currentStreak matches milestone values (7, 14, 30, 60, 90, 180, 365). Returns MilestoneInfo if milestone reached, null otherwise. Checks milestone_alerts_sent table to avoid duplicates.</notes>
+    </interface>
+    <interface>
+      <name>StreakAlertMessageBuilder</name>
+      <kind>service</kind>
+      <signature>
+        abstract class StreakAlertMessageBuilder {
+          String buildAlertMessage({
+            required StreakAlertType type,
+            required String activityType,
+            required int streakLength,
+            String? badgeName,
+            int? freezesRemaining,
+          });
+        }
+      </signature>
+      <path>lib/core/notifications/services/streak_alert_message_builder.dart</path>
+      <notes>Builds streak alert messages with emoji and urgency. Examples: "🔥 Streak Alert! Your 15-day meditation streak is about to break. Meditate now!", "🎉 Milestone! 30-day workout streak. Silver badge unlocked!".</notes>
+    </interface>
+    <interface>
+      <name>check-streaks-and-alert Edge Function</name>
+      <kind>edge-function</kind>
+      <signature>
+        POST /functions/v1/check-streaks-and-alert
+        (Triggered by pg_cron daily at 8:00pm)
+
+        Queries all active streaks.
+        For each streak:
+          - Check if activity completed today
+          - If not: check freeze availability → auto-apply or send alert
+          - Check milestones → send celebration notification
+      </signature>
+      <path>supabase/functions/check-streaks-and-alert/index.ts</path>
+      <notes>Scheduled by pg_cron to run daily at 8:00pm user local time. Queries streaks, workouts_completed, meditations_completed, check_ins tables. Handles freeze auto-application. Sends notifications via send-notification Edge Function.</notes>
+    </interface>
+    <interface>
+      <name>milestone_alerts_sent table (Supabase PostgreSQL)</name>
+      <kind>database-table</kind>
+      <signature>
+        CREATE TABLE milestone_alerts_sent (
+          id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+          user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+          activity_type TEXT NOT NULL,
+          milestone_days INT NOT NULL,
+          sent_at TIMESTAMPTZ DEFAULT NOW(),
+          UNIQUE(user_id, activity_type, milestone_days)
+        );
+        CREATE INDEX idx_milestone_alerts_user_id ON milestone_alerts_sent(user_id);
+      </signature>
+      <path>supabase/migrations/</path>
+      <notes>Tracks milestone alerts sent to prevent duplicates. UNIQUE constraint ensures each milestone (e.g., 30-day workout streak) only triggers one notification.</notes>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Follow 70/20/10 testing pyramid: 70% unit tests (use cases, services, entities), 20% widget tests (UI components, state management), 10% integration tests (end-to-end flows). Use flutter_test for unit/widget tests, integration_test for E2E. Mock dependencies with mockito. Target 75%+ code coverage. All acceptance criteria must have test coverage.
+    </standards>
+    <locations>
+      <location>test/core/notifications/domain/usecases/</location>
+      <location>test/core/notifications/services/</location>
+      <location>test/features/settings/presentation/screens/</location>
+      <location>integration_test/notifications/streak_alerts_flow_test.dart</location>
+    </locations>
+    <ideas>
+      <test-idea ac-ref="AC1,AC2">
+        <description>Unit test: CheckStreakStatusUseCase - streak at risk</description>
+        <approach>Mock StreaksRepository. User has 15-day meditation streak. Last activity: yesterday. Call checkStreakStatus(). Verify isAtRisk=true, currentStreak=15. Verify alert message generated correctly.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3,AC4">
+        <description>Unit test: Freeze auto-application logic</description>
+        <approach>Mock StreaksRepository. User has 10-day workout streak, freezes_used_this_week=1 (1 freeze remaining). Activity not completed today. Call checkStreakStatus(). Verify freezeAvailable=true. Call applyStreakFreeze(). Verify freeze applied, freezes_used_this_week=2. Verify freeze notification sent, NOT "about to break" alert.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC5">
+        <description>Unit test: DetectStreakMilestoneUseCase - milestone reached</description>
+        <approach>Mock StreaksRepository. User has 30-day workout streak. Call detectMilestone(). Verify MilestoneInfo returned: days=30, badgeName="Consistent Trainer", badgeTier="silver". Verify milestone alert message: "🎉 Milestone! 30-day workout streak. Silver badge unlocked!".</approach>
+      </test-idea>
+      <test-idea ac-ref="AC2">
+        <description>Unit test: StreakAlertMessageBuilder - about to break message</description>
+        <approach>Call buildAlertMessage(type: aboutToBreak, activityType: 'meditation', streakLength: 15). Verify message: "🔥 Streak Alert! Your 15-day meditation streak is about to break. Meditate now!". Verify emoji and CTA included.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC7">
+        <description>Widget test: Streak alert settings UI - toggle disable</description>
+        <approach>Render NotificationSettingsScreen with streak alerts section. Tap 'About to break alerts' toggle to disable. Verify updateStreakAlertSettings() called with enabled=false. Verify UI updates.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6">
+        <description>Unit test: Deep link navigation for streak alerts</description>
+        <approach>Mock DeepLinkService. Simulate notification tap with deepLink="lifeos://meditation". Verify handleDeepLink() called. Verify navigation to meditation screen.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1,AC2,AC6">
+        <description>Integration test: Streak at-risk alert flow</description>
+        <approach>Create user with 15-day meditation streak. Last activity: yesterday. Mock system time to 8:00pm. Trigger check-streaks-and-alert Edge Function. Verify "about to break" alert sent. Tap notification. Verify meditation screen opens. Complete meditation. Verify streak continues.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3,AC4">
+        <description>Integration test: Freeze auto-applied, alert suppressed</description>
+        <approach>Create user with 10-day workout streak, 1 freeze available. Last activity: yesterday. Mock time to 8:00pm. Trigger check-streaks-and-alert. Verify freeze auto-applied (freezes_used_this_week incremented). Verify freeze notification sent: "Freeze used! 1 left this week". Verify "about to break" alert NOT sent. Verify streak preserved.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC5,AC6">
+        <description>Integration test: Milestone celebration flow</description>
+        <approach>Create user with 29-day workout streak. Complete workout today (streak becomes 30). Trigger check-streaks-and-alert. Verify milestone alert sent: "🎉 Milestone! 30-day workout streak. Silver badge unlocked!". Tap notification. Verify badge screen opens with Silver badge displayed. Verify milestone_alerts_sent entry created (no duplicate alerts).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3">
+        <description>Integration test: No freeze available, alert sent</description>
+        <approach>Create user with 20-day meditation streak, freezes_used_this_week=2 (no freezes left). Last activity: yesterday. Mock time to 8:00pm. Trigger check-streaks-and-alert. Verify NO freeze auto-applied (all used). Verify "about to break" alert sent. If user doesn't complete activity, verify streak breaks tomorrow.</approach>
+      </test-idea>
+    </ideas>
+  </tests>
+</story-context>

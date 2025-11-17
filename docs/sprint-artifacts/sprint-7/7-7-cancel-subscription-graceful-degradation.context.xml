@@ -1,0 +1,410 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>7</epicId>
+    <storyId>7.7</storyId>
+    <title>Cancel Subscription & Graceful Degradation</title>
+    <status>ready-for-dev</status>
+    <generatedAt>2025-11-17</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/sprint-7/7-7-cancel-subscription-graceful-degradation.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>subscriber who wants to cancel</asA>
+    <iWant>to cancel my subscription easily without losing access immediately</iWant>
+    <soThat>I can maintain control over my subscription and keep access until my billing period ends</soThat>
+    <tasks>
+      <task id="1" ac-ref="AC1,AC2">
+        <description>Implement cancel subscription UI</description>
+        <subtasks>
+          <subtask>Add "Cancel Subscription" button to Subscription screen</subtask>
+          <subtask>Create cancellation confirmation modal</subtask>
+          <subtask>Show warning: "Subscription ends [date]. You'll keep premium until then"</subtask>
+          <subtask>Require explicit confirmation (no accidental cancels)</subtask>
+          <subtask>Add "Tell us why" optional feedback form (improve retention insights)</subtask>
+        </subtasks>
+      </task>
+      <task id="2" ac-ref="AC3,AC4">
+        <description>Implement cancellation logic (not instant)</description>
+        <subtasks>
+          <subtask>Cancellation is NOT instant - subscription continues until end of billing period</subtask>
+          <subtask>Call platform cancellation API (App Store/Google Play)</subtask>
+          <subtask>Update subscription_status = 'cancelled' in database</subtask>
+          <subtask>Keep subscription_end_date unchanged (grace period until then)</subtask>
+          <subtask>User retains premium access until subscription_end_date</subtask>
+        </subtasks>
+      </task>
+      <task id="3" ac-ref="AC5">
+        <description>Display cancellation status in UI</description>
+        <subtasks>
+          <subtask>Show status badge: "Active until [date]" for cancelled subscriptions</subtask>
+          <subtask>Display on Subscription screen and Profile</subtask>
+          <subtask>Countdown to end date: "Premium access ends in 12 days"</subtask>
+          <subtask>Update badge after expiration to "Expired"</subtask>
+        </subtasks>
+      </task>
+      <task id="4" ac-ref="AC6,AC7,AC8">
+        <description>Implement graceful degradation after expiration</description>
+        <subtasks>
+          <subtask>On subscription_end_date: Revert subscription_tier to 'free'</subtask>
+          <subtask>Apply free tier limits without data loss</subtask>
+          <subtask>Goals >3: Make excess goals read-only (visible but not editable)</subtask>
+          <subtask>Meditation library: Lock premium meditations</subtask>
+          <subtask>AI chat: Switch from GPT-4 to Llama, apply 3-5 msg/day limit</subtask>
+          <subtask>Show "Subscription ended" modal with reactivation option</subtask>
+        </subtasks>
+      </task>
+      <task id="5" ac-ref="AC8">
+        <description>Ensure NO data loss on cancellation/expiration</description>
+        <subtasks>
+          <subtask>Preserve all user data: goals, workouts, mood entries, meditations, check-ins</subtask>
+          <subtask>Goals >3: Keep in database, mark as read-only (can view, can't edit/delete)</subtask>
+          <subtask>Workout history: Full access remains (basic logging always free)</subtask>
+          <subtask>Mood tracking: Full access remains (always free)</subtask>
+          <subtask>Document data retention policy clearly</subtask>
+        </subtasks>
+      </task>
+      <task id="6" ac-ref="AC9">
+        <description>Implement re-subscription flow</description>
+        <subtasks>
+          <subtask>Allow re-subscription at any time (during grace period or after expiration)</subtask>
+          <subtask>Show "Reactivate Premium" CTA on subscription screen</subtask>
+          <subtask>Re-subscription restores full access immediately</subtask>
+          <subtask>Goals become editable again, AI switches back to GPT-4, etc.</subtask>
+          <subtask>Update subscription_status = 'active', set new subscription_end_date</subtask>
+        </subtasks>
+      </task>
+      <task id="7" ac-ref="AC3,AC4">
+        <description>Integrate with platform cancellation APIs</description>
+        <subtasks>
+          <subtask>iOS: Cancel auto-renew via App Store API (user manages in Settings)</subtask>
+          <subtask>Android: Cancel via Google Play Billing API</subtask>
+          <subtask>Handle webhook events for cancellation confirmations</subtask>
+          <subtask>Sync cancellation status across devices via Supabase</subtask>
+        </subtasks>
+      </task>
+      <task id="8" ac-ref="ALL">
+        <description>Write comprehensive tests</description>
+        <subtasks>
+          <subtask>Unit tests: Cancellation logic, graceful degradation, data preservation</subtask>
+          <subtask>Widget tests: Cancel button, confirmation modal, status badge, re-subscription CTA</subtask>
+          <subtask>Integration test: Cancel subscription → grace period → expiration → free tier revert → re-subscribe</subtask>
+          <subtask>Achieve 80%+ code coverage</subtask>
+        </subtasks>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="AC1">
+      <text>"Cancel" button available on Subscription screen</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC2">
+      <text>Warning modal: "Subscription ends [date]. You'll keep premium until then"</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC3">
+      <text>Cancellation is NOT instant - subscription continues until end of billing period</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC4">
+      <text>Cancellation confirmed via platform API (App Store/Google Play)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC5">
+      <text>Status shows "Active until [date]" during grace period</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC6">
+      <text>After expiration, revert to free tier with graceful degradation</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC7">
+      <text>Goals >3 become read-only (visible but not editable), meditation library locked, AI switches to Llama with limits</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC8">
+      <text>NO data loss - all goals, workouts, mood entries preserved</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC9">
+      <text>Can re-subscribe anytime to restore full access</text>
+      <priority>P0</priority>
+    </criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR51: Subscription cancellation</section>
+        <snippet>Users can cancel subscription anytime. Cancellation not instant - premium access continues until end of billing period. Grace period shows "Active until [date]". After expiration, graceful revert to free tier. NO data loss.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR52: Graceful degradation</section>
+        <snippet>On subscription end: Goals >3 read-only (not deleted), premium features locked, AI switches to Llama. Users should feel respected, not punished. All data preserved. Can re-subscribe anytime to restore access.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/epics.md</path>
+        <title>Epic 7: Onboarding &amp; Subscriptions</title>
+        <section>Story 7.7: Cancel Subscription &amp; Graceful Degradation</section>
+        <snippet>Complete subscription lifecycle: cancellation, grace period, expiration, degradation, re-subscription. User-friendly cancellation with no dark patterns.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/ux-design-specification.md</path>
+        <title>UX Design Specification</title>
+        <section>Cancellation UX</section>
+        <snippet>No dark patterns. Clear warning about grace period. "Cancel" button not hidden. Feedback form optional. Graceful degradation emphasizes data safety: "Your goals are safe, but you can only view goals 4-10 now." Positive re-subscription prompts.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Data Retention Policy</section>
+        <snippet>All user data preserved indefinitely (GDPR-compliant). Subscription cancellation never deletes data. Free tier limits are access restrictions, not deletions. Users own their data.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <reference>
+        <path>lib/features/subscriptions/domain/usecases/purchase_subscription_usecase.dart</path>
+        <description>Purchase use case from Story 7.6</description>
+        <note>Reuse for re-subscription flow.</note>
+      </reference>
+      <reference>
+        <path>lib/core/services/feature_gate_service.dart</path>
+        <description>Feature gate service from Story 7.4</description>
+        <note>Update to handle graceful degradation (e.g., read-only access for excess goals).</note>
+      </reference>
+    </code>
+    <dependencies>
+      <flutter>
+        <sdk>3.38+</sdk>
+        <dart>3.10+</dart>
+      </flutter>
+      <packages>
+        <package name="in_app_purchase" version="^3.1.0" usage="Cancel subscription via platform API" />
+        <package name="flutter_riverpod" version="^3.0.0" usage="Cancellation state management" />
+        <package name="drift" version="^2.14.0" usage="Local subscription status" />
+        <package name="supabase_flutter" version="^2.0.0" usage="Backend sync" />
+      </packages>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint id="UX-1" type="ux">
+      <description>No dark patterns in cancellation flow</description>
+      <details>"Cancel" button clearly visible, not hidden in settings. Confirmation modal clear, not guilt-inducing. No aggressive retention tactics. Optional feedback form, not forced.</details>
+    </constraint>
+    <constraint id="UX-2" type="ux">
+      <description>Grace period communication must be clear</description>
+      <details>Clearly state: "Your subscription ends on [date]. You'll keep premium access until then." Countdown helpful, not anxiety-inducing. Status badge always visible.</details>
+    </constraint>
+    <constraint id="UX-3" type="ux">
+      <description>Graceful degradation emphasizes data safety</description>
+      <details>Modal after expiration: "Your subscription has ended. All your data is safe! Upgrade to unlock premium features again." Positive framing, not punitive.</details>
+    </constraint>
+    <constraint id="UX-4" type="ux">
+      <description>Re-subscription should be easy</description>
+      <details>"Reactivate Premium" CTA prominent on subscription screen. One-tap re-subscription. Immediate access restoration. Welcome back message.</details>
+    </constraint>
+    <constraint id="DATA-1" type="data">
+      <description>Critical: NO data loss</description>
+      <details>All user data preserved on cancellation and expiration. Goals >3 marked read-only (accessible via read_only flag). Workouts, mood entries, meditations, check-ins fully preserved. Data retention indefinite (GDPR-compliant).</details>
+    </constraint>
+    <constraint id="DATA-2" type="data">
+      <description>Graceful degradation implementation</description>
+      <details>Goals: Add read_only boolean flag. If free tier and goal index >3, set read_only=true. UI shows view-only mode. Meditation library: Premium meditations locked with upgrade CTA. AI: Model switched to Llama, daily limit enforced.</details>
+    </constraint>
+    <constraint id="ARCH-1" type="architectural">
+      <description>Cancellation via platform APIs</description>
+      <details>iOS: User manages auto-renew in Settings (deep link provided). Android: Cancel via Google Play Billing API. Webhook confirms cancellation. Update subscription_status='cancelled' on confirmation.</details>
+    </constraint>
+    <constraint id="ARCH-2" type="architectural">
+      <description>Subscription expiration check</description>
+      <details>Daily cron job (Supabase Edge Function) checks for expired subscriptions: WHERE subscription_status='cancelled' AND subscription_end_date &lt; NOW(). Update to status='expired', tier='free', apply graceful degradation.</details>
+    </constraint>
+    <constraint id="SEC-1" type="security">
+      <description>RLS for read-only goals</description>
+      <details>Free tier users can SELECT goals >3 but cannot UPDATE/DELETE. RLS policy: UPDATE/DELETE USING (tier != 'free' OR goal_index &lt;= 3). Enforces read-only at database level.</details>
+    </constraint>
+    <constraint id="TEST-1" type="testing">
+      <description>80%+ code coverage required</description>
+      <details>Test cancellation flow, grace period, expiration, data preservation, graceful degradation, re-subscription. Critical to test NO data loss.</details>
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>CancelSubscriptionUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class CancelSubscriptionUseCase {
+          Future&lt;Result&lt;CancellationConfirmation&gt;&gt; call({
+            String? feedback,
+          });
+        }
+      </signature>
+      <path>lib/features/subscriptions/domain/usecases/cancel_subscription_usecase.dart</path>
+      <notes>Calls platform API to cancel auto-renew. Updates subscription_status='cancelled'. Keeps subscription_end_date. Optional feedback parameter for retention insights.</notes>
+    </interface>
+    <interface>
+      <name>HandleSubscriptionExpirationUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class HandleSubscriptionExpirationUseCase {
+          Future&lt;Result&lt;void&gt;&gt; call();
+        }
+      </signature>
+      <path>lib/features/subscriptions/domain/usecases/handle_subscription_expiration_usecase.dart</path>
+      <notes>Called on app launch if subscription expired. Reverts tier to 'free', applies graceful degradation. Shows expiration modal.</notes>
+    </interface>
+    <interface>
+      <name>ReactivateSubscriptionUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class ReactivateSubscriptionUseCase {
+          Future&lt;Result&lt;SubscriptionEntity&gt;&gt; call({
+            required SubscriptionTier tier,
+          });
+        }
+      </signature>
+      <path>lib/features/subscriptions/domain/usecases/reactivate_subscription_usecase.dart</path>
+      <notes>Wraps PurchaseSubscriptionUseCase. Re-subscribes after cancellation/expiration. Restores full access immediately.</notes>
+    </interface>
+    <interface>
+      <name>ApplyGracefulDegradationUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class ApplyGracefulDegradationUseCase {
+          Future&lt;Result&lt;void&gt;&gt; call();
+        }
+      </signature>
+      <path>lib/features/subscriptions/domain/usecases/apply_graceful_degradation_usecase.dart</path>
+      <notes>Applies free tier limits after subscription expiration. Marks goals >3 as read-only. Locks premium features. NO data deletion.</notes>
+    </interface>
+    <interface>
+      <name>CancellationConfirmation entity</name>
+      <kind>domain-entity</kind>
+      <signature>
+        class CancellationConfirmation {
+          final bool success;
+          final DateTime subscriptionEndDate;
+          final String message; // "You'll keep Premium until [date]"
+        }
+      </signature>
+      <path>lib/features/subscriptions/domain/entities/cancellation_confirmation.dart</path>
+      <notes>Returned by CancelSubscriptionUseCase. Contains grace period end date and user-friendly message.</notes>
+    </interface>
+    <interface>
+      <name>goals table updates (Supabase)</name>
+      <kind>database-table</kind>
+      <signature>
+        ALTER TABLE goals ADD COLUMN read_only BOOLEAN DEFAULT false;
+
+        -- RLS policy for read-only enforcement
+        CREATE POLICY "Users can only edit non-read-only goals"
+          ON goals FOR UPDATE
+          USING (auth.uid() = user_id AND read_only = false);
+
+        CREATE POLICY "Users can only delete non-read-only goals"
+          ON goals FOR DELETE
+          USING (auth.uid() = user_id AND read_only = false);
+      </signature>
+      <path>supabase/migrations/</path>
+      <notes>Add read_only flag to goals table. RLS enforces read-only access for free tier excess goals.</notes>
+    </interface>
+    <interface>
+      <name>subscription_cancellations table (analytics)</name>
+      <kind>database-table</kind>
+      <signature>
+        CREATE TABLE subscription_cancellations (
+          id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+          user_id UUID NOT NULL REFERENCES auth.users(id),
+          tier TEXT NOT NULL,
+          cancelled_at TIMESTAMPTZ DEFAULT NOW(),
+          expiration_date TIMESTAMPTZ NOT NULL,
+          feedback TEXT,
+          reason_category TEXT,
+          created_at TIMESTAMPTZ DEFAULT NOW()
+        );
+      </signature>
+      <path>supabase/migrations/</path>
+      <notes>Track cancellations for analytics and retention insights. Optional feedback for product improvements.</notes>
+    </interface>
+    <interface>
+      <name>Subscription expiration Edge Function</name>
+      <kind>edge-function</kind>
+      <signature>
+        // supabase/functions/expire-subscriptions/index.ts
+        Deno.serve(async () => {
+          // Query: WHERE subscription_status='cancelled' AND subscription_end_date &lt; NOW()
+          // Update: status='expired', tier='free'
+          // Apply graceful degradation (mark goals >3 as read_only)
+        });
+      </signature>
+      <path>supabase/functions/expire-subscriptions/index.ts</path>
+      <notes>Daily cron job (00:00 UTC). Expires cancelled subscriptions. Applies graceful degradation automatically.</notes>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Follow 70/20/10 testing pyramid. Target 80%+ code coverage. Critical to test data preservation and graceful degradation. Test full cancellation lifecycle.
+    </standards>
+    <locations>
+      <location>test/features/subscriptions/domain/usecases/</location>
+      <location>test/features/subscriptions/presentation/screens/</location>
+      <location>test/features/subscriptions/presentation/widgets/</location>
+      <location>integration_test/features/subscriptions/cancellation_lifecycle_test.dart</location>
+    </locations>
+    <ideas>
+      <test-idea ac-ref="AC1,AC2">
+        <description>Widget test: Cancel button and confirmation modal</description>
+        <approach>Render Subscription screen with active subscription. Find "Cancel" button. Tap cancel. Verify warning modal appears with grace period message. Test cancel confirmation and dismiss.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3,AC4">
+        <description>Unit test: CancelSubscriptionUseCase</description>
+        <approach>Mock platform API. Call cancel use case. Verify auto-renew cancelled via App Store/Google Play. Verify subscription_status='cancelled'. Verify subscription_end_date unchanged.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC5">
+        <description>Widget test: Cancelled subscription status badge</description>
+        <approach>Set subscription_status='cancelled', end_date=NOW()+10 days. Render subscription screen. Verify badge shows "Active until [date]". Verify countdown "10 days left".</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6,AC7,AC8">
+        <description>Integration test: Graceful degradation after expiration</description>
+        <approach>Create premium user with 5 goals. Cancel subscription. Mock date to expiration. Run expiration cron. Verify tier='free', status='expired'. Verify goals 1-3 editable, goals 4-5 read-only. Verify all data preserved.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC8">
+        <description>Unit test: Data preservation on expiration</description>
+        <approach>User with 10 goals, 50 workouts, 30 mood entries. Expire subscription. Query database. Verify all 10 goals exist (read_only flags set correctly). Verify all workouts and mood entries intact.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC7">
+        <description>Unit test: Read-only goals enforcement</description>
+        <approach>Set tier='free', create 5 goals (goals 4-5 marked read_only). Attempt to edit goal 4. Verify UPDATE blocked by RLS policy. Verify goal 2 UPDATE succeeds.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC9">
+        <description>Integration test: Re-subscription flow</description>
+        <approach>Expired subscription user. Tap "Reactivate Premium". Complete purchase. Verify tier='premium', status='active'. Verify goals 4-5 become editable (read_only=false). Verify AI switches to GPT-4.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3">
+        <description>Unit test: Grace period premium access</description>
+        <approach>Set status='cancelled', end_date=NOW()+5 days. Attempt premium features. Verify all accessible (grace period active). Mock date to end_date+1 day. Verify premium features locked.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC2">
+        <description>Widget test: Optional feedback form</description>
+        <approach>Tap "Cancel Subscription". Verify optional feedback form shown. Enter feedback "Too expensive". Submit. Verify feedback saved to subscription_cancellations table.</approach>
+      </test-idea>
+      <test-idea ac-ref="ALL">
+        <description>Integration test: Full cancellation lifecycle</description>
+        <approach>Premium user with 5 goals. Cancel subscription → grace period (10 days, premium access maintained) → expiration (tier='free', goals 4-5 read-only, no data loss) → re-subscribe (full access restored, goals editable). Verify all transitions.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4">
+        <description>Unit test: Platform-specific cancellation</description>
+        <approach>Test iOS: Verify deep link to App Store Settings provided. Test Android: Verify Google Play Billing API cancelSubscription() called. Mock webhook confirmation.</approach>
+      </test-idea>
+    </ideas>
+  </tests>
+</story-context>

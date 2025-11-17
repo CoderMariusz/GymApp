@@ -1,0 +1,437 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>9</epicId>
+    <storyId>9.3</storyId>
+    <title>Unit Preferences (kg/lbs, cm/inches)</title>
+    <status>ready-for-dev</status>
+    <generatedAt>2025-11-17</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/sprint-9/9-3-unit-preferences.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>user</asA>
+    <iWant>to choose my preferred units (kg/lbs, km/miles, cm/inches)</iWant>
+    <soThat>data is displayed in units I'm familiar with</soThat>
+    <tasks>
+      <task id="1" ac-ref="AC1,AC2,AC3">
+        <description>Implement UnitPreferencesScreen UI</description>
+        <subtasks>
+          <subtask>Create UnitPreferencesScreen widget in settings feature</subtask>
+          <subtask>Add Section 1: Weight (segmented button: kg | lbs)</subtask>
+          <subtask>Add Section 2: Distance (segmented button: km | miles)</subtask>
+          <subtask>Add Section 3: Height (segmented button: cm | inches)</subtask>
+          <subtask>Highlight selected unit in each segmented button</subtask>
+          <subtask>Add footer note: "Historical data remains in original units. Conversion happens at display time."</subtask>
+        </subtasks>
+      </task>
+      <task id="2" ac-ref="AC4,AC5">
+        <description>Implement UnitConversionService</description>
+        <subtasks>
+          <subtask>Create UnitConversionService with conversion formulas</subtask>
+          <subtask>Implement formatWeight(double kg, WeightUnit unit) → "100.0 kg" or "220.5 lbs"</subtask>
+          <subtask>Implement formatDistance(double km, DistanceUnit unit) → "5.0 km" or "3.1 miles"</subtask>
+          <subtask>Implement formatHeight(double cm, HeightUnit unit) → "180 cm" or "70.9 inches"</subtask>
+          <subtask>Implement conversion formulas: 1 kg = 2.20462 lbs, 1 km = 0.621371 miles, 1 cm = 0.393701 inches</subtask>
+          <subtask>Add toStringAsFixed for proper decimal precision (weight/height: 1 decimal, distance: 2 decimals)</subtask>
+        </subtasks>
+      </task>
+      <task id="3" ac-ref="AC4,AC5,AC6">
+        <description>Implement unit preference persistence and sync</description>
+        <subtasks>
+          <subtask>Add unit preference columns to user_settings table (weight_unit, distance_unit, height_unit)</subtask>
+          <subtask>Create UpdateUnitPreferencesUseCase in domain layer</subtask>
+          <subtask>Save preferences to Drift (local SQLite) first</subtask>
+          <subtask>Sync to Supabase in background (optimistic UI)</subtask>
+          <subtask>Load preferences on app start and apply globally</subtask>
+        </subtasks>
+      </task>
+      <task id="4" ac-ref="AC4">
+        <description>Integrate unit conversion across all modules</description>
+        <subtasks>
+          <subtask>Integrate UnitConversionService in Fitness module (workout logging, progress charts)</subtask>
+          <subtask>Apply conversion in workout detail views, exercise logs, body measurements</subtask>
+          <subtask>Ensure NO historical data modification (conversion at display time only)</subtask>
+          <subtask>Update all weight/distance/height displays to use formatWeight/formatDistance/formatHeight</subtask>
+        </subtasks>
+      </task>
+      <task id="5" ac-ref="AC6">
+        <description>Implement default units and cross-device sync</description>
+        <subtasks>
+          <subtask>Set default units: kg for weight, km for distance, cm for height</subtask>
+          <subtask>Apply defaults for new users on first app launch</subtask>
+          <subtask>Sync unit preferences across devices via Supabase</subtask>
+          <subtask>Update UI immediately when preferences change (reactive state management)</subtask>
+        </subtasks>
+      </task>
+      <task id="6" ac-ref="ALL">
+        <description>Write comprehensive tests</description>
+        <subtasks>
+          <subtask>Unit tests: UnitConversionService conversion formulas (weight, distance, height)</subtask>
+          <subtask>Unit tests: formatWeight/formatDistance/formatHeight with correct decimal precision</subtask>
+          <subtask>Unit tests: UpdateUnitPreferencesUseCase saves and syncs preferences</subtask>
+          <subtask>Widget tests: UnitPreferencesScreen segmented buttons and selection</subtask>
+          <subtask>Integration test: Change unit preference → verify all displays update immediately</subtask>
+          <subtask>Integration test: Log workout in kg → switch to lbs → verify displayed in lbs, original data unchanged</subtask>
+          <subtask>Achieve 80%+ code coverage</subtask>
+        </subtasks>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="AC1">
+      <text>User can select weight unit: kg or lbs (default: kg)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC2">
+      <text>User can select distance unit: km or miles (default: km)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC3">
+      <text>User can select height unit: cm or inches (default: cm)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC4">
+      <text>All historical data displayed in selected units (conversion at display time)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC5">
+      <text>No data modification: Historical data remains in original units</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC6">
+      <text>Settings persist and sync across devices</text>
+      <priority>P0</priority>
+    </criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR117: Unit system preferences (metric/imperial)</section>
+        <snippet>Users can select preferred units for weight (kg/lbs), distance (km/miles), and height (cm/inches). All data displayed in selected units via runtime conversion. Historical data stored in original units to maintain data integrity.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/epics.md</path>
+        <title>Epic 9: Settings &amp; Profile - Story 9.3</title>
+        <section>Story 9.3: Unit Preferences</section>
+        <snippet>User can select weight (kg/lbs), distance (km/miles), and height (cm/inches) units. All historical data displayed in selected units with conversion at display time only. No data modification. Defaults: kg, km, cm. Prerequisites: Epic 3 (Fitness module). Technical: UnitConversionService, user_settings table extension.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Data Storage Strategy</section>
+        <snippet>Store all measurements in standard units (kg, km, cm) in database. Apply user unit preferences at display time only. This ensures data integrity and simplifies cross-device sync. Conversion happens in presentation layer using UnitConversionService.</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/sprint-9/9-3-unit-preferences.md</path>
+        <title>Story 9.3: Unit Preferences</title>
+        <section>Storage Strategy</section>
+        <snippet>Historical data stored in original units (no conversion). User preference stored in user_settings table. Conversion happens at display time only. Example: If user logs 100kg squat then switches to lbs, display shows "220.5 lbs" but database still stores 100kg.</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/sprint-9/9-3-unit-preferences.md</path>
+        <title>Story 9.3: Unit Preferences</title>
+        <section>Conversion Formulas</section>
+        <snippet>Weight: 1 kg = 2.20462 lbs. Distance: 1 km = 0.621371 miles. Height: 1 cm = 0.393701 inches. Apply formulas in UnitConversionService with proper decimal precision (1 decimal for weight/height, 2 decimals for distance).</snippet>
+      </doc>
+    </docs>
+    <code>
+      <file>
+        <path>lib/features/settings/presentation/pages/unit_preferences_screen.dart</path>
+        <description>Unit preferences screen with segmented buttons for weight, distance, height units</description>
+      </file>
+      <file>
+        <path>lib/features/settings/domain/services/unit_conversion_service.dart</path>
+        <description>Service for unit conversion (weight, distance, height) with formatting</description>
+      </file>
+      <file>
+        <path>lib/features/settings/domain/usecases/update_unit_preferences_usecase.dart</path>
+        <description>Use case for updating unit preferences with sync</description>
+      </file>
+      <file>
+        <path>lib/features/settings/data/repositories/unit_preferences_repository.dart</path>
+        <description>Repository for unit preferences persistence (local + cloud sync)</description>
+      </file>
+    </code>
+    <dependencies>
+      <flutter>
+        <sdk>3.38+</sdk>
+        <dart>3.10+</dart>
+      </flutter>
+      <packages>
+        <package name="flutter_riverpod" version="^3.0.0" usage="State management for unit preferences" />
+        <package name="riverpod_annotation" version="^3.0.0" usage="Code generation for providers" />
+        <package name="supabase_flutter" version="^2.0.0" usage="Supabase client for preferences sync" />
+        <package name="drift" version="^2.14.0" usage="Local SQLite database for offline preferences storage" />
+        <package name="flutter_test" version="sdk" usage="Unit and widget testing framework" />
+        <package name="integration_test" version="sdk" usage="End-to-end testing framework" />
+      </packages>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint id="ARCH-1" type="architectural">
+      <description>Must follow Hybrid Architecture pattern (D1)</description>
+      <details>Create feature structure at lib/features/settings/ with presentation/, domain/, and data/ layers. Use clean architecture separation of concerns.</details>
+    </constraint>
+    <constraint id="ARCH-2" type="architectural">
+      <description>Offline-first implementation required (D3)</description>
+      <details>Save unit preferences to Drift (SQLite) first for instant feedback. Queue for Supabase sync when online. Load preferences from local database on app start.</details>
+    </constraint>
+    <constraint id="ARCH-3" type="architectural">
+      <description>Use Riverpod for state management (D1, D6)</description>
+      <details>Create global unit preferences provider. All weight/distance/height displays subscribe to provider for reactive updates. Providers should be in settings/presentation/providers/.</details>
+    </constraint>
+    <constraint id="DATA-1" type="data">
+      <description>NO data modification: conversion at display time only</description>
+      <details>Historical data must NEVER be converted in database. Store values in original units. Apply user preferences at display time via UnitConversionService. This ensures data integrity and allows seamless unit switching.</details>
+    </constraint>
+    <constraint id="DATA-2" type="data">
+      <description>Database schema extension for unit preferences</description>
+      <details>Extend user_settings table with: weight_unit (TEXT, default 'kg'), distance_unit (TEXT, default 'km'), height_unit (TEXT, default 'cm'). Include in existing user_settings table or create separate unit_preferences table.</details>
+    </constraint>
+    <constraint id="CONV-1" type="conversion">
+      <description>Conversion formula accuracy</description>
+      <details>Weight: 1 kg = 2.20462 lbs. Distance: 1 km = 0.621371 miles. Height: 1 cm = 0.393701 inches. Use precise constants (not rounded). Apply toStringAsFixed for display (weight: 1 decimal, distance: 2 decimals, height: 1 decimal).</details>
+    </constraint>
+    <constraint id="CONV-2" type="conversion">
+      <description>Decimal precision requirements</description>
+      <details>Weight: 1 decimal place (e.g., "220.5 lbs"). Distance: 2 decimal places (e.g., "3.11 miles"). Height: 1 decimal place (e.g., "70.9 inches"). Use toStringAsFixed(1) or toStringAsFixed(2) appropriately.</details>
+    </constraint>
+    <constraint id="UX-1" type="ux">
+      <description>Segmented button UI for unit selection</description>
+      <details>Use SegmentedButton widget (Flutter 3.x) for unit selection. Two-option buttons: "kg | lbs", "km | miles", "cm | inches". Selected option highlighted with primary color. Tap to switch between units instantly.</details>
+    </constraint>
+    <constraint id="UX-2" type="ux">
+      <description>Footer note for user clarity</description>
+      <details>Display footer note at bottom of screen: "Historical data remains in original units. Conversion happens at display time." Styled in gray, smaller font. Clarifies that switching units doesn't modify historical data.</details>
+    </constraint>
+    <constraint id="UX-3" type="ux">
+      <description>Immediate UI updates across app</description>
+      <details>When user changes unit preference, ALL weight/distance/height displays across app must update immediately. Use reactive state management (Riverpod) to propagate changes. No app restart required.</details>
+    </constraint>
+    <constraint id="UX-4" type="ux">
+      <description>Default units: metric system</description>
+      <details>Default units for new users: kg (weight), km (distance), cm (height). Follows international standard (ISO). Users can change to imperial (lbs, miles, inches) anytime.</details>
+    </constraint>
+    <constraint id="PERF-1" type="performance">
+      <description>Conversion performance</description>
+      <details>Unit conversion must be instant (&lt;1ms per value). Use simple multiplication/division. Avoid heavy computations. Cache unit preferences in memory for fast access.</details>
+    </constraint>
+    <constraint id="PERF-2" type="performance">
+      <description>Preference save &lt;100ms</description>
+      <details>Save preferences to local Drift database in &lt;100ms for instant UI feedback. Background sync to Supabase should complete in &lt;500ms but not block UI.</details>
+    </constraint>
+    <constraint id="TEST-1" type="testing">
+      <description>80%+ code coverage required</description>
+      <details>Follow 70/20/10 testing pyramid. Unit tests for conversion formulas and accuracy, widget tests for UI, integration tests for cross-module conversion. All AC must have test coverage.</details>
+    </constraint>
+    <constraint id="TEST-2" type="testing">
+      <description>Conversion accuracy testing</description>
+      <details>Test conversion formulas for accuracy: 100kg → 220.46lbs (not 220.5 due to rounding). 5km → 3.11miles. 180cm → 70.9inches. Verify toStringAsFixed applied correctly for display.</details>
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>UnitPreferencesEntity</name>
+      <kind>domain-entity</kind>
+      <signature>
+        enum WeightUnit { kg, lbs }
+        enum DistanceUnit { km, miles }
+        enum HeightUnit { cm, inches }
+
+        class UnitPreferencesEntity {
+          final String userId;
+          final WeightUnit weightUnit;
+          final DistanceUnit distanceUnit;
+          final HeightUnit heightUnit;
+          final DateTime updatedAt;
+        }
+      </signature>
+      <path>lib/features/settings/domain/entities/unit_preferences_entity.dart</path>
+      <notes>Use @freezed annotation for immutability and copyWith. Include enums for type safety. Defaults: kg, km, cm.</notes>
+    </interface>
+    <interface>
+      <name>UnitConversionService</name>
+      <kind>service</kind>
+      <signature>
+        abstract class UnitConversionService {
+          String formatWeight(double weightKg, WeightUnit unit);
+          String formatDistance(double distanceKm, DistanceUnit unit);
+          String formatHeight(double heightCm, HeightUnit unit);
+
+          double kgToLbs(double kg);
+          double lbsToKg(double lbs);
+          double kmToMiles(double km);
+          double milesToKm(double miles);
+          double cmToInches(double cm);
+          double inchesToCm(double inches);
+        }
+      </signature>
+      <path>lib/features/settings/domain/services/unit_conversion_service.dart</path>
+      <notes>Core service for all unit conversions. formatWeight/formatDistance/formatHeight return formatted strings with unit labels. Conversion functions return raw numbers for calculations.</notes>
+    </interface>
+    <interface>
+      <name>UpdateUnitPreferencesUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class UpdateUnitPreferencesUseCase {
+          Future&lt;Result&lt;void&gt;&gt; call({
+            required UnitPreferencesEntity preferences,
+          });
+        }
+      </signature>
+      <path>lib/features/settings/domain/usecases/update_unit_preferences_usecase.dart</path>
+      <notes>Saves preferences to local database first, then syncs to Supabase. Returns Result&lt;T&gt; (Success/Failure). Triggers global state update for reactive UI.</notes>
+    </interface>
+    <interface>
+      <name>GetUnitPreferencesUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class GetUnitPreferencesUseCase {
+          Future&lt;Result&lt;UnitPreferencesEntity&gt;&gt; call(String userId);
+        }
+      </signature>
+      <path>lib/features/settings/domain/usecases/get_unit_preferences_usecase.dart</path>
+      <notes>Loads preferences from local database (offline-first). Falls back to Supabase if not found locally. Returns defaults (kg, km, cm) for new users.</notes>
+    </interface>
+    <interface>
+      <name>UnitPreferencesRepository</name>
+      <kind>repository</kind>
+      <signature>
+        abstract class UnitPreferencesRepository {
+          Future&lt;Result&lt;UnitPreferencesEntity&gt;&gt; getPreferences(String userId);
+          Future&lt;Result&lt;void&gt;&gt; savePreferences(UnitPreferencesEntity preferences);
+        }
+      </signature>
+      <path>lib/features/settings/domain/repositories/unit_preferences_repository.dart</path>
+      <notes>Implemented by UnitPreferencesRepositoryImpl in data layer. Uses both DriftDataSource and SupabaseDataSource for offline-first sync.</notes>
+    </interface>
+    <interface>
+      <name>user_settings table extension (Supabase PostgreSQL)</name>
+      <kind>database-table</kind>
+      <signature>
+        ALTER TABLE user_settings ADD COLUMN IF NOT EXISTS weight_unit TEXT DEFAULT 'kg';
+        ALTER TABLE user_settings ADD COLUMN IF NOT EXISTS distance_unit TEXT DEFAULT 'km';
+        ALTER TABLE user_settings ADD COLUMN IF NOT EXISTS height_unit TEXT DEFAULT 'cm';
+
+        ALTER TABLE user_settings ADD CONSTRAINT check_weight_unit
+          CHECK (weight_unit IN ('kg', 'lbs'));
+        ALTER TABLE user_settings ADD CONSTRAINT check_distance_unit
+          CHECK (distance_unit IN ('km', 'miles'));
+        ALTER TABLE user_settings ADD CONSTRAINT check_height_unit
+          CHECK (height_unit IN ('cm', 'inches'));
+      </signature>
+      <path>supabase/migrations/</path>
+      <notes>Extend existing user_settings table. Add CHECK constraints for valid unit values. Include in migration file.</notes>
+    </interface>
+    <interface>
+      <name>user_settings table extension (Drift SQLite)</name>
+      <kind>database-table</kind>
+      <signature>
+        // Add to existing UserSettings table:
+        TextColumn get weightUnit => text().withDefault(const Constant('kg'))();
+        TextColumn get distanceUnit => text().withDefault(const Constant('km'))();
+        TextColumn get heightUnit => text().withDefault(const Constant('cm'))();
+      </signature>
+      <path>lib/core/database/tables.drift.dart</path>
+      <notes>Extend existing UserSettings table definition. Mirror of Supabase schema for offline-first architecture. Use drift code generation.</notes>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Follow 70/20/10 testing pyramid: 70% unit tests (conversion formulas, use cases, repositories), 20% widget tests (UI components, segmented buttons, state management), 10% integration tests (end-to-end unit switching flows). Use flutter_test for unit/widget tests, integration_test for E2E. Mock dependencies with mockito. Target 80%+ code coverage. All acceptance criteria must have test coverage.
+    </standards>
+    <locations>
+      <location>test/features/settings/domain/services/</location>
+      <location>test/features/settings/domain/usecases/</location>
+      <location>test/features/settings/data/repositories/</location>
+      <location>test/features/settings/presentation/pages/</location>
+      <location>integration_test/features/settings/unit_preferences_flow_test.dart</location>
+    </locations>
+    <ideas>
+      <test-idea ac-ref="AC1,AC5">
+        <description>Unit test: Weight conversion accuracy (kg to lbs)</description>
+        <approach>Test UnitConversionService.kgToLbs(100) → assert equals 220.462 (not rounded). Test formatWeight(100, WeightUnit.lbs) → assert equals "220.5 lbs" (rounded to 1 decimal).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1,AC5">
+        <description>Unit test: Weight conversion accuracy (lbs to kg)</description>
+        <approach>Test UnitConversionService.lbsToKg(220.462) → assert equals 100.0. Test formatWeight(100, WeightUnit.kg) → assert equals "100.0 kg".</approach>
+      </test-idea>
+      <test-idea ac-ref="AC2,AC5">
+        <description>Unit test: Distance conversion accuracy (km to miles)</description>
+        <approach>Test UnitConversionService.kmToMiles(5) → assert equals 3.106855. Test formatDistance(5, DistanceUnit.miles) → assert equals "3.11 miles" (rounded to 2 decimals).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC2,AC5">
+        <description>Unit test: Distance conversion accuracy (miles to km)</description>
+        <approach>Test UnitConversionService.milesToKm(3.106855) → assert equals 5.0. Test formatDistance(5, DistanceUnit.km) → assert equals "5.00 km".</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3,AC5">
+        <description>Unit test: Height conversion accuracy (cm to inches)</description>
+        <approach>Test UnitConversionService.cmToInches(180) → assert equals 70.86614. Test formatHeight(180, HeightUnit.inches) → assert equals "70.9 inches" (rounded to 1 decimal).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3,AC5">
+        <description>Unit test: Height conversion accuracy (inches to cm)</description>
+        <approach>Test UnitConversionService.inchesToCm(70.86614) → assert equals 180.0. Test formatHeight(180, HeightUnit.cm) → assert equals "180.0 cm".</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4,AC6">
+        <description>Unit test: UpdateUnitPreferencesUseCase saves and syncs</description>
+        <approach>Mock UnitPreferencesRepository. Create UnitPreferencesEntity with lbs/miles/inches. Call usecase. Verify repository.savePreferences() called. Assert Success result. Verify local save before cloud sync.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6">
+        <description>Unit test: GetUnitPreferencesUseCase returns defaults for new users</description>
+        <approach>Mock repository to return null (new user). Call GetUnitPreferencesUseCase. Assert returns UnitPreferencesEntity with defaults: kg, km, cm.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1,AC2,AC3">
+        <description>Widget test: UnitPreferencesScreen displays segmented buttons</description>
+        <approach>Render UnitPreferencesScreen. Verify Section 1 contains segmented button: "kg | lbs". Verify Section 2 contains: "km | miles". Verify Section 3 contains: "cm | inches". Verify default selections: kg, km, cm highlighted.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1">
+        <description>Widget test: Weight unit selection updates immediately</description>
+        <approach>Render screen. Verify kg selected by default. Tap lbs button. Verify lbs now selected (highlighted). Verify preferences saved. Tap kg again. Verify kg selected.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC2">
+        <description>Widget test: Distance unit selection updates immediately</description>
+        <approach>Render screen. Verify km selected by default. Tap miles button. Verify miles now selected. Verify preferences saved. Verify UI updates instantly (no loading).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3">
+        <description>Widget test: Height unit selection updates immediately</description>
+        <approach>Render screen. Verify cm selected by default. Tap inches button. Verify inches now selected. Verify preferences saved. Verify optimistic UI (instant update).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC5">
+        <description>Widget test: Footer note displayed</description>
+        <approach>Render UnitPreferencesScreen. Scroll to bottom. Verify footer text present: "Historical data remains in original units. Conversion happens at display time." Verify styled in gray.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4,AC5">
+        <description>Integration test: Unit preference change updates all displays</description>
+        <approach>Log workout with 100kg squat. Navigate to workout history. Verify displays "100.0 kg". Go to Unit Preferences. Switch to lbs. Navigate back to workout history. Verify now displays "220.5 lbs". Check database → verify still stores 100kg (no data modification).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4">
+        <description>Integration test: Multiple workouts with unit switching</description>
+        <approach>Log 3 workouts: 80kg, 90kg, 100kg. Switch to lbs. Verify displays: 176.4 lbs, 198.4 lbs, 220.5 lbs. Switch back to kg. Verify displays: 80.0 kg, 90.0 kg, 100.0 kg. Verify data integrity maintained.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6">
+        <description>Integration test: Unit preferences persist across app restarts</description>
+        <approach>Change to lbs/miles/inches. Close app. Restart app. Navigate to Unit Preferences. Verify lbs/miles/inches still selected. Verify all displays use imperial units.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6">
+        <description>Integration test: Unit preferences sync across devices</description>
+        <approach>Device A: Change to imperial units (lbs/miles/inches). Verify saved to Supabase. Device B: Open app. Verify preferences synced from Supabase. Verify Device B displays imperial units.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4">
+        <description>Integration test: Unit conversion in progress charts</description>
+        <approach>Log workouts: 80kg, 90kg, 100kg. Navigate to Progress Charts. Verify chart displays kg values. Switch to lbs. Verify chart updates to display lbs values (176.4, 198.4, 220.5). Verify chart axis label changes from "kg" to "lbs".</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4">
+        <description>Integration test: Body measurements with height unit switching</description>
+        <approach>Log body measurements with height 180cm. View body measurements screen. Verify displays "180.0 cm". Switch to inches. Verify displays "70.9 inches". Verify original data unchanged in database.</approach>
+      </test-idea>
+    </ideas>
+  </tests>
+</story-context>

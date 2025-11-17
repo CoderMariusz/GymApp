@@ -4,7 +4,17 @@
 **Sprint:** 9
 **Story Points:** 3
 **Priority:** P0
-**Status:** Draft
+**Status:** ready-for-dev
+
+## Dev Agent Record
+
+### Context Reference
+
+- **Story Context File:** [9-5-data-privacy-cross-module-settings.context.xml](./9-5-data-privacy-cross-module-settings.context.xml)
+- **Generated:** 2025-11-17
+- **Status:** Context created, story ready for implementation
+
+---
 
 ---
 

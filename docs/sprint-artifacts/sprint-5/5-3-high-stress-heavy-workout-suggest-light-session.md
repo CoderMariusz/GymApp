@@ -1,5 +1,13 @@
 # Story 5.3: High Stress + Heavy Workout → Suggest Light Session
-**Epic:** 5 - Cross-Module Intelligence | **P0** | **2 SP** | **drafted**
+**Epic:** 5 - Cross-Module Intelligence | **P0** | **2 SP** | **ready-for-dev**
+
+## Dev Agent Record
+
+### Context Reference
+
+- **Story Context File:** [5-3-high-stress-heavy-workout-suggest-light-session.context.xml](./5-3-high-stress-heavy-workout-suggest-light-session.context.xml)
+- **Generated:** 2025-11-17
+- **Status:** Context created, story ready for implementation
 
 ## AC
 1. ✅ Triggered when: Stress ≥4 (high) AND heavy workout scheduled (volume >80% of max)

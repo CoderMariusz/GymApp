@@ -1,7 +1,7 @@
 # Story 2.7: Progress Dashboard (Life Coach)
 
 **Epic:** Epic 2 - Life Coach MVP
-**Priority:** P1 | **Status:** drafted | **Effort:** 3 SP
+**Priority:** P1 | **Status:** ready-for-dev | **Effort:** 3 SP
 
 ---
 
@@ -74,6 +74,11 @@ CREATE INDEX idx_daily_stats_user_date ON daily_stats(user_id, date DESC);
 **Prerequisites:** Story 2.1 (Check-in data), Story 2.5 (Reflection data)
 
 **Coverage Target:** 75%+
+
+---
+
+## Dev Agent Record
+**Context File:** 2-7-progress-dashboard-life-coach.context.xml
 
 ---
 
