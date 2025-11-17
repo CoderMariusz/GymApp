@@ -1,0 +1,430 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>4</epicId>
+    <storyId>4.5</storyId>
+    <title>Private Journaling (E2E Encrypted)</title>
+    <status>ready-for-dev</status>
+    <generatedAt>2025-11-17</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/sprint-4/4-5-private-journaling-e2e-encrypted.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>user journaling private thoughts</asA>
+    <iWant>to write journal entries with end-to-end encryption</iWant>
+    <soThat>my thoughts are completely private and secure</soThat>
+    <tasks>
+      <task id="1" ac-ref="AC1,AC2,AC3,AC4">
+        <description>Implement E2E encryption infrastructure for journal entries</description>
+        <subtasks>
+          <subtask>Implement AES-256-GCM encryption service with secure key derivation (PBKDF2)</subtask>
+          <subtask>Generate per-user encryption key on first journal entry (store in secure storage)</subtask>
+          <subtask>Create EncryptionService with encrypt() and decrypt() methods</subtask>
+          <subtask>Implement key rotation mechanism for security best practices</subtask>
+          <subtask>Store encrypted journal entries in Supabase (encrypted blobs)</subtask>
+          <subtask>Add encryption metadata (algorithm, IV, salt) to journal_entries table</subtask>
+        </subtasks>
+      </task>
+      <task id="2" ac-ref="AC2,AC3,AC6">
+        <description>Implement journal entry creation and editing UI</description>
+        <subtasks>
+          <subtask>Create JournalEntryScreen with rich text editor (flutter_quill package)</subtask>
+          <subtask>Implement formatting toolbar (bold, italic, bullet points, headings)</subtask>
+          <subtask>Add auto-save functionality (save draft every 30 seconds)</subtask>
+          <subtask>Implement entry title field with date/time stamp</subtask>
+          <subtask>Add "Save Entry" button with haptic feedback</subtask>
+          <subtask>Show encryption indicator icon (lock icon) in UI</subtask>
+        </subtasks>
+      </task>
+      <task id="3" ac-ref="AC2,AC5">
+        <description>Implement journal entry list view</description>
+        <subtasks>
+          <subtask>Create JournalListScreen with chronologically sorted entries</subtask>
+          <subtask>Display entry date, title preview, and word count</subtask>
+          <subtask>Implement lazy loading for large journal history</subtask>
+          <subtask>Add search functionality (decrypt entries locally before searching)</subtask>
+          <subtask>Implement swipe-to-delete with confirmation dialog</subtask>
+          <subtask>Add empty state: "Start journaling your thoughts"</subtask>
+        </subtasks>
+      </task>
+      <task id="4" ac-ref="AC4">
+        <description>Implement encrypted search functionality</description>
+        <subtasks>
+          <subtask>Create local search index (decrypt entries in memory)</subtask>
+          <subtask>Implement full-text search across journal entries</subtask>
+          <subtask>Add search bar in JournalListScreen</subtask>
+          <subtask>Highlight matching text in search results</subtask>
+          <subtask>Optimize search performance (limit decryption to visible entries)</subtask>
+        </subtasks>
+      </task>
+      <task id="5" ac-ref="AC5">
+        <description>Implement journal prompts feature</description>
+        <subtasks>
+          <subtask>Create prompt library with 20+ prompts ("What am I grateful for?", "What challenged me today?")</subtask>
+          <subtask>Add "Random Prompt" button in journal entry screen</subtask>
+          <subtask>Implement prompt rotation logic (show new prompt daily)</subtask>
+          <subtask>Store user's favorite prompts for quick access</subtask>
+          <subtask>Add ability to dismiss/skip prompts</subtask>
+        </subtasks>
+      </task>
+      <task id="6" ac-ref="AC6">
+        <description>Implement journal export functionality</description>
+        <subtasks>
+          <subtask>Create export service to generate encrypted ZIP file</subtask>
+          <subtask>Include all journal entries in JSON format (encrypted)</subtask>
+          <subtask>Add export encryption key (separate from app encryption)</subtask>
+          <subtask>Implement export dialog with password protection option</subtask>
+          <subtask>Add share functionality to export ZIP file</subtask>
+          <subtask>Include README.txt in ZIP explaining decryption process</subtask>
+        </subtasks>
+      </task>
+      <task id="7" ac-ref="AC7">
+        <description>Implement GDPR-compliant data deletion</description>
+        <subtasks>
+          <subtask>Create "Delete All Journal Entries" option in settings</subtask>
+          <subtask>Implement cascading deletion (Drift + Supabase)</subtask>
+          <subtask>Add confirmation dialog with "type DELETE to confirm" protection</subtask>
+          <subtask>Securely delete encryption keys from device storage</subtask>
+          <subtask>Generate deletion audit log for compliance</subtask>
+          <subtask>Show deletion confirmation message</subtask>
+        </subtasks>
+      </task>
+      <task id="8" ac-ref="ALL">
+        <description>Implement offline-first journal sync</description>
+        <subtasks>
+          <subtask>Save encrypted entries to Drift (SQLite) for offline access</subtask>
+          <subtask>Implement sync queue for pending encrypted entries</subtask>
+          <subtask>Handle conflict resolution (last-write-wins for same entry)</subtask>
+          <subtask>Add sync status indicator in journal list</subtask>
+        </subtasks>
+      </task>
+      <task id="9" ac-ref="ALL">
+        <description>Write comprehensive tests</description>
+        <subtasks>
+          <subtask>Unit tests: AES-256-GCM encryption/decryption, key generation, secure storage</subtask>
+          <subtask>Widget tests: Journal entry screen, rich text editor, search functionality</subtask>
+          <subtask>Integration test: Create encrypted entry, sync, decrypt, search, export</subtask>
+          <subtask>Security tests: Verify encryption at rest, key protection, secure deletion</subtask>
+          <subtask>Achieve 80%+ code coverage</subtask>
+        </subtasks>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="AC1">
+      <text>Journal entries encrypted with AES-256-GCM end-to-end encryption</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC2">
+      <text>Entry list displays all journal entries with dates (sorted chronologically)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC3">
+      <text>Rich text editor with formatting options (bold, italic, bullet points)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC4">
+      <text>Search functionality works across encrypted entries (decrypt locally)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC5">
+      <text>Journal prompts displayed ("What am I grateful for?", "What challenged me today?")</text>
+      <priority>P1</priority>
+    </criterion>
+    <criterion id="AC6">
+      <text>Export journal as encrypted ZIP file with password protection</text>
+      <priority>P1</priority>
+    </criterion>
+    <criterion id="AC7">
+      <text>GDPR-compliant deletion: Delete all entries and encryption keys</text>
+      <priority>P0</priority>
+    </criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR50: Private journaling with E2E encryption</section>
+        <snippet>Journal feature must use AES-256-GCM encryption with per-user keys. All entries encrypted at rest. Search requires local decryption. Zero-knowledge architecture - server cannot read journal content.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>NFR-S2: End-to-end encryption for sensitive data</section>
+        <snippet>Mental health data (journal, mood logs) must be encrypted end-to-end. Use AES-256-GCM with PBKDF2 key derivation. Encryption keys stored in device secure storage (Keychain/Keystore).</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/epics.md</path>
+        <title>Epic 4: Mind & Emotion - Story 4.5</title>
+        <section>Story 4.5: Private Journaling (E2E Encrypted)</section>
+        <snippet>Secure journaling with E2E encryption, rich text editor, search, prompts, and export. Prerequisites: Epic 1 (auth, secure storage).</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Security Architecture - E2E Encryption</section>
+        <snippet>Use flutter_secure_storage for encryption keys. Implement AES-256-GCM with 256-bit keys. Generate keys using PBKDF2 with 100,000 iterations. Store IV and salt with encrypted data.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/ux-design-specification.md</path>
+        <title>UX Design Specification</title>
+        <section>Journal Entry UX</section>
+        <snippet>Rich text editor with floating toolbar. Auto-save every 30 seconds. Lock icon in top-right indicates E2E encryption. Empty state: "Your thoughts are private and encrypted."</snippet>
+      </doc>
+    </docs>
+    <code>
+      <note>Journal feature is new for Epic 4. Create at lib/features/journal/. Reuse EncryptionService pattern from secure storage (Epic 1).</note>
+    </code>
+    <dependencies>
+      <flutter>
+        <sdk>3.38+</sdk>
+        <dart>3.10+</dart>
+      </flutter>
+      <packages>
+        <package name="flutter_riverpod" version="^3.0.0" usage="State management for journal screens" />
+        <package name="flutter_quill" version="^9.0.0" usage="Rich text editor for journal entries" />
+        <package name="flutter_secure_storage" version="^9.0.0" usage="Secure key storage for encryption keys" />
+        <package name="crypto" version="^3.0.0" usage="AES-256-GCM encryption implementation" />
+        <package name="encrypt" version="^5.0.0" usage="High-level encryption utilities" />
+        <package name="drift" version="^2.14.0" usage="Local SQLite for offline encrypted entries" />
+        <package name="archive" version="^3.4.0" usage="ZIP file creation for journal export" />
+        <package name="share_plus" version="^7.0.0" usage="Share exported journal ZIP file" />
+      </packages>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint id="SEC-1" type="security">
+      <description>AES-256-GCM encryption mandatory for all journal entries</description>
+      <details>Use AES-256-GCM with 256-bit keys. Generate keys with PBKDF2 (100,000 iterations, SHA-256). Store keys in flutter_secure_storage. Include IV and salt with encrypted data.</details>
+    </constraint>
+    <constraint id="SEC-2" type="security">
+      <description>Zero-knowledge architecture - server cannot decrypt entries</description>
+      <details>Encryption/decryption happens only on device. Server stores encrypted blobs. Encryption keys never leave device. Search requires local decryption.</details>
+    </constraint>
+    <constraint id="SEC-3" type="security">
+      <description>Secure key storage in device Keychain/Keystore</description>
+      <details>Use flutter_secure_storage for encryption keys. Keys stored in iOS Keychain (kSecAttrAccessibleWhenUnlockedThisDeviceOnly) and Android Keystore (AES/GCM encryption).</details>
+    </constraint>
+    <constraint id="DATA-1" type="data">
+      <description>Journal entries table schema</description>
+      <details>journal_entries table: id (UUID), user_id (UUID FK), encrypted_content (TEXT), encrypted_title (TEXT), encryption_metadata (JSONB with IV/salt/algorithm), created_at, updated_at, word_count (INT), UNIQUE(user_id, id).</details>
+    </constraint>
+    <constraint id="PERF-1" type="performance">
+      <description>Search performance for encrypted entries</description>
+      <details>Limit decryption to visible entries (lazy loading). Implement search debouncing (500ms). Cache decrypted entries in memory for 5 minutes. Clear cache on app background.</details>
+    </constraint>
+    <constraint id="PERF-2" type="performance">
+      <description>Auto-save performance</description>
+      <details>Auto-save every 30 seconds. Encrypt in background isolate to avoid UI freezes. Save to Drift first (&lt;100ms), queue Supabase sync.</details>
+    </constraint>
+    <constraint id="UX-1" type="ux">
+      <description>Rich text editor with formatting toolbar</description>
+      <details>Use flutter_quill for rich text. Toolbar: bold, italic, underline, bullet list, numbered list, headings (H1-H3). Toolbar floats above keyboard.</details>
+    </constraint>
+    <constraint id="UX-2" type="ux">
+      <description>Visual encryption indicator</description>
+      <details>Show lock icon in top-right of journal entry screen. Tooltip: "Your journal is end-to-end encrypted." Helps build user trust.</details>
+    </constraint>
+    <constraint id="GDPR-1" type="compliance">
+      <description>GDPR Article 17 - Right to erasure</description>
+      <details>Implement complete data deletion: encrypted entries (Drift + Supabase), encryption keys (secure storage), search cache. Generate deletion audit log with timestamp.</details>
+    </constraint>
+    <constraint id="TEST-1" type="testing">
+      <description>Security testing mandatory</description>
+      <details>Test encryption at rest, key protection, secure deletion. Verify encrypted content in database. Test key isolation between users. Verify no plaintext storage.</details>
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>EncryptionService</name>
+      <kind>service</kind>
+      <signature>
+        abstract class EncryptionService {
+          Future&lt;EncryptedData&gt; encrypt(String plaintext);
+          Future&lt;String&gt; decrypt(EncryptedData encrypted);
+          Future&lt;void&gt; generateKey();
+          Future&lt;void&gt; rotateKey();
+          Future&lt;void&gt; deleteKey();
+        }
+
+        class EncryptedData {
+          final String ciphertext;
+          final String iv;
+          final String salt;
+          final String algorithm; // "AES-256-GCM"
+        }
+      </signature>
+      <path>lib/core/services/encryption_service.dart</path>
+      <notes>Use encrypt package for AES-256-GCM. Store keys in flutter_secure_storage. Generate keys with PBKDF2 (100,000 iterations).</notes>
+    </interface>
+    <interface>
+      <name>JournalEntryEntity</name>
+      <kind>domain-entity</kind>
+      <signature>
+        class JournalEntryEntity {
+          final String id;
+          final String userId;
+          final String encryptedContent;  // Encrypted JSON (Quill Delta format)
+          final String encryptedTitle;
+          final EncryptionMetadata metadata;
+          final DateTime createdAt;
+          final DateTime updatedAt;
+          final int wordCount;
+        }
+
+        class EncryptionMetadata {
+          final String iv;
+          final String salt;
+          final String algorithm;
+        }
+      </signature>
+      <path>lib/features/journal/domain/entities/journal_entry_entity.dart</path>
+      <notes>Use @freezed for immutability. Store Quill Delta format (JSON) as encrypted content.</notes>
+    </interface>
+    <interface>
+      <name>SaveJournalEntryUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class SaveJournalEntryUseCase {
+          Future&lt;Result&lt;JournalEntryEntity&gt;&gt; call({
+            required String content,  // Plaintext
+            required String title,    // Plaintext
+          });
+        }
+      </signature>
+      <path>lib/features/journal/domain/usecases/save_journal_entry_usecase.dart</path>
+      <notes>Encrypt content and title before saving. Save to Drift first, queue Supabase sync. Return encrypted entity.</notes>
+    </interface>
+    <interface>
+      <name>SearchJournalUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class SearchJournalUseCase {
+          Future&lt;Result&lt;List&lt;JournalEntryEntity&gt;&gt;&gt; call(String query);
+        }
+      </signature>
+      <path>lib/features/journal/domain/usecases/search_journal_usecase.dart</path>
+      <notes>Decrypt entries in memory, perform full-text search, return matching entries. Implement pagination for performance.</notes>
+    </interface>
+    <interface>
+      <name>ExportJournalUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class ExportJournalUseCase {
+          Future&lt;Result&lt;File&gt;&gt; call({
+            String? password,  // Optional export password
+          });
+        }
+      </signature>
+      <path>lib/features/journal/domain/usecases/export_journal_usecase.dart</path>
+      <notes>Export all entries as encrypted ZIP. Include README.txt with decryption instructions. Use archive package for ZIP creation.</notes>
+    </interface>
+    <interface>
+      <name>journal_entries table (Supabase PostgreSQL)</name>
+      <kind>database-table</kind>
+      <signature>
+        CREATE TABLE journal_entries (
+          id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+          user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+          encrypted_content TEXT NOT NULL,
+          encrypted_title TEXT NOT NULL,
+          encryption_metadata JSONB NOT NULL,  -- {iv, salt, algorithm}
+          created_at TIMESTAMPTZ DEFAULT NOW(),
+          updated_at TIMESTAMPTZ DEFAULT NOW(),
+          word_count INT DEFAULT 0,
+          UNIQUE(user_id, id)
+        );
+        CREATE INDEX idx_journal_entries_user ON journal_entries(user_id, created_at DESC);
+      </signature>
+      <path>supabase/migrations/</path>
+      <notes>RLS policies: Users can only access own entries. Server stores encrypted blobs (zero-knowledge).</notes>
+    </interface>
+    <interface>
+      <name>journal_prompts (Hardcoded Library)</name>
+      <kind>data-library</kind>
+      <signature>
+        List&lt;JournalPrompt&gt; journalPrompts = [
+          JournalPrompt("What am I grateful for today?"),
+          JournalPrompt("What challenged me today?"),
+          JournalPrompt("What did I learn today?"),
+          JournalPrompt("What made me smile today?"),
+          JournalPrompt("What am I looking forward to?"),
+          // ... 15+ more prompts
+        ];
+      </signature>
+      <path>lib/features/journal/data/journal_prompts.dart</path>
+      <notes>Hardcoded prompt library. Implement random selection and daily rotation logic.</notes>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Follow 70/20/10 testing pyramid. Emphasize security testing: encryption at rest, key protection, secure deletion. Use flutter_test for unit/widget tests, integration_test for E2E. Mock EncryptionService for faster tests. Test decryption edge cases. Target 80%+ code coverage.
+    </standards>
+    <locations>
+      <location>test/core/services/encryption_service_test.dart</location>
+      <location>test/features/journal/domain/usecases/</location>
+      <location>test/features/journal/presentation/widgets/</location>
+      <location>integration_test/features/journal/encrypted_journal_flow_test.dart</location>
+    </locations>
+    <ideas>
+      <test-idea ac-ref="AC1">
+        <description>Unit test: AES-256-GCM encryption/decryption</description>
+        <approach>Test encrypt() and decrypt() methods. Verify encrypted content differs from plaintext. Verify decrypted content matches original. Test IV and salt uniqueness.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1">
+        <description>Unit test: Encryption key generation and storage</description>
+        <approach>Test generateKey() creates 256-bit key. Verify key stored in flutter_secure_storage. Test key retrieval. Verify key deletion removes from storage.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1,AC2">
+        <description>Integration test: Create encrypted journal entry</description>
+        <approach>Create entry with plaintext content. Verify saved as encrypted in database. Retrieve entry and decrypt. Verify decrypted content matches original.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3">
+        <description>Widget test: Rich text editor formatting</description>
+        <approach>Render JournalEntryScreen. Apply bold/italic formatting. Verify Quill Delta format includes formatting. Test toolbar interactions.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4">
+        <description>Integration test: Search encrypted journal entries</description>
+        <approach>Create 10 encrypted entries. Search for keyword. Verify correct entries returned. Verify search decrypts entries in memory. Test search performance (&lt;2s).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC5">
+        <description>Unit test: Journal prompt rotation</description>
+        <approach>Test getRandomPrompt() returns different prompts. Test daily rotation logic. Verify favorite prompts prioritized.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6">
+        <description>Integration test: Export journal as encrypted ZIP</description>
+        <approach>Create 5 entries. Export with password. Verify ZIP file created. Extract and verify encrypted JSON. Test README.txt included.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC7">
+        <description>Integration test: GDPR-compliant deletion</description>
+        <approach>Create entries and encryption key. Trigger deletion. Verify all entries deleted from Drift and Supabase. Verify encryption key removed from secure storage. Verify audit log generated.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1">
+        <description>Security test: Verify no plaintext in database</description>
+        <approach>Create entry with known plaintext. Query database directly. Verify encrypted_content contains no plaintext substrings. Verify encryption_metadata present.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1">
+        <description>Security test: Key isolation between users</description>
+        <approach>Create entries for User A and User B. Attempt to decrypt User A's entry with User B's key. Verify decryption fails.</approach>
+      </test-idea>
+    </ideas>
+  </tests>
+
+  <devAgentRecord>
+    <recordedAt>2025-11-17</recordedAt>
+    <status>ready-for-dev</status>
+    <agent>BMAD Dev Agent</agent>
+    <notes>Story context prepared and validated for development assignment</notes>
+  </devAgentRecord>
+
+  <created>
+    <author>BMAD Story Context Workflow</author>
+    <timestamp>2025-11-17</timestamp>
+  </created>
+</story-context>

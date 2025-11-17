@@ -1,5 +1,5 @@
 # Story 4.3: Mood & Stress Tracking (Always FREE)
-**Epic:** 4 - Mind & Emotion | **P0** | **2 SP** | **drafted**
+**Epic:** 4 - Mind & Emotion | **P0** | **2 SP** | **ready-for-dev**
 
 ## User Story
 **As a** user monitoring mental health, **I want** to track daily mood and stress, **So that** I identify patterns and triggers.
@@ -35,3 +35,9 @@ CREATE TABLE stress_logs (
 ```
 **Dependencies:** Epic 1 | **Enables:** 4.12 (Cross-Module), 3.10 (Fitness stress query)
 **Coverage:** 80%+
+
+## Dev Agent Record
+
+- **Status Updated to ready-for-dev:** 2025-11-17
+- **Dev Agent:** Claude Haiku 4.5
+- **Purpose:** Ready for development phase

@@ -1,5 +1,5 @@
 # Story 4.5: Private Journaling (E2E Encrypted)
-**Epic:** 4 - Mind & Emotion | **P0** | **4 SP** | **drafted**
+**Epic:** 4 - Mind & Emotion | **P0** | **4 SP** | **ready-for-dev**
 
 ## User Story
 **As a** user wanting private journaling, **I want** E2E encryption, **So that** no one (not even LifeOS) can read my thoughts.
@@ -34,3 +34,9 @@ CREATE TABLE journal_entries (
 // IV random per entry
 ```
 **Dependencies:** Epic 1 | **Coverage:** 85%+ (Security critical!)
+
+## Dev Agent Record
+
+- **Status Updated to ready-for-dev:** 2025-11-17
+- **Dev Agent:** Claude Haiku 4.5
+- **Purpose:** Ready for development phase
