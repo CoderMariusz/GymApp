@@ -1,0 +1,487 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>1</epicId>
+    <storyId>1.2</storyId>
+    <title>User Login &amp; Session Management</title>
+    <status>ready-for-dev</status>
+    <generatedAt>2025-11-17</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/sprint-1/1-2-user-login-session-management.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>returning user</asA>
+    <iWant>to log in securely and stay logged in across app restarts</iWant>
+    <soThat>I don't have to re-authenticate every time I open the app</soThat>
+    <tasks>
+      <task id="1" ac-ref="AC1,AC2,AC3">
+        <description>Implement login UI with email/password and social auth</description>
+        <subtasks>
+          <subtask>Create LoginPage widget with email and password form fields</subtask>
+          <subtask>Add form validation for email format and password requirements</subtask>
+          <subtask>Implement Google OAuth 2.0 sign-in button</subtask>
+          <subtask>Implement Apple Sign-In button</subtask>
+          <subtask>Add "Forgot password?" link to navigate to password reset flow</subtask>
+          <subtask>Add "Don't have an account? Sign up" link to navigate to registration</subtask>
+          <subtask>Implement loading state during authentication with progress indicator</subtask>
+        </subtasks>
+      </task>
+      <task id="2" ac-ref="AC1,AC2,AC3,AC7">
+        <description>Implement authentication use cases and error handling</description>
+        <subtasks>
+          <subtask>Create LoginWithEmailUseCase for email/password authentication</subtask>
+          <subtask>Create LoginWithGoogleUseCase for Google OAuth flow</subtask>
+          <subtask>Create LoginWithAppleUseCase for Apple Sign-In flow</subtask>
+          <subtask>Implement error handling for invalid credentials</subtask>
+          <subtask>Implement error handling for account not verified</subtask>
+          <subtask>Implement error handling for session expired</subtask>
+          <subtask>Implement error handling for network errors</subtask>
+          <subtask>Add user-friendly error messages with appropriate actions</subtask>
+        </subtasks>
+      </task>
+      <task id="3" ac-ref="AC4,AC5,AC8">
+        <description>Implement session persistence and auto-login</description>
+        <subtasks>
+          <subtask>Configure Supabase client with PKCE auth flow for secure token handling</subtask>
+          <subtask>Implement session storage using Flutter Secure Storage (Keychain on iOS, EncryptedSharedPreferences on Android)</subtask>
+          <subtask>Create AppInitializer to check auth status on app start</subtask>
+          <subtask>Implement auto-login logic if session is valid (not expired)</subtask>
+          <subtask>Configure 30-day session persistence (inactivity timeout)</subtask>
+          <subtask>Implement "Remember me" checkbox with default value true</subtask>
+          <subtask>Store remember me preference in secure storage</subtask>
+        </subtasks>
+      </task>
+      <task id="4" ac-ref="AC4,AC5">
+        <description>Implement automatic token refresh</description>
+        <subtasks>
+          <subtask>Configure Supabase to auto-refresh tokens 5 minutes before expiration</subtask>
+          <subtask>Implement silent token refresh without user interaction</subtask>
+          <subtask>Handle refresh token expiration gracefully</subtask>
+          <subtask>Store refresh tokens in secure storage</subtask>
+        </subtasks>
+      </task>
+      <task id="5" ac-ref="AC6">
+        <description>Implement logout functionality</description>
+        <subtasks>
+          <subtask>Create LogoutUseCase to clear session</subtask>
+          <subtask>Clear tokens from secure storage on logout</subtask>
+          <subtask>Clear local cache and user data on logout</subtask>
+          <subtask>Navigate to login screen after successful logout</subtask>
+          <subtask>Handle logout errors gracefully</subtask>
+        </subtasks>
+      </task>
+      <task id="6" ac-ref="ALL">
+        <description>Write comprehensive tests</description>
+        <subtasks>
+          <subtask>Unit tests: LoginWithEmailUseCase with valid and invalid credentials</subtask>
+          <subtask>Unit tests: Session persistence after app restart</subtask>
+          <subtask>Unit tests: Auto-refresh token before expiration</subtask>
+          <subtask>Unit tests: LogoutUseCase clears session correctly</subtask>
+          <subtask>Widget tests: Login page displays email and password fields</subtask>
+          <subtask>Widget tests: Error messages shown on invalid credentials</subtask>
+          <subtask>Widget tests: Navigation to home on successful login</subtask>
+          <subtask>Integration test: Complete login flow with email/password</subtask>
+          <subtask>Integration test: Session persists after app restart</subtask>
+          <subtask>Integration test: Auto-login with valid session</subtask>
+          <subtask>Achieve 80%+ code coverage</subtask>
+        </subtasks>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="AC1">
+      <text>User can log in with email + password</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC2">
+      <text>User can log in with Google OAuth 2.0</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC3">
+      <text>User can log in with Apple Sign-In</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC4">
+      <text>Session persists for 30 days of inactivity</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC5">
+      <text>User auto-logged in on app restart if session valid</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC6">
+      <text>User can log out manually (session cleared)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC7">
+      <text>Error handling: Invalid credentials, account not verified, session expired</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC8">
+      <text>"Remember me" checkbox (optional, defaults to true)</text>
+      <priority>P1</priority>
+    </criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR2: User login and session management</section>
+        <snippet>Users can log in securely and maintain sessions across devices. Authentication supports email/password and social providers (Google, Apple). Sessions persist with automatic token refresh and secure storage.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/epics.md</path>
+        <title>Epic 1: Core Platform Foundation - Story 1.2</title>
+        <section>Story 1.2: User Login &amp; Session Management</section>
+        <snippet>Returning users can log in with email/password, Google OAuth, or Apple Sign-In. Session persists for 30 days with auto-login on app restart. PKCE flow ensures secure token handling. Prerequisites: Story 1.1 (account creation).</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Authentication &amp; Authorization (Section 8.4)</section>
+        <snippet>Supabase Auth with RLS policies. Session stored locally using flutter_secure_storage (iOS Keychain, Android EncryptedSharedPreferences). All queries automatically include auth token. Feature gates enforce subscription tiers.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Security (NFR-S1, Decision D5)</section>
+        <snippet>Tokens stored in secure storage with platform-specific encryption. iOS uses Keychain, Android uses EncryptedSharedPreferences via AndroidKeyStore. PKCE flow prevents token interception during OAuth.</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/sprint-1/1-2-user-login-session-management.md</path>
+        <title>Story 1.2: User Login &amp; Session Management</title>
+        <section>Technical Implementation</section>
+        <snippet>LoginPage with email/password form and social auth buttons. AppInitializer checks session on app start. Supabase configured with PKCE flow. Token storage uses iOS Keychain and Android EncryptedSharedPreferences. Auto-refresh 5 minutes before expiration.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Supabase Backend (Section 5.1)</section>
+        <snippet>Supabase Auth supports email, Google, and Apple sign-in. Edge Functions handle AI orchestration. PostgreSQL with RLS policies ensures multi-tenancy. Storage provides CDN for assets.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <note>Authentication infrastructure builds on Epic 0 setup. Core auth module exists at lib/core/auth/. This story implements presentation layer (LoginPage) and domain use cases (LoginWithEmailUseCase, etc.).</note>
+    </code>
+    <dependencies>
+      <flutter>
+        <sdk>3.38+</sdk>
+        <dart>3.10+</dart>
+      </flutter>
+      <packages>
+        <package name="flutter_riverpod" version="^3.0.0" usage="State management for auth state and login flow" />
+        <package name="riverpod_annotation" version="^3.0.0" usage="Code generation for auth providers" />
+        <package name="supabase_flutter" version="^2.0.0" usage="Supabase client for authentication and session management" />
+        <package name="flutter_secure_storage" version="^9.0.0" usage="Secure token storage (iOS Keychain, Android EncryptedSharedPreferences)" />
+        <package name="google_sign_in" version="^6.0.0" usage="Google OAuth 2.0 authentication" />
+        <package name="sign_in_with_apple" version="^5.0.0" usage="Apple Sign-In authentication" />
+        <package name="freezed_annotation" version="^2.4.0" usage="Immutable auth models" />
+        <package name="go_router" version="^13.0.0" usage="Navigation between login, home, and password reset screens" />
+        <package name="flutter_test" version="sdk" usage="Unit and widget testing framework" />
+        <package name="integration_test" version="sdk" usage="End-to-end testing framework" />
+        <package name="mockito" version="^5.4.0" usage="Mocking dependencies for unit tests" />
+      </packages>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint id="ARCH-1" type="architectural">
+      <description>Must follow Clean Architecture pattern (D1)</description>
+      <details>Create auth structure at lib/features/auth/ with presentation/, domain/, and data/ layers. Presentation contains LoginPage, domain contains use cases (LoginWithEmailUseCase, etc.), data contains repositories and data sources.</details>
+    </constraint>
+    <constraint id="ARCH-2" type="architectural">
+      <description>Use Riverpod for state management (D1, D6)</description>
+      <details>Create auth providers in features/auth/presentation/providers/. Use ConsumerWidget for LoginPage. Providers should manage auth state and expose login/logout methods.</details>
+    </constraint>
+    <constraint id="SEC-1" type="security">
+      <description>PKCE flow for OAuth (NFR-S1)</description>
+      <details>Configure Supabase with AuthFlowType.pkce to prevent token interception. Use authFlowType: AuthFlowType.pkce in FlutterAuthClientOptions during Supabase initialization.</details>
+    </constraint>
+    <constraint id="SEC-2" type="security">
+      <description>Secure token storage required</description>
+      <details>Use flutter_secure_storage for all tokens (access token, refresh token). iOS: Store in Keychain with kSecAttrAccessibleAfterFirstUnlock. Android: Use EncryptedSharedPreferences backed by AndroidKeyStore.</details>
+    </constraint>
+    <constraint id="SEC-3" type="security">
+      <description>30-day session persistence</description>
+      <details>Configure Supabase session timeout to 30 days of inactivity. After 30 days without app usage, user must re-authenticate. Session is extended on each app interaction.</details>
+    </constraint>
+    <constraint id="UX-1" type="ux">
+      <description>Login should complete in &lt;1s (NFR-P5)</description>
+      <details>Optimize login flow for performance. Show loading indicator immediately. Cache auth state for instant navigation decisions. Target: login API call + navigation &lt;1000ms.</details>
+    </constraint>
+    <constraint id="UX-2" type="ux">
+      <description>Auto-login on app start &lt;500ms</description>
+      <details>Check session validity in AppInitializer during splash screen. Use cached session state for instant decision. Navigate to Home if valid, Login if invalid. Target: decision + navigation &lt;500ms.</details>
+    </constraint>
+    <constraint id="UX-3" type="ux">
+      <description>Social auth buttons above email login</description>
+      <details>Visual hierarchy: Google and Apple buttons at top, email/password form below, forgot password link, sign up link at bottom. Follow UX Design Specification - Authentication Flow.</details>
+    </constraint>
+    <constraint id="UX-4" type="ux">
+      <description>Disable login button during authentication</description>
+      <details>Prevent double-tap issues. Disable login button and show loading indicator while auth request is in progress. Re-enable on success or error.</details>
+    </constraint>
+    <constraint id="DATA-1" type="data">
+      <description>Token auto-refresh 5 minutes before expiration</description>
+      <details>Supabase handles token refresh automatically. Configure to refresh 5 minutes (300 seconds) before access token expiration. Silent refresh without user interaction.</details>
+    </constraint>
+    <constraint id="ERR-1" type="error-handling">
+      <description>Comprehensive error handling for all auth scenarios</description>
+      <details>Handle: Invalid credentials ("Email or password is incorrect"), Account not verified ("Please verify your email"), Session expired ("Your session has expired. Please log in again"), Network error ("Connection failed. Please try again"). Show error messages with appropriate actions (highlight fields, resend verification, retry button).</details>
+    </constraint>
+    <constraint id="TEST-1" type="testing">
+      <description>80%+ code coverage required</description>
+      <details>Follow 70/20/10 testing pyramid. Unit tests for use cases (login, logout, token refresh), widget tests for UI (form validation, error display, navigation), integration test for full login flow. All AC must have test coverage.</details>
+    </constraint>
+    <constraint id="DEP-1" type="dependency">
+      <description>Requires Story 1.1 completion</description>
+      <details>User Account Creation (Story 1.1) must be complete before login implementation. Users must have accounts to log in. Auth infrastructure from Epic 0 must be configured (Supabase project, Google/Apple OAuth credentials).</details>
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>UserEntity</name>
+      <kind>domain-entity</kind>
+      <signature>
+        class UserEntity {
+          final String id;
+          final String email;
+          final String? displayName;
+          final String? avatarUrl;
+          final DateTime createdAt;
+          final DateTime? lastSignInAt;
+        }
+      </signature>
+      <path>lib/core/auth/domain/entities/user_entity.dart</path>
+      <notes>Use @freezed annotation for immutability. Maps from Supabase User object. Shared across all features.</notes>
+    </interface>
+    <interface>
+      <name>AuthSessionEntity</name>
+      <kind>domain-entity</kind>
+      <signature>
+        class AuthSessionEntity {
+          final String accessToken;
+          final String refreshToken;
+          final DateTime expiresAt;
+          final UserEntity user;
+
+          bool get isExpired => DateTime.now().isAfter(expiresAt);
+        }
+      </signature>
+      <path>lib/core/auth/domain/entities/auth_session_entity.dart</path>
+      <notes>Represents active session. Maps from Supabase Session. Includes expiration check for auto-login logic.</notes>
+    </interface>
+    <interface>
+      <name>LoginWithEmailUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class LoginWithEmailUseCase {
+          Future&lt;Result&lt;AuthSessionEntity&gt;&gt; call({
+            required String email,
+            required String password,
+            required bool rememberMe,
+          });
+        }
+      </signature>
+      <path>lib/features/auth/domain/usecases/login_with_email_usecase.dart</path>
+      <notes>Returns Result&lt;T&gt; pattern (Success/Failure). Validates credentials, calls Supabase signInWithPassword, stores session if rememberMe is true.</notes>
+    </interface>
+    <interface>
+      <name>LoginWithGoogleUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class LoginWithGoogleUseCase {
+          Future&lt;Result&lt;AuthSessionEntity&gt;&gt; call();
+        }
+      </signature>
+      <path>lib/features/auth/domain/usecases/login_with_google_usecase.dart</path>
+      <notes>Handles Google OAuth flow. Uses google_sign_in package + Supabase signInWithIdToken. PKCE flow for security.</notes>
+    </interface>
+    <interface>
+      <name>LoginWithAppleUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class LoginWithAppleUseCase {
+          Future&lt;Result&lt;AuthSessionEntity&gt;&gt; call();
+        }
+      </signature>
+      <path>lib/features/auth/domain/usecases/login_with_apple_usecase.dart</path>
+      <notes>Handles Apple Sign-In flow. Uses sign_in_with_apple package + Supabase signInWithIdToken. iOS only (gracefully handle on Android).</notes>
+    </interface>
+    <interface>
+      <name>CheckAuthStatusUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class CheckAuthStatusUseCase {
+          Future&lt;Result&lt;AuthSessionEntity?&gt;&gt; call();
+        }
+      </signature>
+      <path>lib/features/auth/domain/usecases/check_auth_status_usecase.dart</path>
+      <notes>Called by AppInitializer on app start. Checks if valid session exists in secure storage. Returns null if no session or expired. Used for auto-login logic.</notes>
+    </interface>
+    <interface>
+      <name>LogoutUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class LogoutUseCase {
+          Future&lt;Result&lt;void&gt;&gt; call();
+        }
+      </signature>
+      <path>lib/features/auth/domain/usecases/logout_usecase.dart</path>
+      <notes>Clears session from Supabase and secure storage. Also clears local cache (Drift database) and user data. Returns Result for error handling.</notes>
+    </interface>
+    <interface>
+      <name>AuthRepository</name>
+      <kind>repository</kind>
+      <signature>
+        abstract class AuthRepository {
+          Future&lt;Result&lt;AuthSessionEntity&gt;&gt; signInWithEmail(String email, String password);
+          Future&lt;Result&lt;AuthSessionEntity&gt;&gt; signInWithGoogle();
+          Future&lt;Result&lt;AuthSessionEntity&gt;&gt; signInWithApple();
+          Future&lt;Result&lt;AuthSessionEntity?&gt;&gt; getCurrentSession();
+          Future&lt;Result&lt;void&gt;&gt; signOut();
+          Future&lt;Result&lt;void&gt;&gt; storeSession(AuthSessionEntity session);
+          Future&lt;Result&lt;void&gt;&gt; clearSession();
+        }
+      </signature>
+      <path>lib/core/auth/domain/repositories/auth_repository.dart</path>
+      <notes>Implemented by AuthRepositoryImpl in data layer. Uses SupabaseAuthDataSource (remote) and SecureStorageDataSource (local).</notes>
+    </interface>
+    <interface>
+      <name>SessionRepository</name>
+      <kind>repository</kind>
+      <signature>
+        abstract class SessionRepository {
+          Future&lt;Result&lt;void&gt;&gt; saveSession(AuthSessionEntity session);
+          Future&lt;Result&lt;AuthSessionEntity?&gt;&gt; loadSession();
+          Future&lt;Result&lt;void&gt;&gt; deleteSession();
+          Future&lt;Result&lt;bool&gt;&gt; saveRememberMePreference(bool rememberMe);
+          Future&lt;Result&lt;bool&gt;&gt; loadRememberMePreference();
+        }
+      </signature>
+      <path>lib/core/auth/domain/repositories/session_repository.dart</path>
+      <notes>Manages session persistence using flutter_secure_storage. Stores tokens, expiration, and remember me preference. Platform-specific encryption (Keychain/EncryptedSharedPreferences).</notes>
+    </interface>
+    <interface>
+      <name>Supabase Auth Configuration</name>
+      <kind>configuration</kind>
+      <signature>
+        await Supabase.initialize(
+          url: supabaseUrl,
+          anonKey: supabaseKey,
+          authOptions: FlutterAuthClientOptions(
+            authFlowType: AuthFlowType.pkce,
+          ),
+        );
+      </signature>
+      <path>lib/main.dart</path>
+      <notes>Initialize Supabase in main.dart before app runs. PKCE flow for OAuth security. Session automatically persists via flutter_secure_storage integration.</notes>
+    </interface>
+    <interface>
+      <name>AppInitializer</name>
+      <kind>service</kind>
+      <signature>
+        class AppInitializer {
+          Future&lt;void&gt; initialize() async {
+            // Check auth status
+            final session = await supabase.auth.currentSession;
+            if (session != null &amp;&amp; !session.isExpired) {
+              // Navigate to Home
+            } else {
+              // Navigate to Login
+            }
+          }
+        }
+      </signature>
+      <path>lib/core/initialization/app_initializer.dart</path>
+      <notes>Called during splash screen. Checks session validity and determines initial route (Home vs Login). Must complete in &lt;500ms for UX constraint.</notes>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Follow 70/20/10 testing pyramid: 70% unit tests (use cases, repositories, entities), 20% widget tests (UI components, state management), 10% integration tests (end-to-end flows). Use flutter_test for unit/widget tests, integration_test for E2E. Mock dependencies with mockito. Target 80%+ code coverage. All acceptance criteria must have test coverage.
+    </standards>
+    <locations>
+      <location>test/features/auth/domain/usecases/</location>
+      <location>test/features/auth/domain/entities/</location>
+      <location>test/core/auth/data/repositories/</location>
+      <location>test/features/auth/presentation/pages/</location>
+      <location>integration_test/features/auth/login_flow_test.dart</location>
+    </locations>
+    <ideas>
+      <test-idea ac-ref="AC1">
+        <description>Unit test: LoginWithEmailUseCase success with valid credentials</description>
+        <approach>Mock AuthRepository to return Success with AuthSessionEntity. Call use case with valid email/password. Assert Success result. Verify repository.signInWithEmail called once.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1,AC7">
+        <description>Unit test: LoginWithEmailUseCase fails with invalid password</description>
+        <approach>Mock repository to throw InvalidCredentialsException. Call use case with wrong password. Assert Failure result with correct error message. Verify error type is InvalidCredentialsException.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4,AC5">
+        <description>Unit test: Session persists after app restart</description>
+        <approach>Mock SessionRepository to save session. Call LoginWithEmailUseCase with rememberMe=true. Verify session saved to storage. Restart app (clear memory, reload storage). Call CheckAuthStatusUseCase. Verify session loaded and valid.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4">
+        <description>Unit test: Auto-refresh token before expiration</description>
+        <approach>Mock Supabase auth client. Create session with expiration in 4 minutes. Trigger token refresh logic. Verify Supabase refreshSession called. Assert new access token returned.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6">
+        <description>Unit test: LogoutUseCase clears session correctly</description>
+        <approach>Mock SessionRepository and Supabase client. Call LogoutUseCase. Verify repository.clearSession called. Verify Supabase signOut called. Assert local storage empty after logout.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1">
+        <description>Widget test: LoginPage displays email and password fields</description>
+        <approach>Render LoginPage widget. Find TextFormField widgets by key. Verify email field exists with correct label. Verify password field exists with obscureText=true. Verify login button exists.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC7">
+        <description>Widget test: Error message shown on invalid credentials</description>
+        <approach>Render LoginPage. Mock login provider to return Failure. Enter invalid credentials. Tap login button. Verify error message displayed: "Email or password is incorrect". Verify fields highlighted.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1,AC5">
+        <description>Widget test: Navigation to home on successful login</description>
+        <approach>Render LoginPage with mock navigator. Mock login provider to return Success. Enter valid credentials. Tap login button. Verify navigation to /home route. Verify loading indicator shown during request.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1,AC2,AC3">
+        <description>Widget test: Social auth buttons displayed correctly</description>
+        <approach>Render LoginPage. Find Google sign-in button by key. Find Apple sign-in button by key. Verify buttons displayed above email form. Tap Google button, verify callback triggered.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC8">
+        <description>Widget test: Remember me checkbox defaults to true</description>
+        <approach>Render LoginPage. Find Checkbox widget for "Remember me". Verify initial value is true. Tap checkbox to toggle. Verify value changes to false. Verify preference saved.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1,AC5">
+        <description>Integration test: Complete login flow with email/password</description>
+        <approach>Launch app. Navigate to LoginPage. Enter test email and password. Tap login button. Verify navigation to Home. Verify session saved in secure storage. Verify user data loaded.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4,AC5">
+        <description>Integration test: Session persists after app restart</description>
+        <approach>Login with email/password and rememberMe=true. Verify navigation to Home. Kill app process. Restart app. Verify AppInitializer loads session from storage. Verify auto-navigation to Home (no login screen).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC5">
+        <description>Integration test: Auto-login with valid session</description>
+        <approach>Create valid session in secure storage (not expired). Launch app. Verify AppInitializer checks session. Verify auto-login without user input. Verify navigation to Home in &lt;500ms.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC7">
+        <description>Integration test: Session expired shows login screen</description>
+        <approach>Create expired session in secure storage (expiresAt in past). Launch app. Verify AppInitializer detects expired session. Verify navigation to Login screen. Verify error message: "Your session has expired. Please log in again."</approach>
+      </test-idea>
+      <test-idea ac-ref="AC2">
+        <description>Integration test: Google OAuth login flow</description>
+        <approach>Mock Google Sign-In API. Tap Google sign-in button. Verify Google OAuth prompt appears. Complete OAuth flow. Verify Supabase receives Google ID token. Verify session created. Verify navigation to Home.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3">
+        <description>Integration test: Apple Sign-In flow (iOS only)</description>
+        <approach>Mock Apple Sign-In API (iOS simulator). Tap Apple sign-in button. Verify Apple Sign-In prompt. Complete authentication. Verify Supabase receives Apple ID token. Verify session created. Verify navigation to Home.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6">
+        <description>Integration test: Manual logout clears session</description>
+        <approach>Login and navigate to Home. Navigate to Settings. Tap Logout button. Verify confirmation dialog. Confirm logout. Verify session cleared from storage. Verify local cache cleared. Verify navigation to Login screen.</approach>
+      </test-idea>
+    </ideas>
+  </tests>
+</story-context>

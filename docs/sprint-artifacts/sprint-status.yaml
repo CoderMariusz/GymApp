@@ -39,12 +39,12 @@ story_location: "docs/sprint-artifacts"
 development_status:
   # Epic 1: Core Platform Foundation
   epic-1: "contexted"
-  1-1-user-account-creation: "drafted"
-  1-2-user-login-session-management: "drafted"
-  1-3-password-reset-flow: "drafted"
-  1-4-user-profile-management: "drafted"
-  1-5-data-sync-across-devices: "drafted"
-  1-6-gdpr-compliance-data-export-deletion: "drafted"
+  1-1-user-account-creation: "ready-for-dev"
+  1-2-user-login-session-management: "ready-for-dev"
+  1-3-password-reset-flow: "ready-for-dev"
+  1-4-user-profile-management: "ready-for-dev"
+  1-5-data-sync-across-devices: "ready-for-dev"
+  1-6-gdpr-compliance-data-export-deletion: "ready-for-dev"
   epic-1-retrospective: "optional"
 
   # Epic 2: Life Coach MVP
