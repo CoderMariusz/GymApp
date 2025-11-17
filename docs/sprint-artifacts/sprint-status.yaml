@@ -31,7 +31,7 @@
 
 project_name: "LifeOS"
 generated_date: "2025-11-17"
-last_updated: "2025-11-17"  # All 66 stories synced to "drafted" status
+last_updated: "2025-11-17"  # All 66 stories: Epic 1-4 ready-for-dev (38), Epic 5-9 ready-for-dev (28)
 tracking_system: "file-system"
 story_location: "docs/sprint-artifacts"
 
@@ -93,50 +93,50 @@ development_status:
 
   # Epic 5: Cross-Module Intelligence
   epic-5: "contexted"
-  5-1-insight-engine-detect-patterns-generate-insights: "drafted"
-  5-2-insight-card-ui-swipeable-actionable: "drafted"
-  5-3-high-stress-heavy-workout-suggest-light-session: "drafted"
-  5-4-poor-sleep-morning-workout-suggest-afternoon: "drafted"
-  5-5-sleep-quality-workout-performance-correlation: "drafted"
+  5-1-insight-engine-detect-patterns-generate-insights: "ready-for-dev"
+  5-2-insight-card-ui-swipeable-actionable: "ready-for-dev"
+  5-3-high-stress-heavy-workout-suggest-light-session: "ready-for-dev"
+  5-4-poor-sleep-morning-workout-suggest-afternoon: "ready-for-dev"
+  5-5-sleep-quality-workout-performance-correlation: "ready-for-dev"
   epic-5-retrospective: "optional"
 
   # Epic 6: Gamification & Retention
   epic-6: "contexted"
-  6-1-streak-tracking-system-workouts-meditations-check-ins: "drafted"
-  6-2-milestone-badges-bronze-silver-gold: "drafted"
-  6-3-streak-break-alerts-push-notification: "drafted"
-  6-4-celebration-animations-confetti-badge-pop: "drafted"
-  6-5-shareable-milestone-cards-social-sharing: "drafted"
-  6-6-weekly-summary-report-all-modules: "drafted"
+  6-1-streak-tracking-system-workouts-meditations-check-ins: "ready-for-dev"
+  6-2-milestone-badges-bronze-silver-gold: "ready-for-dev"
+  6-3-streak-break-alerts-push-notification: "ready-for-dev"
+  6-4-celebration-animations-confetti-badge-pop: "ready-for-dev"
+  6-5-shareable-milestone-cards-social-sharing: "ready-for-dev"
+  6-6-weekly-summary-report-all-modules: "ready-for-dev"
   epic-6-retrospective: "optional"
 
   # Epic 7: Onboarding & Subscriptions
   epic-7: "contexted"
-  7-1-onboarding-flow-choose-your-journey: "drafted"
-  7-2-onboarding-set-initial-goals-choose-ai-personality: "drafted"
-  7-3-onboarding-permissions-interactive-tutorial: "drafted"
-  7-4-free-tier-life-coach-basic: "drafted"
-  7-5-14-day-trial-all-premium-features: "drafted"
-  7-6-subscription-management-in-app-purchase: "drafted"
-  7-7-cancel-subscription-graceful-degradation: "drafted"
+  7-1-onboarding-flow-choose-your-journey: "ready-for-dev"
+  7-2-onboarding-set-initial-goals-choose-ai-personality: "ready-for-dev"
+  7-3-onboarding-permissions-interactive-tutorial: "ready-for-dev"
+  7-4-free-tier-life-coach-basic: "ready-for-dev"
+  7-5-14-day-trial-all-premium-features: "ready-for-dev"
+  7-6-subscription-management-in-app-purchase: "ready-for-dev"
+  7-7-cancel-subscription-graceful-degradation: "ready-for-dev"
   epic-7-retrospective: "optional"
 
   # Epic 8: Notifications & Engagement
   epic-8: "contexted"
-  8-1-push-notification-infrastructure: "drafted"
-  8-2-daily-reminders-morning-check-in-workout-meditation: "drafted"
-  8-3-streak-alerts-about-to-break-freeze-milestone: "drafted"
-  8-4-cross-module-insight-notifications: "drafted"
-  8-5-weekly-summary-notification-quiet-hours: "drafted"
+  8-1-push-notification-infrastructure: "ready-for-dev"
+  8-2-daily-reminders-morning-check-in-workout-meditation: "ready-for-dev"
+  8-3-streak-alerts-about-to-break-freeze-milestone: "ready-for-dev"
+  8-4-cross-module-insight-notifications: "ready-for-dev"
+  8-5-weekly-summary-notification-quiet-hours: "ready-for-dev"
   epic-8-retrospective: "optional"
 
   # Epic 9: Settings & Profile
   epic-9: "contexted"
-  9-1-personal-settings: "drafted"
-  9-2-notification-preferences: "drafted"
-  9-3-unit-preferences: "drafted"
-  9-4-subscription-billing-management: "drafted"
-  9-5-data-privacy-cross-module-settings: "drafted"
+  9-1-personal-settings: "ready-for-dev"
+  9-2-notification-preferences: "ready-for-dev"
+  9-3-unit-preferences: "ready-for-dev"
+  9-4-subscription-billing-management: "ready-for-dev"
+  9-5-data-privacy-cross-module-settings: "ready-for-dev"
   epic-9-retrospective: "optional"
 
 # Epic Titles

@@ -4,7 +4,17 @@
 **Sprint:** 8
 **Story Points:** 3
 **Priority:** P0
-**Status:** Draft
+**Status:** ready-for-dev
+
+## Dev Agent Record
+
+### Context Reference
+
+- **Story Context File:** [8-4-cross-module-insight-notifications.context.xml](./8-4-cross-module-insight-notifications.context.xml)
+- **Generated:** 2025-11-17
+- **Status:** Context created, story ready for implementation
+
+---
 
 ---
 

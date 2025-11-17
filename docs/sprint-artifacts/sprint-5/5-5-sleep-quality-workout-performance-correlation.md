@@ -1,5 +1,13 @@
 # Story 5.5: Sleep Quality + Workout Performance Correlation
-**Epic:** 5 - Cross-Module Intelligence | **P1** | **3 SP** | **drafted**
+**Epic:** 5 - Cross-Module Intelligence | **P1** | **3 SP** | **ready-for-dev**
+
+## Dev Agent Record
+
+### Context Reference
+
+- **Story Context File:** [5-5-sleep-quality-workout-performance-correlation.context.xml](./5-5-sleep-quality-workout-performance-correlation.context.xml)
+- **Generated:** 2025-11-17
+- **Status:** Context created, story ready for implementation
 
 ## AC
 1. ✅ Triggered when: 30+ days of data available (sleep + workouts)

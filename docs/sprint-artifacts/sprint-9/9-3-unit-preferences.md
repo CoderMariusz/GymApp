@@ -4,7 +4,17 @@
 **Sprint:** 9
 **Story Points:** 2
 **Priority:** P1
-**Status:** Draft
+**Status:** ready-for-dev
+
+## Dev Agent Record
+
+### Context Reference
+
+- **Story Context File:** [9-3-unit-preferences.context.xml](./9-3-unit-preferences.context.xml)
+- **Generated:** 2025-11-17
+- **Status:** Context created, story ready for implementation
+
+---
 
 ---
 

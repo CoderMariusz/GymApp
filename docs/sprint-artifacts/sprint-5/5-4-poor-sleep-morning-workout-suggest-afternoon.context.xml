@@ -1,0 +1,463 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/epic-5-story-4" v="1.0">
+  <metadata>
+    <epicId>5</epicId>
+    <storyId>5.4</storyId>
+    <title>Poor Sleep + Morning Workout → Suggest Afternoon</title>
+    <status>ready-for-dev</status>
+    <generatedAt>2025-11-17</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/sprint-5/5-4-poor-sleep-morning-workout-suggest-afternoon.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>user with poor sleep and morning workout scheduled</asA>
+    <iWant>to receive a suggestion to move my workout to afternoon</iWant>
+    <soThat>I optimize my workout performance when my energy rebounds later in the day</soThat>
+    <tasks>
+      <task id="1" ac-ref="AC1">
+        <description>Implement poor sleep + morning workout pattern detection logic</description>
+        <subtasks>
+          <subtask>Add pattern detection rule in PatternDetectionService (Edge Function)</subtask>
+          <subtask>Query user_daily_metrics for today's sleep_quality from check_ins table</subtask>
+          <subtask>Fetch scheduled workout from workouts table (status='scheduled', date=today)</subtask>
+          <subtask>Extract workout scheduled time (start_time or planned_time field)</subtask>
+          <subtask>Trigger pattern if: sleep_quality < 3 (poor) AND workout_time < 12:00 (morning)</subtask>
+          <subtask>Set pattern type: 'sleep-workout', priority: 'normal'</subtask>
+        </subtasks>
+      </task>
+      <task id="2" ac-ref="AC2,AC3,AC4">
+        <description>Implement insight generation for sleep-workout pattern</description>
+        <subtasks>
+          <subtask>Create template-based insight (no AI call needed)</subtask>
+          <subtask>Set title: "Sleep Alert"</subtask>
+          <subtask>Set description: "You slept poorly ([sleep_quality]/5). Your morning workout might be tough."</subtask>
+          <subtask>Build recommendation: "Move workout to afternoon (4-6pm) when energy rebounds"</subtask>
+          <subtask>Inject dynamic values: sleep_quality (1-5), current workout time, suggested time (4-6pm)</subtask>
+          <subtask>Calculate optimal afternoon time slot based on user's typical energy pattern</subtask>
+        </subtasks>
+      </task>
+      <task id="3" ac-ref="AC5,AC6">
+        <description>Implement dual CTA actions with alternative</description>
+        <subtasks>
+          <subtask>Add primary CTA: "Reschedule Workout" → Opens Life Coach daily plan editor</subtask>
+          <subtask>Pre-populate time picker with suggested afternoon time (4pm or 5pm)</subtask>
+          <subtask>Add secondary CTA: "Keep Morning Slot" (user preference to override)</subtask>
+          <subtask>Track user choice for AI learning (morning preference vs afternoon preference)</subtask>
+          <subtask>If "Keep Morning Slot" → suggest reducing workout intensity instead</subtask>
+        </subtasks>
+      </task>
+      <task id="4" ac-ref="AC5">
+        <description>Implement Life Coach module integration for workout rescheduling</description>
+        <subtasks>
+          <subtask>Add deep link handler in Life Coach: /life-coach/daily-plan/reschedule?workoutId={id}&suggestedTime=16:00&source=cmi</subtask>
+          <subtask>Open daily plan editor with workout item highlighted</subtask>
+          <subtask>Show time picker pre-populated with suggested time (4-6pm range)</subtask>
+          <subtask>Update workout start_time in database when user confirms</subtask>
+          <subtask>Show success message: "Workout moved to 4:00 PM. Your body will thank you!"</subtask>
+          <subtask>Sync updated daily plan to Supabase</subtask>
+        </subtasks>
+      </task>
+      <task id="5" ac-ref="AC7">
+        <description>Implement AI learning from user scheduling preferences</description>
+        <subtasks>
+          <subtask>Track user actions: reschedule accepted vs "Keep Morning Slot"</subtask>
+          <subtask>Calculate user preference: morning_workout_preference (BOOL) based on history</subtask>
+          <subtask>If user always keeps morning slot (5/5 times) → stop showing sleep-workout insights</subtask>
+          <subtask>If user sometimes reschedules (2/5 times) → continue showing insights</subtask>
+          <subtask>Store preference in user_preferences: prefers_morning_workout (default NULL, learned over time)</subtask>
+          <subtask>AI learning algorithm: if prefers_morning_workout=true → only show insight if sleep_quality <2 (very poor)</subtask>
+        </subtasks>
+      </task>
+      <task id="6" ac-ref="AC4">
+        <description>Implement energy rebound prediction</description>
+        <subtasks>
+          <subtask>Analyze user's historical energy_level data from check_ins (last 30 days)</subtask>
+          <subtask>Calculate average energy by hour of day (morning, afternoon, evening)</subtask>
+          <subtask>Identify energy rebound time: when afternoon energy > morning energy + 1</subtask>
+          <subtask>Suggest optimal workout time based on energy pattern (typically 4-6pm for most users)</subtask>
+          <subtask>Personalize recommendation: "Your energy typically peaks at 5pm"</subtask>
+        </subtasks>
+      </task>
+      <task id="7" ac-ref="AC6">
+        <description>Implement alternative action for "Keep Morning Slot"</description>
+        <subtasks>
+          <subtask>If user taps "Keep Morning Slot" → show follow-up suggestion</subtask>
+          <subtask>Suggest reducing workout intensity: "Consider lighter weights or shorter session"</subtask>
+          <subtask>Optionally open Fitness module with intensity reduction prompt</subtask>
+          <subtask>Track this choice as user preference (morning_workout_preference=true)</subtask>
+          <subtask>Future insights respect this preference (require sleep_quality <2 to trigger)</subtask>
+        </subtasks>
+      </task>
+      <task id="8" ac-ref="ALL">
+        <description>Write comprehensive tests</description>
+        <subtasks>
+          <subtask>Unit test: Pattern triggers correctly (sleep=2, time=9am → pattern detected)</subtask>
+          <subtask>Unit test: Boundary conditions (sleep=3 → no pattern, time=12:01pm → no pattern)</subtask>
+          <subtask>Unit test: Optimal time suggestion based on energy patterns</subtask>
+          <subtask>Widget test: Dual CTAs render ("Reschedule Workout", "Keep Morning Slot")</subtask>
+          <subtask>Integration test: Tap "Reschedule Workout" → Navigate to Life Coach with time picker pre-filled</subtask>
+          <subtask>Integration test: Tap "Keep Morning Slot" → Track preference, show intensity reduction suggestion</subtask>
+          <subtask>E2E test: Full flow - Poor sleep logged → Morning workout scheduled → Insight appears → Reschedule → Daily plan updated</subtask>
+          <subtask>Achieve 75%+ code coverage</subtask>
+        </subtasks>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="AC1">
+      <text>Pattern triggered when: Sleep quality <3 (poor) AND morning workout scheduled (time <12pm)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC2">
+      <text>Insight title: "Sleep Alert"</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC3">
+      <text>Insight description: "You slept poorly (2/5). Your morning workout might be tough."</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC4">
+      <text>Recommendation: "Move workout to afternoon (4-6pm) when energy rebounds"</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC5">
+      <text>Primary CTA: "Reschedule Workout" → Opens Life Coach daily plan editor with time picker pre-filled</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC6">
+      <text>Alternative CTA: "Keep Morning Slot" (user preference to override)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC7">
+      <text>AI learns from user choice and adapts future insights accordingly</text>
+      <priority>P1</priority>
+    </criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR78: Cross-Module Intelligence - Sleep + Morning Workout Pattern</section>
+        <snippet>FR78: System detects poor sleep (<6 hours or quality <3) + morning workout → suggests afternoon workout instead. Based on research: energy typically rebounds in afternoon (4-6pm) after poor sleep. User can accept (reschedule) or keep morning slot.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/epics.md</path>
+        <title>Epic 5: Cross-Module Intelligence - Story 5.4</title>
+        <section>Story 5.4: Poor Sleep + Morning Workout → Suggest Afternoon</section>
+        <snippet>Triggered when sleep_quality <3 and morning workout scheduled (<12pm). Title: "Sleep Alert". Recommendation: Move to afternoon (4-6pm) when energy rebounds. CTA: Reschedule workout (Life Coach) or Keep morning slot. AI learns from preferences.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/ux-design-specification.md</path>
+        <title>UX Design Specification</title>
+        <section>Insight Card - Supportive Tone</section>
+        <snippet>Sleep-workout insights use supportive, caring tone. "Your body needs rest" approach. Color: Life Coach Blue → Fitness Orange gradient. Icon: 😴 (sleep). Emphasize optimization, not criticism.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <reference>
+        <path>lib/features/cross_module_intelligence/domain/detectors/stress_workout_detector.ts</path>
+        <description>Pattern detection reference from Story 5.3</description>
+      </reference>
+      <reference>
+        <path>lib/features/life_coach/presentation/screens/daily_plan_screen.dart</path>
+        <description>Daily plan editor UI for workout rescheduling</description>
+      </reference>
+    </code>
+    <dependencies>
+      <flutter>
+        <sdk>3.38+</sdk>
+        <dart>3.10+</dart>
+      </flutter>
+      <packages>
+        <package name="flutter_riverpod" version="^3.0.0" usage="State management for insight actions" />
+        <package name="supabase_flutter" version="^2.0.0" usage="Database queries for pattern detection" />
+        <package name="drift" version="^2.14.0" usage="Local cache for insights" />
+        <package name="intl" version="^0.18.0" usage="Time formatting and parsing" />
+      </packages>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint id="PATTERN-1" type="pattern-detection">
+      <description>Sleep quality threshold vs hours slept</description>
+      <details>Primary trigger: sleep_quality <3 (from 1-5 rating in check_ins). Secondary trigger (optional): sleep_hours <6 (if tracked). Morning workout: start_time or planned_time <12:00. Use ISO 8601 time format for consistent comparison.</details>
+    </constraint>
+    <constraint id="PATTERN-2" type="pattern-detection">
+      <description>Morning workout time definition</description>
+      <details>Morning: 00:00 - 11:59. Afternoon: 12:00 - 17:59. Evening: 18:00 - 23:59. Night: 00:00 - 05:59. Use user's local timezone for comparisons (stored in user_preferences.timezone).</details>
+    </constraint>
+    <constraint id="UX-1" type="ux">
+      <description>Supportive, caring tone (not prescriptive)</description>
+      <details>Message should feel like helpful suggestion, not command. "Your workout might be tough" vs "You MUST reschedule". "When energy rebounds" (positive framing) vs "You're too tired now" (negative). Icon: 😴 or 💤 (friendly).</details>
+    </constraint>
+    <constraint id="UX-2" type="ux">
+      <description>Time picker pre-population logic</description>
+      <details>Suggested time based on: 1) User's historical energy peak (if available), 2) Research-based default (4-6pm), 3) User's schedule constraints (avoid conflicts with other tasks). Show time picker with suggested time pre-selected, allow user to adjust.</details>
+    </constraint>
+    <constraint id="NAV-1" type="navigation">
+      <description>Deep link to daily plan editor</description>
+      <details>Route: /life-coach/daily-plan/reschedule?workoutId={id}&suggestedTime=16:00&source=sleep-alert. Open daily plan screen, scroll to workout item, show time picker modal. Track full journey: insight → reschedule → time confirmed → plan synced.</details>
+    </constraint>
+    <constraint id="DATA-1" type="data">
+      <description>Energy pattern analysis for personalization</description>
+      <details>Query last 30 days of check_ins.energy_level (grouped by hour of day). Calculate average energy: morning (6-11am), afternoon (12-5pm), evening (6-10pm). Store user_preferences.energy_peak_hour (INT 0-23). Use for personalized time suggestions.</details>
+    </constraint>
+    <constraint id="AI-1" type="ai-learning">
+      <description>Morning workout preference learning</description>
+      <details>Track user_insight_actions for sleep-workout insights. Calculate keep_morning_rate = "Keep Morning Slot" / total. If keep_morning_rate >80% (4/5 times) → set user_preferences.prefers_morning_workout=true. Future insights require sleep_quality <2 (very poor) to trigger.</details>
+    </constraint>
+    <constraint id="PERF-1" type="performance">
+      <description>Real-time pattern detection after check-in</description>
+      <details>Trigger pattern detection when user completes morning check-in (logs poor sleep). If morning workout already scheduled → generate insight immediately. Max latency: 2s from check-in submit to insight displayed.</details>
+    </constraint>
+    <constraint id="BUS-1" type="business">
+      <description>Respect user autonomy and choice</description>
+      <details>"Keep Morning Slot" must be equally prominent (not hidden or de-emphasized). System respects user decision and learns from it. No repeated nagging if user consistently prefers morning workouts despite poor sleep.</details>
+    </constraint>
+    <constraint id="TEST-1" type="testing">
+      <description>75%+ code coverage for pattern and time logic</description>
+      <details>Comprehensive tests for: time comparisons (timezone-aware), energy pattern analysis, optimal time suggestions, boundary conditions (sleep=3, time=12:00). E2E test with realistic user journey.</details>
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>SleepWorkoutPatternDetector</name>
+      <kind>pattern-detector</kind>
+      <signature>
+        class SleepWorkoutPatternDetector {
+          async detectPattern(userId: string): Promise&lt;Pattern | null&gt; {
+            const checkin = await getTodayCheckin(userId);
+            const workout = await getScheduledWorkout(userId, today);
+            const userPrefs = await getUserPreferences(userId);
+
+            if (!checkin || !workout) return null;
+
+            const workoutHour = new Date(workout.planned_time).getHours();
+            const isMorning = workoutHour < 12;
+
+            // Check learned preference
+            if (userPrefs.prefers_morning_workout && checkin.sleep_quality >= 2) {
+              return null; // User prefers mornings, only alert if very poor sleep
+            }
+
+            if (checkin.sleep_quality < 3 && isMorning) {
+              const suggestedTime = await getOptimalAfternoonTime(userId);
+              return {
+                type: 'sleep-workout',
+                priority: 'normal',
+                title: 'Sleep Alert',
+                description: `You slept poorly (${checkin.sleep_quality}/5). Your morning workout might be tough.`,
+                recommendation: `Move workout to ${suggestedTime} when energy rebounds`,
+                cta_primary: 'Reschedule Workout',
+                cta_secondary: 'Keep Morning Slot',
+                metadata: {
+                  workoutId: workout.id,
+                  suggestedTime,
+                },
+              };
+            }
+            return null;
+          }
+        }
+      </signature>
+      <path>supabase/functions/pattern-detection/detectors/sleep_workout_detector.ts</path>
+      <notes>Runs server-side in Edge Function. Checks learned preference (prefers_morning_workout). Calculates optimal afternoon time based on user's energy patterns.</notes>
+    </interface>
+    <interface>
+      <name>RescheduleWorkoutAction</name>
+      <kind>action-handler</kind>
+      <signature>
+        class RescheduleWorkoutAction {
+          Future&lt;void&gt; execute(InsightEntity insight) async {
+            final workoutId = insight.metadata['workoutId'];
+            final suggestedTime = insight.metadata['suggestedTime'];
+
+            // Navigate to Life Coach daily plan editor
+            await Navigator.pushNamed(
+              context,
+              '/life-coach/daily-plan/reschedule',
+              arguments: {
+                'workoutId': workoutId,
+                'suggestedTime': suggestedTime,
+                'sourceInsightId': insight.id,
+                'source': 'sleep-alert',
+              },
+            );
+
+            // Track action
+            await _trackInsightAction(insight.id, 'accept-reschedule', {
+              'workoutId': workoutId,
+              'originalTime': workout.planned_time,
+              'newTime': suggestedTime,
+            });
+          }
+        }
+      </signature>
+      <path>lib/features/cross_module_intelligence/domain/actions/reschedule_workout_action.dart</path>
+      <notes>Handles "Reschedule Workout" CTA. Opens Life Coach daily plan editor with time picker pre-filled. Tracks rescheduling action for AI learning.</notes>
+    </interface>
+    <interface>
+      <name>KeepMorningSlotAction</name>
+      <kind>action-handler</kind>
+      <signature>
+        class KeepMorningSlotAction {
+          Future&lt;void&gt; execute(InsightEntity insight) async {
+            // Track user preference
+            await _trackInsightAction(insight.id, 'keep-morning-slot', {
+              'workoutId': insight.metadata['workoutId'],
+            });
+
+            // Update learned preference
+            await _updateMorningWorkoutPreference(userId);
+
+            // Show follow-up suggestion (optional)
+            await _showIntensityReductionSuggestion();
+
+            // Dismiss insight
+            await _dismissInsight(insight.id);
+          }
+        }
+      </signature>
+      <path>lib/features/cross_module_intelligence/domain/actions/keep_morning_slot_action.dart</path>
+      <notes>Handles "Keep Morning Slot" CTA. Tracks user preference for morning workouts. Updates AI learning model. Optionally suggests reducing workout intensity.</notes>
+    </interface>
+    <interface>
+      <name>EnergyPatternAnalyzer</name>
+      <kind>utility-service</kind>
+      <signature>
+        class EnergyPatternAnalyzer {
+          async getOptimalAfternoonTime(userId: string): Promise&lt;string&gt; {
+            const checkins = await getRecentCheckins(userId, 30); // Last 30 days
+
+            // Group energy levels by hour
+            const energyByHour = new Map&lt;number, number[]&gt;();
+            for (const checkin of checkins) {
+              const hour = new Date(checkin.created_at).getHours();
+              if (!energyByHour.has(hour)) energyByHour.set(hour, []);
+              energyByHour.get(hour).push(checkin.energy_level);
+            }
+
+            // Calculate average energy per hour
+            const avgEnergyByHour = new Map&lt;number, number&gt;();
+            energyByHour.forEach((values, hour) => {
+              avgEnergyByHour.set(hour, values.reduce((a, b) => a + b, 0) / values.length);
+            });
+
+            // Find afternoon peak (12-18 hours)
+            let peakHour = 16; // Default 4pm
+            let maxEnergy = 0;
+            for (let hour = 12; hour <= 18; hour++) {
+              const energy = avgEnergyByHour.get(hour) || 0;
+              if (energy > maxEnergy) {
+                maxEnergy = energy;
+                peakHour = hour;
+              }
+            }
+
+            return `${peakHour}:00`;
+          }
+        }
+      </signature>
+      <path>supabase/functions/pattern-detection/analyzers/energy_pattern_analyzer.ts</path>
+      <notes>Analyzes user's historical energy patterns to suggest optimal workout time. Personalizes recommendation based on when user typically has highest energy in afternoon.</notes>
+    </interface>
+    <interface>
+      <name>user_preferences table (extension)</name>
+      <kind>database-table</kind>
+      <signature>
+        ALTER TABLE user_preferences
+        ADD COLUMN prefers_morning_workout BOOLEAN DEFAULT NULL;
+        ADD COLUMN energy_peak_hour INTEGER CHECK (energy_peak_hour BETWEEN 0 AND 23);
+        ADD COLUMN timezone TEXT DEFAULT 'UTC';
+      </signature>
+      <path>supabase/migrations/20250119000000_add_workout_preferences.sql</path>
+      <notes>Stores learned user preferences for workout timing. prefers_morning_workout learned from user_insight_actions. energy_peak_hour calculated from check_ins analysis. timezone for accurate time comparisons.</notes>
+    </interface>
+    <interface>
+      <name>DailyPlanRescheduleScreen</name>
+      <kind>screen</kind>
+      <signature>
+        class DailyPlanRescheduleScreen extends ConsumerStatefulWidget {
+          final String workoutId;
+          final String suggestedTime;
+          final String sourceInsightId;
+
+          @override
+          Widget build(BuildContext context, WidgetRef ref) {
+            return Scaffold(
+              appBar: AppBar(title: Text('Reschedule Workout')),
+              body: Column([
+                WorkoutDetailsCard(...),
+                TimePickerCard(initialTime: suggestedTime),
+                ElevatedButton(
+                  onPressed: () => _confirmReschedule(),
+                  child: Text('Confirm New Time'),
+                ),
+              ]),
+            );
+          }
+        }
+      </signature>
+      <path>lib/features/life_coach/presentation/screens/daily_plan_reschedule_screen.dart</path>
+      <notes>Dedicated screen for workout rescheduling from sleep-workout insight. Shows workout details, time picker (pre-filled), confirm button. Updates daily plan on confirmation.</notes>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Follow 70/20/10 testing pyramid: 70% unit tests (pattern detection, time calculations, energy pattern analysis), 20% widget tests (dual CTAs, time picker), 10% E2E tests (full rescheduling flow). Target 75%+ code coverage. Test timezone-aware time comparisons.
+    </standards>
+    <locations>
+      <location>test/features/cross_module_intelligence/domain/detectors/</location>
+      <location>test/features/cross_module_intelligence/domain/actions/</location>
+      <location>test/features/cross_module_intelligence/analyzers/</location>
+      <location>integration_test/features/cross_module_intelligence/sleep_workout_flow_test.dart</location>
+    </locations>
+    <ideas>
+      <test-idea ac-ref="AC1">
+        <description>Unit test: Pattern triggers at threshold</description>
+        <approach>Mock check_ins with sleep_quality=2, scheduled workout at 9:00am. Verify pattern detected with type='sleep-workout', priority='normal'. Test boundaries: sleep=3 → no pattern, time=12:00 → no pattern.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1">
+        <description>Unit test: Timezone-aware time comparison</description>
+        <approach>Mock user in timezone 'America/New_York' (UTC-5). Workout scheduled at 11:00am EST (16:00 UTC). Verify pattern detection uses local time (11am = morning) not UTC time (4pm = afternoon).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4">
+        <description>Unit test: Optimal afternoon time calculation</description>
+        <approach>Mock 30 days of check_ins with energy patterns: 9am avg=3, 12pm avg=4, 4pm avg=5, 6pm avg=4. Run EnergyPatternAnalyzer. Verify optimal time suggested: 16:00 (4pm, highest energy). Test edge case: no afternoon data → default to 4pm.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC5,AC6">
+        <description>Widget test: Dual CTA buttons render</description>
+        <approach>Render InsightCard for sleep-workout pattern. Verify 2 buttons: "Reschedule Workout" (primary), "Keep Morning Slot" (secondary). Verify both equally prominent (same styling).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC5">
+        <description>Integration test: Reschedule CTA navigation and time picker</description>
+        <approach>Render InsightCard with suggestedTime=16:00. Tap "Reschedule Workout". Verify navigation to /life-coach/daily-plan/reschedule. Verify route arguments contain workoutId, suggestedTime. Verify time picker pre-filled with 4:00pm.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6">
+        <description>Integration test: Keep Morning Slot action tracking</description>
+        <approach>Tap "Keep Morning Slot" button. Verify user_insight_actions row created: action_type='keep-morning-slot'. Verify insight dismissed. Verify follow-up suggestion shown (reduce intensity). Verify preference update queued.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC7">
+        <description>Unit test: AI learning - morning preference detection</description>
+        <approach>Mock 5 sleep-workout insights: 4 "Keep Morning Slot", 1 "Reschedule" (80% keep rate). Run AI learning algorithm. Verify user_preferences.prefers_morning_workout set to true. Test future pattern detection with sleep=2.5 → verify NO pattern (learned preference). Test sleep=1.5 → verify pattern (very poor sleep overrides preference).</approach>
+      </test-idea>
+      <test-idea ac-ref="ALL">
+        <description>E2E test: Full sleep-workout rescheduling flow</description>
+        <approach>1) User completes morning check-in: sleep_quality=2. 2) User has workout scheduled at 8:00am. 3) Pattern detection runs. 4) Verify insight appears: "Sleep Alert". 5) Tap "Reschedule Workout". 6) Verify Life Coach opens with time picker pre-filled (4:00pm). 7) User confirms new time. 8) Verify workout updated in database: planned_time=16:00. 9) Verify action tracked.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3">
+        <description>Unit test: Description dynamic value injection</description>
+        <approach>Mock pattern with sleep_quality=2. Generate insight description. Verify text: "You slept poorly (2/5). Your morning workout might be tough." Test with sleep=1 → verify "(1/5)".</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4">
+        <description>Unit test: Personalized time suggestion message</description>
+        <approach>Mock user with energy_peak_hour=17 (5pm). Generate recommendation. Verify text includes: "Your energy typically peaks at 5pm". Test user with no energy data → verify generic message: "afternoon (4-6pm) when energy rebounds".</approach>
+      </test-idea>
+    </ideas>
+  </tests>
+</story-context>

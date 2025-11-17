@@ -1,0 +1,370 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>7</epicId>
+    <storyId>7.4</storyId>
+    <title>Free Tier (Life Coach Basic)</title>
+    <status>ready-for-dev</status>
+    <generatedAt>2025-11-17</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/sprint-7/7-4-free-tier-life-coach-basic.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>free tier user</asA>
+    <iWant>to access core Life Coach features without paying</iWant>
+    <soThat>I can experience value before deciding to upgrade to premium</soThat>
+    <tasks>
+      <task id="1" ac-ref="AC1,AC2,AC3">
+        <description>Define and document free tier feature set</description>
+        <subtasks>
+          <subtask>Document ALWAYS FREE features: Life Coach (daily planning, 3 goals max, check-ins)</subtask>
+          <subtask>Document AI chat limits: 3-5 messages/day using Llama (local/cheap model)</subtask>
+          <subtask>Document Mind module: Mood tracking ALWAYS FREE</subtask>
+          <subtask>Document Fitness module: Basic logging, no Smart Pattern, limited templates</subtask>
+          <subtask>Create feature matrix table for reference</subtask>
+        </subtasks>
+      </task>
+      <task id="2" ac-ref="AC4,AC5">
+        <description>Implement feature gate system</description>
+        <subtasks>
+          <subtask>Create FeatureGateService to check subscription tier</subtask>
+          <subtask>Implement canAccessFeature(feature, tier) logic</subtask>
+          <subtask>Add feature checks: if (tier == 'free') { showUpgradePrompt() }</subtask>
+          <subtask>Create FeatureGate widget wrapper for UI elements</subtask>
+          <subtask>Implement graceful degradation for free tier limits</subtask>
+        </subtasks>
+      </task>
+      <task id="3" ac-ref="AC2">
+        <description>Implement Life Coach free tier limits</description>
+        <subtasks>
+          <subtask>Limit goals to max 3 (show "Upgrade for unlimited" when at limit)</subtask>
+          <subtask>Daily planning: Full access (always free)</subtask>
+          <subtask>Check-ins: Full access (always free)</subtask>
+          <subtask>AI chat: Limit to 3-5 messages/day, use Llama model</subtask>
+          <subtask>Track daily AI message count, reset at midnight UTC</subtask>
+        </subtasks>
+      </task>
+      <task id="4" ac-ref="AC3">
+        <description>Implement Mind module free tier</description>
+        <subtasks>
+          <subtask>Mood tracking: Always free, unlimited</subtask>
+          <subtask>Meditation library: Lock premium meditations, show upgrade CTA</subtask>
+          <subtask>CBT chat: Limit to Llama model, no GPT-4</subtask>
+          <subtask>Breathing exercises: Basic patterns free, advanced locked</subtask>
+        </subtasks>
+      </task>
+      <task id="5" ac-ref="AC3">
+        <description>Implement Fitness module free tier</description>
+        <subtasks>
+          <subtask>Basic workout logging: Always free</subtask>
+          <subtask>Smart Pattern Detection: Locked (premium only)</subtask>
+          <subtask>Workout templates: Limit to 5 basic templates, lock advanced</subtask>
+          <subtask>Progress charts: Basic view free, detailed analytics locked</subtask>
+        </subtasks>
+      </task>
+      <task id="6" ac-ref="AC4,AC6">
+        <description>Implement upgrade CTAs and UI indicators</description>
+        <subtasks>
+          <subtask>Show "Upgrade" CTA on locked features (clear, not pushy)</subtask>
+          <subtask>Display premium badge on locked features</subtask>
+          <subtask>Create "Why upgrade?" explanation modal</subtask>
+          <subtask>Link upgrade CTAs to subscription screen (Story 7.6)</subtask>
+          <subtask>Show feature comparison table</subtask>
+        </subtasks>
+      </task>
+      <task id="7" ac-ref="AC5,AC7">
+        <description>Implement subscription tier persistence</description>
+        <subtasks>
+          <subtask>Add subscription_tier column to user_settings ('free' | 'standard' | 'premium')</subtask>
+          <subtask>Default new users to subscription_tier = 'free'</subtask>
+          <subtask>Sync tier across devices via Supabase</subtask>
+          <subtask>Cache tier locally in Drift for offline access</subtask>
+          <subtask>Implement GetSubscriptionTierUseCase</subtask>
+        </subtasks>
+      </task>
+      <task id="8" ac-ref="ALL">
+        <description>Write comprehensive tests</description>
+        <subtasks>
+          <subtask>Unit tests: FeatureGateService logic, tier checks, limit enforcement</subtask>
+          <subtask>Widget tests: FeatureGate widget, upgrade CTAs, locked feature UI</subtask>
+          <subtask>Integration test: free tier user journey with feature limits</subtask>
+          <subtask>Achieve 80%+ code coverage</subtask>
+        </subtasks>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="AC1">
+      <text>Life Coach module ALWAYS FREE: Daily planning, check-ins, 3 goals max</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC2">
+      <text>AI chat limited to 3-5 messages/day using Llama model on free tier</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC3">
+      <text>Mind (mood tracking always free), Fitness (basic logging, no Smart Pattern, limited templates)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC4">
+      <text>Limitations shown clearly with "Upgrade" CTA on locked features</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC5">
+      <text>Premium features locked with feature checks: if (tier == 'free') { limit }</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC6">
+      <text>No credit card required for free tier, never expires</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC7">
+      <text>subscription_tier = 'free' set as default for all new users</text>
+      <priority>P0</priority>
+    </criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR46: Free tier feature set</section>
+        <snippet>Free tier provides genuine value: Full Life Coach daily planning, mood tracking, basic fitness logging. AI limited to Llama (3-5 msg/day). Goals capped at 3. No credit card, no expiration. Premium upgrades unlock unlimited goals, GPT-4 AI, advanced features.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR47: Feature gating and upgrade CTAs</section>
+        <snippet>Locked features clearly marked with premium badge. "Upgrade" CTA visible but not intrusive. No dark patterns. Users should feel valued on free tier, not pressured. Show value proposition, not guilt.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/epics.md</path>
+        <title>Epic 7: Onboarding &amp; Subscriptions</title>
+        <section>Story 7.4: Free Tier</section>
+        <snippet>Define and implement free tier limits. Feature gating system for all modules. Foundation for monetization strategy.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>AI Model Selection (D5)</section>
+        <snippet>Free tier uses Llama 3.1 (8B) - local on-device or cheap API. Premium uses GPT-4 Turbo or Claude Sonnet. Model selection based on subscription_tier. Free tier message limits enforced at orchestration layer.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/ux-design-specification.md</path>
+        <title>UX Design Specification</title>
+        <section>Feature Gating UX</section>
+        <snippet>Premium badge subtle but clear. "Upgrade" button secondary color (not red/urgent). Modal explains benefits, not limitations. Comparison table shows value. Free tier users should feel respected, not second-class.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <reference>
+        <path>lib/features/life_coach/domain/repositories/goals_repository.dart</path>
+        <description>Existing goals repository</description>
+        <note>Add limit check: if free tier and goals.length >= 3, throw GoalLimitExceeded exception.</note>
+      </reference>
+    </code>
+    <dependencies>
+      <flutter>
+        <sdk>3.38+</sdk>
+        <dart>3.10+</dart>
+      </flutter>
+      <packages>
+        <package name="flutter_riverpod" version="^3.0.0" usage="State management for subscription state" />
+        <package name="drift" version="^2.14.0" usage="Local tier caching" />
+        <package name="supabase_flutter" version="^2.0.0" usage="Tier sync" />
+      </packages>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint id="ARCH-1" type="architectural">
+      <description>Feature gate checks at use case layer</description>
+      <details>Don't gate at UI only - users could bypass. Enforce limits in domain/use case layer. UI gates are for UX only.</details>
+    </constraint>
+    <constraint id="ARCH-2" type="architectural">
+      <description>Centralized feature gate service</description>
+      <details>Create FeatureGateService in core/. All features check tier via this service. Single source of truth for feature access rules.</details>
+    </constraint>
+    <constraint id="DATA-1" type="data">
+      <description>Subscription tier persistence</description>
+      <details>Add subscription_tier to user_settings table: TEXT NOT NULL DEFAULT 'free' CHECK (subscription_tier IN ('free', 'standard', 'premium')).</details>
+    </constraint>
+    <constraint id="DATA-2" type="data">
+      <description>AI message count tracking</description>
+      <details>Track daily AI messages in daily_ai_usage table: user_id, date, message_count, model_used. Reset at midnight UTC. Index on (user_id, date).</details>
+    </constraint>
+    <constraint id="UX-1" type="ux">
+      <description>Free tier must provide genuine value</description>
+      <details>Life Coach daily planning always free ensures users get core value. Not a "trial" - permanent free tier. Users should be able to genuinely use app for free forever.</details>
+    </constraint>
+    <constraint id="UX-2" type="ux">
+      <description>No dark patterns in upgrade prompts</description>
+      <details>Never use urgent/scarcity tactics. Don't block core functionality. "Upgrade" CTAs are informational, not manipulative. Respect free users.</details>
+    </constraint>
+    <constraint id="UX-3" type="ux">
+      <description>Clear limitation communication</description>
+      <details>When user hits limit, show helpful message: "You've used your 5 AI messages today. Upgrade for unlimited GPT-4 conversations." Not punitive tone.</details>
+    </constraint>
+    <constraint id="PERF-1" type="performance">
+      <description>Free tier AI uses efficient models</description>
+      <details>Llama 3.1 8B for free tier (fast, cheap, on-device capable). Reserve GPT-4/Claude for premium. Keeps costs sustainable.</details>
+    </constraint>
+    <constraint id="TEST-1" type="testing">
+      <description>80%+ code coverage required</description>
+      <details>Test all feature gate scenarios. Test limit enforcement. Test upgrade CTA flows.</details>
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>FeatureGateService</name>
+      <kind>service</kind>
+      <signature>
+        class FeatureGateService {
+          Future&lt;bool&gt; canAccessFeature(Feature feature);
+          Future&lt;bool&gt; hasReachedLimit(Limit limit);
+          Future&lt;SubscriptionTier&gt; getCurrentTier();
+          Future&lt;int&gt; getRemainingAIMessages();
+        }
+      </signature>
+      <path>lib/core/services/feature_gate_service.dart</path>
+      <notes>Centralized service for feature access checks. Used by all modules.</notes>
+    </interface>
+    <interface>
+      <name>GetSubscriptionTierUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class GetSubscriptionTierUseCase {
+          Future&lt;Result&lt;SubscriptionTier&gt;&gt; call();
+        }
+      </signature>
+      <path>lib/core/domain/usecases/get_subscription_tier_usecase.dart</path>
+      <notes>Returns current subscription tier from user_settings. Cached locally, synced via Supabase.</notes>
+    </interface>
+    <interface>
+      <name>CheckAIMessageLimitUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class CheckAIMessageLimitUseCase {
+          Future&lt;Result&lt;AIMessageLimit&gt;&gt; call();
+        }
+      </signature>
+      <path>lib/core/domain/usecases/check_ai_message_limit_usecase.dart</path>
+      <notes>Returns remaining AI messages for today. Free tier: 5 max. Premium: unlimited (returns -1).</notes>
+    </interface>
+    <interface>
+      <name>FeatureGate widget</name>
+      <kind>widget</kind>
+      <signature>
+        class FeatureGate extends StatelessWidget {
+          final Feature feature;
+          final Widget child;
+          final Widget? lockedWidget;
+          final VoidCallback? onUpgradeTap;
+        }
+      </signature>
+      <path>lib/core/presentation/widgets/feature_gate.dart</path>
+      <notes>Wraps features with tier check. Shows lockedWidget if tier insufficient. Shows upgrade CTA.</notes>
+    </interface>
+    <interface>
+      <name>user_settings table updates (Supabase)</name>
+      <kind>database-table</kind>
+      <signature>
+        ALTER TABLE user_settings ADD COLUMN subscription_tier TEXT NOT NULL DEFAULT 'free' CHECK (subscription_tier IN ('free', 'standard', 'premium'));
+        ALTER TABLE user_settings ADD COLUMN subscription_status TEXT DEFAULT 'active' CHECK (subscription_status IN ('active', 'cancelled', 'expired'));
+        ALTER TABLE user_settings ADD COLUMN subscription_end_date TIMESTAMPTZ;
+      </signature>
+      <path>supabase/migrations/</path>
+      <notes>Add subscription columns to existing user_settings table from Story 7.2.</notes>
+    </interface>
+    <interface>
+      <name>daily_ai_usage table (Supabase)</name>
+      <kind>database-table</kind>
+      <signature>
+        CREATE TABLE daily_ai_usage (
+          id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+          user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+          date DATE NOT NULL,
+          message_count INT NOT NULL DEFAULT 0,
+          model_used TEXT,
+          created_at TIMESTAMPTZ DEFAULT NOW(),
+          updated_at TIMESTAMPTZ DEFAULT NOW(),
+          UNIQUE(user_id, date)
+        );
+        CREATE INDEX idx_ai_usage_user_date ON daily_ai_usage(user_id, date DESC);
+      </signature>
+      <path>supabase/migrations/</path>
+      <notes>Track daily AI usage for free tier limits. Reset at midnight UTC via cron or app logic.</notes>
+    </interface>
+    <interface>
+      <name>SubscriptionTier enum</name>
+      <kind>domain-enum</kind>
+      <signature>
+        enum SubscriptionTier {
+          free,
+          standard,  // €2.99/month - 1 module
+          premium,   // €4.99/month - all modules + GPT-4
+        }
+      </signature>
+      <path>lib/core/domain/enums/subscription_tier.dart</path>
+      <notes>Core enum used throughout app for tier checks.</notes>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Follow 70/20/10 testing pyramid. Target 80%+ code coverage. Test feature gates for all modules. Test limit enforcement.
+    </standards>
+    <locations>
+      <location>test/core/services/feature_gate_service_test.dart</location>
+      <location>test/core/domain/usecases/get_subscription_tier_test.dart</location>
+      <location>test/features/life_coach/domain/usecases/goals_limit_test.dart</location>
+      <location>test/core/presentation/widgets/feature_gate_test.dart</location>
+      <location>integration_test/features/subscriptions/free_tier_limits_test.dart</location>
+    </locations>
+    <ideas>
+      <test-idea ac-ref="AC1">
+        <description>Unit test: Free tier Life Coach limits</description>
+        <approach>Set tier='free'. Create 3 goals successfully. Attempt 4th goal, verify GoalLimitExceeded exception. Test daily planning unrestricted.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC2">
+        <description>Unit test: AI message limit enforcement</description>
+        <approach>Set tier='free'. Send 5 AI messages. Verify 6th message blocked with limit error. Verify Llama model used (not GPT-4).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3">
+        <description>Unit test: Mind module free tier access</description>
+        <approach>Set tier='free'. Verify mood tracking unrestricted. Attempt premium meditation, verify locked. Test CBT uses Llama, not GPT-4.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3">
+        <description>Unit test: Fitness module free tier limits</description>
+        <approach>Set tier='free'. Verify basic logging works. Attempt Smart Pattern feature, verify locked. Test only 5 templates available.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4,AC5">
+        <description>Widget test: FeatureGate widget shows upgrade CTA</description>
+        <approach>Render FeatureGate with tier='free' and premium feature. Verify lockedWidget displayed. Verify "Upgrade" button shown. Test onUpgradeTap callback.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC5">
+        <description>Unit test: FeatureGateService.canAccessFeature()</description>
+        <approach>Test various feature/tier combinations. Verify free tier can access free features. Verify premium features blocked for free tier.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC7">
+        <description>Unit test: Default tier is 'free' for new users</description>
+        <approach>Create new user. Verify subscription_tier = 'free'. Verify no subscription_end_date set. Confirm never expires.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC2">
+        <description>Integration test: AI message limit resets daily</description>
+        <approach>Use 5 messages today. Mock date to tomorrow. Verify limit reset to 0/5 used. Test daily_ai_usage table reset logic.</approach>
+      </test-idea>
+      <test-idea ac-ref="ALL">
+        <description>Integration test: Free tier user journey</description>
+        <approach>Create free tier account. Complete onboarding. Create 3 goals. Use 5 AI messages. Log workout. Track mood. Attempt premium features, verify locked with upgrade prompts.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4">
+        <description>Widget test: Upgrade modal displays value proposition</description>
+        <approach>Tap locked feature. Verify upgrade modal appears. Check feature comparison table shown. Verify "Why upgrade?" explanation. Test navigation to subscription screen.</approach>
+      </test-idea>
+    </ideas>
+  </tests>
+</story-context>

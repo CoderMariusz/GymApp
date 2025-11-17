@@ -1,0 +1,359 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>7</epicId>
+    <storyId>7.3</storyId>
+    <title>Onboarding - Permissions & Interactive Tutorial</title>
+    <status>ready-for-dev</status>
+    <generatedAt>2025-11-17</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/sprint-7/7-3-onboarding-permissions-interactive-tutorial.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>new user completing onboarding</asA>
+    <iWant>to grant necessary permissions and try an interactive tutorial</iWant>
+    <soThat>I can understand core features and start using the app effectively</soThat>
+    <tasks>
+      <task id="1" ac-ref="AC1,AC2,AC3">
+        <description>Implement permissions request screen</description>
+        <subtasks>
+          <subtask>Create OnboardingPermissionsScreen (Screen 5 in flow)</subtask>
+          <subtask>Design push notification permission card with "max 1/day" promise</subtask>
+          <subtask>Design health data permission card (HealthKit/Google Fit) - P1 priority</subtask>
+          <subtask>Implement "Enable Notifications" and "Enable Health Data" buttons</subtask>
+          <subtask>Add "Maybe Later" skip option for each permission</subtask>
+          <subtask>Use permission_handler package for cross-platform requests</subtask>
+        </subtasks>
+      </task>
+      <task id="2" ac-ref="AC1,AC2">
+        <description>Implement platform-specific permission handling</description>
+        <subtasks>
+          <subtask>iOS: Request notification permission via iOS native dialog</subtask>
+          <subtask>Android: Request POST_NOTIFICATIONS permission (Android 13+)</subtask>
+          <subtask>iOS: Request HealthKit access for workouts and activity data</subtask>
+          <subtask>Android: Request ACTIVITY_RECOGNITION and Health Connect permissions</subtask>
+          <subtask>Handle permission denied/restricted states gracefully</subtask>
+          <subtask>Store permission grant status in onboarding state</subtask>
+        </subtasks>
+      </task>
+      <task id="3" ac-ref="AC4,AC5">
+        <description>Implement interactive tutorial based on journey</description>
+        <subtasks>
+          <subtask>Create OnboardingTutorialScreen with journey-specific content</subtask>
+          <subtask>Fitness journey: Log 1 sample workout with guided steps</subtask>
+          <subtask>Mind journey: 2-minute guided breathing exercise with animation</subtask>
+          <subtask>Life Coach journey: Complete sample morning check-in</subtask>
+          <subtask>All modules: Show brief overview of each module with interactive demo</subtask>
+          <subtask>Make tutorial skippable with "Skip Tutorial" button</subtask>
+        </subtasks>
+      </task>
+      <task id="4" ac-ref="AC6">
+        <description>Implement onboarding completion flow</description>
+        <subtasks>
+          <subtask>Show "You're all set! 🎉" completion screen</subtask>
+          <subtask>Display 14-day trial banner prominently</subtask>
+          <subtask>Explain trial benefits (all premium features, no credit card)</subtask>
+          <subtask>Add "Get Started" CTA button to navigate to home</subtask>
+          <subtask>Update onboarding_state.completed = true</subtask>
+          <subtask>Activate trial by setting trial_end_date = NOW() + 14 days</subtask>
+        </subtasks>
+      </task>
+      <task id="5" ac-ref="AC7">
+        <description>Implement tutorial state persistence</description>
+        <subtasks>
+          <subtask>Add tutorial_completed column to onboarding_state table</subtask>
+          <subtask>Save tutorial completion or skip status</subtask>
+          <subtask>Allow users to replay tutorial from settings later</subtask>
+          <subtask>Track which tutorial sections were completed</subtask>
+        </subtasks>
+      </task>
+      <task id="6" ac-ref="AC8">
+        <description>Implement trial activation</description>
+        <subtasks>
+          <subtask>Add trial_end_date column to user_settings or subscriptions table</subtask>
+          <subtask>Set trial_end_date = NOW() + INTERVAL '14 days' on completion</subtask>
+          <subtask>Sync trial activation to Supabase immediately</subtask>
+          <subtask>Show trial countdown in app header after onboarding</subtask>
+        </subtasks>
+      </task>
+      <task id="7" ac-ref="ALL">
+        <description>Write comprehensive tests</description>
+        <subtasks>
+          <subtask>Unit tests: permission request logic, trial activation, state persistence</subtask>
+          <subtask>Widget tests: permission cards, tutorial screens, completion screen</subtask>
+          <subtask>Integration test: complete onboarding with permissions + tutorial + trial activation</subtask>
+          <subtask>Achieve 80%+ code coverage</subtask>
+        </subtasks>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="AC1">
+      <text>Screen 5 requests push notification permission with "max 1/day" promise</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC2">
+      <text>Health data permission requested (HealthKit/Google Fit) - P1 priority</text>
+      <priority>P1</priority>
+    </criterion>
+    <criterion id="AC3">
+      <text>"Enable Notifications" and "Maybe Later" buttons for each permission</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC4">
+      <text>Interactive tutorial adapts to journey (Fitness: log workout, Mind: breathing, Life: check-in)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC5">
+      <text>Tutorial is skippable with "Skip Tutorial" option</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC6">
+      <text>Completion screen shows "You're all set! 🎉" with 14-day trial banner</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC7">
+      <text>Tutorial state saved (completed or skipped)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC8">
+      <text>Trial activation: trial_end_date = NOW() + 14 days saved to database</text>
+      <priority>P0</priority>
+    </criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR43: Permission requests during onboarding</section>
+        <snippet>Request essential permissions: push notifications (max 1/day promise), health data (optional). Clear value proposition. Never block users - always provide "Maybe Later" option.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR44: Interactive onboarding tutorial</section>
+        <snippet>Journey-specific tutorials: Fitness users log sample workout, Mind users try breathing exercise, Life Coach users complete check-in. Interactive, not video. Skippable. Goal: confidence to use core features.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR45: 14-day trial activation</section>
+        <snippet>All users get 14-day trial of all premium features after onboarding. No credit card required. Auto-starts on completion. Trial countdown shown in app. Reminder 3 days before end.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/epics.md</path>
+        <title>Epic 7: Onboarding &amp; Subscriptions</title>
+        <section>Story 7.3: Permissions &amp; Tutorial</section>
+        <snippet>Final onboarding step: permissions, interactive tutorial, completion celebration. Activates 14-day trial. Completes onboarding flow.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Mobile Platform Integration</section>
+        <snippet>iOS: HealthKit for workout/activity data, UserNotifications for push. Android: Health Connect for health data, FCM for push notifications. Use permission_handler for unified API.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/ux-design-specification.md</path>
+        <title>UX Design Specification</title>
+        <section>Onboarding Tutorial UX</section>
+        <snippet>Interactive tutorials, not passive videos. Hands-on: log workout, complete check-in, try breathing. Completion feels rewarding. 14-day trial banner prominent but not pushy. Emphasize "no credit card needed".</snippet>
+      </doc>
+    </docs>
+    <code>
+      <reference>
+        <path>lib/features/life_coach/presentation/widgets/morning_checkin_modal.dart</path>
+        <description>Existing check-in modal from Story 2.1</description>
+        <note>Reuse for Life Coach tutorial. Pre-fill with example values. Mark as tutorial mode.</note>
+      </reference>
+      <reference>
+        <path>lib/features/fitness/presentation/screens/log_workout_screen.dart</path>
+        <description>Existing workout logging from Epic 3</description>
+        <note>Reuse for Fitness tutorial. Create sample workout template.</note>
+      </reference>
+      <reference>
+        <path>lib/features/mind/presentation/screens/breathing_exercise_screen.dart</path>
+        <description>Existing breathing exercise from Epic 4</description>
+        <note>Reuse for Mind tutorial. Use 2-minute calming breath pattern.</note>
+      </reference>
+    </code>
+    <dependencies>
+      <flutter>
+        <sdk>3.38+</sdk>
+        <dart>3.10+</dart>
+      </flutter>
+      <packages>
+        <package name="permission_handler" version="^11.0.0" usage="Cross-platform permission requests" />
+        <package name="flutter_local_notifications" version="^16.0.0" usage="iOS/Android notification setup" />
+        <package name="health" version="^10.0.0" usage="HealthKit/Google Fit integration" />
+        <package name="flutter_riverpod" version="^3.0.0" usage="State management" />
+        <package name="drift" version="^2.14.0" usage="Local persistence" />
+        <package name="supabase_flutter" version="^2.0.0" usage="Backend sync" />
+      </packages>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint id="PLAT-1" type="platform">
+      <description>iOS-specific permission handling</description>
+      <details>Use UNUserNotificationCenter for notifications. Request HealthKit authorization with specific data types (workouts, active energy, steps). Handle limited/denied states.</details>
+    </constraint>
+    <constraint id="PLAT-2" type="platform">
+      <description>Android-specific permission handling</description>
+      <details>Request POST_NOTIFICATIONS on Android 13+. Use Health Connect API. Request ACTIVITY_RECOGNITION permission. Handle permission rationale UI.</details>
+    </constraint>
+    <constraint id="UX-1" type="ux">
+      <description>Never block users on permission denial</description>
+      <details>Always provide "Maybe Later" option. App must function without permissions. Can prompt again later from settings. Don't nag users.</details>
+    </constraint>
+    <constraint id="UX-2" type="ux">
+      <description>Clear permission value proposition</description>
+      <details>Explain why each permission is needed. Notifications: "Get your daily plan each morning (max 1/day)". Health: "Auto-import workouts, no manual logging". Build trust.</details>
+    </constraint>
+    <constraint id="UX-3" type="ux">
+      <description>Tutorial must be genuinely interactive</description>
+      <details>Not passive videos or screenshots. Users actually complete actions: tap buttons, fill forms, see results. Build muscle memory for core features.</details>
+    </constraint>
+    <constraint id="UX-4" type="ux">
+      <description>Completion celebration is important</description>
+      <details>"You're all set! 🎉" feels rewarding. Trial banner prominent but positive tone. Emphasize opportunity, not pressure. No dark patterns.</details>
+    </constraint>
+    <constraint id="DATA-1" type="data">
+      <description>Trial activation must be immediate and reliable</description>
+      <details>Set trial_end_date = NOW() + INTERVAL '14 days' on completion. Sync to Supabase immediately (don't queue). Verify activation before proceeding to home.</details>
+    </constraint>
+    <constraint id="DATA-2" type="data">
+      <description>Tutorial state persistence</description>
+      <details>Add tutorial_completed, tutorial_skipped, permissions_granted (JSONB: {notifications: true, health: false}) to onboarding_state table.</details>
+    </constraint>
+    <constraint id="TEST-1" type="testing">
+      <description>80%+ code coverage required</description>
+      <details>Test permission flows for both platforms. Test tutorial for each journey type. Integration test for trial activation.</details>
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>RequestPermissionsUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class RequestPermissionsUseCase {
+          Future&lt;Result&lt;PermissionStatus&gt;&gt; requestNotifications();
+          Future&lt;Result&lt;PermissionStatus&gt;&gt; requestHealthData();
+        }
+      </signature>
+      <path>lib/features/onboarding/domain/usecases/request_permissions_usecase.dart</path>
+      <notes>Wraps permission_handler and health package. Returns permission status (granted/denied/restricted).</notes>
+    </interface>
+    <interface>
+      <name>ActivateTrialUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class ActivateTrialUseCase {
+          Future&lt;Result&lt;DateTime&gt;&gt; call();
+        }
+      </signature>
+      <path>lib/features/onboarding/domain/usecases/activate_trial_usecase.dart</path>
+      <notes>Sets trial_end_date = NOW() + 14 days. Returns trial end date. Immediate Supabase sync (don't queue).</notes>
+    </interface>
+    <interface>
+      <name>CompleteTutorialUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class CompleteTutorialUseCase {
+          Future&lt;Result&lt;void&gt;&gt; call({
+            required bool completed,
+            required bool skipped,
+          });
+        }
+      </signature>
+      <path>lib/features/onboarding/domain/usecases/complete_tutorial_usecase.dart</path>
+      <notes>Updates onboarding_state with tutorial completion status.</notes>
+    </interface>
+    <interface>
+      <name>onboarding_state table updates (Supabase)</name>
+      <kind>database-table</kind>
+      <signature>
+        ALTER TABLE onboarding_state ADD COLUMN tutorial_completed BOOLEAN DEFAULT false;
+        ALTER TABLE onboarding_state ADD COLUMN tutorial_skipped BOOLEAN DEFAULT false;
+        ALTER TABLE onboarding_state ADD COLUMN permissions_granted JSONB DEFAULT '{}';
+        ALTER TABLE onboarding_state ADD COLUMN trial_end_date TIMESTAMPTZ;
+      </signature>
+      <path>supabase/migrations/</path>
+      <notes>Add columns to existing onboarding_state table. permissions_granted stores: {notifications: boolean, health: boolean}.</notes>
+    </interface>
+    <interface>
+      <name>TutorialWidget (abstract)</name>
+      <kind>widget</kind>
+      <signature>
+        abstract class TutorialWidget extends StatelessWidget {
+          final String journeyType;
+          final VoidCallback onComplete;
+          final VoidCallback onSkip;
+        }
+      </signature>
+      <path>lib/features/onboarding/presentation/widgets/tutorial_widget.dart</path>
+      <notes>Base class for journey-specific tutorials. Implementations: FitnessTutorial, MindTutorial, LifeCoachTutorial.</notes>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Follow 70/20/10 testing pyramid. Target 80%+ code coverage. Test both iOS and Android permission flows. Mock platform channels for permission requests.
+    </standards>
+    <locations>
+      <location>test/features/onboarding/domain/usecases/</location>
+      <location>test/features/onboarding/presentation/screens/</location>
+      <location>test/features/onboarding/presentation/widgets/</location>
+      <location>integration_test/features/onboarding/permissions_and_tutorial_test.dart</location>
+    </locations>
+    <ideas>
+      <test-idea ac-ref="AC1,AC3">
+        <description>Widget test: Permissions screen displays correctly</description>
+        <approach>Verify notification permission card shows "max 1/day" text. Test health permission card (P1). Verify "Enable" and "Maybe Later" buttons present for each.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1,AC2">
+        <description>Unit test: RequestPermissionsUseCase iOS flow</description>
+        <approach>Mock UNUserNotificationCenter. Request notifications. Verify iOS native dialog triggered. Test HealthKit authorization request. Handle granted/denied cases.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1,AC2">
+        <description>Unit test: RequestPermissionsUseCase Android flow</description>
+        <approach>Mock permission_handler. Request POST_NOTIFICATIONS. Verify Android 13+ check. Test Health Connect permission. Handle rationale UI.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4">
+        <description>Widget test: Fitness tutorial interactive flow</description>
+        <approach>Render FitnessTutorial. Verify guided workout logging steps. Interact with form. Complete sample workout. Verify onComplete callback fired.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4">
+        <description>Widget test: Mind tutorial breathing exercise</description>
+        <approach>Render MindTutorial. Verify 2-minute breathing animation. Test breathing pattern (inhale 4s, exhale 6s). Complete exercise. Verify completion.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4">
+        <description>Widget test: Life Coach tutorial check-in</description>
+        <approach>Render LifeCoachTutorial. Verify check-in modal appears. Fill emoji sliders. Submit check-in. Verify tutorial marked complete.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC5">
+        <description>Widget test: Tutorial skip functionality</description>
+        <approach>Find "Skip Tutorial" button. Tap skip. Verify onSkip callback fired. Confirm tutorial_skipped saved to database.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6">
+        <description>Widget test: Completion screen displays correctly</description>
+        <approach>Verify "You're all set! 🎉" message. Check 14-day trial banner prominent. Verify "no credit card" text. Test "Get Started" CTA navigation.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC8">
+        <description>Unit test: ActivateTrialUseCase</description>
+        <approach>Mock current time. Call activate trial. Verify trial_end_date set to NOW() + 14 days. Confirm immediate Supabase sync (not queued).</approach>
+      </test-idea>
+      <test-idea ac-ref="ALL">
+        <description>Integration test: Complete onboarding with trial</description>
+        <approach>Complete journey selection → goals → personality → permissions (grant notifications) → tutorial (Fitness workout) → completion. Verify trial_end_date set. Verify onboarding_state.completed=true. Navigate to home, confirm trial active.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3">
+        <description>Integration test: Skip permissions and tutorial</description>
+        <approach>Reach permissions screen. Tap "Maybe Later" for both. Skip tutorial. Complete onboarding. Verify trial still activates. Verify permissions_granted={notifications:false, health:false}.</approach>
+      </test-idea>
+    </ideas>
+  </tests>
+</story-context>

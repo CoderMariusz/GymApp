@@ -1,0 +1,428 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>8</epicId>
+    <storyId>8.1</storyId>
+    <title>Push Notification Infrastructure</title>
+    <status>ready-for-dev</status>
+    <generatedAt>2025-11-17</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/sprint-8/8-1-push-notification-infrastructure.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>system administrator</asA>
+    <iWant>to set up push notification infrastructure using Firebase Cloud Messaging</iWant>
+    <soThat>users can receive timely reminders, alerts, and insights</soThat>
+    <tasks>
+      <task id="1" ac-ref="AC1,AC2,AC3">
+        <description>Integrate Firebase Cloud Messaging (FCM)</description>
+        <subtasks>
+          <subtask>Configure Firebase project in Firebase Console (iOS + Android)</subtask>
+          <subtask>Add firebase_messaging dependency to pubspec.yaml</subtask>
+          <subtask>Add google-services.json (Android) and GoogleService-Info.plist (iOS)</subtask>
+          <subtask>Initialize FCM in main.dart with permission request flow</subtask>
+          <subtask>Create FCMService class for token management and message handling</subtask>
+          <subtask>Test FCM integration on both iOS and Android devices</subtask>
+        </subtasks>
+      </task>
+      <task id="2" ac-ref="AC4">
+        <description>Implement device token storage and management</description>
+        <subtasks>
+          <subtask>Create device_tokens table in Supabase (user_id, token, platform, created_at, updated_at)</subtask>
+          <subtask>Create device_tokens table in Drift (SQLite mirror)</subtask>
+          <subtask>Implement saveDeviceToken() use case</subtask>
+          <subtask>Add UNIQUE constraint on (user_id, platform) to prevent duplicates</subtask>
+          <subtask>Implement token refresh logic when FCM token changes</subtask>
+          <subtask>Sync device tokens to Supabase on app start (if online)</subtask>
+        </subtasks>
+      </task>
+      <task id="3" ac-ref="AC5">
+        <description>Create Supabase Edge Functions for sending notifications</description>
+        <subtasks>
+          <subtask>Create send-notification Edge Function (accepts userId, title, body, deepLink, type)</subtask>
+          <subtask>Implement FCM Admin SDK integration in Edge Function</subtask>
+          <subtask>Query device_tokens table to get user's FCM tokens</subtask>
+          <subtask>Send notification to all user's devices (iOS + Android)</subtask>
+          <subtask>Handle FCM errors (invalid token, unregistered device)</subtask>
+          <subtask>Log notification history in notification_logs table</subtask>
+        </subtasks>
+      </task>
+      <task id="4" ac-ref="AC6">
+        <description>Implement notification categories</description>
+        <subtasks>
+          <subtask>Define NotificationCategory enum (Reminders, Streaks, Insights, Reports)</subtask>
+          <subtask>Create notification_settings table (user_id, category, enabled)</subtask>
+          <subtask>Implement getNotificationSettings() use case</subtask>
+          <subtask>Add category filtering in send-notification Edge Function</subtask>
+          <subtask>Create notification channels (Android) for each category</subtask>
+        </subtasks>
+      </task>
+      <task id="5" ac-ref="AC7">
+        <description>Build notification settings UI</description>
+        <subtasks>
+          <subtask>Create NotificationSettingsScreen widget</subtask>
+          <subtask>Add SwitchListTile for each notification category</subtask>
+          <subtask>Implement updateNotificationSettings() use case</subtask>
+          <subtask>Sync settings to Supabase on toggle</subtask>
+          <subtask>Show "Test Notification" button for each category</subtask>
+          <subtask>Handle notification permission denied state (show alert)</subtask>
+        </subtasks>
+      </task>
+      <task id="6" ac-ref="AC1,AC2">
+        <description>Implement deep linking for notifications</description>
+        <subtasks>
+          <subtask>Configure custom URL scheme (lifeos://) in AndroidManifest.xml and Info.plist</subtask>
+          <subtask>Create DeepLinkService to parse notification deep links</subtask>
+          <subtask>Implement navigation logic for each deep link route</subtask>
+          <subtask>Handle deep links when app is in background, foreground, or terminated</subtask>
+          <subtask>Test deep linking: lifeos://check-in, lifeos://workout, lifeos://meditation, etc.</subtask>
+        </subtasks>
+      </task>
+      <task id="7" ac-ref="ALL">
+        <description>Write comprehensive tests</description>
+        <subtasks>
+          <subtask>Unit tests: saveDeviceToken use case, FCM token refresh, notification settings</subtask>
+          <subtask>Widget tests: NotificationSettingsScreen, category toggles</subtask>
+          <subtask>Integration test: FCM token storage → Supabase sync → notification send → deep link navigation</subtask>
+          <subtask>Test notification delivery on iOS and Android (physical devices)</subtask>
+          <subtask>Achieve 80%+ code coverage</subtask>
+        </subtasks>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="AC1">
+      <text>Firebase Cloud Messaging integrated (iOS + Android)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC2">
+      <text>Push notifications work on both iOS and Android platforms</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC3">
+      <text>User can grant/deny notification permission on first launch</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC4">
+      <text>Device tokens stored in database (user_id, token, platform, created_at, updated_at)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC5">
+      <text>Notifications sent via Supabase Edge Functions using cron jobs</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC6">
+      <text>Notification categories defined: Reminders, Streaks, Insights, Reports</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC7">
+      <text>User can enable/disable each notification category in settings</text>
+      <priority>P0</priority>
+    </criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR104: Push notifications by category</section>
+        <snippet>Users can enable/disable push notifications by category (Reminders, Streaks, Insights, Reports). Default: all enabled. User has granular control over notification types.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR105: Daily reminders</section>
+        <snippet>System sends daily reminders for morning check-in, evening reflection, workout (if scheduled), and meditation (if goal set). Reminders are customizable per user.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/epics.md</path>
+        <title>Epic 8: Notifications & Engagement - Story 8.1</title>
+        <section>Story 8.1: Push Notification Infrastructure</section>
+        <snippet>Implement FCM for push notifications on iOS and Android. Store device tokens, send notifications via Supabase Edge Functions. Categories: Reminders, Streaks, Insights, Reports. User can toggle categories in settings.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Push Notifications Infrastructure</section>
+        <snippet>Firebase Cloud Messaging (FCM) used for cross-platform push notifications. Device tokens stored in PostgreSQL. Supabase Edge Functions handle notification sending with cron job scheduling.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/epic-0-setup-infrastructure.md</path>
+        <title>Story 0.4: Firebase Configuration (FCM)</title>
+        <section>FCM Setup</section>
+        <snippet>Configure Firebase project for iOS and Android. Add google-services.json and GoogleService-Info.plist. Implement FCMService with token management and message handling. Request notification permissions on first launch.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <note>This is the first notification story for Epic 8. No existing notification code. Create base structure at lib/core/notifications/ and lib/features/settings/presentation/screens/notification_settings_screen.dart.</note>
+    </code>
+    <dependencies>
+      <flutter>
+        <sdk>3.38+</sdk>
+        <dart>3.10+</dart>
+      </flutter>
+      <packages>
+        <package name="firebase_messaging" version="^14.7.0" usage="Firebase Cloud Messaging for push notifications (iOS + Android)" />
+        <package name="firebase_core" version="^2.24.0" usage="Firebase Core SDK initialization" />
+        <package name="flutter_local_notifications" version="^16.3.0" usage="Local notification display and management" />
+        <package name="flutter_riverpod" version="^3.0.0" usage="State management for notification settings" />
+        <package name="drift" version="^2.14.0" usage="Local SQLite database for device tokens (offline-first)" />
+        <package name="supabase_flutter" version="^2.0.0" usage="Supabase client for device token sync and Edge Functions" />
+        <package name="flutter_test" version="sdk" usage="Unit and widget testing framework" />
+        <package name="integration_test" version="sdk" usage="End-to-end testing framework" />
+      </packages>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint id="ARCH-1" type="architectural">
+      <description>Must follow Hybrid Architecture pattern</description>
+      <details>Create notification infrastructure at lib/core/notifications/ with FCMService, DeepLinkService, and NotificationService. Use clean architecture separation for settings UI.</details>
+    </constraint>
+    <constraint id="ARCH-2" type="architectural">
+      <description>Offline-first implementation required</description>
+      <details>Device tokens and notification settings must be stored in Drift (SQLite) first for instant feedback. Sync to Supabase when online.</details>
+    </constraint>
+    <constraint id="DATA-1" type="data">
+      <description>Database schema must match specification</description>
+      <details>device_tokens table: id (UUID PK), user_id (UUID FK), token (TEXT), platform (TEXT 'ios'/'android'), created_at, updated_at. UNIQUE(user_id, platform). notification_settings table: id (UUID PK), user_id (UUID FK), category (TEXT), enabled (BOOLEAN), created_at, updated_at.</details>
+    </constraint>
+    <constraint id="SEC-1" type="security">
+      <description>Row Level Security (RLS) policies required</description>
+      <details>Enable RLS on device_tokens and notification_settings tables. Policy: CREATE POLICY "Users can only access own data" ON table_name FOR ALL USING (auth.uid() = user_id);</details>
+    </constraint>
+    <constraint id="PLAT-1" type="platform">
+      <description>Cross-platform notification support</description>
+      <details>FCM must work on both iOS 14+ and Android 10+. Handle platform-specific permission flows (iOS: requestPermission, Android: notification channels).</details>
+    </constraint>
+    <constraint id="PLAT-2" type="platform">
+      <description>Deep linking must work in all app states</description>
+      <details>Handle notification taps when app is: foreground (navigate), background (navigate), terminated (cold start + navigate). Use FirebaseMessaging.onMessage, onMessageOpenedApp, getInitialMessage.</details>
+    </constraint>
+    <constraint id="UX-1" type="ux">
+      <description>Clear notification permission request</description>
+      <details>Show permission dialog with explanation: "Get reminders and stay motivated with your fitness and wellness goals." User can grant/deny. If denied, show Settings button to enable later.</details>
+    </constraint>
+    <constraint id="UX-2" type="ux">
+      <description>Granular notification category control</description>
+      <details>Settings screen must have toggle for each category: Reminders, Streaks, Insights, Reports. Changes apply immediately. Show "Test Notification" button to preview each type.</details>
+    </constraint>
+    <constraint id="PERF-1" type="performance">
+      <description>FCM token refresh must be automatic</description>
+      <details>Listen to FirebaseMessaging.instance.onTokenRefresh. When token changes, save to local DB and sync to Supabase. Handle offline token updates (queue for sync).</details>
+    </constraint>
+    <constraint id="TEST-1" type="testing">
+      <description>80%+ code coverage required</description>
+      <details>Follow 70/20/10 testing pyramid. Unit tests for token management, widget tests for settings UI, integration test for full notification flow (send → receive → tap → navigate).</details>
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>DeviceTokenEntity</name>
+      <kind>domain-entity</kind>
+      <signature>
+        class DeviceTokenEntity {
+          final String id;
+          final String userId;
+          final String token;
+          final String platform; // 'ios' or 'android'
+          final DateTime createdAt;
+          final DateTime updatedAt;
+        }
+      </signature>
+      <path>lib/core/notifications/domain/entities/device_token_entity.dart</path>
+      <notes>Use @freezed annotation for immutability. Platform validation: must be 'ios' or 'android'.</notes>
+    </interface>
+    <interface>
+      <name>NotificationSettingsEntity</name>
+      <kind>domain-entity</kind>
+      <signature>
+        class NotificationSettingsEntity {
+          final String id;
+          final String userId;
+          final NotificationCategory category;
+          final bool enabled;
+          final DateTime createdAt;
+          final DateTime updatedAt;
+        }
+
+        enum NotificationCategory {
+          reminders,
+          streaks,
+          insights,
+          reports
+        }
+      </signature>
+      <path>lib/core/notifications/domain/entities/notification_settings_entity.dart</path>
+      <notes>Use @freezed annotation. Default enabled: true for all categories.</notes>
+    </interface>
+    <interface>
+      <name>FCMService</name>
+      <kind>service</kind>
+      <signature>
+        abstract class FCMService {
+          Future&lt;void&gt; initialize();
+          Future&lt;String?&gt; getToken();
+          Future&lt;bool&gt; requestPermission();
+          Stream&lt;String&gt; get onTokenRefresh;
+          Future&lt;void&gt; handleMessage(RemoteMessage message);
+          Future&lt;void&gt; handleMessageTap(RemoteMessage message);
+        }
+      </signature>
+      <path>lib/core/notifications/services/fcm_service.dart</path>
+      <notes>Implements FirebaseMessaging integration. Handles token management, permission requests, and message handling for foreground/background/terminated states.</notes>
+    </interface>
+    <interface>
+      <name>SaveDeviceTokenUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class SaveDeviceTokenUseCase {
+          Future&lt;Result&lt;DeviceTokenEntity&gt;&gt; call({
+            required String userId,
+            required String token,
+            required String platform,
+          });
+        }
+      </signature>
+      <path>lib/core/notifications/domain/usecases/save_device_token_usecase.dart</path>
+      <notes>Returns Result&lt;T&gt; pattern (Success/Failure). Save to Drift first, then queue for Supabase sync. Handle offline mode gracefully.</notes>
+    </interface>
+    <interface>
+      <name>UpdateNotificationSettingsUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class UpdateNotificationSettingsUseCase {
+          Future&lt;Result&lt;NotificationSettingsEntity&gt;&gt; call({
+            required String userId,
+            required NotificationCategory category,
+            required bool enabled,
+          });
+        }
+      </signature>
+      <path>lib/core/notifications/domain/usecases/update_notification_settings_usecase.dart</path>
+      <notes>Updates notification category settings. Saves to Drift first, syncs to Supabase. Returns updated entity.</notes>
+    </interface>
+    <interface>
+      <name>DeepLinkService</name>
+      <kind>service</kind>
+      <signature>
+        abstract class DeepLinkService {
+          Future&lt;void&gt; handleDeepLink(String deepLink);
+          void registerRoute(String route, Function(Map&lt;String, String&gt; params) handler);
+        }
+      </signature>
+      <path>lib/core/notifications/services/deep_link_service.dart</path>
+      <notes>Parses notification deep links (lifeos://check-in, lifeos://workout/123, etc.) and navigates to appropriate screens. Supports route parameters.</notes>
+    </interface>
+    <interface>
+      <name>device_tokens table (Supabase PostgreSQL)</name>
+      <kind>database-table</kind>
+      <signature>
+        CREATE TABLE device_tokens (
+          id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+          user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+          token TEXT NOT NULL,
+          platform TEXT NOT NULL CHECK (platform IN ('ios', 'android')),
+          created_at TIMESTAMPTZ DEFAULT NOW(),
+          updated_at TIMESTAMPTZ DEFAULT NOW(),
+          UNIQUE(user_id, platform)
+        );
+        CREATE INDEX idx_device_tokens_user_id ON device_tokens(user_id);
+      </signature>
+      <path>supabase/migrations/</path>
+      <notes>Migration file will be created in Supabase migrations folder. Include RLS policies in same migration.</notes>
+    </interface>
+    <interface>
+      <name>notification_settings table (Supabase PostgreSQL)</name>
+      <kind>database-table</kind>
+      <signature>
+        CREATE TABLE notification_settings (
+          id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+          user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+          category TEXT NOT NULL CHECK (category IN ('reminders', 'streaks', 'insights', 'reports')),
+          enabled BOOLEAN DEFAULT TRUE,
+          created_at TIMESTAMPTZ DEFAULT NOW(),
+          updated_at TIMESTAMPTZ DEFAULT NOW(),
+          UNIQUE(user_id, category)
+        );
+        CREATE INDEX idx_notification_settings_user_id ON notification_settings(user_id);
+      </signature>
+      <path>supabase/migrations/</path>
+      <notes>Migration file for notification settings. Include RLS policies. Default all categories to enabled on user creation.</notes>
+    </interface>
+    <interface>
+      <name>send-notification Edge Function</name>
+      <kind>edge-function</kind>
+      <signature>
+        POST /functions/v1/send-notification
+        Body: {
+          userId: string,
+          title: string,
+          body: string,
+          deepLink?: string,
+          type: 'reminders' | 'streaks' | 'insights' | 'reports'
+        }
+      </signature>
+      <path>supabase/functions/send-notification/index.ts</path>
+      <notes>Queries device_tokens for user. Checks notification_settings for category. Sends FCM notification to all user devices. Logs to notification_logs table.</notes>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Follow 70/20/10 testing pyramid: 70% unit tests (use cases, services, entities), 20% widget tests (UI components, state management), 10% integration tests (end-to-end flows). Use flutter_test for unit/widget tests, integration_test for E2E. Mock dependencies with mockito. Target 80%+ code coverage. All acceptance criteria must have test coverage.
+    </standards>
+    <locations>
+      <location>test/core/notifications/domain/usecases/</location>
+      <location>test/core/notifications/domain/entities/</location>
+      <location>test/core/notifications/services/</location>
+      <location>test/features/settings/presentation/screens/</location>
+      <location>integration_test/notifications/fcm_flow_test.dart</location>
+    </locations>
+    <ideas>
+      <test-idea ac-ref="AC4">
+        <description>Unit test: SaveDeviceTokenUseCase success case</description>
+        <approach>Mock DeviceTokenRepository. Verify saveDeviceToken() called with correct entity (userId, token, platform). Assert Success result returned. Verify token saved to Drift and queued for Supabase sync.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4">
+        <description>Unit test: Device token refresh on FCM token change</description>
+        <approach>Mock FCMService.onTokenRefresh stream. Emit new token. Verify saveDeviceToken() called with new token. Assert old token replaced in DB.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC7">
+        <description>Unit test: UpdateNotificationSettingsUseCase</description>
+        <approach>Mock NotificationSettingsRepository. Update category 'reminders' to enabled=false. Verify updateSettings() called with correct entity. Assert Success result.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC7">
+        <description>Widget test: NotificationSettingsScreen displays all categories</description>
+        <approach>Render NotificationSettingsScreen. Verify 4 SwitchListTiles displayed (Reminders, Streaks, Insights, Reports). Verify initial state (all enabled).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC7">
+        <description>Widget test: Toggle notification category</description>
+        <approach>Render NotificationSettingsScreen. Tap 'Reminders' toggle. Verify updateNotificationSettings() called with enabled=false. Verify toggle state updates.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3">
+        <description>Unit test: FCM permission request</description>
+        <approach>Mock FirebaseMessaging. Call requestPermission(). Verify NotificationSettings returned. Test both authorized and denied states.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1,AC2">
+        <description>Integration test: FCM notification delivery (iOS)</description>
+        <approach>Send test notification via send-notification Edge Function. Verify FCM message received on iOS device. Verify notification displayed in notification center. Tap notification. Verify deep link navigation works.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1,AC2">
+        <description>Integration test: FCM notification delivery (Android)</description>
+        <approach>Send test notification via send-notification Edge Function. Verify FCM message received on Android device. Verify notification displayed. Tap notification. Verify deep link navigation works.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC5">
+        <description>Integration test: End-to-end notification flow</description>
+        <approach>Register user. Save device token. Enable all notification categories. Trigger send-notification Edge Function. Verify notification sent to device. Verify notification_logs entry created. Tap notification. Verify deep link navigation (lifeos://check-in).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6,AC7">
+        <description>Integration test: Notification category filtering</description>
+        <approach>Disable 'streaks' category. Trigger streak notification via Edge Function. Verify notification NOT sent (filtered by category). Enable category. Trigger again. Verify notification sent.</approach>
+      </test-idea>
+    </ideas>
+  </tests>
+</story-context>

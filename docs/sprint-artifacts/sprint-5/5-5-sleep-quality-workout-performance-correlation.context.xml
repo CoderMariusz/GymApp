@@ -1,0 +1,491 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/epic-5-story-5" v="1.0">
+  <metadata>
+    <epicId>5</epicId>
+    <storyId>5.5</storyId>
+    <title>Sleep Quality + Workout Performance Correlation</title>
+    <status>ready-for-dev</status>
+    <generatedAt>2025-11-17</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/sprint-5/5-5-sleep-quality-workout-performance-correlation.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>user with 30+ days of data</asA>
+    <iWant>to see how my sleep quality correlates with workout performance</iWant>
+    <soThat>I understand the impact of sleep on my fitness progress and optimize my recovery</soThat>
+    <tasks>
+      <task id="1" ac-ref="AC1,AC2">
+        <description>Implement correlation analysis algorithm</description>
+        <subtasks>
+          <subtask>Add correlation detection rule in PatternDetectionService (Edge Function)</subtask>
+          <subtask>Query last 30 days of user_daily_metrics for sleep_quality and workout performance data</subtask>
+          <subtask>Extract workout performance metrics: PRs (personal records), weight lifted, volume completed, workout_completion_rate</subtask>
+          <subtask>Calculate Pearson correlation coefficient between sleep_quality and each performance metric</subtask>
+          <subtask>Implement statistical significance test (p-value calculation, require p < 0.05)</subtask>
+          <subtask>Filter significant correlations: |r| > 0.5 (moderate to strong correlation)</subtask>
+          <subtask>Trigger pattern only if: 30+ days of data AND significant correlation found</subtask>
+        </subtasks>
+      </task>
+      <task id="2" ac-ref="AC3">
+        <description>Implement AI-powered insight generation for correlations</description>
+        <subtasks>
+          <subtask>Call Claude/GPT-4 API with correlation data as context</subtask>
+          <subtask>Build AI prompt: correlation coefficient, sample size, performance metric, sleep quality range, example data points</subtask>
+          <subtask>Generate natural language insights: "Your best lifts happen after 8+ hours sleep", "When you sleep <6 hours, strength drops 15%", "7-day good sleep streak → 10% higher workout volume"</subtask>
+          <subtask>Extract actionable recommendation from AI response</subtask>
+          <subtask>Set priority: 'normal' (educational insight, not urgent)</subtask>
+        </subtasks>
+      </task>
+      <task id="3" ac-ref="AC4,AC5">
+        <description>Implement sleep optimization recommendation</description>
+        <subtasks>
+          <subtask>Analyze user's current sleep patterns (average sleep_quality last 7 days)</subtask>
+          <subtask>If correlation is positive (better sleep → better performance): Generate recommendation: "Tonight's goal: Sleep meditation + 8 hours rest"</subtask>
+          <subtask>If correlation is negative (poor sleep → poor performance): Generate warning: "Your workouts suffer when sleep <6 hours"</subtask>
+          <subtask>Set CTA: "Start Sleep Meditation" → Opens Mind module with sleep meditation playlist</subtask>
+          <subtask>Include personalized target: "Aim for 8+ hours tonight for optimal performance tomorrow"</subtask>
+        </subtasks>
+      </task>
+      <task id="4" ac-ref="AC5">
+        <description>Implement Mind module integration for sleep meditation</description>
+        <subtasks>
+          <subtask>Add deep link handler: /mind/sleep-meditation?source=correlation-insight&goal=8-hours</subtask>
+          <subtask>Open Mind module with sleep meditation category pre-selected</subtask>
+          <subtask>Show context banner: "Better sleep = Better performance 💪"</subtask>
+          <subtask>Pre-select recommended meditation: "Deep Sleep Meditation" (30 min)</subtask>
+          <subtask>Track meditation completion and link to insight action</subtask>
+        </subtasks>
+      </task>
+      <task id="5" ac-ref="AC6">
+        <description>Implement data visualization - Scatter plot</description>
+        <subtasks>
+          <subtask>Create SleepPerformanceChart widget using fl_chart package</subtask>
+          <subtask>Plot scatter chart: X-axis = sleep_quality (1-5), Y-axis = workout_performance (PRs, volume, or weight lifted)</subtask>
+          <subtask>Add trend line (linear regression) to visualize correlation</subtask>
+          <subtask>Color code data points: Green (good sleep + good performance), Red (poor sleep + poor performance), Yellow (mixed)</subtask>
+          <subtask>Show correlation coefficient on chart: "Correlation: 0.72 (strong positive)"</subtask>
+          <subtask>Add tooltip on tap: Show specific date, sleep quality, performance metric</subtask>
+        </subtasks>
+      </task>
+      <task id="6" ac-ref="AC6">
+        <description>Implement CMI Dashboard screen with charts</description>
+        <subtasks>
+          <subtask>Create CMIDashboardScreen widget</subtask>
+          <subtask>Display sleep-performance correlation chart at top</subtask>
+          <subtask>Show additional correlations: Stress vs Workout Volume, Meditation vs Mood, etc.</subtask>
+          <subtask>Add insights summary section: "Key Findings" with AI-generated insights</subtask>
+          <subtask>Navigate to dashboard from: Home tab menu, Settings, or insight card CTA</subtask>
+          <subtask>Implement pull-to-refresh to re-run correlation analysis</subtask>
+        </subtasks>
+      </task>
+      <task id="7" ac-ref="AC1">
+        <description>Implement 30-day data requirement check</description>
+        <subtasks>
+          <subtask>Query user_daily_metrics to count rows for user (WHERE user_id = {id})</subtask>
+          <subtask>Require minimum 30 rows with both sleep_quality AND workout data (non-null)</subtask>
+          <subtask>If insufficient data: Show empty state in CMI Dashboard: "Keep logging! You need 30 days of data to see correlations."</subtask>
+          <subtask>Show progress indicator: "Progress: 15/30 days" with visual progress bar</subtask>
+          <subtask>Encourage user to continue logging sleep and workouts</subtask>
+        </subtasks>
+      </task>
+      <task id="8" ac-ref="ALL">
+        <description>Write comprehensive tests</description>
+        <subtasks>
+          <subtask>Unit test: Pearson correlation calculation with known dataset (verify r and p-value)</subtask>
+          <subtask>Unit test: Correlation significance filtering (|r| > 0.5, p < 0.05)</subtask>
+          <subtask>Unit test: 30-day data requirement check (29 days → no insight, 30 days → insight generated)</subtask>
+          <subtask>Widget test: SleepPerformanceChart renders correctly with scatter plot and trend line</subtask>
+          <subtask>Widget test: CMI Dashboard shows multiple correlations and insights</subtask>
+          <subtask>Integration test: Tap "Start Sleep Meditation" CTA → Navigate to Mind with sleep meditation pre-selected</subtask>
+          <subtask>E2E test: Full flow - 30 days data → Correlation detected → Insight generated with chart → CTA tapped → Meditation started</subtask>
+          <subtask>Achieve 75%+ code coverage</subtask>
+        </subtasks>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="AC1">
+      <text>Pattern triggered only when 30+ days of data available (sleep + workouts)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC2">
+      <text>Correlation analysis: Sleep quality vs Workout performance (PRs, weight lifted, volume)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC3">
+      <text>AI-generated natural language insights: "Your best lifts happen after 8+ hours sleep", "When you sleep <6 hours, strength drops 15%", "7-day good sleep streak → 10% higher workout volume"</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC4">
+      <text>Recommendation: "Tonight's goal: Sleep meditation + 8 hours rest"</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC5">
+      <text>CTA: "Start Sleep Meditation" → Opens Mind module with sleep meditation pre-selected</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC6">
+      <text>Data visualization: Scatter plot (sleep quality vs performance) with trend line</text>
+      <priority>P1</priority>
+    </criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR80: Cross-Module Intelligence - Sleep-Performance Correlation</section>
+        <snippet>FR80: System correlates sleep quality with workout performance and provides insights. Requires 30+ days of data. Shows scatter plot visualization. Generates AI-powered insights like "Your best lifts happen after 8+ hours sleep". Recommends sleep optimization for better performance.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/epics.md</path>
+        <title>Epic 5: Cross-Module Intelligence - Story 5.5</title>
+        <section>Story 5.5: Sleep Quality + Workout Performance Correlation</section>
+        <snippet>Requires 30+ days of data. Calculates Pearson correlation between sleep_quality and workout performance (PRs, weight, volume). AI generates insights. Shows scatter plot with trend line. CTA: Start sleep meditation. Priority: P1 (educational, not urgent).</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Cross-Module Intelligence - Pattern Detection Pipeline</section>
+        <snippet>Pattern detection step 2: Calculate Pearson correlations for metric pairs. Filter significant: |r| > 0.5 AND p-value < 0.05. Store in detected_patterns table with correlation_coefficient, confidence_score. AI generates insights from top 3 correlations.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/ux-design-specification.md</path>
+        <title>UX Design Specification</title>
+        <section>CMI Dashboard - Data Visualization</section>
+        <snippet>Scatter plots for correlations with trend lines. Use fl_chart package. Color-coded data points. Show correlation coefficient (r) and sample size (n). Tooltip on tap shows date and values. Educational tone: "Discover your patterns".</snippet>
+      </doc>
+    </docs>
+    <code>
+      <reference>
+        <path>supabase/functions/pattern-detection/detectors/</path>
+        <description>Pattern detection service from Story 5.1</description>
+      </reference>
+      <reference>
+        <path>lib/features/cross_module_intelligence/presentation/widgets/insight_card.dart</path>
+        <description>InsightCard widget from Story 5.2</description>
+      </reference>
+    </code>
+    <dependencies>
+      <flutter>
+        <sdk>3.38+</sdk>
+        <dart>3.10+</dart>
+      </flutter>
+      <packages>
+        <package name="flutter_riverpod" version="^3.0.0" usage="State management for CMI dashboard" />
+        <package name="supabase_flutter" version="^2.0.0" usage="Database queries for correlation analysis" />
+        <package name="fl_chart" version="^0.66.0" usage="Scatter plot and data visualization" />
+        <package name="drift" version="^2.14.0" usage="Local cache for correlation data" />
+        <package name="statistics" version="^1.0.0" usage="Pearson correlation and p-value calculations" />
+      </packages>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint id="STAT-1" type="statistical">
+      <description>Pearson correlation calculation accuracy</description>
+      <details>Use standard Pearson formula: r = Σ[(xi - x̄)(yi - ȳ)] / √[Σ(xi - x̄)² × Σ(yi - ȳ)²]. Implement p-value calculation using t-distribution. Require statistical significance: p < 0.05 (95% confidence). Filter moderate to strong correlations: |r| > 0.5.</details>
+    </constraint>
+    <constraint id="STAT-2" type="statistical">
+      <description>Minimum data requirements for reliable correlation</description>
+      <details>Require minimum 30 data points (30 days with both sleep and workout data). Warn user if sample size <50 (correlations less reliable). Ideal sample size: 60+ days for high confidence. Show sample size (n) on chart and in insight.</details>
+    </constraint>
+    <constraint id="DATA-1" type="data">
+      <description>Workout performance metric selection</description>
+      <details>Primary metrics: 1) PRs (personal records count in last 30 days), 2) Average weight lifted per workout, 3) Total volume (sets × reps × weight). Calculate correlation for each metric, report strongest correlation. Store metric_name in detected_patterns table.</details>
+    </constraint>
+    <constraint id="DATA-2" type="data">
+      <description>Data quality validation</description>
+      <details>Exclude outliers (values >3 standard deviations from mean). Handle missing data: skip days with NULL sleep_quality OR no workout logged. Validate data integrity: sleep_quality must be 1-5, performance metrics must be >0.</details>
+    </constraint>
+    <constraint id="AI-1" type="ai-generation">
+      <description>AI prompt structure for correlation insights</description>
+      <details>Prompt template: "Based on 30 days of data: sleep_quality vs {metric_name}. Correlation: {r} (p={p_value}). Sample findings: Days with sleep ≥8 → avg performance {high_value}. Days with sleep <6 → avg performance {low_value}. Generate 2-3 natural language insights and 1 actionable recommendation."</details>
+    </constraint>
+    <constraint id="UX-1" type="ux">
+      <description>Scatter plot design and readability</description>
+      <details>X-axis: Sleep quality (1-5), labeled "Sleep Quality". Y-axis: Performance metric (dynamic range), labeled "{Metric Name}". Color code: Green (sleep ≥7, high performance), Red (sleep <6, low performance), Yellow (mixed). Show trend line (linear regression) with r² value. Chart size: 300px height, full width.</details>
+    </constraint>
+    <constraint id="UX-2" type="ux">
+      <description>Educational tone for correlation insights</description>
+      <details>Frame as "discovery" not "prescription". "Your data shows..." vs "You must...". Positive reinforcement: "Great job! Your sleep-performance connection is strong". Avoid negative framing: "You're sleeping poorly" → "Improving sleep quality could boost your lifts by 15%".</details>
+    </constraint>
+    <constraint id="UX-3" type="ux">
+      <description>30-day data requirement communication</description>
+      <details>Empty state message: "Keep logging! Cross-module insights unlock after 30 days of data." Progress bar: "Progress: {n}/30 days". Encourage: "You're {30-n} days away from discovering your sleep-performance connection!". Show estimated unlock date based on current logging frequency.</details>
+    </constraint>
+    <constraint id="PERF-1" type="performance">
+      <description>Correlation calculation performance</description>
+      <details>Run correlation analysis asynchronously (Supabase Edge Function, cron weekly). Cache results in detected_patterns table. Client fetches pre-calculated correlations (no real-time calculation). Correlation analysis for 1 user with 90 days data: <5s processing time.</details>
+    </constraint>
+    <constraint id="NAV-1" type="navigation">
+      <description>CMI Dashboard deep linking</description>
+      <details>Routes: /cmi-dashboard (main view), /cmi-dashboard/correlation/{id} (specific correlation detail). Deep link from insight CTA, Home tab menu, Settings. Pass context: {correlationId, source: 'insight-card'}. Track navigation for analytics.</details>
+    </constraint>
+    <constraint id="TEST-1" type="testing">
+      <description>75%+ code coverage for statistical calculations</description>
+      <details>Unit tests for Pearson correlation, p-value calculation, outlier detection, data validation. Widget tests for scatter plot rendering, trend line, tooltips. Integration test for full correlation analysis pipeline. E2E test with 30-day synthetic dataset.</details>
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>CorrelationAnalyzer</name>
+      <kind>statistical-analyzer</kind>
+      <signature>
+        class CorrelationAnalyzer {
+          async analyzeCorrelation(userId: string): Promise&lt;CorrelationResult | null&gt; {
+            const data = await getUserDailyMetrics(userId, 90); // Last 90 days
+
+            if (data.length < 30) {
+              return null; // Insufficient data
+            }
+
+            // Filter days with both sleep and workout data
+            const validDays = data.filter(d => d.sleep_quality && d.workout_completed);
+
+            if (validDays.length < 30) {
+              return null;
+            }
+
+            // Extract data arrays
+            const sleepQuality = validDays.map(d => d.sleep_quality);
+            const performance = validDays.map(d => this.calculatePerformance(d));
+
+            // Calculate Pearson correlation
+            const { r, pValue } = this.pearsonCorrelation(sleepQuality, performance);
+
+            if (Math.abs(r) < 0.5 || pValue >= 0.05) {
+              return null; // Not significant
+            }
+
+            return {
+              correlationCoefficient: r,
+              pValue,
+              sampleSize: validDays.length,
+              metricName: 'Weight Lifted',
+              significanceLevel: pValue < 0.01 ? 'very_high' : 'high',
+            };
+          }
+
+          pearsonCorrelation(x: number[], y: number[]): { r: number; pValue: number } {
+            // Implementation of Pearson correlation formula
+            // ... (standard statistical calculation)
+          }
+        }
+      </signature>
+      <path>supabase/functions/pattern-detection/analyzers/correlation_analyzer.ts</path>
+      <notes>Runs server-side for performance. Calculates Pearson r and p-value. Filters by significance. Returns null if data insufficient or correlation not significant.</notes>
+    </interface>
+    <interface>
+      <name>SleepPerformanceChart</name>
+      <kind>widget</kind>
+      <signature>
+        class SleepPerformanceChart extends ConsumerWidget {
+          final List&lt;DataPoint&gt; dataPoints;
+          final double correlationCoefficient;
+          final String metricName;
+
+          @override
+          Widget build(BuildContext context, WidgetRef ref) {
+            return SizedBox(
+              height: 300,
+              child: ScatterChart(
+                ScatterChartData(
+                  scatterSpots: dataPoints.map((d) => ScatterSpot(
+                    d.sleepQuality.toDouble(),
+                    d.performance,
+                    color: _getColor(d),
+                  )).toList(),
+                  lineBarsData: [_buildTrendLine()],
+                  titlesData: FlTitlesData(
+                    bottomTitles: AxisTitles(sideTitles: SideTitles(
+                      showTitles: true,
+                      getTitlesWidget: (value, meta) => Text('Sleep Quality'),
+                    )),
+                    leftTitles: AxisTitles(sideTitles: SideTitles(
+                      showTitles: true,
+                      getTitlesWidget: (value, meta) => Text(metricName),
+                    )),
+                  ),
+                ),
+              ),
+            );
+          }
+        }
+      </signature>
+      <path>lib/features/cross_module_intelligence/presentation/widgets/sleep_performance_chart.dart</path>
+      <notes>Uses fl_chart package for scatter plot. Shows trend line (linear regression). Color-coded data points. Tooltip on tap shows date and values.</notes>
+    </interface>
+    <interface>
+      <name>CMIDashboardScreen</name>
+      <kind>screen</kind>
+      <signature>
+        class CMIDashboardScreen extends ConsumerWidget {
+          @override
+          Widget build(BuildContext context, WidgetRef ref) {
+            final correlationsAsync = ref.watch(correlationsProvider);
+
+            return Scaffold(
+              appBar: AppBar(title: Text('Cross-Module Insights')),
+              body: RefreshIndicator(
+                onRefresh: () => ref.refresh(correlationsProvider.future),
+                child: correlationsAsync.when(
+                  data: (correlations) => ListView(
+                    children: [
+                      _buildDataRequirementCard(),
+                      ...correlations.map((c) => CorrelationCard(correlation: c)),
+                      _buildInsightsSummary(),
+                    ],
+                  ),
+                  loading: () => CircularProgressIndicator(),
+                  error: (err, stack) => ErrorWidget(...),
+                ),
+              ),
+            );
+          }
+        }
+      </signature>
+      <path>lib/features/cross_module_intelligence/presentation/screens/cmi_dashboard_screen.dart</path>
+      <notes>Main dashboard for all cross-module correlations. Shows sleep-performance, stress-volume, etc. Pull-to-refresh re-runs analysis. Navigate from Home tab or Settings.</notes>
+    </interface>
+    <interface>
+      <name>StartSleepMeditationAction</name>
+      <kind>action-handler</kind>
+      <signature>
+        class StartSleepMeditationAction {
+          Future&lt;void&gt; execute(InsightEntity insight) async {
+            // Navigate to Mind module with sleep meditation
+            await Navigator.pushNamed(
+              context,
+              '/mind/sleep-meditation',
+              arguments: {
+                'source': 'correlation-insight',
+                'goal': '8-hours',
+                'sourceInsightId': insight.id,
+              },
+            );
+
+            // Track action
+            await _trackInsightAction(insight.id, 'accept-sleep-meditation', {
+              'meditationType': 'sleep',
+              'goal': '8-hours',
+            });
+          }
+        }
+      </signature>
+      <path>lib/features/cross_module_intelligence/domain/actions/start_sleep_meditation_action.dart</path>
+      <notes>Handles "Start Sleep Meditation" CTA. Opens Mind module with sleep meditation playlist. Tracks action for analytics and AI learning.</notes>
+    </interface>
+    <interface>
+      <name>CorrelationEntity</name>
+      <kind>domain-entity</kind>
+      <signature>
+        class CorrelationEntity {
+          final String id;
+          final String userId;
+          final String metricA;             // 'sleep_quality'
+          final String metricB;             // 'weight_lifted' | 'prs_count' | 'volume'
+          final double correlationCoefficient; // -1.0 to 1.0
+          final double pValue;              // 0.0 to 1.0
+          final int sampleSize;             // Number of data points (n)
+          final String significanceLevel;   // 'very_high' | 'high' | 'moderate'
+          final List&lt;DataPoint&gt; dataPoints; // For scatter plot
+          final String insightText;         // AI-generated insight
+          final String recommendation;      // AI-generated recommendation
+          final DateTime createdAt;
+        }
+      </signature>
+      <path>lib/features/cross_module_intelligence/domain/entities/correlation_entity.dart</path>
+      <notes>Represents a detected correlation with statistical metadata. Includes data points for visualization. AI-generated insights and recommendations.</notes>
+    </interface>
+    <interface>
+      <name>GetCorrelationsUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class GetCorrelationsUseCase {
+          Future&lt;Result&lt;List&lt;CorrelationEntity&gt;&gt;&gt; call(String userId);
+        }
+      </signature>
+      <path>lib/features/cross_module_intelligence/domain/usecases/get_correlations_usecase.dart</path>
+      <notes>Fetches all detected correlations for user. Returns pre-calculated results from detected_patterns table. Sorted by abs(correlation_coefficient) DESC (strongest first).</notes>
+    </interface>
+    <interface>
+      <name>SQL: Correlation query with Pearson calculation</name>
+      <kind>database-query</kind>
+      <signature>
+        -- Pearson correlation between sleep_quality and weight lifted
+        SELECT
+          CORR(c.sleep_quality, ws.weight) as correlation_coefficient,
+          COUNT(*) as sample_size
+        FROM check_ins c
+        JOIN workouts w ON w.user_id = c.user_id AND DATE(w.start_time) = c.date
+        JOIN workout_sets ws ON ws.workout_id = w.id
+        WHERE c.user_id = $1
+          AND c.date >= NOW() - INTERVAL '90 days'
+          AND c.sleep_quality IS NOT NULL
+          AND ws.weight IS NOT NULL
+        GROUP BY c.user_id
+        HAVING COUNT(*) >= 30;
+      </signature>
+      <path>supabase/functions/pattern-detection/queries/correlation_query.sql</path>
+      <notes>PostgreSQL CORR() function calculates Pearson correlation. Joins check_ins (sleep) with workout_sets (performance). Filters: 90 days, non-null values, min 30 samples. Returns r and n.</notes>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Follow 70/20/10 testing pyramid: 70% unit tests (Pearson correlation, p-value calculation, data validation, outlier detection), 20% widget tests (scatter plot rendering, CMI dashboard), 10% E2E tests (full correlation analysis flow). Target 75%+ code coverage. Use known datasets to validate statistical calculations.
+    </standards>
+    <locations>
+      <location>test/features/cross_module_intelligence/analyzers/</location>
+      <location>test/features/cross_module_intelligence/presentation/widgets/</location>
+      <location>test/features/cross_module_intelligence/presentation/screens/</location>
+      <location>integration_test/features/cross_module_intelligence/correlation_analysis_flow_test.dart</location>
+    </locations>
+    <ideas>
+      <test-idea ac-ref="AC2">
+        <description>Unit test: Pearson correlation calculation accuracy</description>
+        <approach>Use known dataset: sleep=[8,7,5,9,6,8,7], performance=[100,90,70,110,75,95,85]. Expected r ≈ 0.95 (strong positive). Calculate using CorrelationAnalyzer. Verify r within 0.01 of expected. Verify p-value < 0.05. Test edge cases: all same values (r=undefined), negative correlation.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1">
+        <description>Unit test: 30-day data requirement enforcement</description>
+        <approach>Mock user_daily_metrics with 29 rows. Call analyzeCorrelation(). Verify returns null. Mock with 30 rows (valid data) → verify correlation calculated. Mock 50 rows but only 25 with both sleep+workout → verify null (insufficient paired data).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC2">
+        <description>Unit test: Statistical significance filtering</description>
+        <approach>Mock correlation with r=0.45 (weak), p=0.08 (not significant). Verify pattern NOT detected. Mock r=0.65, p=0.02 → verify pattern detected. Test boundary: r=0.50 exactly → verify detected (threshold inclusive).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6">
+        <description>Widget test: Scatter plot renders with trend line</description>
+        <approach>Create mock CorrelationEntity with 30 data points. Render SleepPerformanceChart. Verify ScatterChart widget exists. Verify scatter spots count = 30. Verify trend line (LineBarsData) exists. Verify axis labels: "Sleep Quality", "Weight Lifted".</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6">
+        <description>Widget test: Data point color coding</description>
+        <approach>Mock data points: 1) sleep=8, performance=110 (high+high) → expect Green. 2) sleep=5, performance=70 (low+low) → expect Red. 3) sleep=7, performance=80 (mid) → expect Yellow. Render chart. Verify ScatterSpot colors match expected.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3">
+        <description>Integration test: AI insight generation for correlation</description>
+        <approach>Mock CorrelationEntity with r=0.72, sample_size=45. Call AI service with prompt. Verify prompt includes: "Correlation: 0.72", "45 days of data". Parse AI response. Verify insight contains natural language: "Your best lifts..." or "When you sleep...". Verify recommendation exists.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC5">
+        <description>Integration test: Sleep meditation CTA navigation</description>
+        <approach>Render InsightCard for correlation insight. Tap "Start Sleep Meditation" button. Mock Navigator.pushNamed. Verify route: '/mind/sleep-meditation'. Verify arguments: {source: 'correlation-insight', goal: '8-hours', sourceInsightId: '{id}'}. Verify action tracked.</approach>
+      </test-idea>
+      <test-idea ac-ref="ALL">
+        <description>E2E test: Full correlation analysis and visualization flow</description>
+        <approach>1) Seed database with 45 days of data (sleep + workouts). 2) Run correlation analysis cron job. 3) Verify CorrelationEntity created in detected_patterns table. 4) Navigate to CMI Dashboard. 5) Verify scatter plot displays with 45 data points. 6) Verify insight card shows AI-generated text. 7) Tap "Start Sleep Meditation". 8) Verify Mind module opens with sleep meditation pre-selected.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1">
+        <description>Widget test: Empty state for insufficient data</description>
+        <approach>Mock user with 15 days of data (15/30). Render CMI Dashboard. Verify empty state message: "Keep logging! You need 30 days of data...". Verify progress bar shows "15/30 days". Verify encouragement message: "You're 15 days away...".</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3">
+        <description>Unit test: Performance metric selection (strongest correlation)</description>
+        <approach>Mock data with 3 correlations: sleep vs PRs (r=0.45), sleep vs weight (r=0.72), sleep vs volume (r=0.60). Run CorrelationAnalyzer. Verify strongest correlation selected: "sleep_quality vs weight_lifted" (r=0.72). Verify stored in detected_patterns.metric_b.</approach>
+      </test-idea>
+    </ideas>
+  </tests>
+</story-context>
