@@ -1,0 +1,570 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>2</epicId>
+    <storyId>2.3</storyId>
+    <title>Goal Creation & Tracking</title>
+    <status>ready-for-dev</status>
+    <generatedAt>2025-11-17</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/sprint-2/2-3-goal-creation-tracking.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>user with personal goals</asA>
+    <iWant>to create and track up to 3 goals (free tier)</iWant>
+    <soThat>I can measure progress toward what matters</soThat>
+    <tasks>
+      <task id="1" ac-ref="AC1,AC2,AC3">
+        <description>Implement goal creation form UI</description>
+        <subtasks>
+          <subtask>Create GoalsScreen widget for Home → Goals navigation</subtask>
+          <subtask>Implement CreateGoalForm with title field (60 char limit with counter)</subtask>
+          <subtask>Add category dropdown (Fitness, Mental Health, Career, Relationships, Finance, Personal Growth, Other)</subtask>
+          <subtask>Add target date picker (DatePicker integration)</subtask>
+          <subtask>Add description field (500 char limit, multiline TextFormField)</subtask>
+          <subtask>Implement form validation (title required, category required)</subtask>
+          <subtask>Add "Create Goal" CTA button with loading state</subtask>
+        </subtasks>
+      </task>
+      <task id="2" ac-ref="AC3">
+        <description>Implement tier-based goal limits</description>
+        <subtasks>
+          <subtask>Create countActiveGoals() repository method</subtask>
+          <subtask>Implement free tier check: max 3 active goals</subtask>
+          <subtask>Show upgrade prompt when limit reached: "Free tier: Max 3 goals. Upgrade for unlimited."</subtask>
+          <subtask>Premium tier: No limit enforcement</subtask>
+          <subtask>Display goal count indicator: "2/3 goals" (free tier) or "5 goals" (premium)</subtask>
+        </subtasks>
+      </task>
+      <task id="3" ac-ref="AC4,AC5">
+        <description>Implement goal progress tracking</description>
+        <subtasks>
+          <subtask>Create ProgressSlider widget (0-100% with snap points every 10%)</subtask>
+          <subtask>Implement UpdateGoalProgressUseCase</subtask>
+          <subtask>Add haptic feedback on slider adjustment (HapticFeedback.selectionClick())</subtask>
+          <subtask>Display progress percentage text alongside slider</subtask>
+          <subtask>Implement "Mark Complete" button (enabled at any progress level)</subtask>
+          <subtask>Trigger celebration animation on completion (Lottie confetti)</subtask>
+          <subtask>Update goal status to 'completed' and set completed_at timestamp</subtask>
+        </subtasks>
+      </task>
+      <task id="4" ac-ref="AC6,AC7">
+        <description>Implement goal archive and delete functionality</description>
+        <subtasks>
+          <subtask>Create archive action: Update status to 'archived', remove from active list</subtask>
+          <subtask>Create delete action with confirmation dialog: "Delete this goal? This cannot be undone."</subtask>
+          <subtask>Implement swipe-to-archive gesture on goal cards (SwipeToDismiss)</subtask>
+          <subtask>Add overflow menu (⋮) on goal card with Archive/Delete options</subtask>
+          <subtask>Ensure archived goals remain in database (GDPR: user owns data history)</subtask>
+          <subtask>Handle cascade delete in Supabase (user deletion removes all goals)</subtask>
+        </subtasks>
+      </task>
+      <task id="5" ac-ref="AC8">
+        <description>Implement goal display on Home tab</description>
+        <subtasks>
+          <subtask>Create GoalCard widget with category icon, title, progress bar, target date</subtask>
+          <subtask>Display up to 3 active goals on Home tab (scrollable if more)</subtask>
+          <subtask>Implement category icon mapping (Fitness: 💪, Mental: 🧠, Career: 💼, etc.)</subtask>
+          <subtask>Add linear progress indicator with color gradient based on progress</subtask>
+          <subtask>Display days remaining to target date or "Overdue" badge</subtask>
+          <subtask>Tap goal card to navigate to goal detail/edit screen</subtask>
+        </subtasks>
+      </task>
+      <task id="6" ac-ref="AC9">
+        <description>Integrate goals with AI daily plan generation</description>
+        <subtasks>
+          <subtask>Fetch user's active goals when generating daily plan</subtask>
+          <subtask>Pass goal titles and categories to AI prompt context</subtask>
+          <subtask>AI references goals in task suggestions: "Work on [Goal Title]"</subtask>
+          <subtask>Ensure AI considers goal target dates for urgency prioritization</subtask>
+        </subtasks>
+      </task>
+      <task id="7" ac-ref="AC1,AC2,AC3,AC4,AC5,AC6,AC7">
+        <description>Implement goals data persistence</description>
+        <subtasks>
+          <subtask>Create goals table in Drift (local SQLite) with schema matching Supabase</subtask>
+          <subtask>Create goals table in Supabase (PostgreSQL) with RLS policies</subtask>
+          <subtask>Implement CreateGoalUseCase with tier limit validation</subtask>
+          <subtask>Implement UpdateGoalProgressUseCase</subtask>
+          <subtask>Implement ArchiveGoalUseCase and DeleteGoalUseCase</subtask>
+          <subtask>Add offline-first sync: Write-Through Cache pattern (Drift → Supabase)</subtask>
+          <subtask>Create INDEX on (user_id, status) for efficient active goal queries</subtask>
+        </subtasks>
+      </task>
+      <task id="8" ac-ref="AC5">
+        <description>Implement celebration animation</description>
+        <subtasks>
+          <subtask>Add Lottie package dependency (lottie: ^3.0.0)</subtask>
+          <subtask>Source or create confetti.json Lottie animation file</subtask>
+          <subtask>Create CelebrationOverlay widget with full-screen confetti animation</subtask>
+          <subtask>Trigger animation on goal completion with haptic feedback (HapticFeedback.heavyImpact())</subtask>
+          <subtask>Auto-dismiss overlay after 3 seconds</subtask>
+          <subtask>Add congratulatory message: "Goal completed! 🎉"</subtask>
+        </subtasks>
+      </task>
+      <task id="9" ac-ref="ALL">
+        <description>Write comprehensive tests</description>
+        <subtasks>
+          <subtask>Unit tests: CreateGoalUseCase with tier limit validation, UpdateGoalProgressUseCase, ArchiveGoalUseCase, DeleteGoalUseCase</subtask>
+          <subtask>Widget tests: CreateGoalForm validation, ProgressSlider interaction, GoalCard display, celebration animation trigger</subtask>
+          <subtask>Integration test: End-to-end goal creation, progress update, completion, archive, delete flows</subtask>
+          <subtask>Test free tier limit enforcement (create 4th goal fails)</subtask>
+          <subtask>Test offline goal creation → online sync</subtask>
+          <subtask>Achieve 80%+ code coverage</subtask>
+        </subtasks>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="AC1">
+      <text>Create goals from Home → Goals screen</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC2">
+      <text>Form: Title (60 chars), Category (Fitness/Mental/Career/etc.), Target date, Description (500 chars)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC3">
+      <text>Free tier: Max 3 goals, Premium: Unlimited</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC4">
+      <text>Progress tracked manually (% slider, 0-100%)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC5">
+      <text>Mark goal complete → Celebration animation (confetti)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC6">
+      <text>Archive goal (removed from active, kept in history)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC7">
+      <text>Delete goal (confirmation required)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC8">
+      <text>Goals on Home tab (progress bars)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC9">
+      <text>AI daily plan references active goals</text>
+      <priority>P1</priority>
+    </criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR11: Goal creation and tracking</section>
+        <snippet>Users can create personal goals with title, category, target date, and description. Free tier: max 3 active goals. Premium: unlimited. Progress tracked manually (0-100%). Goals feed into AI daily plan generation.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR12: Goal progress tracking</section>
+        <snippet>Manual progress updates via slider (0-100%). Progress bars displayed on Home tab. Completion triggers celebration animation (confetti). Goals can be archived (kept in history) or deleted (with confirmation).</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR13: Free tier goal limits</section>
+        <snippet>Free tier: Maximum 3 active goals. Premium tier: Unlimited goals. Enforce limit at creation time with upgrade prompt. Display goal count indicator: "2/3 goals" (free) or "5 goals" (premium).</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR14: AI integration with goals</section>
+        <snippet>AI daily plan generation references active user goals. Pass goal titles, categories, and target dates to AI prompt. AI suggests tasks aligned with goals: "Work on [Goal Title]". Consider target date urgency.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/epics.md</path>
+        <title>Epic 2: Life Coach MVP - Story 2.3</title>
+        <section>Story 2.3: Goal Creation & Tracking</section>
+        <snippet>Goal creation form with tier limits (free: 3, premium: unlimited). Manual progress tracking (0-100% slider). Completion celebration (Lottie confetti). Archive/delete functionality. Goals displayed on Home tab with progress bars. AI references active goals.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Hybrid Architecture (D1)</section>
+        <snippet>Feature-first architecture with clean architecture layers (presentation/domain/data). Life Coach module located at features/life_coach/. Use Riverpod for state management.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Offline-First Sync (D3)</section>
+        <snippet>Hybrid Sync pattern: Write-Through Cache + Sync Queue. Save to Drift (SQLite) first for instant feedback (&lt;100ms), then queue for Supabase sync when online. Offline operations must work seamlessly.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Database Schema - Life Coach Tables</section>
+        <snippet>Life Coach module uses daily_plans table (JSONB tasks), goals table, and check-ins table. All tables must have RLS policies: USING (auth.uid() = user_id) for user data isolation.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/ux-design-specification.md</path>
+        <title>UX Design Specification</title>
+        <section>Goal Creation UX</section>
+        <snippet>Goal creation form with material design text fields. Category dropdown with icons. Date picker for target date. Character counters: 60/60 (title), 500/500 (description). Progress slider with snap points every 10%. Celebration animation: full-screen confetti overlay (3s duration).</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/sprint-2/2-3-goal-creation-tracking.md</path>
+        <title>Story 2.3: Goal Creation & Tracking</title>
+        <section>Database Schema</section>
+        <snippet>goals table with columns: id (UUID), user_id (UUID FK), title (TEXT 60 chars), category (TEXT enum), target_date (DATE nullable), description (TEXT 500 chars nullable), progress (INT 0-100 CHECK), status (TEXT: active/completed/archived), created_at, completed_at. INDEX on (user_id, status).</snippet>
+      </doc>
+    </docs>
+    <code>
+      <!-- No existing code - greenfield project -->
+      <note>This story builds on the Life Coach module structure from Story 2.1. Follow the same feature-first architecture pattern at lib/features/life_coach/. Reuse existing repository patterns and sync infrastructure.</note>
+    </code>
+    <dependencies>
+      <flutter>
+        <sdk>3.38+</sdk>
+        <dart>3.10+</dart>
+      </flutter>
+      <packages>
+        <package name="flutter_riverpod" version="^3.0.0" usage="State management for goals screens and data flow" />
+        <package name="riverpod_annotation" version="^3.0.0" usage="Code generation for providers" />
+        <package name="drift" version="^2.14.0" usage="Local SQLite database for offline goal storage" />
+        <package name="drift_flutter" version="^0.1.0" usage="Flutter integration for Drift" />
+        <package name="sqlite3_flutter_libs" version="^0.5.0" usage="SQLite native libraries" />
+        <package name="path_provider" version="^2.1.0" usage="Get app directories for Drift database" />
+        <package name="supabase_flutter" version="^2.0.0" usage="Supabase client for auth and database sync" />
+        <package name="lottie" version="^3.0.0" usage="Celebration confetti animation on goal completion" />
+        <package name="flutter_test" version="sdk" usage="Unit and widget testing framework" />
+        <package name="integration_test" version="sdk" usage="End-to-end testing framework" />
+      </packages>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint id="ARCH-1" type="architectural">
+      <description>Must follow Hybrid Architecture pattern (D1)</description>
+      <details>Create feature structure at lib/features/life_coach/goals/ with presentation/, domain/, and data/ layers. Use clean architecture separation of concerns.</details>
+    </constraint>
+    <constraint id="ARCH-2" type="architectural">
+      <description>Offline-first implementation required (D3)</description>
+      <details>Save goals to Drift (SQLite) first for instant feedback (&lt;100ms per NFR-P4). Queue for Supabase sync when online. Handle offline mode gracefully.</details>
+    </constraint>
+    <constraint id="ARCH-3" type="architectural">
+      <description>Use Riverpod for state management (D1, D6)</description>
+      <details>Create providers following feature-first structure. Use ConsumerWidget/ConsumerStatefulWidget for goal screens. Providers should be in life_coach/presentation/providers/.</details>
+    </constraint>
+    <constraint id="DATA-1" type="data">
+      <description>Database schema must match specification</description>
+      <details>goals table: id (UUID PK), user_id (UUID FK auth.users ON DELETE CASCADE), title (TEXT NOT NULL 60 chars), category (TEXT NOT NULL), target_date (DATE nullable), description (TEXT nullable 500 chars), progress (INT DEFAULT 0 CHECK 0-100), status (TEXT DEFAULT 'active' CHECK: active/completed/archived), created_at (TIMESTAMPTZ), completed_at (TIMESTAMPTZ nullable). INDEX on (user_id, status).</details>
+    </constraint>
+    <constraint id="SEC-1" type="security">
+      <description>Row Level Security (RLS) policies required</description>
+      <details>Enable RLS on goals table. Policy: CREATE POLICY "Users can only access own goals" ON goals FOR ALL USING (auth.uid() = user_id);</details>
+    </constraint>
+    <constraint id="SEC-2" type="security">
+      <description>GDPR compliance for goal data</description>
+      <details>User must be able to delete goals. On user account deletion, CASCADE delete all goals via FK constraint. Archived goals remain in database (user owns history) but can be deleted manually.</details>
+    </constraint>
+    <constraint id="BIZ-1" type="business">
+      <description>Free tier: Maximum 3 active goals</description>
+      <details>Enforce limit at goal creation. Count only status='active' goals. Completed and archived goals don't count toward limit. Show upgrade prompt: "Free tier: Max 3 goals. Upgrade for unlimited."</details>
+    </constraint>
+    <constraint id="BIZ-2" type="business">
+      <description>Premium tier: Unlimited goals</description>
+      <details>Premium users (tier='premium' in user_subscriptions table) have no goal limit. Do not show goal count indicator for premium users, or show unlimited badge.</details>
+    </constraint>
+    <constraint id="UX-1" type="ux">
+      <description>Character limits with counters</description>
+      <details>Title: 60 characters max with live counter "45/60". Description: 500 characters max with live counter "280/500". Use TextFormField maxLength parameter with buildCounter.</details>
+    </constraint>
+    <constraint id="UX-2" type="ux">
+      <description>Category dropdown with icons</description>
+      <details>Category options: Fitness (💪), Mental Health (🧠), Career (💼), Relationships (❤️), Finance (💰), Personal Growth (🌱), Other (⭐). Use DropdownButtonFormField with icon + text ListTile.</details>
+    </constraint>
+    <constraint id="UX-3" type="ux">
+      <description>Progress slider with snap points</description>
+      <details>Slider range 0-100. Divisions: 10 (snap every 10%). Display current percentage: "Progress: 60%". Use Slider widget with divisions parameter. Haptic feedback on value change: HapticFeedback.selectionClick().</details>
+    </constraint>
+    <constraint id="UX-4" type="ux">
+      <description>Celebration animation on completion</description>
+      <details>Use Lottie confetti animation (full-screen overlay). Trigger on "Mark Complete" button tap. Animation duration: 3 seconds. Haptic feedback: HapticFeedback.heavyImpact(). Auto-dismiss after completion. Display message: "Goal completed! 🎉"</details>
+    </constraint>
+    <constraint id="UX-5" type="ux">
+      <description>Delete confirmation required</description>
+      <details>Show AlertDialog before delete: "Delete this goal? This cannot be undone." with Cancel/Delete buttons. Delete button in destructive color (red). Prevent accidental deletion.</details>
+    </constraint>
+    <constraint id="UX-6" type="ux">
+      <description>Goal cards on Home tab</description>
+      <details>Display up to 3 active goals on Home tab. Card layout: Category icon (left), Title + Progress bar + Target date (center), Overflow menu (right). Progress bar color gradient: 0-50% orange, 50-80% blue, 80-100% green. Days remaining badge or "Overdue" badge in red.</details>
+    </constraint>
+    <constraint id="PERF-1" type="performance">
+      <description>Goal creation &lt;100ms local save</description>
+      <details>Save to Drift first for instant feedback. Queue for Supabase sync in background. User sees success state immediately (&lt;100ms per NFR-P4).</details>
+    </constraint>
+    <constraint id="PERF-2" type="performance">
+      <description>Goal list query optimization</description>
+      <details>Use INDEX on (user_id, status) for efficient active goal queries. Fetch only active goals for Home tab display. Lazy load archived/completed goals in Goals screen.</details>
+    </constraint>
+    <constraint id="TEST-1" type="testing">
+      <description>80%+ code coverage required</description>
+      <details>Follow 70/20/10 testing pyramid. Unit tests for use cases and tier limit logic, widget tests for UI components, integration tests for full goal lifecycle. All AC must have test coverage.</details>
+    </constraint>
+    <constraint id="AI-1" type="integration">
+      <description>AI daily plan references active goals</description>
+      <details>Fetch user's active goals (status='active') before AI plan generation. Pass goal titles, categories, and target dates in AI prompt context. AI should reference goals: "Work on [Goal Title]" and consider target date urgency.</details>
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>GoalEntity</name>
+      <kind>domain-entity</kind>
+      <signature>
+        class GoalEntity {
+          final String id;
+          final String userId;
+          final String title;           // Max 60 chars
+          final String category;        // Enum: Fitness, Mental Health, Career, etc.
+          final DateTime? targetDate;
+          final String? description;    // Max 500 chars
+          final int progress;           // 0-100
+          final String status;          // active, completed, archived
+          final DateTime createdAt;
+          final DateTime? completedAt;
+        }
+      </signature>
+      <path>lib/features/life_coach/domain/entities/goal_entity.dart</path>
+      <notes>Use @freezed annotation for immutability and copyWith. Implement validation: title length &lt;= 60, description length &lt;= 500, progress 0-100, status enum validation.</notes>
+    </interface>
+    <interface>
+      <name>CreateGoalUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class CreateGoalUseCase {
+          Future&lt;Result&lt;GoalEntity&gt;&gt; call(GoalEntity goal);
+        }
+      </signature>
+      <path>lib/features/life_coach/domain/usecases/create_goal_usecase.dart</path>
+      <notes>Returns Result&lt;T&gt; pattern (Success/Failure). Check user tier and active goal count before creation. Free tier: max 3 active goals. Return Failure with upgrade message if limit exceeded. Save to Drift first, then queue for Supabase sync.</notes>
+    </interface>
+    <interface>
+      <name>UpdateGoalProgressUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class UpdateGoalProgressUseCase {
+          Future&lt;Result&lt;GoalEntity&gt;&gt; call({
+            required String goalId,
+            required int progress,  // 0-100
+          });
+        }
+      </signature>
+      <path>lib/features/life_coach/domain/usecases/update_goal_progress_usecase.dart</path>
+      <notes>Validate progress is 0-100. Update goal entity with new progress. If progress reaches 100 via slider, do NOT auto-complete (user must tap "Mark Complete"). Return updated GoalEntity.</notes>
+    </interface>
+    <interface>
+      <name>CompleteGoalUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class CompleteGoalUseCase {
+          Future&lt;Result&lt;GoalEntity&gt;&gt; call(String goalId);
+        }
+      </signature>
+      <path>lib/features/life_coach/domain/usecases/complete_goal_usecase.dart</path>
+      <notes>Update goal status to 'completed', set completed_at timestamp, set progress to 100. Trigger celebration animation in presentation layer. Return updated GoalEntity.</notes>
+    </interface>
+    <interface>
+      <name>ArchiveGoalUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class ArchiveGoalUseCase {
+          Future&lt;Result&lt;GoalEntity&gt;&gt; call(String goalId);
+        }
+      </signature>
+      <path>lib/features/life_coach/domain/usecases/archive_goal_usecase.dart</path>
+      <notes>Update goal status to 'archived'. Goal remains in database but removed from active list. Does not count toward free tier limit.</notes>
+    </interface>
+    <interface>
+      <name>DeleteGoalUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class DeleteGoalUseCase {
+          Future&lt;Result&lt;void&gt;&gt; call(String goalId);
+        }
+      </signature>
+      <path>lib/features/life_coach/domain/usecases/delete_goal_usecase.dart</path>
+      <notes>Permanently delete goal from database. Require confirmation in UI before calling. GDPR compliance: user can delete their data.</notes>
+    </interface>
+    <interface>
+      <name>GetActiveGoalsUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class GetActiveGoalsUseCase {
+          Future&lt;Result&lt;List&lt;GoalEntity&gt;&gt;&gt; call(String userId);
+        }
+      </signature>
+      <path>lib/features/life_coach/domain/usecases/get_active_goals_usecase.dart</path>
+      <notes>Fetch all goals with status='active' for user. Used for Home tab display and AI plan generation context. Ordered by target_date ASC (closest deadline first).</notes>
+    </interface>
+    <interface>
+      <name>GoalRepository</name>
+      <kind>repository</kind>
+      <signature>
+        abstract class GoalRepository {
+          Future&lt;Result&lt;GoalEntity&gt;&gt; createGoal(GoalEntity goal);
+          Future&lt;Result&lt;GoalEntity&gt;&gt; updateGoal(GoalEntity goal);
+          Future&lt;Result&lt;void&gt;&gt; deleteGoal(String goalId);
+          Future&lt;Result&lt;List&lt;GoalEntity&gt;&gt;&gt; getGoalsByStatus(String userId, String status);
+          Future&lt;Result&lt;int&gt;&gt; countActiveGoals(String userId);
+        }
+      </signature>
+      <path>lib/features/life_coach/domain/repositories/goal_repository.dart</path>
+      <notes>Implemented by GoalRepositoryImpl in data layer. Uses both DriftDataSource and SupabaseDataSource. countActiveGoals() for tier limit enforcement.</notes>
+    </interface>
+    <interface>
+      <name>goals table (Supabase PostgreSQL)</name>
+      <kind>database-table</kind>
+      <signature>
+        CREATE TABLE goals (
+          id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+          user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+          title TEXT NOT NULL,
+          category TEXT NOT NULL,
+          target_date DATE,
+          description TEXT,
+          progress INT DEFAULT 0 CHECK (progress BETWEEN 0 AND 100),
+          status TEXT DEFAULT 'active' CHECK (status IN ('active', 'completed', 'archived')),
+          created_at TIMESTAMPTZ DEFAULT NOW(),
+          completed_at TIMESTAMPTZ
+        );
+        CREATE INDEX idx_goals_user_status ON goals(user_id, status);
+      </signature>
+      <path>supabase/migrations/</path>
+      <notes>Migration file will be created in Supabase migrations folder. Include RLS policies in same migration. CASCADE delete on user deletion for GDPR compliance.</notes>
+    </interface>
+    <interface>
+      <name>goals table (Drift SQLite)</name>
+      <kind>database-table</kind>
+      <signature>
+        @DataClassName('GoalTable')
+        class Goals extends Table {
+          TextColumn get id => text()();
+          TextColumn get userId => text()();
+          TextColumn get title => text().withLength(max: 60)();
+          TextColumn get category => text()();
+          DateTimeColumn get targetDate => dateTime().nullable()();
+          TextColumn get description => text().withLength(max: 500).nullable()();
+          IntColumn get progress => integer().withDefault(const Constant(0)).check(progress.isBetweenValues(0, 100))();
+          TextColumn get status => text().withDefault(const Constant('active'))();
+          DateTimeColumn get createdAt => dateTime()();
+          DateTimeColumn get completedAt => dateTime().nullable()();
+
+          @override
+          Set&lt;Column&gt; get primaryKey => {id};
+        }
+      </signature>
+      <path>lib/core/database/tables.drift.dart</path>
+      <notes>Drift table definition. Mirror of Supabase schema for offline-first architecture. Use drift code generation. Enforce character limits at table level.</notes>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Follow 70/20/10 testing pyramid: 70% unit tests (use cases, repositories, entities), 20% widget tests (UI components, state management), 10% integration tests (end-to-end flows). Use flutter_test for unit/widget tests, integration_test for E2E. Mock dependencies with mockito. Target 80%+ code coverage. All acceptance criteria must have test coverage.
+    </standards>
+    <locations>
+      <location>test/features/life_coach/domain/usecases/</location>
+      <location>test/features/life_coach/domain/entities/</location>
+      <location>test/features/life_coach/data/repositories/</location>
+      <location>test/features/life_coach/presentation/widgets/</location>
+      <location>integration_test/features/life_coach/goal_lifecycle_test.dart</location>
+    </locations>
+    <ideas>
+      <test-idea ac-ref="AC2">
+        <description>Unit test: GoalEntity validation</description>
+        <approach>Test title length limit (61 chars throws exception). Test description length limit (501 chars throws). Test progress range validation (outside 0-100 throws). Test status enum validation. Test immutability with copyWith.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3">
+        <description>Unit test: CreateGoalUseCase enforces free tier limit</description>
+        <approach>Mock GoalRepository.countActiveGoals() to return 3. Mock user tier as 'free'. Call CreateGoalUseCase. Assert Failure result with message "Free tier: Max 3 goals. Upgrade for unlimited."</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3">
+        <description>Unit test: CreateGoalUseCase allows premium unlimited goals</description>
+        <approach>Mock GoalRepository.countActiveGoals() to return 10. Mock user tier as 'premium'. Call CreateGoalUseCase. Assert Success result (no limit enforcement).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1">
+        <description>Unit test: CreateGoalUseCase success case</description>
+        <approach>Mock user tier as 'free' with 2 active goals. Create valid GoalEntity. Call CreateGoalUseCase. Verify repository.createGoal() called. Assert Success result returned.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4">
+        <description>Unit test: UpdateGoalProgressUseCase updates progress</description>
+        <approach>Mock repository. Create goal with progress=50. Call UpdateGoalProgressUseCase with progress=75. Verify repository.updateGoal() called with progress=75. Assert Success with updated entity.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC5">
+        <description>Unit test: CompleteGoalUseCase sets status and timestamp</description>
+        <approach>Create goal with status='active'. Call CompleteGoalUseCase. Verify repository.updateGoal() called with status='completed', progress=100, completed_at set. Assert Success.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6">
+        <description>Unit test: ArchiveGoalUseCase updates status</description>
+        <approach>Create goal with status='active'. Call ArchiveGoalUseCase. Verify repository.updateGoal() called with status='archived'. Assert Success. Verify goal no longer counted by countActiveGoals().</approach>
+      </test-idea>
+      <test-idea ac-ref="AC7">
+        <description>Unit test: DeleteGoalUseCase permanently removes goal</description>
+        <approach>Mock repository. Call DeleteGoalUseCase with goalId. Verify repository.deleteGoal() called with correct ID. Assert Success. Verify goal no longer in database.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC2">
+        <description>Widget test: CreateGoalForm validates required fields</description>
+        <approach>Render CreateGoalForm. Tap "Create Goal" without filling fields. Verify validation errors shown: "Title is required", "Category is required". Fill fields, verify validation passes.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC2">
+        <description>Widget test: CreateGoalForm enforces character limits</description>
+        <approach>Render form. Enter 61 characters in title field. Verify maxLength prevents entry or shows error. Enter 501 chars in description. Verify counter shows "501/500" and prevents submission.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4">
+        <description>Widget test: ProgressSlider snaps to 10% increments</description>
+        <approach>Render ProgressSlider with divisions=10. Drag slider to 47%. Verify value snaps to 50%. Verify haptic feedback triggered (mock HapticFeedback). Verify percentage text displays "50%".</approach>
+      </test-idea>
+      <test-idea ac-ref="AC5">
+        <description>Widget test: Mark Complete button triggers celebration animation</description>
+        <approach>Render goal detail screen with progress=80%. Tap "Mark Complete". Verify CompleteGoalUseCase called. Verify CelebrationOverlay widget appears. Verify confetti Lottie animation plays. Verify haptic feedback (HapticFeedback.heavyImpact()). Verify overlay dismisses after 3s.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC7">
+        <description>Widget test: Delete goal shows confirmation dialog</description>
+        <approach>Render goal card. Tap delete action (overflow menu or swipe). Verify AlertDialog appears with "Delete this goal? This cannot be undone." message. Tap Cancel, verify dialog dismissed and goal not deleted. Repeat, tap Delete, verify DeleteGoalUseCase called.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC8">
+        <description>Widget test: GoalCard displays progress and target date</description>
+        <approach>Create GoalEntity with progress=60%, target_date=7 days from now, category=Fitness. Render GoalCard. Verify category icon 💪 displayed. Verify progress bar at 60% with correct color (blue). Verify "7 days remaining" badge shown. Tap card, verify navigation to detail screen.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC8">
+        <description>Widget test: GoalCard shows overdue badge for past target dates</description>
+        <approach>Create GoalEntity with target_date=yesterday. Render GoalCard. Verify "Overdue" badge displayed in red. Verify progress bar color reflects urgency.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3">
+        <description>Widget test: Free tier limit prompt shown when creating 4th goal</description>
+        <approach>Mock GoalRepository.countActiveGoals() to return 3. Render CreateGoalForm. Fill form and submit. Verify error message shown: "Free tier: Max 3 goals. Upgrade for unlimited." Verify upgrade CTA button or link present.</approach>
+      </test-idea>
+      <test-idea ac-ref="ALL">
+        <description>Integration test: Complete goal lifecycle</description>
+        <approach>Launch app. Navigate to Goals screen. Create new goal (title="Run Marathon", category=Fitness, target_date=+90 days, description="Train 3x/week"). Verify goal saved to database. Update progress to 30%. Verify progress persists. Update to 70%. Mark complete. Verify celebration animation plays. Verify goal status='completed' in database. Archive goal. Verify removed from active list. Delete goal with confirmation. Verify goal removed from database.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3">
+        <description>Integration test: Free tier limit enforcement</description>
+        <approach>Create 3 goals for free tier user. Verify all save successfully. Attempt to create 4th goal. Verify error: "Free tier: Max 3 goals. Upgrade for unlimited." Complete 1 goal (status='completed'). Verify can now create new goal (completed goals don't count). Archive 1 goal. Verify can create another (archived goals don't count).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC9">
+        <description>Integration test: AI daily plan references active goals</description>
+        <approach>Create 2 active goals: "Lose 10 lbs" (Fitness), "Learn Spanish" (Personal Growth). Trigger AI daily plan generation (morning check-in). Verify GetActiveGoalsUseCase called. Verify AI prompt includes goal titles and categories. Verify generated plan references goals: "Work on Lose 10 lbs: 30min cardio" or "Practice Spanish vocabulary".</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1,AC2">
+        <description>Integration test: Offline goal creation → online sync</description>
+        <approach>Disable network. Create goal locally. Verify saved to Drift immediately (&lt;100ms). Verify goal appears in UI. Enable network. Verify sync queue processes and saves to Supabase. Verify goal synced with correct data. Test conflict resolution if needed.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6">
+        <description>Widget test: Swipe to archive gesture</description>
+        <approach>Render goal card in Dismissible widget. Swipe right. Verify ArchiveGoalUseCase called. Verify goal removed from active list with animation. Verify undo snackbar appears (optional feature).</approach>
+      </test-idea>
+    </ideas>
+  </tests>
+</story-context>

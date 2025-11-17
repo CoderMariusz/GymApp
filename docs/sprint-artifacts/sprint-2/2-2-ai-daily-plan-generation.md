@@ -1,7 +1,7 @@
 # Story 2.2: AI Daily Plan Generation
 
 **Epic:** Epic 2 - Life Coach MVP
-**Priority:** P0 | **Status:** drafted | **Effort:** 5 SP
+**Priority:** P0 | **Status:** ready-for-dev | **Effort:** 5 SP
 
 ---
 
@@ -88,6 +88,11 @@ final fallbackPlan = [
 **Blocks:** Story 2.8 (Manual Adjustment)
 
 **Coverage Target:** 75%+ (AI logic complex)
+
+---
+
+## Dev Agent Record
+**Context File:** 2-2-ai-daily-plan-generation.context.xml
 
 ---
 

@@ -1,0 +1,634 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>2</epicId>
+    <storyId>2.4</storyId>
+    <title>AI Conversational Coaching</title>
+    <status>ready-for-dev</status>
+    <generatedAt>2025-11-17</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/sprint-2/2-4-ai-conversational-coaching.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>user needing motivation or advice</asA>
+    <iWant>to chat with an AI life coach</iWant>
+    <soThat>I can get personalized guidance and support</soThat>
+    <tasks>
+      <task id="1" ac-ref="AC1,AC2,AC3,AC4">
+        <description>Implement AI chat UI and message flow</description>
+        <subtasks>
+          <subtask>Create AIChatScreen widget with "Chat with AI" button on Home tab</subtask>
+          <subtask>Implement chat interface with message bubbles (user vs assistant)</subtask>
+          <subtask>Add text input field with send button</subtask>
+          <subtask>Implement real-time message display with auto-scroll to bottom</subtask>
+          <subtask>Show AI typing indicator during response generation</subtask>
+          <subtask>Display user's personality type (Sage vs Momentum) in chat header</subtask>
+          <subtask>Implement message timestamps</subtask>
+        </subtasks>
+      </task>
+      <task id="2" ac-ref="AC3,AC4">
+        <description>Implement conversation context builder</description>
+        <subtasks>
+          <subtask>Create ConversationContextBuilder service</subtask>
+          <subtask>Fetch user's goals from goals table for context</subtask>
+          <subtask>Fetch latest check-in data (mood, energy, sleep) for context</subtask>
+          <subtask>Fetch recent activity/completions for context</subtask>
+          <subtask>Build system prompt with personality (Sage vs Momentum)</subtask>
+          <subtask>Format context as structured prompt for AI model</subtask>
+          <subtask>Implement context window management (max tokens)</subtask>
+        </subtasks>
+      </task>
+      <task id="3" ac-ref="AC2,AC3,AC8">
+        <description>Implement AI service integration with Edge Functions</description>
+        <subtasks>
+          <subtask>Create Supabase Edge Function for AI API calls (ai-coach-chat)</subtask>
+          <subtask>Implement AICoachService with sendMessage() method</subtask>
+          <subtask>Integrate Llama API for free tier users (3-5 conversations/day)</subtask>
+          <subtask>Integrate Claude API for premium tier users (unlimited)</subtask>
+          <subtask>Integrate GPT-4 API as fallback for premium tier</subtask>
+          <subtask>Implement timeout handling (10s timeout with retry prompt)</subtask>
+          <subtask>Add error handling for API failures (clear error messages)</subtask>
+          <subtask>Implement response streaming for better UX (optional)</subtask>
+        </subtasks>
+      </task>
+      <task id="4" ac-ref="AC5,AC10">
+        <description>Implement rate limiting per subscription tier</description>
+        <subtasks>
+          <subtask>Create ConversationRateLimiter service</subtask>
+          <subtask>Implement daily conversation counter for free tier users</subtask>
+          <subtask>Set free tier limit: 3-5 conversations/day</subtask>
+          <subtask>Allow unlimited conversations for premium tier</subtask>
+          <subtask>Display rate limit indicator: "2 conversations left today"</subtask>
+          <subtask>Block new conversations when limit reached (show upgrade prompt)</subtask>
+          <subtask>Reset counter daily at midnight UTC</subtask>
+        </subtasks>
+      </task>
+      <task id="5" ac-ref="AC6,AC9">
+        <description>Implement conversation history persistence</description>
+        <subtasks>
+          <subtask>Create ai_conversations table in Supabase (PostgreSQL)</subtask>
+          <subtask>Create ai_conversations table in Drift (SQLite) for offline support</subtask>
+          <subtask>Implement saveMessage() use case (user + assistant messages)</subtask>
+          <subtask>Implement getConversationHistory() use case with pagination</subtask>
+          <subtask>Store session_id to group related messages</subtask>
+          <subtask>Store ai_model used (llama, claude, gpt-4) for each message</subtask>
+          <subtask>Implement data sync between Drift and Supabase</subtask>
+        </subtasks>
+      </task>
+      <task id="6" ac-ref="AC7">
+        <description>Implement GDPR-compliant conversation deletion</description>
+        <subtasks>
+          <subtask>Add "Delete Conversation History" button in chat settings</subtask>
+          <subtask>Show confirmation dialog before deletion</subtask>
+          <subtask>Implement deleteConversationHistory() use case</subtask>
+          <subtask>Delete from both Drift (local) and Supabase (cloud)</subtask>
+          <subtask>Cascade delete: remove all messages for user (ON DELETE CASCADE)</subtask>
+          <subtask>Show success toast after deletion</subtask>
+        </subtasks>
+      </task>
+      <task id="7" ac-ref="AC4">
+        <description>Implement AI personality system prompts</description>
+        <subtasks>
+          <subtask>Define "Sage" personality prompt (calm, wise, mindfulness-focused)</subtask>
+          <subtask>Define "Momentum" personality prompt (energetic, action-oriented)</subtask>
+          <subtask>Fetch user's onboarding personality selection from profile</subtask>
+          <subtask>Apply personality to system message in AI API calls</subtask>
+          <subtask>Include example phrases for each personality type</subtask>
+          <subtask>Allow personality switching in settings (future enhancement)</subtask>
+        </subtasks>
+      </task>
+      <task id="8" ac-ref="AC8,AC9">
+        <description>Implement response time optimization and monitoring</description>
+        <subtasks>
+          <subtask>Measure and log response times per AI model</subtask>
+          <subtask>Target: Llama &lt;2s, Claude &lt;3s, GPT-4 &lt;4s</subtask>
+          <subtask>Show loading indicator immediately on send</subtask>
+          <subtask>Implement 10s timeout with error message and retry option</subtask>
+          <subtask>Cache frequently used context data (goals, check-in) for faster queries</subtask>
+          <subtask>Optimize database queries with indexes on session_id</subtask>
+        </subtasks>
+      </task>
+      <task id="9" ac-ref="ALL">
+        <description>Write comprehensive tests</description>
+        <subtasks>
+          <subtask>Unit tests: SendMessageUseCase, ConversationContextBuilder, rate limiter</subtask>
+          <subtask>Unit tests: AI personality prompt formatting, context building</subtask>
+          <subtask>Widget tests: Chat UI, message bubbles, typing indicator, rate limit display</subtask>
+          <subtask>Integration test: End-to-end conversation flow with AI response</subtask>
+          <subtask>Integration test: Rate limiting enforcement (free vs premium)</subtask>
+          <subtask>Integration test: Conversation history persistence and retrieval</subtask>
+          <subtask>Integration test: GDPR deletion flow</subtask>
+          <subtask>Achieve 80%+ code coverage</subtask>
+        </subtasks>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="AC1">
+      <text>AI Chat accessible from Home tab via "Chat with AI" button</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC2">
+      <text>User can send text messages to AI</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC3">
+      <text>AI has context: user's goals, mood (from check-in), recent activity</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC4">
+      <text>AI personality based on onboarding (Sage: calm vs Momentum: energetic)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC5">
+      <text>Free tier: 3-5 conversations/day (Llama), Premium: Unlimited (Claude/GPT-4)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC6">
+      <text>Conversation history saved and viewable</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC7">
+      <text>User can delete conversation history (GDPR compliance)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC8">
+      <text>Response time: &lt;2s (Llama), &lt;3s (Claude), &lt;4s (GPT-4)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC9">
+      <text>Timeout: Clear error message after 10s, suggest retry</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC10">
+      <text>Rate limit indicator: "X conversations left today" (free tier)</text>
+      <priority>P1</priority>
+    </criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR18-FR24: AI Conversational Coaching</section>
+        <snippet>AI life coach provides personalized guidance via chat interface. Tier-based access: Free (Llama, 3-5 convos/day) vs Premium (Claude/GPT-4, unlimited). AI has context from goals, check-ins, activity. Personality adapts to user preference (Sage vs Momentum). GDPR: Users can delete chat history.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/epics.md</path>
+        <title>Epic 2: Life Coach MVP - Story 2.4</title>
+        <section>Story 2.4: AI Conversational Coaching</section>
+        <snippet>AI chat accessible from Home tab. Context-aware responses using goals, mood, activity. Personality-driven (Sage/Momentum). Free tier: Llama (3-5/day), Premium: Claude/GPT-4 (unlimited). Response time targets: &lt;2-4s. GDPR-compliant deletion. Prerequisites: Story 2.3 (Goals).</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Supabase Edge Functions (D4)</section>
+        <snippet>Use Edge Functions for AI API calls to keep API keys secure. Functions run on Deno runtime. Deploy to edge for low latency (&lt;100ms overhead). Use for LLM API calls (Llama, Claude, GPT-4) to avoid exposing keys in client.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Subscription Tiers (D7)</section>
+        <snippet>Free tier: Llama-based AI (3-5 conversations/day), basic features. Premium tier ($9.99/month): Claude/GPT-4 AI (unlimited), advanced analytics, priority support. Store tier in user_profiles table. Implement rate limiting per tier.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/ux-design-specification.md</path>
+        <title>UX Design Specification</title>
+        <section>AI Chat UX</section>
+        <snippet>Chat interface: Message bubbles (user: right-aligned blue, AI: left-aligned white). Typing indicator: animated dots. Send button: paper plane icon. Rate limit: persistent banner "2 conversations left today" (free tier). Delete history: Settings → "Delete Chat History" (red text, confirmation dialog).</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/sprint-2/2-4-ai-conversational-coaching.md</path>
+        <title>Story 2.4: AI Conversational Coaching</title>
+        <section>Database Schema</section>
+        <snippet>ai_conversations table: id (UUID), user_id (UUID FK), session_id (UUID), role (TEXT: 'user'|'assistant'), content (TEXT), ai_model (TEXT: llama|claude|gpt-4), created_at (TIMESTAMPTZ). Index on (session_id, created_at).</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/sprint-2/2-4-ai-conversational-coaching.md</path>
+        <title>Story 2.4: AI Conversational Coaching</title>
+        <section>AI Prompt System</section>
+        <snippet>System prompts: Sage ("calm, wise life coach, gentle encouragement, mindfulness, small steps") vs Momentum ("energetic motivational coach, enthusiastic, action-oriented, 'Let's crush this!'"). Context prompt includes user goals, recent mood, last check-in for personalization.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <reference>
+        <path>lib/features/life_coach/domain/entities/goal_entity.dart</path>
+        <description>Goal entity from Story 2.3 - used for conversation context</description>
+        <snippet>
+          class GoalEntity {
+            final String id;
+            final String userId;
+            final String title;
+            final String category;
+            final DateTime? deadline;
+            // ... AI uses goal titles/categories for personalized advice
+          }
+        </snippet>
+      </reference>
+      <reference>
+        <path>lib/features/life_coach/domain/entities/checkin_entity.dart</path>
+        <description>Check-in entity from Story 2.1 - used for conversation context</description>
+        <snippet>
+          class CheckinEntity {
+            final int mood;        // 1-5
+            final int energy;      // 1-5
+            final int sleepQuality; // 1-5
+            final String? note;
+            // ... AI uses mood/energy to tailor responses
+          }
+        </snippet>
+      </reference>
+      <reference>
+        <path>lib/core/database/tables.drift.dart</path>
+        <description>Drift table definitions - will add ai_conversations table</description>
+        <snippet>
+          // Add new table:
+          @DataClassName('ConversationMessage')
+          class AIConversations extends Table {
+            TextColumn get id => text()();
+            TextColumn get userId => text()();
+            TextColumn get sessionId => text()();
+            TextColumn get role => text()(); // 'user' or 'assistant'
+            TextColumn get content => text()();
+            TextColumn get aiModel => text().nullable()();
+            DateTimeColumn get createdAt => dateTime()();
+          }
+        </snippet>
+      </reference>
+    </code>
+    <dependencies>
+      <flutter>
+        <sdk>3.38+</sdk>
+        <dart>3.10+</dart>
+      </flutter>
+      <packages>
+        <package name="flutter_riverpod" version="^3.0.0" usage="State management for chat state and message flow" />
+        <package name="riverpod_annotation" version="^3.0.0" usage="Code generation for providers" />
+        <package name="drift" version="^2.14.0" usage="Local SQLite database for offline message storage" />
+        <package name="drift_flutter" version="^0.1.0" usage="Flutter integration for Drift" />
+        <package name="supabase_flutter" version="^2.0.0" usage="Supabase client for auth, database sync, Edge Functions" />
+        <package name="uuid" version="^4.0.0" usage="Generate session_id for conversation grouping" />
+        <package name="http" version="^1.1.0" usage="HTTP client for Edge Function calls" />
+        <package name="flutter_test" version="sdk" usage="Unit and widget testing framework" />
+        <package name="mockito" version="^5.4.0" usage="Mocking dependencies in tests" />
+        <package name="integration_test" version="sdk" usage="End-to-end testing framework" />
+      </packages>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint id="ARCH-1" type="architectural">
+      <description>Must follow Hybrid Architecture pattern (D1)</description>
+      <details>Create feature structure at lib/features/ai_coach/ with presentation/, domain/, and data/ layers. Use clean architecture separation of concerns.</details>
+    </constraint>
+    <constraint id="ARCH-2" type="architectural">
+      <description>Use Supabase Edge Functions for AI API calls (D4)</description>
+      <details>Create Edge Function at supabase/functions/ai-coach-chat/ to handle LLM API calls. Keep API keys server-side. Client calls Edge Function endpoint with context data. Edge Function routes to appropriate AI service (Llama/Claude/GPT-4) based on tier.</details>
+    </constraint>
+    <constraint id="ARCH-3" type="architectural">
+      <description>Offline-first message storage (D3)</description>
+      <details>Save messages to Drift (SQLite) first for instant display. Queue for Supabase sync when online. Show pending indicator for messages awaiting sync. Handle offline gracefully (show error if trying to send new message offline).</details>
+    </constraint>
+    <constraint id="DATA-1" type="data">
+      <description>Database schema must match specification</description>
+      <details>ai_conversations table: id (UUID PK), user_id (UUID FK auth.users), session_id (UUID), role (TEXT CHECK 'user'|'assistant'), content (TEXT NOT NULL), ai_model (TEXT nullable), created_at (TIMESTAMPTZ). Index on (session_id, created_at). RLS policies for user isolation.</details>
+    </constraint>
+    <constraint id="SEC-1" type="security">
+      <description>Row Level Security (RLS) policies required</description>
+      <details>Enable RLS on ai_conversations table. Policy: CREATE POLICY "Users can only access own conversations" ON ai_conversations FOR ALL USING (auth.uid() = user_id);</details>
+    </constraint>
+    <constraint id="SEC-2" type="security">
+      <description>API keys must never be exposed to client</description>
+      <details>All LLM API keys (Llama, Claude, GPT-4) stored as Supabase secrets. Access only via Edge Functions. Never send API keys to Flutter client. Use environment variables in Edge Function.</details>
+    </constraint>
+    <constraint id="PERF-1" type="performance">
+      <description>Response time targets per AI model</description>
+      <details>Llama: &lt;2s, Claude: &lt;3s, GPT-4: &lt;4s. Measure p95 response time. Show typing indicator immediately on send. Implement 10s timeout with retry option. Use streaming responses if possible for better perceived performance.</details>
+    </constraint>
+    <constraint id="PERF-2" type="performance">
+      <description>Context window management</description>
+      <details>Limit conversation history sent to AI (max 10 previous messages). Summarize older context if needed. Monitor token count to avoid exceeding model limits (Llama: 4k, Claude: 100k, GPT-4: 8k). Trim context intelligently.</details>
+    </constraint>
+    <constraint id="PERF-3" type="performance">
+      <description>Database query optimization</description>
+      <details>Index ai_conversations(session_id, created_at) for fast history retrieval. Cache user goals/check-in data for 5 minutes to reduce DB queries. Use pagination for conversation history (20 messages per page).</details>
+    </constraint>
+    <constraint id="BIZ-1" type="business">
+      <description>Tier-based rate limiting</description>
+      <details>Free tier: 3-5 conversations/day using Llama. Premium tier: Unlimited conversations using Claude or GPT-4. Store daily conversation count in cache. Reset at midnight UTC. Show clear upgrade prompt when limit reached.</details>
+    </constraint>
+    <constraint id="BIZ-2" type="business">
+      <description>AI personality system</description>
+      <details>Sage personality: calm, wise, gentle encouragement, mindfulness-focused, small steps. Momentum personality: energetic, action-oriented, enthusiastic, phrases like "Let's crush this!". Fetch from user_profiles.onboarding_personality. Apply to system prompt.</details>
+    </constraint>
+    <constraint id="LEGAL-1" type="legal">
+      <description>GDPR compliance: Right to erasure</description>
+      <details>Implement deleteConversationHistory() to delete all user messages. Cascade delete from both Drift and Supabase. Show confirmation dialog. Log deletion event for audit trail. Complete deletion within 24 hours (instant in app, background job for backups).</details>
+    </constraint>
+    <constraint id="UX-1" type="ux">
+      <description>Clear error messaging and retry flow</description>
+      <details>Timeout (10s): "The AI is taking longer than usual. Please try again." with Retry button. Network error: "Unable to connect. Check your internet." Rate limit: "You've reached today's limit. Upgrade for unlimited conversations." API error: "Something went wrong. Please try again later."</details>
+    </constraint>
+    <constraint id="TEST-1" type="testing">
+      <description>80%+ code coverage required</description>
+      <details>Follow 70/20/10 testing pyramid. Unit tests for use cases, context builder, rate limiter. Widget tests for chat UI, message bubbles. Integration tests for full conversation flow, rate limiting, GDPR deletion. Mock AI responses for consistent testing.</details>
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>ConversationMessageEntity</name>
+      <kind>domain-entity</kind>
+      <signature>
+        class ConversationMessageEntity {
+          final String id;
+          final String userId;
+          final String sessionId;
+          final MessageRole role;  // enum: user, assistant
+          final String content;
+          final String? aiModel;   // llama, claude, gpt-4
+          final DateTime createdAt;
+        }
+
+        enum MessageRole { user, assistant }
+      </signature>
+      <path>lib/features/ai_coach/domain/entities/conversation_message_entity.dart</path>
+      <notes>Use @freezed annotation for immutability. Role enum ensures type safety. aiModel only set for assistant messages.</notes>
+    </interface>
+    <interface>
+      <name>SendMessageUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class SendMessageUseCase {
+          Future&lt;Result&lt;ConversationMessageEntity&gt;&gt; call({
+            required String sessionId,
+            required String userMessage,
+          });
+        }
+      </signature>
+      <path>lib/features/ai_coach/domain/usecases/send_message_usecase.dart</path>
+      <notes>Orchestrates: 1) Save user message, 2) Build context, 3) Call AI service, 4) Save AI response. Returns AI response entity. Handles rate limiting, timeouts, errors.</notes>
+    </interface>
+    <interface>
+      <name>GetConversationHistoryUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class GetConversationHistoryUseCase {
+          Future&lt;Result&lt;List&lt;ConversationMessageEntity&gt;&gt;&gt; call({
+            required String sessionId,
+            int limit = 20,
+            int offset = 0,
+          });
+        }
+      </signature>
+      <path>lib/features/ai_coach/domain/usecases/get_conversation_history_usecase.dart</path>
+      <notes>Fetches conversation messages ordered by created_at DESC. Supports pagination for long conversations. Returns both user and assistant messages.</notes>
+    </interface>
+    <interface>
+      <name>DeleteConversationHistoryUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class DeleteConversationHistoryUseCase {
+          Future&lt;Result&lt;void&gt;&gt; call({
+            required String userId,
+          });
+        }
+      </signature>
+      <path>lib/features/ai_coach/domain/usecases/delete_conversation_history_usecase.dart</path>
+      <notes>GDPR-compliant deletion. Deletes ALL conversations for user from both Drift and Supabase. Irreversible operation - requires confirmation.</notes>
+    </interface>
+    <interface>
+      <name>AICoachService</name>
+      <kind>service</kind>
+      <signature>
+        abstract class AICoachService {
+          Future&lt;Result&lt;String&gt;&gt; sendMessage({
+            required String userMessage,
+            required List&lt;ConversationMessageEntity&gt; conversationHistory,
+            required ConversationContext context,
+            required AIPersonality personality,
+            required SubscriptionTier tier,
+          });
+        }
+
+        enum AIPersonality { sage, momentum }
+        enum SubscriptionTier { free, premium }
+      </signature>
+      <path>lib/features/ai_coach/domain/services/ai_coach_service.dart</path>
+      <notes>Implemented in data layer. Calls Supabase Edge Function with context. Routes to Llama (free) or Claude/GPT-4 (premium). Handles timeouts (10s), streaming, errors.</notes>
+    </interface>
+    <interface>
+      <name>ConversationContextBuilder</name>
+      <kind>service</kind>
+      <signature>
+        abstract class ConversationContextBuilder {
+          Future&lt;ConversationContext&gt; buildContext({
+            required String userId,
+          });
+        }
+
+        class ConversationContext {
+          final List&lt;GoalEntity&gt; goals;
+          final CheckinEntity? latestCheckin;
+          final String summary;  // Formatted for AI prompt
+        }
+      </signature>
+      <path>lib/features/ai_coach/domain/services/conversation_context_builder.dart</path>
+      <notes>Aggregates user data: goals (from GoalRepository), latest check-in (from CheckinRepository), recent activity. Formats as structured prompt for AI. Caches for 5 minutes.</notes>
+    </interface>
+    <interface>
+      <name>ConversationRateLimiter</name>
+      <kind>service</kind>
+      <signature>
+        abstract class ConversationRateLimiter {
+          Future&lt;RateLimitStatus&gt; checkLimit(String userId);
+          Future&lt;void&gt; incrementCount(String userId);
+        }
+
+        class RateLimitStatus {
+          final bool canSend;
+          final int remainingConversations;
+          final SubscriptionTier tier;
+        }
+      </signature>
+      <path>lib/features/ai_coach/domain/services/conversation_rate_limiter.dart</path>
+      <notes>Free tier: 5 conversations/day. Premium: unlimited. Store count in local cache + Supabase. Reset at midnight UTC. Return remaining count for UI display.</notes>
+    </interface>
+    <interface>
+      <name>ConversationRepository</name>
+      <kind>repository</kind>
+      <signature>
+        abstract class ConversationRepository {
+          Future&lt;Result&lt;ConversationMessageEntity&gt;&gt; saveMessage(ConversationMessageEntity message);
+          Future&lt;Result&lt;List&lt;ConversationMessageEntity&gt;&gt;&gt; getHistory(String sessionId, int limit, int offset);
+          Future&lt;Result&lt;void&gt;&gt; deleteAllForUser(String userId);
+          Future&lt;Result&lt;int&gt;&gt; countConversationsToday(String userId);
+        }
+      </signature>
+      <path>lib/features/ai_coach/domain/repositories/conversation_repository.dart</path>
+      <notes>Implemented by ConversationRepositoryImpl in data layer. Uses both DriftDataSource and SupabaseDataSource. Handles offline-first sync.</notes>
+    </interface>
+    <interface>
+      <name>ai_conversations table (Supabase PostgreSQL)</name>
+      <kind>database-table</kind>
+      <signature>
+        CREATE TABLE ai_conversations (
+          id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+          user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+          session_id UUID NOT NULL,
+          role TEXT NOT NULL CHECK (role IN ('user', 'assistant')),
+          content TEXT NOT NULL,
+          ai_model TEXT,
+          created_at TIMESTAMPTZ DEFAULT NOW()
+        );
+        CREATE INDEX idx_conversations_session ON ai_conversations(session_id, created_at);
+        CREATE INDEX idx_conversations_user ON ai_conversations(user_id, created_at DESC);
+      </signature>
+      <path>supabase/migrations/</path>
+      <notes>Include RLS policy in migration. Index on session_id for fast conversation retrieval. Index on user_id for deletion and rate limiting queries.</notes>
+    </interface>
+    <interface>
+      <name>ai_conversations table (Drift SQLite)</name>
+      <kind>database-table</kind>
+      <signature>
+        @DataClassName('ConversationMessage')
+        class AIConversations extends Table {
+          TextColumn get id => text()();
+          TextColumn get userId => text()();
+          TextColumn get sessionId => text()();
+          TextColumn get role => text().check(role.isIn(['user', 'assistant']))();
+          TextColumn get content => text()();
+          TextColumn get aiModel => text().nullable()();
+          DateTimeColumn get createdAt => dateTime()();
+
+          @override
+          Set&lt;Column&gt; get primaryKey => {id};
+        }
+      </signature>
+      <path>lib/core/database/tables.drift.dart</path>
+      <notes>Mirror of Supabase schema for offline-first architecture. Use drift code generation. Sync bidirectionally with Supabase.</notes>
+    </interface>
+    <interface>
+      <name>ai-coach-chat Edge Function</name>
+      <kind>edge-function</kind>
+      <signature>
+        POST /functions/v1/ai-coach-chat
+
+        Request:
+        {
+          "userMessage": string,
+          "conversationHistory": ConversationMessage[],
+          "context": {
+            "goals": string[],
+            "mood": number,
+            "energy": number
+          },
+          "personality": "sage" | "momentum",
+          "tier": "free" | "premium"
+        }
+
+        Response:
+        {
+          "response": string,
+          "aiModel": "llama" | "claude" | "gpt-4"
+        }
+      </signature>
+      <path>supabase/functions/ai-coach-chat/index.ts</path>
+      <notes>Deno Edge Function. Routes to Llama (free) or Claude/GPT-4 (premium). Builds system prompt with personality + context. Implements timeout (10s). Returns AI response text + model used.</notes>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Follow 70/20/10 testing pyramid: 70% unit tests (use cases, services, entities), 20% widget tests (chat UI, message bubbles, state management), 10% integration tests (end-to-end conversation flows). Use flutter_test for unit/widget tests, integration_test for E2E. Mock AI service responses with mockito for consistent testing. Target 80%+ code coverage. All acceptance criteria must have test coverage.
+    </standards>
+    <locations>
+      <location>test/features/ai_coach/domain/usecases/</location>
+      <location>test/features/ai_coach/domain/entities/</location>
+      <location>test/features/ai_coach/domain/services/</location>
+      <location>test/features/ai_coach/data/repositories/</location>
+      <location>test/features/ai_coach/presentation/widgets/</location>
+      <location>integration_test/features/ai_coach/conversation_flow_test.dart</location>
+    </locations>
+    <ideas>
+      <test-idea ac-ref="AC2,AC3">
+        <description>Unit test: SendMessageUseCase sends message with context</description>
+        <approach>Mock ConversationRepository, AICoachService, ConversationContextBuilder. Call use case with test message. Verify context builder called to fetch goals/check-in. Verify AI service called with context + message. Verify response saved to repository.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC5,AC10">
+        <description>Unit test: ConversationRateLimiter enforces free tier limit</description>
+        <approach>Mock free tier user. Call checkLimit() 5 times. Verify first 5 return canSend=true. 6th call returns canSend=false, remainingConversations=0. Verify upgrade prompt triggered.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC5">
+        <description>Unit test: ConversationRateLimiter allows unlimited for premium</description>
+        <approach>Mock premium tier user. Call checkLimit() 100 times. Verify all return canSend=true, tier=premium. No rate limiting applied.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3">
+        <description>Unit test: ConversationContextBuilder fetches user data</description>
+        <approach>Mock GoalRepository with 3 test goals. Mock CheckinRepository with mood=4, energy=3. Call buildContext(). Verify context includes goal titles, mood, energy. Verify formatted as prompt string.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4">
+        <description>Unit test: AI personality system prompts</description>
+        <approach>Build context with personality=sage. Verify system prompt includes "calm, wise, gentle encouragement". Build with personality=momentum. Verify includes "energetic, action-oriented, Let's crush this".</approach>
+      </test-idea>
+      <test-idea ac-ref="AC7">
+        <description>Unit test: DeleteConversationHistoryUseCase removes all messages</description>
+        <approach>Mock ConversationRepository with 10 test messages. Call deleteAllForUser(). Verify repository.deleteAllForUser() called. Verify all messages deleted (getHistory returns empty list).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC8,AC9">
+        <description>Unit test: AICoachService handles timeout gracefully</description>
+        <approach>Mock Edge Function to delay 15s (exceeds 10s timeout). Call sendMessage(). Verify returns Failure with timeout error. Verify error message: "The AI is taking longer than usual. Please try again."</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1,AC2">
+        <description>Widget test: Chat UI displays and sends messages</description>
+        <approach>Render AIChatScreen. Verify "Chat with AI" button visible. Enter test message "I need motivation". Tap send button. Verify user message bubble appears (right-aligned, blue). Verify typing indicator appears for AI.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6">
+        <description>Widget test: Conversation history displays messages</description>
+        <approach>Mock ConversationRepository with 5 messages (alternating user/assistant). Render chat screen. Verify all 5 messages displayed. Verify user messages right-aligned blue, assistant messages left-aligned white. Verify auto-scroll to bottom.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC10">
+        <description>Widget test: Rate limit indicator displays correctly</description>
+        <approach>Mock RateLimiter with remainingConversations=2. Render chat screen. Verify banner displays "2 conversations left today". Mock remainingConversations=0. Verify "Upgrade for unlimited conversations" shown.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC7">
+        <description>Widget test: Delete history shows confirmation dialog</description>
+        <approach>Render chat settings. Tap "Delete Conversation History" button. Verify confirmation dialog appears with warning text. Tap Cancel - dialog dismissed, no deletion. Tap Confirm - verify deleteConversationHistory() called.</approach>
+      </test-idea>
+      <test-idea ac-ref="ALL">
+        <description>Integration test: Complete conversation flow (free tier, Llama)</description>
+        <approach>Launch app as free tier user. Navigate to AI Chat. Send message "I'm feeling unmotivated". Mock Llama API response. Verify AI response received and displayed. Verify both messages saved to database. Verify sync to Supabase. Verify rate limit counter incremented.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC5">
+        <description>Integration test: Rate limiting blocks 6th conversation (free tier)</description>
+        <approach>Mock free tier user. Send 5 successful conversations. Attempt 6th conversation. Verify send button disabled. Verify error message: "You've reached today's limit." Verify upgrade prompt displayed.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4">
+        <description>Integration test: Sage personality provides calm responses</description>
+        <approach>Set user personality to "sage" in profile. Send message "I'm stressed". Mock AI response with gentle tone. Verify response includes mindfulness language, small steps. No high-energy phrases.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4">
+        <description>Integration test: Momentum personality provides energetic responses</description>
+        <approach>Set user personality to "momentum" in profile. Send message "I need to get things done". Mock AI response with energetic tone. Verify response includes action-oriented language, "Let's crush this!" style phrases.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3">
+        <description>Integration test: AI receives context (goals, mood, activity)</description>
+        <approach>Create 2 test goals: "Exercise 3x/week", "Read 30min/day". Create check-in with mood=4, energy=3. Send message "What should I focus on?". Verify AI response references user's goals and energy level.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC7">
+        <description>Integration test: GDPR deletion removes all user data</description>
+        <approach>Create 20 conversation messages. Navigate to Settings. Tap "Delete Conversation History". Confirm deletion. Verify all messages deleted from Drift. Verify all messages deleted from Supabase. Verify chat screen shows empty state.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6">
+        <description>Integration test: Conversation history persists across sessions</description>
+        <approach>Send 3 messages in Session A. Close app. Reopen app in Session B. Navigate to AI Chat. Verify all 3 previous messages still visible. Verify conversation continuity maintained.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC8">
+        <description>Integration test: Response time meets targets</description>
+        <approach>Free tier: Send message, measure response time. Verify Llama response &lt;2s (p95). Premium tier: Measure Claude response &lt;3s, GPT-4 &lt;4s. Use real API calls (staging environment) for accurate metrics.</approach>
+      </test-idea>
+    </ideas>
+  </tests>
+</story-context>

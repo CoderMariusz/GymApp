@@ -1,7 +1,7 @@
 # Story 2.5: Evening Reflection Flow
 
 **Epic:** Epic 2 - Life Coach MVP
-**Priority:** P0 | **Status:** drafted | **Effort:** 2 SP
+**Priority:** P0 | **Status:** ready-for-dev | **Effort:** 2 SP
 
 ---
 
@@ -65,6 +65,11 @@ class EveningReflectionScheduler {
 **Enables:** Story 2.6 (Streak Tracking)
 
 **Coverage Target:** 80%+
+
+---
+
+## Dev Agent Record
+**Context File:** 2-5-evening-reflection-flow.context.xml
 
 ---
 

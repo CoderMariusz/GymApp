@@ -1,0 +1,587 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>2</epicId>
+    <storyId>2.6</storyId>
+    <title>Streak Tracking (Check-ins)</title>
+    <status>ready-for-dev</status>
+    <generatedAt>2025-11-17</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/sprint-2/2-6-streak-tracking-check-ins.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>user building daily habits</asA>
+    <iWant>to see my check-in streak</iWant>
+    <soThat>I'm motivated to maintain consistency</soThat>
+    <tasks>
+      <task id="1" ac-ref="AC1,AC2,AC3">
+        <description>Implement streak calculation logic</description>
+        <subtasks>
+          <subtask>Create StreakEntity domain model with current_streak, longest_streak, last_activity_date fields</subtask>
+          <subtask>Implement CalculateStreakUseCase to handle streak increments (both morning + evening completed)</subtask>
+          <subtask>Implement streak break logic (breaks if both morning + evening missed in a day)</subtask>
+          <subtask>Add daily cron job to check check-in completion at 11:59pm</subtask>
+          <subtask>Implement streak history tracking (for graph visualization)</subtask>
+        </subtasks>
+      </task>
+      <task id="2" ac-ref="AC4,AC5">
+        <description>Implement streak freeze mechanics</description>
+        <subtasks>
+          <subtask>Add freeze_used_this_week boolean flag to streaks table</subtask>
+          <subtask>Implement auto-freeze on first miss (1 per week for free tier)</subtask>
+          <subtask>Add freeze availability check logic in HandleStreakBreakUseCase</subtask>
+          <subtask>Reset freeze_used_this_week every Monday at midnight</subtask>
+          <subtask>Display freeze availability status on Home tab ("Freeze available: 1 this week")</subtask>
+          <subtask>Implement premium tier logic (2 freezes per week)</subtask>
+        </subtasks>
+      </task>
+      <task id="3" ac-ref="AC6,AC7,AC8">
+        <description>Implement milestone badge system</description>
+        <subtasks>
+          <subtask>Create badges table (id, user_id, badge_type, milestone_value, unlocked_at)</subtask>
+          <subtask>Define milestone badges: Bronze (7d), Silver (30d), Gold (100d)</subtask>
+          <subtask>Implement AwardBadgeUseCase to check and unlock badges on streak increments</subtask>
+          <subtask>Create badge unlock animation (confetti + badge reveal)</subtask>
+          <subtask>Add badge collection view (grid of locked/unlocked badges)</subtask>
+          <subtask>Implement push notification for milestone achievements</subtask>
+        </subtasks>
+      </task>
+      <task id="4" ac-ref="AC1,AC2">
+        <description>Implement streak display UI on Home tab</description>
+        <subtasks>
+          <subtask>Create StreakWidget component with flame emoji and streak count</subtask>
+          <subtask>Display "7-day streak! 🔥" format on Home tab</subtask>
+          <subtask>Add longest streak indicator ("Best: 30 days")</subtask>
+          <subtask>Implement streak history graph (line chart showing daily progress)</subtask>
+          <subtask>Add animation on streak increment (number count-up + haptic)</subtask>
+        </subtasks>
+      </task>
+      <task id="5" ac-ref="AC9">
+        <description>Implement streak protection and recovery features</description>
+        <subtasks>
+          <subtask>Implement 24-hour grace period logic (can complete yesterday's check-in)</subtask>
+          <subtask>Add "about to break" warning notification at 9pm if incomplete</subtask>
+          <subtask>Show warning banner on Home tab ("Complete reflection to keep streak!")</subtask>
+          <subtask>Handle timezone changes gracefully (use user's local timezone)</subtask>
+        </subtasks>
+      </task>
+      <task id="6" ac-ref="AC9">
+        <description>Implement leaderboard (optional friends-only feature)</description>
+        <subtasks>
+          <subtask>Create streak_leaderboard table with user_id, current_streak, rank</subtask>
+          <subtask>Implement GetFriendsLeaderboardUseCase (friends only, privacy-first)</subtask>
+          <subtask>Display leaderboard tab with friend rankings</subtask>
+          <subtask>Add opt-in/opt-out toggle for leaderboard participation</subtask>
+          <subtask>Refresh leaderboard daily at midnight</subtask>
+        </subtasks>
+      </task>
+      <task id="7" ac-ref="AC8">
+        <description>Implement data persistence and sync</description>
+        <subtasks>
+          <subtask>Create streaks table in Drift (local SQLite)</subtask>
+          <subtask>Create streaks table in Supabase (PostgreSQL) with RLS policies</subtask>
+          <subtask>Create badges table in both Drift and Supabase</subtask>
+          <subtask>Implement offline-first sync for streak updates</subtask>
+          <subtask>Handle conflict resolution (server wins for streak data)</subtask>
+        </subtasks>
+      </task>
+      <task id="8" ac-ref="ALL">
+        <description>Write comprehensive tests</description>
+        <subtasks>
+          <subtask>Unit tests: CalculateStreakUseCase (increment, break, freeze logic)</subtask>
+          <subtask>Unit tests: Milestone detection and badge awards</subtask>
+          <subtask>Unit tests: Grace period logic (24h recovery window)</subtask>
+          <subtask>Widget tests: Streak display UI, badge animations, leaderboard</subtask>
+          <subtask>Integration test: Complete streak flow (increment → milestone → badge unlock)</subtask>
+          <subtask>Integration test: Freeze mechanics (use freeze → reset weekly)</subtask>
+          <subtask>Achieve 80%+ code coverage</subtask>
+        </subtasks>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="AC1">
+      <text>Streak counter on Home tab ("7-day streak! 🔥")</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC2">
+      <text>Streak increments when BOTH morning + evening completed</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC3">
+      <text>Breaks if both missed in a day</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC4">
+      <text>1 streak freeze per week (automatic on first miss)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC5">
+      <text>Freeze availability shown ("Freeze available: 1 this week")</text>
+      <priority>P1</priority>
+    </criterion>
+    <criterion id="AC6">
+      <text>Milestone badges: Bronze (7d), Silver (30d), Gold (100d)</text>
+      <priority>P1</priority>
+    </criterion>
+    <criterion id="AC7">
+      <text>Milestone celebration: Confetti + badge unlock</text>
+      <priority>P1</priority>
+    </criterion>
+    <criterion id="AC8">
+      <text>Synced across devices</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC9">
+      <text>Push notification if about to break ("Complete reflection to keep streak!")</text>
+      <priority>P1</priority>
+    </criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR29: Streak tracking for check-ins</section>
+        <snippet>Track consecutive days of completed check-ins (morning + evening). Display streak counter on Home tab with flame emoji. Milestone badges at 7, 30, 100 days. Streak freeze available (1 per week, premium: 2 per week).</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR85-FR87: Gamification - badges, streaks, leaderboards</section>
+        <snippet>Gamification system includes streak tracking, milestone badges, and optional friends-only leaderboard. Must be motivating without being addictive. Privacy-first: opt-in for leaderboard. Push notifications for streak protection only.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/epics.md</path>
+        <title>Epic 2: Life Coach MVP - Story 2.6</title>
+        <section>Story 2.6: Streak Tracking (Check-ins)</section>
+        <snippet>Implement check-in streak tracking with freeze mechanics, milestone badges, and leaderboard. Streak increments when both morning + evening completed. Prerequisites: Story 2.1 (Morning Check-in), Story 2.5 (Evening Reflection).</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Gamification Patterns</section>
+        <snippet>Use progressive milestones (7, 30, 100) to avoid burnout. Streak freeze prevents anxiety. Badges unlock via background job (check on sync). No dark patterns - user control over notifications.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Background Jobs (Supabase Edge Functions)</section>
+        <snippet>Daily cron jobs run via Supabase Edge Functions (Deno). Schedule: streak check at 11:59pm, freeze reset on Monday 00:00, leaderboard refresh at midnight. Use pg_cron for scheduling.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/ux-design-specification.md</path>
+        <title>UX Design Specification</title>
+        <section>Streak Display UX</section>
+        <snippet>Streak widget on Home tab: Large flame emoji 🔥, streak number in bold, "days" label. Subtle animation on increment. Tappable to view history graph. Freeze indicator: small shield icon with "1 left" badge.</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/sprint-2/2-6-streak-tracking-check-ins.md</path>
+        <title>Story 2.6: Streak Tracking (Check-ins)</title>
+        <section>Database Schema</section>
+        <snippet>streaks table: id, user_id, type ('check-in'), current_streak, longest_streak, freeze_used_this_week, last_activity_date. Cron job runs daily at 11:59pm to check completion and update streaks.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <reference>
+        <path>lib/features/life_coach/domain/entities/checkin_entity.dart</path>
+        <description>CheckinEntity from Story 2.1 - used to check if morning + evening completed</description>
+      </reference>
+      <reference>
+        <path>lib/features/life_coach/domain/repositories/checkin_repository.dart</path>
+        <description>CheckinRepository from Story 2.1 - query check-ins by date range</description>
+      </reference>
+      <reference>
+        <path>lib/features/life_coach/domain/entities/reflection_entity.dart</path>
+        <description>ReflectionEntity from Story 2.5 - used to check if evening reflection completed</description>
+      </reference>
+    </code>
+    <dependencies>
+      <flutter>
+        <sdk>3.38+</sdk>
+        <dart>3.10+</dart>
+      </flutter>
+      <packages>
+        <package name="flutter_riverpod" version="^3.0.0" usage="State management for streak widget and badge animations" />
+        <package name="riverpod_annotation" version="^3.0.0" usage="Code generation for providers" />
+        <package name="drift" version="^2.14.0" usage="Local SQLite database for streaks and badges" />
+        <package name="supabase_flutter" version="^2.0.0" usage="Supabase client for sync and edge functions" />
+        <package name="fl_chart" version="^0.65.0" usage="Streak history graph (line chart visualization)" />
+        <package name="confetti" version="^0.7.0" usage="Confetti animation for milestone celebrations" />
+        <package name="flutter_local_notifications" version="^16.0.0" usage="Push notifications for streak warnings" />
+        <package name="timezone" version="^0.9.0" usage="Timezone handling for daily streak checks" />
+        <package name="flutter_test" version="sdk" usage="Unit and widget testing framework" />
+        <package name="integration_test" version="sdk" usage="End-to-end testing framework" />
+      </packages>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint id="ARCH-1" type="architectural">
+      <description>Must follow Hybrid Architecture pattern (D1)</description>
+      <details>Add streak tracking to lib/features/life_coach/ with presentation/, domain/, and data/ layers. Use clean architecture separation of concerns. Reuse existing check-in repository.</details>
+    </constraint>
+    <constraint id="ARCH-2" type="architectural">
+      <description>Offline-first implementation required (D3)</description>
+      <details>Save streak updates to Drift (SQLite) first for instant feedback. Queue for Supabase sync when online. Handle offline badge unlocks gracefully (show immediately, sync later).</details>
+    </constraint>
+    <constraint id="ARCH-3" type="architectural">
+      <description>Background job for daily streak checks</description>
+      <details>Implement Supabase Edge Function (Deno) to run daily at 11:59pm. Check all users' check-in completion. Update streaks table. Send notifications for users about to break streak.</details>
+    </constraint>
+    <constraint id="DATA-1" type="data">
+      <description>Streaks table schema must match specification</description>
+      <details>streaks table: id (UUID PK), user_id (UUID FK auth.users), type (TEXT CHECK 'check-in'|'workout'|'meditation'), current_streak (INT DEFAULT 0), longest_streak (INT DEFAULT 0), freeze_used_this_week (BOOLEAN DEFAULT FALSE), last_activity_date (DATE), created_at, updated_at. UNIQUE(user_id, type).</details>
+    </constraint>
+    <constraint id="DATA-2" type="data">
+      <description>Badges table schema for milestone tracking</description>
+      <details>badges table: id (UUID PK), user_id (UUID FK auth.users), badge_type (TEXT 'bronze'|'silver'|'gold'), category (TEXT 'check-in'|'workout'|'meditation'), milestone_value (INT), unlocked_at (TIMESTAMPTZ), UNIQUE(user_id, badge_type, category).</details>
+    </constraint>
+    <constraint id="LOGIC-1" type="business-logic">
+      <description>Streak increment requires BOTH morning + evening check-in</description>
+      <details>Query check_ins table for morning check-in (type='morning') AND reflections table for evening reflection on same date. Only increment streak if both exist. Partial completion does not count.</details>
+    </constraint>
+    <constraint id="LOGIC-2" type="business-logic">
+      <description>Streak freeze mechanics</description>
+      <details>Free tier: 1 freeze per week (resets Monday 00:00). Premium: 2 freezes per week. Auto-apply freeze on first miss. Freeze prevents streak break but does not increment streak. freeze_used_this_week resets weekly via cron job.</details>
+    </constraint>
+    <constraint id="LOGIC-3" type="business-logic">
+      <description>Grace period: 24-hour recovery window</description>
+      <details>Users can complete previous day's check-in until 11:59pm today. If completed within grace period, streak continues. After 24h, streak breaks (unless freeze used). Grace period shown in UI: "You have until 11:59pm to save your streak!"</details>
+    </constraint>
+    <constraint id="LOGIC-4" type="business-logic">
+      <description>Milestone badge unlock thresholds</description>
+      <details>Bronze badge: 7-day streak. Silver badge: 30-day streak. Gold badge: 100-day streak. Check milestone on every streak increment. Award badge via AwardBadgeUseCase. Show celebration animation (confetti + badge unlock modal).</details>
+    </constraint>
+    <constraint id="SEC-1" type="security">
+      <description>Row Level Security (RLS) policies required</description>
+      <details>Enable RLS on streaks and badges tables. Policy: CREATE POLICY "Users can only access own streaks" ON streaks FOR ALL USING (auth.uid() = user_id); Same for badges table.</details>
+    </constraint>
+    <constraint id="UX-1" type="ux">
+      <description>Streak display must be prominent on Home tab</description>
+      <details>Place streak widget at top of Home tab, below daily plan summary. Use large font (24pt), flame emoji 🔥, bold number. Animate on increment (number count-up + haptic feedback). Tappable to view detailed history.</details>
+    </constraint>
+    <constraint id="UX-2" type="ux">
+      <description>Badge unlock celebration must be delightful</description>
+      <details>Full-screen confetti animation (2 seconds). Badge reveal with scale-up animation. Haptic feedback (HapticFeedback.mediumImpact). Auto-dismiss after 5 seconds or tap to dismiss. Show badge name and milestone ("Silver Badge - 30 Days!").</details>
+    </constraint>
+    <constraint id="UX-3" type="ux">
+      <description>Streak warning notifications must be timely</description>
+      <details>Send push notification at 9pm if check-in incomplete: "Complete your reflection to keep your 7-day streak! 🔥". Only send if streak > 3 days (avoid notification fatigue). Tapping notification opens app to check-in screen.</details>
+    </constraint>
+    <constraint id="PERF-1" type="performance">
+      <description>Streak calculation must be efficient</description>
+      <details>Use indexed queries (idx_checkins_user_date) to check completion. Cache current streak in memory (Riverpod provider). Background job should process all users within 5 minutes (batch processing).</details>
+    </constraint>
+    <constraint id="PERF-2" type="performance">
+      <description>Badge animations must be smooth (60fps)</description>
+      <details>Use Flutter AnimationController for confetti and badge reveal. Optimize widget tree to avoid jank. Test on low-end devices (iPhone SE, Android budget phones). Target 60fps throughout animation.</details>
+    </constraint>
+    <constraint id="TEST-1" type="testing">
+      <description>80%+ code coverage required</description>
+      <details>Follow 70/20/10 testing pyramid. Unit tests for streak calculation logic, freeze mechanics, grace period handling, milestone detection. Widget tests for UI components. Integration test for full streak flow.</details>
+    </constraint>
+    <constraint id="PRIVACY-1" type="privacy">
+      <description>Leaderboard must be opt-in and friends-only</description>
+      <details>Default: leaderboard disabled. User must explicitly enable in settings. Only show friends' streaks (never strangers). Provide opt-out option. No global rankings. Privacy-first approach to gamification.</details>
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>StreakEntity</name>
+      <kind>domain-entity</kind>
+      <signature>
+        class StreakEntity {
+          final String id;
+          final String userId;
+          final String type; // 'check-in', 'workout', 'meditation'
+          final int currentStreak;
+          final int longestStreak;
+          final bool freezeUsedThisWeek;
+          final DateTime? lastActivityDate;
+          final DateTime createdAt;
+          final DateTime updatedAt;
+        }
+      </signature>
+      <path>lib/features/life_coach/domain/entities/streak_entity.dart</path>
+      <notes>Use @freezed annotation for immutability. Validation: currentStreak >= 0, longestStreak >= currentStreak, type must be valid enum value.</notes>
+    </interface>
+    <interface>
+      <name>BadgeEntity</name>
+      <kind>domain-entity</kind>
+      <signature>
+        class BadgeEntity {
+          final String id;
+          final String userId;
+          final String badgeType;    // 'bronze', 'silver', 'gold'
+          final String category;     // 'check-in', 'workout', 'meditation'
+          final int milestoneValue;  // 7, 30, 100
+          final DateTime unlockedAt;
+        }
+      </signature>
+      <path>lib/features/life_coach/domain/entities/badge_entity.dart</path>
+      <notes>Immutable entity representing earned badges. Use @freezed. Badge type maps to milestone: bronze=7d, silver=30d, gold=100d.</notes>
+    </interface>
+    <interface>
+      <name>CalculateStreakUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class CalculateStreakUseCase {
+          Future&lt;Result&lt;StreakEntity&gt;&gt; call({
+            required String userId,
+            required String streakType,
+          });
+        }
+      </signature>
+      <path>lib/features/life_coach/domain/usecases/calculate_streak_usecase.dart</path>
+      <notes>Checks if both morning check-in and evening reflection completed for today. Increments streak if true. Returns updated StreakEntity. Called by daily cron job and on user check-in completion.</notes>
+    </interface>
+    <interface>
+      <name>HandleStreakBreakUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class HandleStreakBreakUseCase {
+          Future&lt;Result&lt;StreakEntity&gt;&gt; call({
+            required String userId,
+            required String streakType,
+          });
+        }
+      </signature>
+      <path>lib/features/life_coach/domain/usecases/handle_streak_break_usecase.dart</path>
+      <notes>Handles streak break logic. Checks if freeze available (freeze_used_this_week == false). If available, uses freeze and preserves streak. If not, resets currentStreak to 0. Updates longestStreak if currentStreak was higher.</notes>
+    </interface>
+    <interface>
+      <name>AwardBadgeUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class AwardBadgeUseCase {
+          Future&lt;Result&lt;BadgeEntity?&gt;&gt; call({
+            required String userId,
+            required int currentStreak,
+            required String category,
+          });
+        }
+      </signature>
+      <path>lib/features/life_coach/domain/usecases/award_badge_usecase.dart</path>
+      <notes>Checks if current streak matches milestone (7, 30, 100). If milestone reached and badge not yet awarded, creates BadgeEntity and saves to database. Returns null if no milestone reached. Triggers badge celebration UI.</notes>
+    </interface>
+    <interface>
+      <name>GetStreakHistoryUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class GetStreakHistoryUseCase {
+          Future&lt;Result&lt;List&lt;StreakHistoryPoint&gt;&gt;&gt; call({
+            required String userId,
+            required DateTime startDate,
+            required DateTime endDate,
+          });
+        }
+      </signature>
+      <path>lib/features/life_coach/domain/usecases/get_streak_history_usecase.dart</path>
+      <notes>Retrieves daily streak values for date range. Returns list of (date, streakValue) points for graph visualization. Used by streak history chart on detailed view.</notes>
+    </interface>
+    <interface>
+      <name>CheckGracePeriodUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class CheckGracePeriodUseCase {
+          Future&lt;Result&lt;bool&gt;&gt; call({
+            required String userId,
+            required DateTime date,
+          });
+        }
+      </signature>
+      <path>lib/features/life_coach/domain/usecases/check_grace_period_usecase.dart</path>
+      <notes>Checks if user is within 24-hour grace period for given date. Returns true if user can still complete previous day's check-in. Used to show grace period banner and allow late completions.</notes>
+    </interface>
+    <interface>
+      <name>StreakRepository</name>
+      <kind>repository</kind>
+      <signature>
+        abstract class StreakRepository {
+          Future&lt;Result&lt;StreakEntity&gt;&gt; getStreak(String userId, String type);
+          Future&lt;Result&lt;StreakEntity&gt;&gt; updateStreak(StreakEntity streak);
+          Future&lt;Result&lt;List&lt;StreakEntity&gt;&gt;&gt; getAllStreaks(String userId);
+          Future&lt;Result&lt;void&gt;&gt; resetWeeklyFreeze(String userId);
+        }
+      </signature>
+      <path>lib/features/life_coach/domain/repositories/streak_repository.dart</path>
+      <notes>Implemented by StreakRepositoryImpl in data layer. Uses both DriftDataSource and SupabaseDataSource for offline-first sync.</notes>
+    </interface>
+    <interface>
+      <name>BadgeRepository</name>
+      <kind>repository</kind>
+      <signature>
+        abstract class BadgeRepository {
+          Future&lt;Result&lt;List&lt;BadgeEntity&gt;&gt;&gt; getUserBadges(String userId);
+          Future&lt;Result&lt;BadgeEntity&gt;&gt; awardBadge(BadgeEntity badge);
+          Future&lt;Result&lt;bool&gt;&gt; hasBadge(String userId, String badgeType, String category);
+        }
+      </signature>
+      <path>lib/features/life_coach/domain/repositories/badge_repository.dart</path>
+      <notes>Handles badge persistence and retrieval. Uses offline-first pattern. Check hasBadge() before awarding to avoid duplicates.</notes>
+    </interface>
+    <interface>
+      <name>streaks table (Supabase PostgreSQL)</name>
+      <kind>database-table</kind>
+      <signature>
+        CREATE TABLE streaks (
+          id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+          user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+          type TEXT NOT NULL CHECK (type IN ('check-in', 'workout', 'meditation')),
+          current_streak INT DEFAULT 0,
+          longest_streak INT DEFAULT 0,
+          freeze_used_this_week BOOLEAN DEFAULT FALSE,
+          last_activity_date DATE,
+          created_at TIMESTAMPTZ DEFAULT NOW(),
+          updated_at TIMESTAMPTZ DEFAULT NOW(),
+          UNIQUE(user_id, type)
+        );
+        CREATE INDEX idx_streaks_user_type ON streaks(user_id, type);
+      </signature>
+      <path>supabase/migrations/</path>
+      <notes>Migration file will be created in Supabase migrations folder. Include RLS policies in same migration. Add trigger to update updated_at on row update.</notes>
+    </interface>
+    <interface>
+      <name>badges table (Supabase PostgreSQL)</name>
+      <kind>database-table</kind>
+      <signature>
+        CREATE TABLE badges (
+          id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+          user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+          badge_type TEXT NOT NULL CHECK (badge_type IN ('bronze', 'silver', 'gold')),
+          category TEXT NOT NULL CHECK (category IN ('check-in', 'workout', 'meditation')),
+          milestone_value INT NOT NULL,
+          unlocked_at TIMESTAMPTZ DEFAULT NOW(),
+          UNIQUE(user_id, badge_type, category)
+        );
+        CREATE INDEX idx_badges_user ON badges(user_id);
+      </signature>
+      <path>supabase/migrations/</path>
+      <notes>Stores earned badges. UNIQUE constraint prevents duplicate badge awards. milestone_value stores the streak value when badge was earned (7, 30, or 100).</notes>
+    </interface>
+    <interface>
+      <name>streaks table (Drift SQLite)</name>
+      <kind>database-table</kind>
+      <signature>
+        @DataClassName('StreakTable')
+        class Streaks extends Table {
+          TextColumn get id => text()();
+          TextColumn get userId => text()();
+          TextColumn get type => text()();
+          IntColumn get currentStreak => integer().withDefault(const Constant(0))();
+          IntColumn get longestStreak => integer().withDefault(const Constant(0))();
+          BoolColumn get freezeUsedThisWeek => boolean().withDefault(const Constant(false))();
+          DateTimeColumn get lastActivityDate => dateTime().nullable()();
+          DateTimeColumn get createdAt => dateTime()();
+          DateTimeColumn get updatedAt => dateTime()();
+
+          @override
+          Set&lt;Column&gt; get primaryKey => {id};
+        }
+      </signature>
+      <path>lib/core/database/tables.drift.dart</path>
+      <notes>Drift table definition. Mirror of Supabase schema for offline-first architecture. Use drift code generation.</notes>
+    </interface>
+    <interface>
+      <name>Daily Streak Check Edge Function</name>
+      <kind>edge-function</kind>
+      <signature>
+        // Runs daily at 11:59pm (pg_cron)
+        Deno.serve(async () => {
+          const users = await getAllActiveUsers();
+          for (const user of users) {
+            const hasCheckin = await hasCheckinToday(user.id);
+            const hasReflection = await hasReflectionToday(user.id);
+
+            if (hasCheckin && hasReflection) {
+              await incrementStreak(user.id, 'check-in');
+            } else {
+              await handleStreakBreak(user.id, 'check-in');
+            }
+          }
+        });
+      </signature>
+      <path>supabase/functions/daily-streak-check/index.ts</path>
+      <notes>Background job to check all users' check-in completion at end of day. Updates streaks table. Sends push notifications for users about to break streak. Schedule via pg_cron: SELECT cron.schedule('daily-streak-check', '59 23 * * *', 'SELECT net.http_post(...)');</notes>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Follow 70/20/10 testing pyramid: 70% unit tests (use cases, repositories, entities, streak calculation logic), 20% widget tests (UI components, animations, state management), 10% integration tests (end-to-end streak flows). Use flutter_test for unit/widget tests, integration_test for E2E. Mock dependencies with mockito. Target 80%+ code coverage. All acceptance criteria must have test coverage.
+    </standards>
+    <locations>
+      <location>test/features/life_coach/domain/usecases/</location>
+      <location>test/features/life_coach/domain/entities/</location>
+      <location>test/features/life_coach/data/repositories/</location>
+      <location>test/features/life_coach/presentation/widgets/</location>
+      <location>integration_test/features/life_coach/streak_tracking_flow_test.dart</location>
+    </locations>
+    <ideas>
+      <test-idea ac-ref="AC2">
+        <description>Unit test: Streak increments only when both check-in and reflection completed</description>
+        <approach>Mock CheckinRepository and ReflectionRepository. Test case 1: both completed → streak += 1. Test case 2: only check-in completed → streak unchanged. Test case 3: only reflection completed → streak unchanged. Test case 4: neither completed → trigger HandleStreakBreakUseCase.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3,AC4">
+        <description>Unit test: Streak break with freeze mechanics</description>
+        <approach>Mock StreakRepository. Test case 1: freeze available (freeze_used_this_week=false) → use freeze, streak preserved, freeze_used_this_week=true. Test case 2: freeze already used → streak resets to 0, longestStreak updated if needed.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4">
+        <description>Unit test: Weekly freeze reset</description>
+        <approach>Create streak entity with freeze_used_this_week=true. Run weekly reset job. Assert freeze_used_this_week=false. Verify all users' freezes reset (batch test with multiple users).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6">
+        <description>Unit test: Milestone badge awards</description>
+        <approach>Test AwardBadgeUseCase. Test case 1: currentStreak=7 → bronze badge awarded. Test case 2: currentStreak=30 → silver badge awarded. Test case 3: currentStreak=100 → gold badge awarded. Test case 4: currentStreak=5 → no badge. Test case 5: badge already awarded → no duplicate.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3">
+        <description>Unit test: Grace period logic</description>
+        <approach>Mock current time. Test case 1: within 24h of previous day → CheckGracePeriodUseCase returns true. Test case 2: after 24h → returns false. Test case 3: complete check-in during grace period → streak continues. Test case 4: miss grace period → streak breaks.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1">
+        <description>Widget test: Streak display UI renders correctly</description>
+        <approach>Render StreakWidget with currentStreak=7. Verify "7-day streak! 🔥" displayed. Verify flame emoji present. Verify font size and bold formatting. Test with different streak values (0, 1, 7, 30, 100).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC7">
+        <description>Widget test: Badge unlock celebration animation</description>
+        <approach>Trigger badge unlock event. Verify confetti animation starts. Verify badge reveal modal appears with correct badge type. Verify haptic feedback triggered (mock HapticFeedback). Verify auto-dismiss after 5 seconds or manual tap.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC9">
+        <description>Widget test: Streak warning notification banner</description>
+        <approach>Mock time (9pm). Mock incomplete check-in. Verify warning banner appears on Home tab with message "Complete reflection to keep streak!". Verify tapping banner navigates to check-in screen.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC5">
+        <description>Widget test: Freeze availability indicator</description>
+        <approach>Render freeze indicator widget. Test case 1: freeze_used_this_week=false → display "Freeze available: 1 this week". Test case 2: freeze_used_this_week=true → display "Freeze used this week". Test case 3: premium tier → "Freeze available: 2 this week".</approach>
+      </test-idea>
+      <test-idea ac-ref="ALL">
+        <description>Integration test: Complete streak increment flow</description>
+        <approach>Start with currentStreak=6. Complete morning check-in and evening reflection. Verify streak increments to 7. Verify bronze badge awarded. Verify confetti animation plays. Verify streak syncs to Supabase. Verify streak displayed on Home tab.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3,AC4">
+        <description>Integration test: Streak break with freeze</description>
+        <approach>Start with currentStreak=10, freeze_used_this_week=false. Miss both check-in and reflection. Verify HandleStreakBreakUseCase called. Verify freeze automatically used. Verify currentStreak=10 (preserved). Verify freeze_used_this_week=true. Next miss → streak resets to 0.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC8">
+        <description>Integration test: Streak syncs across devices</description>
+        <approach>Complete check-in on Device A → streak increments. Mock Supabase realtime sync. Verify streak updates on Device B. Test offline streak increment → online sync. Verify conflict resolution (server wins).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC2,AC3">
+        <description>Unit test: Edge cases - timezone handling</description>
+        <approach>Mock user in different timezones (PST, EST, UTC, JST). Verify daily streak check uses user's local timezone. Test edge case: complete check-in at 11:58pm local time → streak increments. Complete at 12:01am → new day, doesn't count for previous day.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6">
+        <description>Integration test: Multiple milestone achievements</description>
+        <approach>Start with currentStreak=29. Complete check-in → streak=30, silver badge awarded. Continue to streak=99 (mock). Next completion → streak=100, gold badge awarded. Verify both badges in user's collection. Verify longestStreak=100.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC9">
+        <description>Integration test: Leaderboard (optional friends-only)</description>
+        <approach>Create 3 test users with streaks: UserA=10, UserB=5, UserC=15. UserA opts into leaderboard and adds UserB, UserC as friends. Verify leaderboard shows: 1. UserC (15), 2. UserA (10), 3. UserB (5). Verify UserA cannot see non-friends. Test opt-out → leaderboard hidden.</approach>
+      </test-idea>
+    </ideas>
+  </tests>
+</story-context>
