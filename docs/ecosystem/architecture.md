@@ -63,11 +63,12 @@
 ### 2.1 Wymagania Systemowe
 
 **Środowisko deweloperskie:**
-- Flutter SDK 3.38+ (z Dart 3.10+)
+- Flutter SDK 3.24+ (z Dart 3.5+)
 - Android Studio / VS Code
 - Xcode 15+ (dla iOS development na macOS)
 - Git 2.30+
 - Node.js 18+ (dla Supabase CLI)
+- PostgreSQL 17+ (recommended dla Supabase self-hosted)
 
 **Konta i klucze API:**
 - Konto Supabase (darmowy tier wystarcza dla developmentu)
@@ -90,8 +91,8 @@ cd lifeos
 
 # Krok 2: Verify Flutter installation
 flutter doctor -v
-flutter --version  # Should be 3.38+
-dart --version     # Should be 3.10+
+flutter --version  # Should be 3.24+
+dart --version     # Should be 3.5+
 
 # Krok 3: Enable platforms
 flutter config --enable-ios
@@ -109,8 +110,8 @@ publish_to: 'none'
 version: 1.0.0+1
 
 environment:
-  sdk: '>=3.10.0 <4.0.0'
-  flutter: '>=3.38.0'
+  sdk: '>=3.5.0 <4.0.0'
+  flutter: '>=3.24.0'
 
 dependencies:
   flutter:

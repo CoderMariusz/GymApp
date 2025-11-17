@@ -145,8 +145,8 @@ module_workflows:
 # ============================================================================
 
 next_steps:
-  current_phase: "Phase 2: Solutioning"
-  current_step: "Solutioning Gate Check (READY)"
+  current_phase: "Phase 3: Implementation Planning"
+  current_step: "Sprint Planning (READY)"
 
   completed_actions:
     - step: 1
@@ -173,30 +173,34 @@ next_steps:
       status: "completed - 2025-01-16"
       result: "CI/CD, environments, monitoring defined"
 
+    - step: 5
+      action: "Implementation readiness assessment"
+      owner: "BMAD Architect"
+      status: "completed - 2025-11-17"
+      result: "Score 100/100, READY FOR IMPLEMENTATION (0 blockers, 3 minor recommendations)"
+
+    - step: 6
+      action: "Address minor recommendations"
+      owner: "BMAD Architect"
+      status: "completed - 2025-11-17"
+      result: "Flutter 3.24+, PostgreSQL 17+, Epic 0 checklist added"
+
   immediate_actions:
     - step: 1
-      action: "Run Solutioning Gate Check"
-      owner: "BMAD Architect"
+      action: "Consider Sprint 0 for Infrastructure Setup (OPTIONAL)"
+      owner: "Developer / SM"
       status: "recommended"
       details: |
-        Validate alignment:
-        - PRD → Architecture alignment (123 FRs → 13 decisions)
-        - Architecture → Epics alignment (9 epics → directory structure)
-        - Test Design → NFRs coverage (37 NFRs → 523 tests)
-        - Risks identified and mitigated
-        - Ready for Sprint Planning
+        Before Sprint 1 implementation:
+        - Duration: 3-5 days (Epic 0 setup time)
+        - Goal: Complete infrastructure setup (Flutter init, Supabase, Firebase, Stripe, CI/CD)
+        - Output: Working skeleton app with auth, database, CI/CD pipeline
+        - Benefit: Sprint 1 can start immediately with Story 1.1 implementation
+        - Alternative: Integrate Epic 0 setup into Sprint 1 (extends Sprint 1 duration)
+
+        See: docs/ecosystem/epic-0-setup-infrastructure.md for complete checklist
 
     - step: 2
-      action: "Fix minor architecture issues"
-      owner: "Developer"
-      status: "recommended"
-      details: |
-        Before Sprint 1:
-        - Update Dart version to 3.10+ in architecture doc
-        - Update PostgreSQL recommendation to 17+
-        - Add project initialization section
-
-    - step: 3
       action: "Begin Sprint Planning"
       owner: "BMAD SM"
       status: "ready"
@@ -226,7 +230,7 @@ next_steps:
 
 technology:
   frontend:
-    framework: "Flutter 3.16+"  # ✅ DECIDED
+    framework: "Flutter 3.24+"  # ✅ DECIDED
     platforms: ["iOS", "Android", "Web (future)"]
     design: "Nike + Headspace fusion"
     themes: "Deep Blue, Energetic Teal, Orange/Purple accents"

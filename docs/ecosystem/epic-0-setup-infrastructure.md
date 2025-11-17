@@ -13,7 +13,7 @@
 **Epic 0** przygotowuje kompletne środowisko deweloperskie dla projektu LifeOS. Obecnie projekt to **tylko dokumentacja** - żaden kod jeszcze nie istnieje. Ten epic dostarcza step-by-step instrukcje jak przejść od zera do w pełni funkcjonalnego środowiska development.
 
 **Co zostanie zbudowane:**
-- Środowisko deweloperskie Flutter 3.38+
+- Środowisko deweloperskie Flutter 3.24+
 - Zainicjalizowany projekt Flutter ze strukturą katalogów
 - Połączone serwisy (Supabase, Firebase, Stripe)
 - Działający pipeline CI/CD (GitHub Actions)
@@ -21,6 +21,68 @@
 - Lokalne środowisko development z Docker
 
 **Szacowany czas setup:** 2.5-4 dni (19-30 godzin) dla developera od zera
+
+---
+
+## Setup Checklist
+
+**Użyj tej checklisty aby zweryfikować poprawność setup:**
+
+### ✅ Środowisko Deweloperskie
+- [ ] Flutter SDK 3.24+ zainstalowany (`flutter --version`)
+- [ ] Dart SDK 3.5+ zainstalowany (`dart --version`)
+- [ ] `flutter doctor` przechodzi bez błędów (warnings OK)
+- [ ] Android Studio zainstalowany z Android SDK
+- [ ] Xcode 15+ zainstalowany (tylko macOS, dla iOS)
+- [ ] VS Code zainstalowany z Flutter extension
+- [ ] Git 2.30+ zainstalowany (`git --version`)
+- [ ] Node.js 18+ zainstalowany (`node --version`)
+
+### ✅ Konta i API Keys
+- [ ] Konto GitHub utworzone i SSH keys skonfigurowane
+- [ ] Projekt Supabase utworzony (project ID obtained)
+- [ ] Supabase CLI zainstalowane (`supabase --version`)
+- [ ] Firebase Console project utworzony
+- [ ] Firebase CLI zainstalowane (`firebase --version`)
+- [ ] Stripe test account utworzony (API keys obtained)
+- [ ] PostgreSQL 17+ zainstalowany lokalnie (optional dla self-hosted)
+
+### ✅ Projekt Flutter
+- [ ] Projekt Flutter zainicjalizowany (`flutter create lifeos`)
+- [ ] Dependencies zainstalowane (`flutter pub get` działa)
+- [ ] Code generation działa (`dart run build_runner build`)
+- [ ] Aplikacja kompiluje się (`flutter build apk --debug`)
+- [ ] Aplikacja uruchamia się na emulatorze/symulatorze
+
+### ✅ Backend & Serwisy
+- [ ] Supabase project połączony (`supabase link`)
+- [ ] Lokalne Supabase działa (`supabase start`)
+- [ ] Firebase FCM skonfigurowane (google-services.json / GoogleService-Info.plist)
+- [ ] Stripe SDK zintegrowane i test mode działa
+- [ ] Supabase Auth działa (test registration/login)
+
+### ✅ CI/CD & Testing
+- [ ] GitHub Actions workflow działa (pierwszy build przeszedł)
+- [ ] Test framework setup (`flutter test` działa)
+- [ ] Smoke test przechodzi
+- [ ] Linter skonfigurowany (`flutter analyze` bez errors)
+
+### ✅ Środowiska (Dev/Staging/Prod)
+- [ ] .env.development utworzony z Supabase keys
+- [ ] .env.staging utworzony (optional)
+- [ ] .env.production utworzony (optional)
+- [ ] Environment secrets dodane do GitHub Actions
+- [ ] Flutter flavor configuration działa (dev/prod builds)
+
+### ✅ Dokumentacja
+- [ ] README.md zaktualizowany z setup instructions
+- [ ] Architecture doc przeczytany (docs/ecosystem/architecture.md)
+- [ ] Local development guide dostępny
+- [ ] Troubleshooting section dodany do README
+
+---
+
+**Po ukończeniu wszystkich kroków checklist, środowisko jest gotowe do Sprint 1!** 🚀
 
 **Prerequisites:**
 - Komputer z macOS (dla iOS) lub Windows/Linux (tylko Android)
@@ -36,8 +98,8 @@
 
 | Narzędzie | Wersja | Platforma | Obowiązkowe |
 |-----------|--------|-----------|-------------|
-| **Flutter SDK** | 3.38+ | All | ✅ Tak |
-| **Dart** | 3.10+ | All (included with Flutter) | ✅ Tak |
+| **Flutter SDK** | 3.24+ | All | ✅ Tak |
+| **Dart** | 3.5+ | All (included with Flutter) | ✅ Tak |
 | **Git** | 2.30+ | All | ✅ Tak |
 | **Node.js** | 18+ | All | ✅ Tak (Supabase CLI) |
 | **VS Code** | Latest | All | ⚠️ Zalecane |
@@ -91,7 +153,7 @@ Epic 0 składa się z **10 stories** wykonywanych sekwencyjnie:
 
 ### Story 0.1: Flutter Environment Setup
 
-**Cel:** Zainstalować Flutter SDK 3.38+ i skonfigurować środowisko deweloperskie
+**Cel:** Zainstalować Flutter SDK 3.24+ i skonfigurować środowisko deweloperskie
 
 **Kroki:**
 
