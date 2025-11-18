@@ -1,5 +1,13 @@
 # Story 5.4: Poor Sleep + Morning Workout → Suggest Afternoon
-**Epic:** 5 - Cross-Module Intelligence | **P0** | **2 SP** | **drafted**
+**Epic:** 5 - Cross-Module Intelligence | **P0** | **2 SP** | **ready-for-dev**
+
+## Dev Agent Record
+
+### Context Reference
+
+- **Story Context File:** [5-4-poor-sleep-morning-workout-suggest-afternoon.context.xml](./5-4-poor-sleep-morning-workout-suggest-afternoon.context.xml)
+- **Generated:** 2025-11-17
+- **Status:** Context created, story ready for implementation
 
 ## AC
 1. ✅ Triggered when: Sleep quality <3 (poor) AND morning workout scheduled (<12pm)

@@ -1,5 +1,13 @@
 # Story 5.1: Insight Engine - Detect Patterns & Generate Insights
-**Epic:** 5 - Cross-Module Intelligence | **P0** | **5 SP** | **drafted**
+**Epic:** 5 - Cross-Module Intelligence | **P0** | **5 SP** | **ready-for-dev**
+
+## Dev Agent Record
+
+### Context Reference
+
+- **Story Context File:** [5-1-insight-engine-detect-patterns-generate-insights.context.xml](./5-1-insight-engine-detect-patterns-generate-insights.context.xml)
+- **Generated:** 2025-11-17
+- **Status:** Context created, story ready for implementation
 
 ## User Story
 **As the system**, **I want** to detect patterns across modules, **So that** I generate actionable cross-module insights.

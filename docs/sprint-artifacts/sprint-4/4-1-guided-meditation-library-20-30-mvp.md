@@ -1,5 +1,5 @@
 # Story 4.1: Guided Meditation Library (20-30 MVP)
-**Epic:** 4 - Mind & Emotion | **P0** | **3 SP** | **drafted**
+**Epic:** 4 - Mind & Emotion | **P0** | **3 SP** | **ready-for-dev**
 
 ## User Story
 **As a** user wanting to meditate, **I want** access to guided meditations, **So that** I can reduce stress and improve focus.
@@ -33,3 +33,9 @@ CREATE TABLE meditation_completions (
 );
 ```
 **Dependencies:** Epic 1 | **Coverage:** 80%+
+
+## Dev Agent Record
+
+- **Status Updated to ready-for-dev:** 2025-11-17
+- **Dev Agent:** Claude Haiku 4.5
+- **Purpose:** Ready for development phase

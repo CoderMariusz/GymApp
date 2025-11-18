@@ -1,0 +1,450 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>7</epicId>
+    <storyId>7.6</storyId>
+    <title>Subscription Management (In-App Purchase)</title>
+    <status>ready-for-dev</status>
+    <generatedAt>2025-11-17</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/sprint-7/7-6-subscription-management-in-app-purchase.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>user ready to upgrade</asA>
+    <iWant>to subscribe to a paid plan via in-app purchase</iWant>
+    <soThat>I can unlock premium features and support the app</soThat>
+    <tasks>
+      <task id="1" ac-ref="AC1,AC2">
+        <description>Define subscription tiers and pricing</description>
+        <subtasks>
+          <subtask>Standard: €2.99/month - 1 module of choice (Fitness OR Mind OR Life Coach)</subtask>
+          <subtask>Premium: €5.00/month - All 3 modules + GPT-4 AI</subtask>
+          <subtask>Full Access: €7.00/month - All modules + GPT-4 + priority support + early features</subtask>
+          <subtask>Document feature matrix for each tier</subtask>
+          <subtask>Configure regional pricing (UK £, PL PLN, EU EUR)</subtask>
+        </subtasks>
+      </task>
+      <task id="2" ac-ref="AC3,AC4">
+        <description>Implement subscription screen UI</description>
+        <subtasks>
+          <subtask>Create SubscriptionScreen accessible from Profile tab</subtask>
+          <subtask>Display current plan with status badge (Free/Standard/Premium)</subtask>
+          <subtask>Show all available tiers with pricing cards</subtask>
+          <subtask>Highlight recommended tier (Premium)</subtask>
+          <subtask>Display feature comparison table</subtask>
+          <subtask>Show upgrade/downgrade options based on current tier</subtask>
+        </subtasks>
+      </task>
+      <task id="3" ac-ref="AC6,AC7">
+        <description>Integrate in_app_purchase package</description>
+        <subtasks>
+          <subtask>Add in_app_purchase: ^3.1.0 to pubspec.yaml</subtask>
+          <subtask>Configure App Store Connect products (iOS)</subtask>
+          <subtask>Configure Google Play Console products (Android)</subtask>
+          <subtask>Implement product fetching from stores</subtask>
+          <subtask>Handle purchase flow: initiate → complete → verify</subtask>
+          <subtask>Implement purchase restoration for existing subscribers</subtask>
+        </subtasks>
+      </task>
+      <task id="4" ac-ref="AC6,AC8">
+        <description>Implement purchase verification and backend sync</description>
+        <subtasks>
+          <subtask>Verify purchase receipts server-side (Supabase Edge Function)</subtask>
+          <subtask>iOS: Verify with Apple App Store API</subtask>
+          <subtask>Android: Verify with Google Play Billing API</subtask>
+          <subtask>Update user_settings: subscription_tier, subscription_status='active'</subtask>
+          <subtask>Set subscription_end_date based on billing period (monthly auto-renew)</subtask>
+          <subtask>Sync subscription status across devices via Supabase realtime</subtask>
+        </subtasks>
+      </task>
+      <task id="5" ac-ref="AC5">
+        <description>Implement regional pricing</description>
+        <subtasks>
+          <subtask>Configure price points: UK £2.99/£4.99/£6.99, PL 13.99zł/22.99zł/31.99zł, EU €2.99/€5.00/€7.00</subtask>
+          <subtask>Use in_app_purchase to fetch localized prices from stores</subtask>
+          <subtask>Display prices in user's local currency automatically</subtask>
+          <subtask>Handle currency conversion edge cases</subtask>
+        </subtasks>
+      </task>
+      <task id="6" ac-ref="AC7,AC9">
+        <description>Implement auto-renewal and subscription lifecycle</description>
+        <subtasks>
+          <subtask>Auto-renew monthly via App Store/Google Play</subtask>
+          <subtask>Handle renewal success: Update subscription_end_date</subtask>
+          <subtask>Handle renewal failure: Grace period (7 days), then downgrade</subtask>
+          <subtask>Implement webhook handler for subscription updates (RevenueCat or Supabase)</subtask>
+          <subtask>Sync subscription status on app launch</subtask>
+        </subtasks>
+      </task>
+      <task id="7" ac-ref="AC10">
+        <description>Implement upgrade/downgrade flows</description>
+        <subtasks>
+          <subtask>Upgrade (Free → Standard, Standard → Premium): Immediate activation</subtask>
+          <subtask>Downgrade (Premium → Standard): Takes effect at end of current billing period</subtask>
+          <subtask>Pro-rated pricing handled by App Store/Google Play</subtask>
+          <subtask>Show preview of changes before confirming upgrade/downgrade</subtask>
+          <subtask>Update database after successful tier change</subtask>
+        </subtasks>
+      </task>
+      <task id="8" ac-ref="ALL">
+        <description>Write comprehensive tests</description>
+        <subtasks>
+          <subtask>Unit tests: Purchase flow, receipt verification, tier updates</subtask>
+          <subtask>Widget tests: Subscription screen, pricing cards, feature comparison</subtask>
+          <subtask>Integration test: Complete purchase flow with mock in_app_purchase</subtask>
+          <subtask>Test upgrade, downgrade, restore purchases flows</subtask>
+          <subtask>Achieve 80%+ code coverage</subtask>
+        </subtasks>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="AC1">
+      <text>Three tiers: Standard €2.99 (1 module), Premium €5.00 (3 modules), Full Access €7.00 (all + extras)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC2">
+      <text>Subscription screen accessible from Profile tab</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC3">
+      <text>Current plan shown with status badge</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC4">
+      <text>Upgrade/downgrade options displayed based on current tier</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC5">
+      <text>Regional pricing: UK £, PL PLN, EU EUR displayed correctly</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC6">
+      <text>Purchase via App Store (iOS) or Google Play (Android)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC7">
+      <text>Auto-renews monthly via platform billing</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC8">
+      <text>Receipt verification server-side, subscription_tier updated in database</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC9">
+      <text>Cancel anytime (handled in Story 7.7)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC10">
+      <text>Subscription synced across devices via Supabase</text>
+      <priority>P0</priority>
+    </criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR49: Subscription tiers and pricing</section>
+        <snippet>Three paid tiers: Standard €2.99/mo (1 module), Premium €5.00/mo (all modules + GPT-4), Full Access €7.00/mo (all + priority support). Regional pricing for UK, PL, EU. Monthly auto-renew. Cancel anytime.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR50: In-app purchase integration</section>
+        <snippet>Use in_app_purchase package for cross-platform billing. Server-side receipt verification. Sync subscription status across devices. Handle upgrades, downgrades, cancellations, renewals.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/epics.md</path>
+        <title>Epic 7: Onboarding &amp; Subscriptions</title>
+        <section>Story 7.6: Subscription Management</section>
+        <snippet>Full subscription implementation with in-app purchase, tiers, pricing, verification, sync. Core monetization infrastructure.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Payment Integration</section>
+        <snippet>Use App Store/Google Play native billing. No external payment processor (simplifies compliance). Server-side receipt verification via Supabase Edge Functions. Store subscription status in Supabase, sync to all devices.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/ux-design-specification.md</path>
+        <title>UX Design Specification</title>
+        <section>Subscription Screen UX</section>
+        <snippet>Clean pricing cards with clear value prop. Feature comparison table. Current plan highlighted. Upgrade/downgrade flows intuitive. No dark patterns. "Cancel anytime" prominent. Trust-building design.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <reference>
+        <path>lib/core/services/feature_gate_service.dart</path>
+        <description>Feature gate service from Story 7.4</description>
+        <note>Update to check new subscription tiers: standard, premium, full_access.</note>
+      </reference>
+    </code>
+    <dependencies>
+      <flutter>
+        <sdk>3.38+</sdk>
+        <dart>3.10+</dart>
+      </flutter>
+      <packages>
+        <package name="in_app_purchase" version="^3.1.0" usage="Cross-platform in-app purchases (iOS/Android)" />
+        <package name="in_app_purchase_storekit" version="^0.3.0" usage="iOS StoreKit 2 integration" />
+        <package name="in_app_purchase_android" version="^0.3.0" usage="Android Google Play Billing integration" />
+        <package name="flutter_riverpod" version="^3.0.0" usage="Subscription state management" />
+        <package name="drift" version="^2.14.0" usage="Local subscription caching" />
+        <package name="supabase_flutter" version="^2.0.0" usage="Backend sync and receipt verification" />
+      </packages>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint id="PLAT-1" type="platform">
+      <description>iOS App Store configuration</description>
+      <details>Create subscription products in App Store Connect. Product IDs: lifeos_standard_monthly, lifeos_premium_monthly, lifeos_full_access_monthly. Auto-renewable subscriptions. Pricing tier matching regional pricing.</details>
+    </constraint>
+    <constraint id="PLAT-2" type="platform">
+      <description>Android Google Play configuration</description>
+      <details>Create subscription products in Google Play Console. Same product IDs as iOS. Set up base plan (monthly recurring). Configure regional pricing for UK, PL, EU. Enable Google Play Billing Library v5+.</details>
+    </constraint>
+    <constraint id="SEC-1" type="security">
+      <description>Server-side receipt verification mandatory</description>
+      <details>Never trust client-side purchase verification. Always verify receipts with Apple/Google servers via Supabase Edge Function. Prevents fraud and fake purchases.</details>
+    </constraint>
+    <constraint id="SEC-2" type="security">
+      <description>Subscription status sync must be authoritative</description>
+      <details>Supabase is source of truth for subscription tier. Client reads tier from server on launch. Feature gates check server-synced tier, not local storage only.</details>
+    </constraint>
+    <constraint id="DATA-1" type="data">
+      <description>Subscription data schema</description>
+      <details>Update user_settings table: subscription_tier, subscription_status ('active'|'cancelled'|'expired'|'grace_period'), subscription_end_date, platform ('ios'|'android'), product_id, original_transaction_id.</details>
+    </constraint>
+    <constraint id="UX-1" type="ux">
+      <description>Transparent pricing with no hidden fees</description>
+      <details>Show exact monthly price. Clearly state "Auto-renews monthly" and "Cancel anytime". No dark patterns. Build trust through transparency.</details>
+    </constraint>
+    <constraint id="UX-2" type="ux">
+      <description>Upgrade flow should be seamless</description>
+      <details>Upgrade activates immediately. Show confirmation: "You now have Premium! All features unlocked." Pro-rated pricing handled by App Store/Google Play automatically.</details>
+    </constraint>
+    <constraint id="UX-3" type="ux">
+      <description>Downgrade flow should be clear</description>
+      <details>Downgrade takes effect at end of current billing period. Show: "You'll keep Premium until [date], then switch to Standard." No immediate loss of access.</details>
+    </constraint>
+    <constraint id="ARCH-1" type="architectural">
+      <description>Use webhooks for subscription updates</description>
+      <details>Implement Supabase Edge Function to receive Apple/Google webhook notifications for renewals, cancellations, refunds. Update user_settings table automatically.</details>
+    </constraint>
+    <constraint id="TEST-1" type="testing">
+      <description>80%+ code coverage required</description>
+      <details>Test purchase flows with mock in_app_purchase. Test receipt verification. Test upgrade/downgrade logic. Integration tests for full flows.</details>
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>PurchaseSubscriptionUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class PurchaseSubscriptionUseCase {
+          Future&lt;Result&lt;SubscriptionEntity&gt;&gt; call({
+            required SubscriptionTier tier,
+          });
+        }
+      </signature>
+      <path>lib/features/subscriptions/domain/usecases/purchase_subscription_usecase.dart</path>
+      <notes>Initiates in-app purchase, verifies receipt, updates tier. Returns Result with subscription details or error.</notes>
+    </interface>
+    <interface>
+      <name>VerifyPurchaseReceiptUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class VerifyPurchaseReceiptUseCase {
+          Future&lt;Result&lt;PurchaseVerification&gt;&gt; call({
+            required String receipt,
+            required String platform,
+          });
+        }
+      </signature>
+      <path>lib/features/subscriptions/domain/usecases/verify_purchase_receipt_usecase.dart</path>
+      <notes>Calls Supabase Edge Function to verify receipt with Apple/Google. Returns verification result.</notes>
+    </interface>
+    <interface>
+      <name>GetCurrentSubscriptionUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class GetCurrentSubscriptionUseCase {
+          Future&lt;Result&lt;SubscriptionEntity&gt;&gt; call();
+        }
+      </signature>
+      <path>lib/features/subscriptions/domain/usecases/get_current_subscription_usecase.dart</path>
+      <notes>Returns current subscription details: tier, status, end date, platform. Synced from Supabase.</notes>
+    </interface>
+    <interface>
+      <name>RestorePurchasesUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class RestorePurchasesUseCase {
+          Future&lt;Result&lt;List&lt;SubscriptionEntity&gt;&gt;&gt; call();
+        }
+      </signature>
+      <path>lib/features/subscriptions/domain/usecases/restore_purchases_usecase.dart</path>
+      <notes>Restores previous purchases from App Store/Google Play. Updates local subscription status.</notes>
+    </interface>
+    <interface>
+      <name>SubscriptionEntity</name>
+      <kind>domain-entity</kind>
+      <signature>
+        class SubscriptionEntity {
+          final String userId;
+          final SubscriptionTier tier;
+          final SubscriptionStatus status;
+          final DateTime? endDate;
+          final String platform; // 'ios' | 'android'
+          final String productId;
+          final String? originalTransactionId;
+          final DateTime createdAt;
+          final DateTime updatedAt;
+        }
+      </signature>
+      <path>lib/features/subscriptions/domain/entities/subscription_entity.dart</path>
+      <notes>Use @freezed for immutability. Represents subscription state.</notes>
+    </interface>
+    <interface>
+      <name>SubscriptionTier enum updates</name>
+      <kind>domain-enum</kind>
+      <signature>
+        enum SubscriptionTier {
+          free,
+          standard,      // €2.99/month - 1 module
+          premium,       // €5.00/month - 3 modules + GPT-4
+          fullAccess,    // €7.00/month - all + extras
+        }
+      </signature>
+      <path>lib/core/domain/enums/subscription_tier.dart</path>
+      <notes>Update from Story 7.4 to include new tiers.</notes>
+    </interface>
+    <interface>
+      <name>SubscriptionStatus enum</name>
+      <kind>domain-enum</kind>
+      <signature>
+        enum SubscriptionStatus {
+          active,
+          cancelled,  // Still active until end date
+          expired,
+          gracePeriod, // Payment failed, 7-day grace
+        }
+      </signature>
+      <path>lib/features/subscriptions/domain/enums/subscription_status.dart</path>
+      <notes>Represents subscription lifecycle states.</notes>
+    </interface>
+    <interface>
+      <name>user_settings table updates (Supabase)</name>
+      <kind>database-table</kind>
+      <signature>
+        ALTER TABLE user_settings ADD COLUMN platform TEXT CHECK (platform IN ('ios', 'android'));
+        ALTER TABLE user_settings ADD COLUMN product_id TEXT;
+        ALTER TABLE user_settings ADD COLUMN original_transaction_id TEXT;
+        ALTER TABLE user_settings ADD COLUMN last_verified_at TIMESTAMPTZ;
+      </signature>
+      <path>supabase/migrations/</path>
+      <notes>Add purchase tracking columns to user_settings for subscription management.</notes>
+    </interface>
+    <interface>
+      <name>Receipt verification Edge Function</name>
+      <kind>edge-function</kind>
+      <signature>
+        // supabase/functions/verify-purchase/index.ts
+        Deno.serve(async (req) => {
+          const { receipt, platform } = await req.json();
+          if (platform === 'ios') {
+            // Verify with Apple App Store API
+          } else {
+            // Verify with Google Play Billing API
+          }
+          // Update user_settings on success
+        });
+      </signature>
+      <path>supabase/functions/verify-purchase/index.ts</path>
+      <notes>Server-side receipt verification. Called after in-app purchase.</notes>
+    </interface>
+    <interface>
+      <name>Subscription webhook Edge Function</name>
+      <kind>edge-function</kind>
+      <signature>
+        // supabase/functions/subscription-webhook/index.ts
+        Deno.serve(async (req) => {
+          // Handle Apple/Google webhook events:
+          // - Renewal success/failure
+          // - Cancellation
+          // - Refund
+          // Update user_settings.subscription_status
+        });
+      </signature>
+      <path>supabase/functions/subscription-webhook/index.ts</path>
+      <notes>Webhook endpoint for App Store/Google Play subscription events. Auto-updates database.</notes>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Follow 70/20/10 testing pyramid. Target 80%+ code coverage. Mock in_app_purchase for testing. Test all subscription flows.
+    </standards>
+    <locations>
+      <location>test/features/subscriptions/domain/usecases/</location>
+      <location>test/features/subscriptions/data/repositories/</location>
+      <location>test/features/subscriptions/presentation/screens/</location>
+      <location>integration_test/features/subscriptions/purchase_flow_test.dart</location>
+    </locations>
+    <ideas>
+      <test-idea ac-ref="AC1,AC3">
+        <description>Widget test: Subscription screen displays tiers</description>
+        <approach>Render SubscriptionScreen. Verify 3 pricing cards shown (Standard, Premium, Full Access). Check prices displayed. Verify current plan highlighted.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6">
+        <description>Unit test: PurchaseSubscriptionUseCase initiates purchase</description>
+        <approach>Mock in_app_purchase. Call usecase with tier='premium'. Verify in-app purchase initiated with correct product ID. Test receipt verification called.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC8">
+        <description>Unit test: VerifyPurchaseReceiptUseCase iOS flow</description>
+        <approach>Mock Supabase Edge Function. Submit iOS receipt. Verify Apple App Store API called. Test valid receipt updates subscription_tier. Test invalid receipt returns error.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC8">
+        <description>Unit test: VerifyPurchaseReceiptUseCase Android flow</description>
+        <approach>Mock Supabase Edge Function. Submit Android receipt. Verify Google Play Billing API called. Test receipt verification and tier update.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC5">
+        <description>Unit test: Regional pricing display</description>
+        <approach>Mock user location: UK. Fetch product prices. Verify displayed in GBP (£2.99, £4.99, £6.99). Test PL PLN and EU EUR pricing.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC10">
+        <description>Integration test: Subscription synced across devices</description>
+        <approach>Purchase subscription on Device A. Mock Supabase realtime sync. Verify subscription appears on Device B. Test tier and status match.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4">
+        <description>Widget test: Upgrade flow</description>
+        <approach>Set current tier='standard'. Render subscription screen. Tap "Upgrade to Premium" button. Verify purchase initiated. Mock successful purchase. Verify tier updated to 'premium'.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4">
+        <description>Widget test: Downgrade flow</description>
+        <approach>Set current tier='premium'. Tap "Downgrade to Standard". Verify confirmation modal: "Keep Premium until [date]". Confirm downgrade. Verify status='cancelled', tier remains 'premium' until end_date.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC7">
+        <description>Unit test: Auto-renewal success</description>
+        <approach>Mock webhook event: renewal success. Verify subscription_end_date extended by 1 month. Verify status remains 'active'.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC7">
+        <description>Unit test: Auto-renewal failure</description>
+        <approach>Mock webhook event: renewal failure. Verify status set to 'grace_period'. Verify grace period end_date = NOW() + 7 days. Test expiration after grace period → status='expired', tier='free'.</approach>
+      </test-idea>
+      <test-idea ac-ref="ALL">
+        <description>Integration test: Complete purchase flow</description>
+        <approach>Free tier user taps "Subscribe to Premium". Initiate in-app purchase (mocked). Submit receipt for verification. Verify receipt verified. Verify tier updated to 'premium'. Verify features unlocked. Verify sync to Supabase.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6">
+        <description>Integration test: Restore purchases</description>
+        <approach>User has active subscription on another device. Reinstall app (clear local data). Tap "Restore Purchases". Verify subscription restored. Verify tier and status synced from App Store/Google Play.</approach>
+      </test-idea>
+    </ideas>
+  </tests>
+</story-context>

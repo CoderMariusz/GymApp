@@ -1,0 +1,569 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>9</epicId>
+    <storyId>9.4</storyId>
+    <title>Subscription &amp; Billing Management</title>
+    <status>ready-for-dev</status>
+    <generatedAt>2025-11-17</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/sprint-9/9-4-subscription-billing-management.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>user</asA>
+    <iWant>to view and manage my subscription and billing</iWant>
+    <soThat>I can upgrade, downgrade, or cancel my plan</soThat>
+    <tasks>
+      <task id="1" ac-ref="AC1,AC2,AC3,AC4">
+        <description>Implement SubscriptionScreen UI</description>
+        <subtasks>
+          <subtask>Create SubscriptionScreen widget in settings feature</subtask>
+          <subtask>Add Section 1: Current Plan card (tier, price, status, next billing date)</subtask>
+          <subtask>Add Section 2: Available Tiers cards (Free, Single Module, 3-Module Pack, Full Access)</subtask>
+          <subtask>Add "Most Popular" badge to 3-Module Pack tier</subtask>
+          <subtask>Add Section 3: Actions (Cancel Subscription, Restore Purchases)</subtask>
+          <subtask>Display "Current Plan", "Upgrade", or "Downgrade" labels on tier cards</subtask>
+        </subtasks>
+      </task>
+      <task id="2" ac-ref="AC1,AC2,AC3,AC4">
+        <description>Implement current subscription display</description>
+        <subtasks>
+          <subtask>Create GetCurrentSubscriptionUseCase</subtask>
+          <subtask>Fetch subscription from subscriptions table (tier, status, trial_end_date, next_billing_date)</subtask>
+          <subtask>Display subscription tier: Free, Single Module, 3-Module Pack, Full Access</subtask>
+          <subtask>Display subscription status: Active, Trial, Cancelled, Expired</subtask>
+          <subtask>Display trial end date if status is Trial</subtask>
+          <subtask>Display next billing date if status is Active</subtask>
+        </subtasks>
+      </task>
+      <task id="3" ac-ref="AC5,AC6,AC7,AC8">
+        <description>Implement subscription tier management (upgrade/downgrade)</description>
+        <subtasks>
+          <subtask>Create UpgradeSubscriptionUseCase</subtask>
+          <subtask>Create DowngradeSubscriptionUseCase</subtask>
+          <subtask>Integrate in_app_purchase package for iOS/Android</subtask>
+          <subtask>Implement upgrade flow: select tier → In-App Purchase → activate subscription</subtask>
+          <subtask>Implement downgrade flow: select lower tier → confirmation → takes effect at end of billing period</subtask>
+          <subtask>Show confirmation dialog for downgrades: "Downgrade takes effect on [date]"</subtask>
+        </subtasks>
+      </task>
+      <task id="4" ac-ref="AC7,AC8">
+        <description>Implement cancel subscription flow</description>
+        <subtasks>
+          <subtask>Create CancelSubscriptionUseCase</subtask>
+          <subtask>Add "Cancel Subscription" button (red, bottom of screen)</subtask>
+          <subtask>Show confirmation dialog with cancellation details and billing period end date</subtask>
+          <subtask>Implement graceful degradation: subscription remains active until billing period ends</subtask>
+          <subtask>Update subscription status to "Cancelled" in database</subtask>
+          <subtask>Display "Subscription will end on [date]" after cancellation</subtask>
+        </subtasks>
+      </task>
+      <task id="5" ac-ref="AC8">
+        <description>Implement reactivation and restore purchases</description>
+        <subtasks>
+          <subtask>Create ReactivateSubscriptionUseCase (for cancelled subscriptions within 7-day window)</subtask>
+          <subtask>Add "Reactivate" button for cancelled subscriptions</subtask>
+          <subtask>Implement RestorePurchasesUseCase using in_app_purchase</subtask>
+          <subtask>Add "Restore Purchases" button at bottom</subtask>
+          <subtask>Restore previous purchases from Apple/Google Play and activate subscription</subtask>
+        </subtasks>
+      </task>
+      <task id="6" ac-ref="AC9">
+        <description>Implement billing history view</description>
+        <subtasks>
+          <subtask>Create billing_history table in Supabase</subtask>
+          <subtask>Create GetBillingHistoryUseCase</subtask>
+          <subtask>Display list of past payments (date, amount, tier, receipt)</subtask>
+          <subtask>Allow user to tap receipt to view details or download</subtask>
+        </subtasks>
+      </task>
+      <task id="7" ac-ref="ALL">
+        <description>Write comprehensive tests</description>
+        <subtasks>
+          <subtask>Unit tests: GetCurrentSubscriptionUseCase, UpgradeSubscriptionUseCase, DowngradeSubscriptionUseCase</subtask>
+          <subtask>Unit tests: CancelSubscriptionUseCase, ReactivateSubscriptionUseCase, RestorePurchasesUseCase</subtask>
+          <subtask>Widget tests: SubscriptionScreen, tier cards, cancel confirmation dialog</subtask>
+          <subtask>Integration test: Upgrade flow (Free → 3-Module Pack) with In-App Purchase</subtask>
+          <subtask>Integration test: Cancel subscription → graceful degradation → reactivate within 7 days</subtask>
+          <subtask>Integration test: Restore purchases flow</subtask>
+          <subtask>Achieve 80%+ code coverage</subtask>
+        </subtasks>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="AC1">
+      <text>User can view current subscription tier (Free, Single Module, 3-Module Pack, Full Access)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC2">
+      <text>User can view subscription status (Active, Trial, Cancelled, Expired)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC3">
+      <text>User can view trial end date (if in trial)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC4">
+      <text>User can view next billing date (if paid subscriber)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC5">
+      <text>User can upgrade to higher tier (via In-App Purchase)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC6">
+      <text>User can downgrade to lower tier (takes effect at end of billing period)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC7">
+      <text>User can cancel subscription (graceful degradation, 7-day access after cancellation)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC8">
+      <text>User can reactivate cancelled subscription (within 7-day window)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC9">
+      <text>User can view billing history (receipts for past payments)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC10">
+      <text>User can restore purchases (iOS/Android restore button)</text>
+      <priority>P0</priority>
+    </criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR95: Subscription management and billing</section>
+        <snippet>Users can view current subscription, upgrade/downgrade tiers, cancel with graceful degradation, restore purchases, and view billing history. Four tiers: Free (€0), Single Module (€2.99/month), 3-Module Pack (€5/month - most popular), Full Access (€7/month with GPT-4). In-App Purchase integration for iOS/Android.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/epics.md</path>
+        <title>Epic 9: Settings &amp; Profile - Story 9.4</title>
+        <section>Story 9.4: Subscription &amp; Billing Management</section>
+        <snippet>User can view subscription (tier, status, trial/billing dates), upgrade/downgrade via In-App Purchase, cancel with graceful degradation (remains active until billing period ends), reactivate within 7 days, restore purchases, and view billing history. Prerequisites: Epic 7 (subscription system). Technical: in_app_purchase package, subscriptions/billing_history tables, Apple/Google Play integration.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Subscription Architecture</section>
+        <snippet>Hybrid subscription model: In-App Purchase for iOS/Android, Supabase for subscription state management. Store subscription tier, status, billing dates in database. Graceful degradation on cancellation (no data loss, read-only mode for premium features).</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/sprint-9/9-4-subscription-billing-management.md</path>
+        <title>Story 9.4: Subscription &amp; Billing Management</title>
+        <section>Subscription Tiers</section>
+        <snippet>Free: Life Coach basic (€0). Single Module: 1 module (€2.99/month). 3-Module Pack: All 3 modules (€5.00/month) — Most Popular. Full Access: All modules + GPT-4 (€7.00/month).</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/sprint-9/9-4-subscription-billing-management.md</path>
+        <title>Story 9.4: Subscription &amp; Billing Management</title>
+        <section>Graceful Degradation</section>
+        <snippet>Subscription cancelled → Remains active until end of billing period. After billing period ends → Downgrade to Free tier. NO DATA LOSS: All workouts, meditations, journals remain accessible (read-only if &gt;3 goals).</snippet>
+      </doc>
+    </docs>
+    <code>
+      <file>
+        <path>lib/features/settings/presentation/pages/subscription_screen.dart</path>
+        <description>Subscription screen with current plan, available tiers, and actions</description>
+      </file>
+      <file>
+        <path>lib/features/settings/domain/services/subscription_service.dart</path>
+        <description>Service for subscription operations (get current, upgrade, downgrade, cancel, reactivate)</description>
+      </file>
+      <file>
+        <path>lib/features/settings/domain/services/in_app_purchase_service.dart</path>
+        <description>Service for In-App Purchase operations (iOS/Android)</description>
+      </file>
+      <file>
+        <path>lib/features/settings/domain/usecases/get_current_subscription_usecase.dart</path>
+        <description>Use case for fetching current subscription details</description>
+      </file>
+      <file>
+        <path>lib/features/settings/domain/usecases/upgrade_subscription_usecase.dart</path>
+        <description>Use case for upgrading to higher tier</description>
+      </file>
+      <file>
+        <path>lib/features/settings/domain/usecases/downgrade_subscription_usecase.dart</path>
+        <description>Use case for downgrading to lower tier</description>
+      </file>
+      <file>
+        <path>lib/features/settings/domain/usecases/cancel_subscription_usecase.dart</path>
+        <description>Use case for cancelling subscription with graceful degradation</description>
+      </file>
+      <file>
+        <path>lib/features/settings/domain/usecases/reactivate_subscription_usecase.dart</path>
+        <description>Use case for reactivating cancelled subscription</description>
+      </file>
+      <file>
+        <path>lib/features/settings/domain/usecases/restore_purchases_usecase.dart</path>
+        <description>Use case for restoring previous purchases from Apple/Google Play</description>
+      </file>
+    </code>
+    <dependencies>
+      <flutter>
+        <sdk>3.38+</sdk>
+        <dart>3.10+</dart>
+      </flutter>
+      <packages>
+        <package name="flutter_riverpod" version="^3.0.0" usage="State management for subscription state" />
+        <package name="riverpod_annotation" version="^3.0.0" usage="Code generation for providers" />
+        <package name="supabase_flutter" version="^2.0.0" usage="Supabase client for subscription state management" />
+        <package name="in_app_purchase" version="^3.1.0" usage="In-App Purchase for iOS/Android subscription management" />
+        <package name="in_app_purchase_storekit" version="^0.3.0" usage="iOS StoreKit integration" />
+        <package name="in_app_purchase_android" version="^0.3.0" usage="Android Google Play Billing integration" />
+        <package name="flutter_test" version="sdk" usage="Unit and widget testing framework" />
+        <package name="integration_test" version="sdk" usage="End-to-end testing framework" />
+      </packages>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint id="ARCH-1" type="architectural">
+      <description>Must follow Hybrid Architecture pattern (D1)</description>
+      <details>Create feature structure at lib/features/settings/ with presentation/, domain/, and data/ layers. Use clean architecture separation of concerns.</details>
+    </constraint>
+    <constraint id="ARCH-2" type="architectural">
+      <description>Use Riverpod for state management (D1, D6)</description>
+      <details>Create providers following feature-first structure. Use ConsumerWidget for subscription screen. Providers should be in settings/presentation/providers/.</details>
+    </constraint>
+    <constraint id="SUB-1" type="subscription">
+      <description>Four subscription tiers</description>
+      <details>Free: Life Coach basic (€0). Single Module: 1 module (€2.99/month). 3-Module Pack: All 3 modules (€5.00/month) — Most Popular badge. Full Access: All modules + GPT-4 unlimited (€7.00/month).</details>
+    </constraint>
+    <constraint id="SUB-2" type="subscription">
+      <description>Subscription status types</description>
+      <details>Active: Paid subscription, full access. Trial: Free trial period, full access. Cancelled: Subscription cancelled, access until billing period ends. Expired: Subscription ended, downgraded to Free tier. Free: No paid subscription.</details>
+    </constraint>
+    <constraint id="SUB-3" type="subscription">
+      <description>Graceful degradation on cancellation</description>
+      <details>When subscription cancelled, remains active until end of billing period. After billing period ends, downgrade to Free tier. NO DATA LOSS: All user data remains accessible. Premium features become read-only or limited (e.g., max 3 goals instead of unlimited).</details>
+    </constraint>
+    <constraint id="SUB-4" type="subscription">
+      <description>Downgrade takes effect at end of billing period</description>
+      <details>When user downgrades (e.g., Full Access → Single Module), change takes effect at end of current billing period. User continues to have Full Access until then. Display message: "Downgrade will take effect on [date]".</details>
+    </constraint>
+    <constraint id="SUB-5" type="subscription">
+      <description>Reactivation window: 7 days</description>
+      <details>After cancellation, user has 7-day window to reactivate subscription. "Reactivate" button appears on SubscriptionScreen if within window. After 7 days, must purchase new subscription.</details>
+    </constraint>
+    <constraint id="IAP-1" type="in-app-purchase">
+      <description>In-App Purchase integration (iOS/Android)</description>
+      <details>Use in_app_purchase package for cross-platform support. Configure products in App Store Connect (iOS) and Google Play Console (Android). Product IDs: lifeos_single_module, lifeos_3_module_pack, lifeos_full_access. Handle purchase flow, receipts, and restoration.</details>
+    </constraint>
+    <constraint id="IAP-2" type="in-app-purchase">
+      <description>Restore purchases functionality</description>
+      <details>iOS/Android users can restore previous purchases. "Restore Purchases" button at bottom of SubscriptionScreen. Queries Apple/Google Play for past purchases. Activates subscription if valid purchase found. Show success message: "Subscription restored!" or error: "No purchases found."</details>
+    </constraint>
+    <constraint id="DATA-1" type="data">
+      <description>Subscriptions table schema</description>
+      <details>subscriptions table: user_id (UUID PK FK), tier (TEXT: free/single_module/3_module_pack/full_access), status (TEXT: active/trial/cancelled/expired), trial_end_date (DATE nullable), next_billing_date (DATE nullable), cancelled_at (TIMESTAMPTZ nullable), reactivation_window_end (TIMESTAMPTZ nullable), created_at, updated_at. RLS policies for user isolation.</details>
+    </constraint>
+    <constraint id="DATA-2" type="data">
+      <description>Billing history table schema</description>
+      <details>billing_history table: id (UUID PK), user_id (UUID FK), payment_date (DATE), amount (DECIMAL), currency (TEXT default 'EUR'), tier (TEXT), receipt_url (TEXT), created_at. RLS policies: USING (auth.uid() = user_id).</details>
+    </constraint>
+    <constraint id="UX-1" type="ux">
+      <description>Current Plan card display</description>
+      <details>Display card at top: Tier name, Price (e.g., "€5.00/month"), Status (Active/Trial/Cancelled/Expired), Trial end date (if Trial), Next billing date (if Active), Cancellation date (if Cancelled).</details>
+    </constraint>
+    <constraint id="UX-2" type="ux">
+      <description>Available tiers cards</description>
+      <details>Display 4 tier cards: Free (no card, just text), Single Module (€2.99 + module selector dropdown), 3-Module Pack (€5.00 + "Most Popular" badge), Full Access (€7.00 + "GPT-4 unlimited" note). Each card shows features checklist, "Current Plan" button (if active) or "Subscribe" button.</details>
+    </constraint>
+    <constraint id="UX-3" type="ux">
+      <description>Cancel confirmation dialog</description>
+      <details>Show confirmation dialog: "Cancel Subscription? Your subscription will remain active until [date]. After that, you'll be downgraded to Free tier (Life Coach basic only). No data will be lost." Two buttons: "Keep Subscription" (default), "Cancel Anyway" (destructive).</details>
+    </constraint>
+    <constraint id="UX-4" type="ux">
+      <description>Downgrade confirmation dialog</description>
+      <details>Show confirmation: "Downgrade to [tier]? Your current subscription will remain active until [date]. After that, you'll be downgraded to [tier]. Billing: [new price]." Buttons: "Cancel", "Confirm Downgrade".</details>
+    </constraint>
+    <constraint id="SEC-1" type="security">
+      <description>Row Level Security (RLS) policies required</description>
+      <details>Enable RLS on subscriptions and billing_history tables. Policy: CREATE POLICY "Users can only access own subscription" ON subscriptions FOR ALL USING (auth.uid() = user_id);</details>
+    </constraint>
+    <constraint id="SEC-2" type="security">
+      <description>Receipt verification</description>
+      <details>Verify In-App Purchase receipts server-side (Supabase Edge Function) with Apple/Google APIs. Prevent fraud. Store verified receipts in billing_history. Never trust client-side purchase validation alone.</details>
+    </constraint>
+    <constraint id="PERF-1" type="performance">
+      <description>Subscription fetch &lt;500ms</description>
+      <details>Fetch current subscription from database in &lt;500ms. Cache subscription state in memory for fast access. Refresh on app foreground.</details>
+    </constraint>
+    <constraint id="TEST-1" type="testing">
+      <description>80%+ code coverage required</description>
+      <details>Follow 70/20/10 testing pyramid. Unit tests for use cases and services, widget tests for UI, integration tests for In-App Purchase flows. All AC must have test coverage.</details>
+    </constraint>
+    <constraint id="TEST-2" type="testing">
+      <description>In-App Purchase testing</description>
+      <details>Test upgrade flow with sandbox accounts (iOS/Android). Test restore purchases with mock purchases. Test graceful degradation after cancellation. Test reactivation within 7-day window.</details>
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>SubscriptionEntity</name>
+      <kind>domain-entity</kind>
+      <signature>
+        enum SubscriptionTier { free, singleModule, threeModulePack, fullAccess }
+        enum SubscriptionStatus { active, trial, cancelled, expired }
+
+        class SubscriptionEntity {
+          final String userId;
+          final SubscriptionTier tier;
+          final SubscriptionStatus status;
+          final DateTime? trialEndDate;
+          final DateTime? nextBillingDate;
+          final DateTime? cancelledAt;
+          final DateTime? reactivationWindowEnd;
+          final DateTime createdAt;
+          final DateTime updatedAt;
+        }
+      </signature>
+      <path>lib/features/settings/domain/entities/subscription_entity.dart</path>
+      <notes>Use @freezed annotation for immutability and copyWith. Include enums for type safety. Include helpers: isActive(), canReactivate(), daysUntilExpiry().</notes>
+    </interface>
+    <interface>
+      <name>GetCurrentSubscriptionUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class GetCurrentSubscriptionUseCase {
+          Future&lt;Result&lt;SubscriptionEntity&gt;&gt; call(String userId);
+        }
+      </signature>
+      <path>lib/features/settings/domain/usecases/get_current_subscription_usecase.dart</path>
+      <notes>Fetches subscription from subscriptions table. Returns Free tier if no subscription found. Returns Result&lt;T&gt; (Success/Failure).</notes>
+    </interface>
+    <interface>
+      <name>UpgradeSubscriptionUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class UpgradeSubscriptionUseCase {
+          Future&lt;Result&lt;SubscriptionEntity&gt;&gt; call({
+            required SubscriptionTier tier,
+          });
+        }
+      </signature>
+      <path>lib/features/settings/domain/usecases/upgrade_subscription_usecase.dart</path>
+      <notes>Initiates In-App Purchase flow. Verifies receipt server-side. Updates subscriptions table. Returns updated subscription. Handles purchase errors gracefully.</notes>
+    </interface>
+    <interface>
+      <name>DowngradeSubscriptionUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class DowngradeSubscriptionUseCase {
+          Future&lt;Result&lt;SubscriptionEntity&gt;&gt; call({
+            required SubscriptionTier tier,
+          });
+        }
+      </signature>
+      <path>lib/features/settings/domain/usecases/downgrade_subscription_usecase.dart</path>
+      <notes>Schedules downgrade to take effect at end of current billing period. Updates subscriptions table with pending downgrade. Returns updated subscription. Shows confirmation message.</notes>
+    </interface>
+    <interface>
+      <name>CancelSubscriptionUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class CancelSubscriptionUseCase {
+          Future&lt;Result&lt;SubscriptionEntity&gt;&gt; call();
+        }
+      </signature>
+      <path>lib/features/settings/domain/usecases/cancel_subscription_usecase.dart</path>
+      <notes>Sets status to "cancelled", sets cancelled_at timestamp, sets reactivation_window_end to 7 days from now. Subscription remains active until next_billing_date. Implements graceful degradation.</notes>
+    </interface>
+    <interface>
+      <name>ReactivateSubscriptionUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class ReactivateSubscriptionUseCase {
+          Future&lt;Result&lt;SubscriptionEntity&gt;&gt; call();
+        }
+      </signature>
+      <path>lib/features/settings/domain/usecases/reactivate_subscription_usecase.dart</path>
+      <notes>Clears cancelled_at and reactivation_window_end. Sets status back to "active". Only works if within reactivation window (7 days). Returns Failure if window expired.</notes>
+    </interface>
+    <interface>
+      <name>RestorePurchasesUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class RestorePurchasesUseCase {
+          Future&lt;Result&lt;SubscriptionEntity?&gt;&gt; call();
+        }
+      </signature>
+      <path>lib/features/settings/domain/usecases/restore_purchases_usecase.dart</path>
+      <notes>Queries Apple/Google Play for past purchases using in_app_purchase package. Verifies receipts. Activates subscription if valid purchase found. Returns null if no purchases found.</notes>
+    </interface>
+    <interface>
+      <name>GetBillingHistoryUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class GetBillingHistoryUseCase {
+          Future&lt;Result&lt;List&lt;BillingHistoryEntity&gt;&gt;&gt; call(String userId);
+        }
+      </signature>
+      <path>lib/features/settings/domain/usecases/get_billing_history_usecase.dart</path>
+      <notes>Fetches all past payments from billing_history table. Returns list sorted by payment_date descending. Includes receipt URLs.</notes>
+    </interface>
+    <interface>
+      <name>InAppPurchaseService</name>
+      <kind>service</kind>
+      <signature>
+        abstract class InAppPurchaseService {
+          Future&lt;bool&gt; isAvailable();
+          Future&lt;List&lt;ProductDetails&gt;&gt; queryProducts(Set&lt;String&gt; productIds);
+          Future&lt;bool&gt; buyProduct(ProductDetails product);
+          Future&lt;List&lt;PurchaseDetails&gt;&gt; restorePurchases();
+          Stream&lt;List&lt;PurchaseDetails&gt;&gt; get purchaseStream;
+        }
+      </signature>
+      <path>lib/features/settings/domain/services/in_app_purchase_service.dart</path>
+      <notes>Wraps in_app_purchase package. Handles iOS/Android differences. Provides cross-platform purchase API. Implemented in data layer.</notes>
+    </interface>
+    <interface>
+      <name>subscriptions table (Supabase PostgreSQL)</name>
+      <kind>database-table</kind>
+      <signature>
+        CREATE TABLE subscriptions (
+          user_id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+          tier TEXT NOT NULL DEFAULT 'free' CHECK (tier IN ('free', 'single_module', '3_module_pack', 'full_access')),
+          status TEXT NOT NULL DEFAULT 'free' CHECK (status IN ('active', 'trial', 'cancelled', 'expired', 'free')),
+          trial_end_date DATE,
+          next_billing_date DATE,
+          cancelled_at TIMESTAMPTZ,
+          reactivation_window_end TIMESTAMPTZ,
+          created_at TIMESTAMPTZ DEFAULT NOW(),
+          updated_at TIMESTAMPTZ DEFAULT NOW()
+        );
+        CREATE INDEX idx_subscriptions_user_id ON subscriptions(user_id);
+        CREATE INDEX idx_subscriptions_status ON subscriptions(status);
+      </signature>
+      <path>supabase/migrations/</path>
+      <notes>Migration file will be created in Supabase migrations folder. Include RLS policies in same migration: USING (auth.uid() = user_id).</notes>
+    </interface>
+    <interface>
+      <name>billing_history table (Supabase PostgreSQL)</name>
+      <kind>database-table</kind>
+      <signature>
+        CREATE TABLE billing_history (
+          id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+          user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+          payment_date DATE NOT NULL,
+          amount DECIMAL(10, 2) NOT NULL,
+          currency TEXT DEFAULT 'EUR',
+          tier TEXT NOT NULL,
+          receipt_url TEXT,
+          created_at TIMESTAMPTZ DEFAULT NOW()
+        );
+        CREATE INDEX idx_billing_history_user_id ON billing_history(user_id);
+        CREATE INDEX idx_billing_history_payment_date ON billing_history(user_id, payment_date DESC);
+      </signature>
+      <path>supabase/migrations/</path>
+      <notes>Stores all past payments. Include RLS policy: USING (auth.uid() = user_id). receipt_url points to verified receipt in storage or external URL.</notes>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Follow 70/20/10 testing pyramid: 70% unit tests (use cases, services, entities), 20% widget tests (UI components, tier cards, confirmation dialogs), 10% integration tests (end-to-end In-App Purchase flows). Use flutter_test for unit/widget tests, integration_test for E2E. Mock dependencies with mockito. Mock in_app_purchase for testing without real purchases. Target 80%+ code coverage. All acceptance criteria must have test coverage.
+    </standards>
+    <locations>
+      <location>test/features/settings/domain/usecases/</location>
+      <location>test/features/settings/domain/services/</location>
+      <location>test/features/settings/presentation/pages/</location>
+      <location>integration_test/features/settings/subscription_flow_test.dart</location>
+    </locations>
+    <ideas>
+      <test-idea ac-ref="AC1,AC2,AC3,AC4">
+        <description>Unit test: GetCurrentSubscriptionUseCase returns subscription details</description>
+        <approach>Mock SubscriptionRepository. Return test subscription: tier=3_module_pack, status=active, next_billing_date=2025-02-16. Call usecase. Assert Success with correct subscription details.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1">
+        <description>Unit test: GetCurrentSubscriptionUseCase returns Free for new users</description>
+        <approach>Mock repository to return null (new user). Call usecase. Assert Success with tier=free, status=free.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC5">
+        <description>Unit test: UpgradeSubscriptionUseCase initiates In-App Purchase</description>
+        <approach>Mock InAppPurchaseService. Call UpgradeSubscriptionUseCase with tier=3_module_pack. Verify buyProduct() called. Mock successful purchase. Verify subscription updated in database. Assert Success.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6">
+        <description>Unit test: DowngradeSubscriptionUseCase schedules downgrade</description>
+        <approach>Current subscription: full_access, next_billing_date=2025-02-16. Call DowngradeSubscriptionUseCase with tier=single_module. Verify downgrade scheduled for 2025-02-16. Verify status remains active until then. Assert Success.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC7">
+        <description>Unit test: CancelSubscriptionUseCase sets cancelled status</description>
+        <approach>Current subscription: active. Call CancelSubscriptionUseCase. Verify status changed to "cancelled". Verify cancelled_at set to now. Verify reactivation_window_end set to 7 days from now. Verify next_billing_date unchanged (graceful degradation). Assert Success.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC7">
+        <description>Unit test: Graceful degradation logic</description>
+        <approach>Subscription: status=cancelled, next_billing_date=2025-02-16. Simulate time passing to 2025-02-17. Check subscription status → assert expired. Check tier → assert downgraded to free. Verify user data still accessible.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC8">
+        <description>Unit test: ReactivateSubscriptionUseCase within 7-day window</description>
+        <approach>Subscription: status=cancelled, reactivation_window_end=2025-01-24 (3 days from now). Call ReactivateSubscriptionUseCase. Verify status changed to "active". Verify cancelled_at cleared. Assert Success.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC8">
+        <description>Unit test: ReactivateSubscriptionUseCase fails after 7-day window</description>
+        <approach>Subscription: status=cancelled, reactivation_window_end=2025-01-10 (7 days ago). Call ReactivateSubscriptionUseCase. Assert Failure with "Reactivation window expired" error.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC10">
+        <description>Unit test: RestorePurchasesUseCase restores valid purchase</description>
+        <approach>Mock InAppPurchaseService to return past purchase (3_module_pack). Call RestorePurchasesUseCase. Verify receipt verified. Verify subscription activated with tier=3_module_pack. Assert Success.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC10">
+        <description>Unit test: RestorePurchasesUseCase returns null if no purchases</description>
+        <approach>Mock InAppPurchaseService to return empty list. Call RestorePurchasesUseCase. Assert Success with null (no purchases found).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC9">
+        <description>Unit test: GetBillingHistoryUseCase returns past payments</description>
+        <approach>Mock billing_history table with 3 payments. Call GetBillingHistoryUseCase. Verify returns 3 BillingHistoryEntity items. Verify sorted by payment_date descending.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1,AC2,AC3,AC4">
+        <description>Widget test: SubscriptionScreen displays current plan</description>
+        <approach>Render SubscriptionScreen with test subscription: 3_module_pack, active, next_billing_date=2025-02-16. Verify Section 1 displays: "3-Module Pack", "€5.00/month", "Status: Active", "Next billing: Feb 16, 2025".</approach>
+      </test-idea>
+      <test-idea ac-ref="AC5,AC6">
+        <description>Widget test: Available tiers cards display correctly</description>
+        <approach>Render screen. Verify 4 tier cards displayed. Verify "Most Popular" badge on 3-Module Pack. Verify "Current Plan" button on active tier. Verify "Subscribe" button on other tiers. Verify "Upgrade" or "Downgrade" labels.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC7">
+        <description>Widget test: Cancel confirmation dialog appears</description>
+        <approach>Render screen. Tap "Cancel Subscription" button. Verify confirmation dialog appears with message: "Your subscription will remain active until [date]. After that, you'll be downgraded to Free tier. No data will be lost." Verify two buttons: "Keep Subscription", "Cancel Anyway".</approach>
+      </test-idea>
+      <test-idea ac-ref="AC8">
+        <description>Widget test: Reactivate button appears for cancelled subscription</description>
+        <approach>Render screen with cancelled subscription (within 7-day window). Verify "Reactivate" button appears. Tap button. Verify reactivation triggered. Verify success message: "Subscription reactivated!"</approach>
+      </test-idea>
+      <test-idea ac-ref="AC10">
+        <description>Widget test: Restore Purchases button triggers restore flow</description>
+        <approach>Render screen. Tap "Restore Purchases" button. Mock InAppPurchaseService. Verify restorePurchases() called. Show success message if purchases found: "Subscription restored!" or error if not: "No purchases found."</approach>
+      </test-idea>
+      <test-idea ac-ref="AC5">
+        <description>Integration test: Upgrade from Free to 3-Module Pack</description>
+        <approach>Start with Free tier. Navigate to Subscription screen. Tap "Subscribe" on 3-Module Pack card. Mock In-App Purchase flow. Complete purchase. Verify subscription updated to 3_module_pack, status=active. Verify billing history updated. Verify app features unlocked.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6">
+        <description>Integration test: Downgrade from Full Access to Single Module</description>
+        <approach>Start with Full Access tier. Navigate to Subscription screen. Tap Single Module card. Verify confirmation dialog: "Downgrade will take effect on [date]". Confirm. Verify downgrade scheduled. Verify current access remains Full Access until billing date. Simulate billing date passage. Verify downgrade to Single Module.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC7,AC8">
+        <description>Integration test: Cancel subscription and reactivate within 7 days</description>
+        <approach>Start with active subscription. Cancel subscription → verify status=cancelled, access remains until billing date. Navigate back to Subscription screen within 7 days. Verify "Reactivate" button appears. Tap Reactivate. Verify status=active, cancelled_at cleared. Verify subscription continues without interruption.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC7">
+        <description>Integration test: Graceful degradation after cancellation</description>
+        <approach>Cancel subscription. Verify access remains until billing date. Simulate billing date passage. Verify subscription expired. Verify downgrade to Free tier. Verify NO DATA LOSS: all workouts, meditations accessible. Verify premium features limited (e.g., max 3 goals).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC10">
+        <description>Integration test: Restore purchases on new device</description>
+        <approach>User purchased subscription on Device A. Install app on Device B. Navigate to Subscription screen. Tap "Restore Purchases". Mock previous purchase. Verify subscription restored. Verify user has full access on Device B.</approach>
+      </test-idea>
+    </ideas>
+  </tests>
+</story-context>

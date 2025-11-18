@@ -1,0 +1,421 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/epic-5-story-3" v="1.0">
+  <metadata>
+    <epicId>5</epicId>
+    <storyId>5.3</storyId>
+    <title>High Stress + Heavy Workout → Suggest Light Session</title>
+    <status>ready-for-dev</status>
+    <generatedAt>2025-11-17</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/sprint-5/5-3-high-stress-heavy-workout-suggest-light-session.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>user with high stress and heavy workout scheduled</asA>
+    <iWant>to receive a proactive suggestion to switch to a light session</iWant>
+    <soThat>I avoid overtraining and injury while managing my stress</soThat>
+    <tasks>
+      <task id="1" ac-ref="AC1">
+        <description>Implement high stress + heavy workout pattern detection logic</description>
+        <subtasks>
+          <subtask>Add pattern detection rule in PatternDetectionService (Edge Function)</subtask>
+          <subtask>Query user_daily_metrics for today's stress_level and scheduled workout</subtask>
+          <subtask>Fetch scheduled workout from workouts table (status='scheduled', date=today)</subtask>
+          <subtask>Calculate workout volume: total_sets × avg_weight / user_max_volume</subtask>
+          <subtask>Trigger pattern if: stress_level ≥ 4 AND workout_volume > 0.8 (80% of max)</subtask>
+          <subtask>Set pattern type: 'stress-workout', priority: 'critical'</subtask>
+        </subtasks>
+      </task>
+      <task id="2" ac-ref="AC2,AC3,AC4">
+        <description>Implement insight generation for stress-workout pattern</description>
+        <subtasks>
+          <subtask>Create template-based insight (no AI call for fast response)</subtask>
+          <subtask>Set title: "High Stress Alert"</subtask>
+          <subtask>Set description: "Your stress is high ([stress]/5) and you have heavy [workout_type] scheduled."</subtask>
+          <subtask>Build recommendation: "Switch to upper body (light) OR rest day + meditate"</subtask>
+          <subtask>Inject dynamic values: stress level, workout type (e.g., "leg day", "chest day")</subtask>
+          <subtask>Calculate alternative workout suggestion based on muscle group (if legs → suggest upper body light)</subtask>
+        </subtasks>
+      </task>
+      <task id="3" ac-ref="AC5">
+        <description>Implement dual CTA actions</description>
+        <subtasks>
+          <subtask>Add primary CTA: "Adjust Workout" → Opens Fitness module</subtask>
+          <subtask>Load light workout template based on pattern (e.g., light-upper-body if heavy legs scheduled)</subtask>
+          <subtask>Add secondary CTA: "Meditate Instead" → Opens Mind module</subtask>
+          <subtask>Pre-select stress relief meditation (10-15 min guided session)</subtask>
+          <subtask>Pass context data via deep links: {action: 'adjust-workout', templateId: 'light-upper', source: 'stress-alert'}</subtask>
+          <subtask>Track CTA choice for AI learning (save to user_insight_actions table)</subtask>
+        </subtasks>
+      </task>
+      <task id="4" ac-ref="AC6">
+        <description>Implement dismissal tracking</description>
+        <subtasks>
+          <subtask>Add dismiss action to InsightCard (swipe left or "Dismiss" button)</subtask>
+          <subtask>Save dismissal to insights table (dismissed=true, dismissed_at=NOW())</subtask>
+          <subtask>Track dismissal reason (optional): "Not stressed", "Workout is fine", "Other"</subtask>
+          <subtask>Create user_insight_actions table to log: insight_id, action_type (accept/dismiss), action_detail, created_at</subtask>
+          <subtask>Use dismissal data for future pattern refinement (if user dismisses 3+ stress alerts → adjust threshold)</subtask>
+        </subtasks>
+      </task>
+      <task id="5" ac-ref="AC7">
+        <description>Implement AI learning from user actions</description>
+        <subtasks>
+          <subtask>Create AILearningService to analyze user_insight_actions history</subtask>
+          <subtask>Calculate acceptance rate for stress-workout pattern per user</subtask>
+          <subtask>If acceptance rate < 30% (3/10 insights dismissed) → increase stress threshold to 5</subtask>
+          <subtask>If acceptance rate > 70% → keep threshold at 4 or lower to 3.5</subtask>
+          <subtask>Store personalized thresholds in user_preferences table: stress_alert_threshold (default 4)</subtask>
+          <subtask>Run learning algorithm weekly (part of pattern detection cron job)</subtask>
+        </subtasks>
+      </task>
+      <task id="6" ac-ref="AC1,AC5">
+        <description>Implement Fitness module integration for light workout loading</description>
+        <subtasks>
+          <subtask>Create light workout templates: light-upper-body, light-lower-body, light-full-body</subtask>
+          <subtask>Templates use 50-60% of normal volume, focus on mobility and technique</subtask>
+          <subtask>Add deep link handler in Fitness module: /fitness/workout/adjust?templateId={id}&source=cmi</subtask>
+          <subtask>Pre-populate workout form with light template exercises</subtask>
+          <subtask>Show banner: "Adjusted from heavy workout due to high stress"</subtask>
+          <subtask>Allow user to modify template or revert to original heavy workout</subtask>
+        </subtasks>
+      </task>
+      <task id="7" ac-ref="AC5">
+        <description>Implement Mind module integration for stress meditation</description>
+        <subtasks>
+          <subtask>Create stress relief meditation playlist (5 sessions, 10-15 min each)</subtask>
+          <subtask>Add deep link handler in Mind module: /mind/meditate?type=stress-relief&source=cmi</subtask>
+          <subtask>Auto-select "Stress Release Meditation" (15 min guided session)</subtask>
+          <subtask>Show context banner: "Recommended for stress management"</subtask>
+          <subtask>Track meditation completion and link to insight action (for AI learning)</subtask>
+        </subtasks>
+      </task>
+      <task id="8" ac-ref="ALL">
+        <description>Write comprehensive tests</description>
+        <subtasks>
+          <subtask>Unit test: Pattern detection triggers correctly (stress=4, volume=0.85 → pattern detected)</subtask>
+          <subtask>Unit test: Pattern does NOT trigger at boundaries (stress=3.9, volume=0.79)</subtask>
+          <subtask>Unit test: Insight title and description inject correct dynamic values</subtask>
+          <subtask>Widget test: InsightCard shows dual CTAs ("Adjust Workout", "Meditate Instead")</subtask>
+          <subtask>Integration test: Tap "Adjust Workout" → Navigate to Fitness with light template loaded</subtask>
+          <subtask>Integration test: Tap "Meditate Instead" → Navigate to Mind with stress meditation pre-selected</subtask>
+          <subtask>E2E test: Full flow - High stress logged → Heavy workout scheduled → Insight appears → Accept CTA → Workout adjusted → Action logged</subtask>
+          <subtask>Achieve 75%+ code coverage</subtask>
+        </subtasks>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="AC1">
+      <text>Pattern triggered when: Stress ≥4 (high) AND heavy workout scheduled (volume >80% of max)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC2">
+      <text>Insight title: "High Stress Alert"</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC3">
+      <text>Insight description: "Your stress is high (4/5) and you have heavy leg day scheduled."</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC4">
+      <text>Recommendation: "Switch to upper body (light) OR rest day + meditate"</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC5">
+      <text>Dual CTAs: "Adjust Workout" → Opens Fitness with light template, "Meditate Instead" → Opens Mind with stress relief</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC6">
+      <text>Insight is dismissable (swipe left or dismiss button)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC7">
+      <text>AI learns from dismissals and adjusts future insights accordingly</text>
+      <priority>P1</priority>
+    </criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR77: Cross-Module Intelligence - Stress + Workout Pattern</section>
+        <snippet>FR77: System detects high stress (Mind) + heavy workout scheduled (Fitness) → suggests light session. Critical insight prevents overtraining and injury. User can accept (adjust workout), dismiss, or choose alternative (meditation).</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/epics.md</path>
+        <title>Epic 5: Cross-Module Intelligence - Story 5.3</title>
+        <section>Story 5.3: High Stress + Heavy Workout → Suggest Light Session</section>
+        <snippet>Triggered when stress ≥4 and heavy workout scheduled (>80% volume). Title: "High Stress Alert". Recommendation: Switch to light session or meditate. Dual CTAs: Adjust workout (Fitness) or Meditate (Mind). AI learns from dismissals to adapt future insights.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/test-design-system.md</path>
+        <title>Test Design System - Epic 5 CMI Tests</title>
+        <section>CMI-001: High Stress + Heavy Workout E2E Test</section>
+        <snippet>Test scenario: User logs stress=4 in Mind module. Heavy leg day scheduled (volume 85%). Pattern detection runs. Verify insight appears with title "High Stress Alert". Tap "Adjust Workout". Verify light upper body template loaded. Verify action logged in database.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/ux-design-specification.md</path>
+        <title>UX Design Specification</title>
+        <section>Insight Card - Warning Tone</section>
+        <snippet>Stress-workout insights use supportive warning tone (not alarming). Color: Mind Purple → Fitness Orange gradient. Icon: ⚠️ (warning). Message should be empathetic: "Your body needs rest" vs "WARNING: Overtraining risk".</snippet>
+      </doc>
+    </docs>
+    <code>
+      <reference>
+        <path>lib/features/cross_module_intelligence/domain/entities/insight_entity.dart</path>
+        <description>Base InsightEntity structure (from Story 5.1)</description>
+      </reference>
+      <reference>
+        <path>lib/features/cross_module_intelligence/presentation/widgets/insight_card.dart</path>
+        <description>InsightCard widget with swipe gestures (from Story 5.2)</description>
+      </reference>
+    </code>
+    <dependencies>
+      <flutter>
+        <sdk>3.38+</sdk>
+        <dart>3.10+</dart>
+      </flutter>
+      <packages>
+        <package name="flutter_riverpod" version="^3.0.0" usage="State management for insight actions" />
+        <package name="supabase_flutter" version="^2.0.0" usage="Database queries for pattern detection" />
+        <package name="drift" version="^2.14.0" usage="Local cache for insights and actions" />
+        <package name="go_router" version="^13.0.0" usage="Deep linking for CTA navigation" />
+      </packages>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint id="PATTERN-1" type="pattern-detection">
+      <description>Stress threshold must be configurable per user</description>
+      <details>Default threshold: stress ≥ 4. Store user-specific threshold in user_preferences table. AI learning adjusts threshold based on acceptance rate (70%+ acceptance → lower to 3.5, <30% acceptance → raise to 5).</details>
+    </constraint>
+    <constraint id="PATTERN-2" type="pattern-detection">
+      <description>Workout volume calculation accuracy</description>
+      <details>Volume = SUM(sets × reps × weight) for scheduled workout. Max volume = user's highest recorded volume for same muscle group in last 90 days. Heavy workout: volume > 0.8 × max_volume. Light workout: volume = 0.5-0.6 × max_volume.</details>
+    </constraint>
+    <constraint id="UX-1" type="ux">
+      <description>Supportive warning tone (not alarming)</description>
+      <details>Use empathetic language: "Your body might benefit from a lighter session today" vs "WARNING: You're at risk of overtraining". Color scheme: Mind Purple → Fitness Orange gradient (matches cross-module nature). Icon: 💜 or ⚠️ (supportive warning).</details>
+    </constraint>
+    <constraint id="UX-2" type="ux">
+      <description>Dual CTA buttons must be equally prominent</description>
+      <details>Both "Adjust Workout" and "Meditate Instead" should be full-width buttons (not primary/secondary styling). Stack vertically with 12px spacing. No bias toward either option. User choice reflects preference for future learning.</details>
+    </constraint>
+    <constraint id="NAV-1" type="navigation">
+      <description>Deep link context must preserve insight source</description>
+      <details>Pass context via route arguments: {action: 'adjust-workout', templateId: 'light-upper-body', sourceInsightId: '{insight.id}', source: 'stress-alert'}. Track full journey: insight shown → CTA tapped → action completed (workout logged or meditation completed).</details>
+    </constraint>
+    <constraint id="DATA-1" type="data">
+      <description>Action tracking schema for AI learning</description>
+      <details>Create user_insight_actions table: id (UUID), insight_id (FK insights), user_id (FK users), action_type (TEXT: 'accept-adjust' | 'accept-meditate' | 'dismiss'), action_detail (JSONB: {templateId, meditationId, etc.}), created_at. Used for calculating acceptance rates.</details>
+    </constraint>
+    <constraint id="AI-1" type="ai-learning">
+      <description>Personalized threshold adjustment algorithm</description>
+      <details>Run weekly per user. Query last 10 stress-workout insights. Calculate acceptance_rate = accepted / total. If <30%: threshold += 0.5. If >70%: threshold -= 0.5. Min threshold: 3, Max threshold: 5. Store in user_preferences.stress_alert_threshold.</details>
+    </constraint>
+    <constraint id="PERF-1" type="performance">
+      <description>Pattern detection must run in real-time</description>
+      <details>Trigger pattern detection when stress level updated (Mind module check-in) OR when heavy workout scheduled (Fitness module). Max latency: 2s from trigger event to insight displayed. Use database triggers + Edge Function for fast processing.</details>
+    </constraint>
+    <constraint id="BUS-1" type="business">
+      <description>Light workout templates must be meaningful alternatives</description>
+      <details>Light templates should focus on: mobility work, technique refinement, lower intensity (60% of normal volume). Examples: Light Upper Body (push-ups, rows, mobility), Light Lower Body (lunges, bodyweight squats, stretching). NOT just "skip workout" - provide value.</details>
+    </constraint>
+    <constraint id="TEST-1" type="testing">
+      <description>75%+ code coverage for pattern logic</description>
+      <details>Comprehensive unit tests for: threshold calculations, volume calculations, boundary conditions (stress=3.9, volume=79%). Integration tests for full flow including navigation. E2E test with realistic user data.</details>
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>StressWorkoutPatternDetector</name>
+      <kind>pattern-detector</kind>
+      <signature>
+        class StressWorkoutPatternDetector {
+          async detectPattern(userId: string): Promise&lt;Pattern | null&gt; {
+            const metrics = await getUserDailyMetrics(userId, today);
+            const workout = await getScheduledWorkout(userId, today);
+            const userPrefs = await getUserPreferences(userId);
+
+            const stressThreshold = userPrefs.stress_alert_threshold || 4;
+
+            if (metrics.stress_level >= stressThreshold &&
+                workout &&
+                workout.volume > userMaxVolume * 0.8) {
+              return {
+                type: 'stress-workout',
+                priority: 'critical',
+                title: 'High Stress Alert',
+                description: `Your stress is high (${metrics.stress_level}/5) and you have heavy ${workout.muscle_group} scheduled.`,
+                cta_primary: 'Adjust Workout',
+                cta_secondary: 'Meditate Instead',
+              };
+            }
+            return null;
+          }
+        }
+      </signature>
+      <path>supabase/functions/pattern-detection/detectors/stress_workout_detector.ts</path>
+      <notes>Runs server-side in Edge Function. Checks personalized threshold from user_preferences. Calculates workout volume dynamically.</notes>
+    </interface>
+    <interface>
+      <name>AdjustWorkoutAction</name>
+      <kind>action-handler</kind>
+      <signature>
+        class AdjustWorkoutAction {
+          Future&lt;void&gt; execute(InsightEntity insight) async {
+            final lightTemplate = await _getLightWorkoutTemplate(insight.metadata);
+
+            // Navigate to Fitness module with light template
+            await Navigator.pushNamed(
+              context,
+              '/fitness/workout/adjust',
+              arguments: {
+                'templateId': lightTemplate.id,
+                'sourceInsightId': insight.id,
+                'source': 'stress-alert',
+              },
+            );
+
+            // Track action
+            await _trackInsightAction(insight.id, 'accept-adjust', {
+              'templateId': lightTemplate.id,
+            });
+          }
+        }
+      </signature>
+      <path>lib/features/cross_module_intelligence/domain/actions/adjust_workout_action.dart</path>
+      <notes>Handles "Adjust Workout" CTA. Determines appropriate light template based on scheduled workout muscle group. Tracks action for AI learning.</notes>
+    </interface>
+    <interface>
+      <name>MeditateInsteadAction</name>
+      <kind>action-handler</kind>
+      <signature>
+        class MeditateInsteadAction {
+          Future&lt;void&gt; execute(InsightEntity insight) async {
+            // Navigate to Mind module with stress relief meditation
+            await Navigator.pushNamed(
+              context,
+              '/mind/meditate',
+              arguments: {
+                'type': 'stress-relief',
+                'sourceInsightId': insight.id,
+                'source': 'stress-alert',
+              },
+            );
+
+            // Track action
+            await _trackInsightAction(insight.id, 'accept-meditate', {
+              'meditationType': 'stress-relief',
+            });
+          }
+        }
+      </signature>
+      <path>lib/features/cross_module_intelligence/domain/actions/meditate_instead_action.dart</path>
+      <notes>Handles "Meditate Instead" CTA. Pre-selects stress relief meditation in Mind module. Tracks action for AI learning.</notes>
+    </interface>
+    <interface>
+      <name>user_insight_actions table (Supabase PostgreSQL)</name>
+      <kind>database-table</kind>
+      <signature>
+        CREATE TABLE user_insight_actions (
+          id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+          insight_id UUID NOT NULL REFERENCES insights(id) ON DELETE CASCADE,
+          user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+          action_type TEXT NOT NULL CHECK (action_type IN ('accept-adjust', 'accept-meditate', 'dismiss', 'save')),
+          action_detail JSONB,
+          created_at TIMESTAMPTZ DEFAULT NOW()
+        );
+        CREATE INDEX idx_user_insight_actions_user ON user_insight_actions(user_id, created_at DESC);
+        CREATE INDEX idx_user_insight_actions_insight ON user_insight_actions(insight_id);
+      </signature>
+      <path>supabase/migrations/20250119000000_add_user_insight_actions_table.sql</path>
+      <notes>Tracks all user actions on insights (accept, dismiss, save). Used for AI learning to calculate acceptance rates and adjust personalized thresholds. action_detail stores context (templateId, meditationId, etc.).</notes>
+    </interface>
+    <interface>
+      <name>user_preferences table (extension)</name>
+      <kind>database-table</kind>
+      <signature>
+        ALTER TABLE user_preferences
+        ADD COLUMN stress_alert_threshold DECIMAL(2,1) DEFAULT 4.0 CHECK (stress_alert_threshold BETWEEN 3.0 AND 5.0);
+        ADD COLUMN volume_alert_threshold DECIMAL(3,2) DEFAULT 0.80 CHECK (volume_alert_threshold BETWEEN 0.70 AND 0.90);
+      </signature>
+      <path>supabase/migrations/20250119000000_add_personalized_thresholds.sql</path>
+      <notes>Stores user-specific thresholds for pattern detection. Adjusted by AI learning algorithm based on acceptance rates. Default: stress=4.0, volume=0.80.</notes>
+    </interface>
+    <interface>
+      <name>LightWorkoutTemplate</name>
+      <kind>domain-entity</kind>
+      <signature>
+        class LightWorkoutTemplate {
+          final String id;
+          final String name;           // "Light Upper Body"
+          final String muscleGroup;     // "upper", "lower", "full"
+          final List&lt;ExerciseTemplate&gt; exercises;
+          final double volumeFactor;    // 0.5-0.6 of normal volume
+          final String description;     // "Mobility-focused upper body session"
+        }
+      </signature>
+      <path>lib/features/fitness/domain/entities/light_workout_template.dart</path>
+      <notes>Pre-defined light workout templates for stress scenarios. Focus on mobility, technique, lower intensity. 50-60% of normal volume.</notes>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Follow 70/20/10 testing pyramid: 70% unit tests (pattern detection logic, threshold calculations, volume calculations), 20% widget tests (dual CTA buttons, dismissal), 10% E2E tests (full flow from stress logging to workout adjustment). Target 75%+ code coverage. Validate against test-design-system.md CMI-001 test scenario.
+    </standards>
+    <locations>
+      <location>test/features/cross_module_intelligence/domain/detectors/</location>
+      <location>test/features/cross_module_intelligence/domain/actions/</location>
+      <location>test/features/cross_module_intelligence/presentation/widgets/</location>
+      <location>integration_test/features/cross_module_intelligence/stress_workout_flow_test.dart</location>
+    </locations>
+    <ideas>
+      <test-idea ac-ref="AC1">
+        <description>Unit test: Pattern triggers at exact threshold</description>
+        <approach>Mock user_daily_metrics with stress_level=4.0, scheduled workout with volume=0.80. Verify pattern detected with type='stress-workout', priority='critical'. Test boundaries: stress=3.9 → no pattern, volume=0.79 → no pattern.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1">
+        <description>Unit test: Personalized threshold adjustment</description>
+        <approach>Mock user_preferences with stress_alert_threshold=4.5 (raised due to dismissals). Test pattern detection with stress=4.0 → verify NO pattern (below threshold). Test stress=4.5 → verify pattern detected.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3">
+        <description>Unit test: Description injects dynamic values</description>
+        <approach>Mock pattern with stress_level=4, workout_type="leg day". Generate insight description. Verify text: "Your stress is high (4/5) and you have heavy leg day scheduled." Test with different muscle groups (chest, back, full body).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC5">
+        <description>Widget test: Dual CTA buttons render correctly</description>
+        <approach>Render InsightCard for stress-workout pattern. Verify 2 ElevatedButton widgets exist. Verify text: "Adjust Workout", "Meditate Instead". Verify both buttons full-width (same styling). Verify vertical stack with 12px spacing.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC5">
+        <description>Integration test: "Adjust Workout" CTA navigation</description>
+        <approach>Render InsightCard. Tap "Adjust Workout" button. Mock Navigator.pushNamed. Verify route: '/fitness/workout/adjust'. Verify arguments: {templateId: 'light-upper-body', sourceInsightId: '{id}', source: 'stress-alert'}. Verify action tracked in user_insight_actions table.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC5">
+        <description>Integration test: "Meditate Instead" CTA navigation</description>
+        <approach>Render InsightCard. Tap "Meditate Instead" button. Verify route: '/mind/meditate'. Verify arguments: {type: 'stress-relief', sourceInsightId: '{id}'}. Verify action tracked with action_type='accept-meditate'.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC7">
+        <description>Unit test: AI learning threshold adjustment algorithm</description>
+        <approach>Mock 10 stress-workout insights: 8 dismissed, 2 accepted (20% acceptance). Run AI learning algorithm. Verify stress_alert_threshold increased from 4.0 to 4.5. Test high acceptance (80%) → verify threshold decreased to 3.5. Test boundary: threshold clamped at min=3.0, max=5.0.</approach>
+      </test-idea>
+      <test-idea ac-ref="ALL">
+        <description>E2E test: Full stress-workout insight flow (CMI-001)</description>
+        <approach>1) User logs stress=4 in Mind module (morning check-in). 2) User schedules heavy leg day workout (volume 85%). 3) Trigger pattern detection. 4) Verify insight appears with "High Stress Alert". 5) Tap "Adjust Workout". 6) Verify Fitness module opens with light upper body template pre-loaded. 7) Verify action logged in database.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6">
+        <description>Integration test: Dismissal tracking</description>
+        <approach>Render InsightCard. Swipe left to dismiss. Verify dismissInsight() called. Verify insights table updated: dismissed=true, dismissed_at=NOW(). Verify user_insight_actions row created: action_type='dismiss'. Verify insight no longer appears on next Home tab load.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC2,AC4">
+        <description>Unit test: Alternative workout suggestion logic</description>
+        <approach>Mock scheduled workout: muscle_group='legs', volume=0.85. Run pattern detection. Verify recommendation suggests: "Switch to upper body (light)". Test with upper body workout → verify suggests "Switch to lower body (light)" or "Full body mobility".</approach>
+      </test-idea>
+    </ideas>
+  </tests>
+</story-context>

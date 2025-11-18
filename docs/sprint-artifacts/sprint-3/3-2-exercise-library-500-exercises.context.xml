@@ -1,0 +1,554 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>3</epicId>
+    <storyId>3.2</storyId>
+    <title>Exercise Library (500+ Exercises)</title>
+    <status>ready-for-dev</status>
+    <generatedAt>2025-11-17</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/sprint-3/3-2-exercise-library-500-exercises.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>user logging workouts</asA>
+    <iWant>to search 500+ exercises</iWant>
+    <soThat>I can track all my workouts accurately</soThat>
+    <tasks>
+      <task id="1" ac-ref="AC1,AC2">
+        <description>Implement exercise database schema and seeding</description>
+        <subtasks>
+          <subtask>Create exercises table in Supabase (id, name, category, muscle_groups, instructions)</subtask>
+          <subtask>Create user_exercises table for custom exercises (id, user_id FK, name, category)</subtask>
+          <subtask>Create exercise_favorites table (user_id, exercise_id composite PK)</subtask>
+          <subtask>Add GIN index on exercises.name for full-text search performance</subtask>
+          <subtask>Add index on exercise_favorites(user_id, created_at DESC)</subtask>
+          <subtask>Create seed script with 500+ exercises across 8 categories</subtask>
+          <subtask>Implement seeding logic to run on first app launch</subtask>
+        </subtasks>
+      </task>
+      <task id="2" ac-ref="AC3,AC4">
+        <description>Implement exercise search with real-time filtering</description>
+        <subtasks>
+          <subtask>Create ExerciseSearchDelegate extending SearchDelegate&lt;Exercise&gt;</subtask>
+          <subtask>Implement SearchExercisesUseCase with &lt;200ms performance target</subtask>
+          <subtask>Add debouncing (150ms) to search input to reduce query frequency</subtask>
+          <subtask>Implement fuzzy search using PostgreSQL full-text search (to_tsvector)</subtask>
+          <subtask>Add category filter chips in search view</subtask>
+          <subtask>Display exercise details: name, category, muscle groups, instructions</subtask>
+          <subtask>Add search performance monitoring and logging</subtask>
+        </subtasks>
+      </task>
+      <task id="3" ac-ref="AC5,AC6">
+        <description>Implement custom exercise creation</description>
+        <subtasks>
+          <subtask>Create AddCustomExerciseUseCase</subtask>
+          <subtask>Design "Add Custom Exercise" form (name, category dropdown, optional muscle groups)</subtask>
+          <subtask>Validate custom exercise input (name required, min 2 chars, category from enum)</subtask>
+          <subtask>Save custom exercise to user_exercises table</subtask>
+          <subtask>Merge custom exercises with global exercises in exercise list views</subtask>
+          <subtask>Add visual indicator for custom exercises (e.g., "Custom" badge)</subtask>
+        </subtasks>
+      </task>
+      <task id="4" ac-ref="AC7">
+        <description>Implement favorite exercises functionality</description>
+        <subtasks>
+          <subtask>Create ToggleFavoriteUseCase</subtask>
+          <subtask>Add star icon to exercise tiles with toggle interaction</subtask>
+          <subtask>Implement haptic feedback on favorite toggle (HapticFeedback.lightImpact())</subtask>
+          <subtask>Create "Favorites" tab/section for quick access to favorited exercises</subtask>
+          <subtask>Save favorite state to exercise_favorites table</subtask>
+          <subtask>Sync favorite state across devices via Supabase</subtask>
+        </subtasks>
+      </task>
+      <task id="5" ac-ref="AC4,AC8">
+        <description>Implement exercise detail view</description>
+        <subtasks>
+          <subtask>Create ExerciseDetailScreen with full exercise information</subtask>
+          <subtask>Display exercise name, category badge, muscle groups chips</subtask>
+          <subtask>Show text instructions with readable typography</subtask>
+          <subtask>Add placeholder for P1 form videos (to be implemented later)</subtask>
+          <subtask>Include "Add to Workout" CTA button</subtask>
+          <subtask>Add favorite toggle in header/app bar</subtask>
+        </subtasks>
+      </task>
+      <task id="6" ac-ref="AC2">
+        <description>Implement exercise categorization system</description>
+        <subtasks>
+          <subtask>Create ExerciseCategory enum (Chest, Back, Legs, Shoulders, Arms, Core, Cardio, Other)</subtask>
+          <subtask>Add category filter UI with horizontal scrollable chips</subtask>
+          <subtask>Implement GetExercisesByCategoryUseCase</subtask>
+          <subtask>Add category icons/colors for visual differentiation</subtask>
+          <subtask>Ensure all 500+ seeded exercises correctly categorized</subtask>
+        </subtasks>
+      </task>
+      <task id="7" ac-ref="ALL">
+        <description>Write comprehensive tests</description>
+        <subtasks>
+          <subtask>Unit tests: SearchExercisesUseCase performance (&lt;200ms), category filtering, custom exercise validation</subtask>
+          <subtask>Widget tests: search UI, exercise tiles, favorite toggle, category filters</subtask>
+          <subtask>Integration test: search flow, add custom exercise, toggle favorite, seed data verification</subtask>
+          <subtask>Performance test: search query performance with 500+ exercises</subtask>
+          <subtask>Achieve 80%+ code coverage</subtask>
+        </subtasks>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="AC1">
+      <text>Exercise library with 500+ exercises (seeded on first launch)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC2">
+      <text>Categories: Chest, Back, Legs, Shoulders, Arms, Core, Cardio, Other</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC3">
+      <text>Search bar with real-time filtering (&lt;200ms)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC4">
+      <text>Exercise details: Name, category, muscle groups, instructions</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC5">
+      <text>User can add custom exercises</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC6">
+      <text>Custom exercises saved to user's library</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC7">
+      <text>Favorite exercises (star icon) → Quick access</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC8">
+      <text>Instructions: Text description (P1: form videos)</text>
+      <priority>P0</priority>
+    </criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR32: Exercise library with 500+ exercises</section>
+        <snippet>Comprehensive exercise library with 500+ pre-seeded exercises covering all major muscle groups. Categories: Chest, Back, Legs, Shoulders, Arms, Core, Cardio, Other. Real-time search with &lt;200ms response time. Users can add custom exercises and favorite frequently used exercises for quick access.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR33: Exercise search and filtering</section>
+        <snippet>Real-time search with fuzzy matching and category filtering. Search must return results in &lt;200ms for optimal UX. Support filtering by muscle group and exercise category. Favorite exercises appear at top of lists for quick access.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/epics.md</path>
+        <title>Epic 3: Fitness Coach MVP - Story 3.2</title>
+        <section>Story 3.2: Exercise Library (500+ Exercises)</section>
+        <snippet>Comprehensive exercise library with 500+ exercises, real-time search (&lt;200ms), category filtering, custom exercise creation, and favorite exercises for quick access. Prerequisites: Epic 1. Blocks: Story 3.1 (Smart Pattern needs exercises).</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Hybrid Architecture (D1)</section>
+        <snippet>Feature-first architecture with clean architecture layers (presentation/domain/data). Fitness Coach module located at features/fitness_coach/. Use Riverpod for state management.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Database Schema - Fitness Coach Tables</section>
+        <snippet>Fitness Coach module uses exercises table (global, read-only), user_exercises table (custom exercises with user_id FK), exercise_favorites table (composite PK: user_id, exercise_id). All user-scoped tables require RLS policies.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/ux-design-specification.md</path>
+        <title>UX Design Specification</title>
+        <section>Exercise Library UX</section>
+        <snippet>Search bar at top with real-time filtering. Category chips for quick filtering. Exercise tiles show name, category badge, muscle groups. Star icon for favorites. Search results appear instantly (&lt;200ms). Custom exercises marked with "Custom" badge.</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/sprint-3/3-2-exercise-library-500-exercises.md</path>
+        <title>Story 3.2: Exercise Library (500+ Exercises)</title>
+        <section>Database Schema</section>
+        <snippet>exercises table: id (UUID PK), name (TEXT), category (TEXT), muscle_groups (TEXT[]), instructions (TEXT). user_exercises table: id (UUID PK), user_id (UUID FK), name (TEXT), category (TEXT). exercise_favorites table: user_id + exercise_id composite PK. GIN index on exercises.name for full-text search.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <!-- No existing code - greenfield project -->
+      <note>This is the first implementation story for the Fitness Coach module's exercise library. No existing code to reference. Follow architecture patterns and create base structure at lib/features/fitness_coach/. Coordinate with Story 3.1 (Smart Pattern) which depends on exercise data.</note>
+    </code>
+    <dependencies>
+      <flutter>
+        <sdk>3.38+</sdk>
+        <dart>3.10+</dart>
+      </flutter>
+      <packages>
+        <package name="flutter_riverpod" version="^3.0.0" usage="State management for exercise search and favorites" />
+        <package name="riverpod_annotation" version="^3.0.0" usage="Code generation for providers" />
+        <package name="drift" version="^2.14.0" usage="Local SQLite cache for exercises (offline access)" />
+        <package name="drift_flutter" version="^0.1.0" usage="Flutter integration for Drift" />
+        <package name="sqlite3_flutter_libs" version="^0.5.0" usage="SQLite native libraries" />
+        <package name="supabase_flutter" version="^2.0.0" usage="Supabase client for exercise data and sync" />
+        <package name="freezed" version="^2.4.0" usage="Immutable entity classes" />
+        <package name="freezed_annotation" version="^2.4.0" usage="Annotations for freezed" />
+        <package name="json_annotation" version="^4.8.0" usage="JSON serialization" />
+        <package name="flutter_test" version="sdk" usage="Unit and widget testing framework" />
+        <package name="integration_test" version="sdk" usage="End-to-end testing framework" />
+      </packages>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint id="ARCH-1" type="architectural">
+      <description>Must follow Hybrid Architecture pattern (D1)</description>
+      <details>Create feature structure at lib/features/fitness_coach/ with presentation/, domain/, and data/ layers. Use clean architecture separation of concerns. Exercise library components in fitness_coach/exercise_library/ subdomain.</details>
+    </constraint>
+    <constraint id="ARCH-2" type="architectural">
+      <description>Offline-first with local cache</description>
+      <details>Cache exercise library in Drift (SQLite) for offline access. Sync from Supabase on app launch. Custom exercises and favorites sync bidirectionally.</details>
+    </constraint>
+    <constraint id="ARCH-3" type="architectural">
+      <description>Use Riverpod for state management (D1, D6)</description>
+      <details>Create providers following feature-first structure. Search state, favorites state, and category filters managed via Riverpod providers in fitness_coach/presentation/providers/.</details>
+    </constraint>
+    <constraint id="DATA-1" type="data">
+      <description>Database schema must match specification</description>
+      <details>exercises table: id (UUID PK), name (TEXT NOT NULL), category (TEXT NOT NULL), muscle_groups (TEXT[]), instructions (TEXT), created_at (TIMESTAMPTZ). user_exercises table: id (UUID PK), user_id (UUID FK auth.users ON DELETE CASCADE), name (TEXT NOT NULL), category (TEXT NOT NULL), created_at (TIMESTAMPTZ). exercise_favorites table: user_id (UUID FK auth.users ON DELETE CASCADE), exercise_id (UUID), created_at (TIMESTAMPTZ), PRIMARY KEY (user_id, exercise_id).</details>
+    </constraint>
+    <constraint id="DATA-2" type="data">
+      <description>Exercise category taxonomy</description>
+      <details>Exactly 8 categories: Chest, Back, Legs, Shoulders, Arms, Core, Cardio, Other. Use CHECK constraint or enum to enforce. All 500+ seed exercises must map to one of these categories.</details>
+    </constraint>
+    <constraint id="DATA-3" type="data">
+      <description>Muscle group mappings</description>
+      <details>Muscle groups stored as TEXT[] array. Standard groups: chest, back, lats, quads, glutes, hamstrings, calves, shoulders, biceps, triceps, forearms, abs, obliques. Allow multiple muscle groups per exercise.</details>
+    </constraint>
+    <constraint id="DATA-4" type="data">
+      <description>500+ exercise seed data required</description>
+      <details>Seed script must include minimum 500 exercises with high-quality data. Distribution: ~80 Chest, ~80 Back, ~100 Legs, ~60 Shoulders, ~80 Arms, ~60 Core, ~30 Cardio, ~10 Other. Validate data completeness before seeding.</details>
+    </constraint>
+    <constraint id="SEC-1" type="security">
+      <description>Row Level Security (RLS) policies required</description>
+      <details>Enable RLS on user_exercises and exercise_favorites tables. Policies: CREATE POLICY "Users can only access own custom exercises" ON user_exercises FOR ALL USING (auth.uid() = user_id); CREATE POLICY "Users can only access own favorites" ON exercise_favorites FOR ALL USING (auth.uid() = user_id). exercises table is read-only for all authenticated users.</details>
+    </constraint>
+    <constraint id="UX-1" type="ux">
+      <description>Search results must appear in &lt;200ms</description>
+      <details>Use GIN index on exercises.name for full-text search. Debounce search input (150ms). Measure 95th percentile search latency. Display loading indicator only if search takes &gt;200ms.</details>
+    </constraint>
+    <constraint id="UX-2" type="ux">
+      <description>Haptic feedback on favorite toggle</description>
+      <details>Use HapticFeedback.lightImpact() when user taps star icon to favorite/unfavorite exercise. Provides tactile confirmation of action.</details>
+    </constraint>
+    <constraint id="UX-3" type="ux">
+      <description>Custom exercise validation</description>
+      <details>Name: required, min 2 chars, max 100 chars. Category: required, must be one of 8 categories. Show inline validation errors. Prevent submission until valid.</details>
+    </constraint>
+    <constraint id="PERF-1" type="performance">
+      <description>Search performance &lt;200ms (95th percentile)</description>
+      <details>Implement PostgreSQL full-text search with GIN index. Use to_tsvector('english', name) for fuzzy matching. Cache frequent searches. Measure and log search latency. Optimize queries to stay under 200ms threshold.</details>
+    </constraint>
+    <constraint id="PERF-2" type="performance">
+      <description>Exercise list rendering performance</description>
+      <details>Use ListView.builder for efficient rendering of large exercise lists. Implement pagination (50 exercises per page) or infinite scroll. Avoid rebuilding entire list on search/filter changes.</details>
+    </constraint>
+    <constraint id="PERF-3" type="performance">
+      <description>Seed data initialization time</description>
+      <details>Seed 500+ exercises on first launch in &lt;5 seconds. Use batch INSERT statements (50-100 rows per batch). Show progress indicator during seeding. Mark seeding complete in local storage to prevent re-seeding.</details>
+    </constraint>
+    <constraint id="TEST-1" type="testing">
+      <description>80%+ code coverage required</description>
+      <details>Follow 70/20/10 testing pyramid. Unit tests for use cases and search logic, widget tests for UI components, integration test for full exercise library flow. All AC must have test coverage.</details>
+    </constraint>
+    <constraint id="TEST-2" type="testing">
+      <description>Search performance testing</description>
+      <details>Create performance test that queries 500+ exercises and asserts results returned in &lt;200ms. Test various search patterns: single word, multi-word, partial matches, category filters.</details>
+    </constraint>
+    <constraint id="TEST-3" type="testing">
+      <description>Seed data integrity testing</description>
+      <details>Verify all 500+ exercises seeded correctly. Check category distribution matches specification. Validate muscle group mappings. Ensure no duplicate exercises. Test idempotency (re-running seed doesn't create duplicates).</details>
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>ExerciseEntity</name>
+      <kind>domain-entity</kind>
+      <signature>
+        @freezed
+        class ExerciseEntity with _$ExerciseEntity {
+          const factory ExerciseEntity({
+            required String id,
+            required String name,
+            required ExerciseCategory category,
+            required List&lt;String&gt; muscleGroups,
+            required String instructions,
+            required DateTime createdAt,
+            @Default(false) bool isFavorite,
+            @Default(false) bool isCustom,
+          }) = _ExerciseEntity;
+        }
+      </signature>
+      <path>lib/features/fitness_coach/domain/entities/exercise_entity.dart</path>
+      <notes>Use @freezed for immutability and copyWith. isFavorite and isCustom are computed fields based on user data. muscleGroups is List&lt;String&gt; (e.g., ['chest', 'triceps']).</notes>
+    </interface>
+    <interface>
+      <name>ExerciseCategory</name>
+      <kind>domain-enum</kind>
+      <signature>
+        enum ExerciseCategory {
+          chest,
+          back,
+          legs,
+          shoulders,
+          arms,
+          core,
+          cardio,
+          other;
+
+          String get displayName => name[0].toUpperCase() + name.substring(1);
+        }
+      </signature>
+      <path>lib/features/fitness_coach/domain/entities/exercise_category.dart</path>
+      <notes>Exactly 8 categories as specified. displayName helper for UI display (capitalize first letter).</notes>
+    </interface>
+    <interface>
+      <name>GetExercisesUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class GetExercisesUseCase {
+          Future&lt;Result&lt;List&lt;ExerciseEntity&gt;&gt;&gt; call({
+            ExerciseCategory? category,
+            bool favoritesOnly = false,
+          });
+        }
+      </signature>
+      <path>lib/features/fitness_coach/domain/usecases/get_exercises_usecase.dart</path>
+      <notes>Returns all exercises, optionally filtered by category or favorites. Merges global exercises + user custom exercises. Includes isFavorite flag from exercise_favorites table.</notes>
+    </interface>
+    <interface>
+      <name>SearchExercisesUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class SearchExercisesUseCase {
+          Future&lt;Result&lt;List&lt;ExerciseEntity&gt;&gt;&gt; call({
+            required String query,
+            ExerciseCategory? category,
+          });
+        }
+      </signature>
+      <path>lib/features/fitness_coach/domain/usecases/search_exercises_usecase.dart</path>
+      <notes>Returns Result&lt;T&gt; pattern (Success/Failure). Must complete in &lt;200ms. Uses PostgreSQL full-text search. Supports category filtering. Returns empty list if query is empty or &lt;2 chars.</notes>
+    </interface>
+    <interface>
+      <name>AddCustomExerciseUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class AddCustomExerciseUseCase {
+          Future&lt;Result&lt;ExerciseEntity&gt;&gt; call({
+            required String name,
+            required ExerciseCategory category,
+            List&lt;String&gt; muscleGroups = const [],
+            String? instructions,
+          });
+        }
+      </signature>
+      <path>lib/features/fitness_coach/domain/usecases/add_custom_exercise_usecase.dart</path>
+      <notes>Validates input (name min 2 chars, max 100 chars, category required). Saves to user_exercises table. Returns created ExerciseEntity with isCustom=true.</notes>
+    </interface>
+    <interface>
+      <name>ToggleFavoriteUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class ToggleFavoriteUseCase {
+          Future&lt;Result&lt;bool&gt;&gt; call({
+            required String exerciseId,
+          });
+        }
+      </signature>
+      <path>lib/features/fitness_coach/domain/usecases/toggle_favorite_usecase.dart</path>
+      <notes>Toggles favorite state in exercise_favorites table. Returns new favorite state (true if favorited, false if unfavorited). Handles both global exercises and custom exercises.</notes>
+    </interface>
+    <interface>
+      <name>ExerciseRepository</name>
+      <kind>repository</kind>
+      <signature>
+        abstract class ExerciseRepository {
+          Future&lt;Result&lt;List&lt;ExerciseEntity&gt;&gt;&gt; getExercises({
+            ExerciseCategory? category,
+            bool favoritesOnly = false,
+          });
+          Future&lt;Result&lt;List&lt;ExerciseEntity&gt;&gt;&gt; searchExercises({
+            required String query,
+            ExerciseCategory? category,
+          });
+          Future&lt;Result&lt;ExerciseEntity&gt;&gt; addCustomExercise({
+            required String userId,
+            required String name,
+            required ExerciseCategory category,
+            List&lt;String&gt; muscleGroups = const [],
+            String? instructions,
+          });
+          Future&lt;Result&lt;bool&gt;&gt; toggleFavorite({
+            required String userId,
+            required String exerciseId,
+          });
+          Future&lt;Result&lt;bool&gt;&gt; isFavorite({
+            required String userId,
+            required String exerciseId,
+          });
+          Future&lt;Result&lt;void&gt;&gt; seedExercises(List&lt;ExerciseEntity&gt; exercises);
+          Future&lt;Result&lt;bool&gt;&gt; hasSeededExercises();
+        }
+      </signature>
+      <path>lib/features/fitness_coach/domain/repositories/exercise_repository.dart</path>
+      <notes>Implemented by ExerciseRepositoryImpl in data layer. Uses both DriftDataSource (cache) and SupabaseDataSource. seedExercises and hasSeededExercises for first-launch seeding.</notes>
+    </interface>
+    <interface>
+      <name>exercises table (Supabase PostgreSQL)</name>
+      <kind>database-table</kind>
+      <signature>
+        CREATE TABLE exercises (
+          id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+          name TEXT NOT NULL,
+          category TEXT NOT NULL CHECK (category IN ('Chest', 'Back', 'Legs', 'Shoulders', 'Arms', 'Core', 'Cardio', 'Other')),
+          muscle_groups TEXT[] DEFAULT '{}',
+          instructions TEXT,
+          created_at TIMESTAMPTZ DEFAULT NOW()
+        );
+
+        CREATE INDEX idx_exercises_name_gin ON exercises USING GIN (to_tsvector('english', name));
+        CREATE INDEX idx_exercises_category ON exercises(category);
+      </signature>
+      <path>supabase/migrations/</path>
+      <notes>Global exercise library, read-only for users. GIN index for full-text search performance. Category CHECK constraint ensures data integrity.</notes>
+    </interface>
+    <interface>
+      <name>user_exercises table (Supabase PostgreSQL)</name>
+      <kind>database-table</kind>
+      <signature>
+        CREATE TABLE user_exercises (
+          id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+          user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+          name TEXT NOT NULL,
+          category TEXT NOT NULL CHECK (category IN ('Chest', 'Back', 'Legs', 'Shoulders', 'Arms', 'Core', 'Cardio', 'Other')),
+          muscle_groups TEXT[] DEFAULT '{}',
+          instructions TEXT,
+          created_at TIMESTAMPTZ DEFAULT NOW()
+        );
+
+        CREATE INDEX idx_user_exercises_user_id ON user_exercises(user_id);
+      </signature>
+      <path>supabase/migrations/</path>
+      <notes>User-created custom exercises. Scoped by user_id. Same category constraint as exercises table. Include RLS policies in migration.</notes>
+    </interface>
+    <interface>
+      <name>exercise_favorites table (Supabase PostgreSQL)</name>
+      <kind>database-table</kind>
+      <signature>
+        CREATE TABLE exercise_favorites (
+          user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+          exercise_id UUID NOT NULL,
+          created_at TIMESTAMPTZ DEFAULT NOW(),
+          PRIMARY KEY (user_id, exercise_id)
+        );
+
+        CREATE INDEX idx_exercise_favorites_user_created ON exercise_favorites(user_id, created_at DESC);
+      </signature>
+      <path>supabase/migrations/</path>
+      <notes>Composite primary key (user_id, exercise_id). exercise_id can reference either exercises.id or user_exercises.id. Index on (user_id, created_at DESC) for "recently favorited" queries.</notes>
+    </interface>
+    <interface>
+      <name>ExerciseSearchDelegate</name>
+      <kind>widget</kind>
+      <signature>
+        class ExerciseSearchDelegate extends SearchDelegate&lt;ExerciseEntity?&gt; {
+          @override
+          List&lt;Widget&gt; buildActions(BuildContext context);
+
+          @override
+          Widget buildLeading(BuildContext context);
+
+          @override
+          Widget buildResults(BuildContext context);
+
+          @override
+          Widget buildSuggestions(BuildContext context);
+        }
+      </signature>
+      <path>lib/features/fitness_coach/presentation/widgets/exercise_search_delegate.dart</path>
+      <notes>Extends Flutter's SearchDelegate. Calls SearchExercisesUseCase with debouncing (150ms). Shows category filter chips. Returns selected ExerciseEntity or null on cancel.</notes>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Follow 70/20/10 testing pyramid: 70% unit tests (use cases, repositories, entities), 20% widget tests (UI components, search delegate, state management), 10% integration tests (end-to-end exercise library flows). Use flutter_test for unit/widget tests, integration_test for E2E. Mock dependencies with mockito. Target 80%+ code coverage. All acceptance criteria must have test coverage. Include performance tests for search latency.
+    </standards>
+    <locations>
+      <location>test/features/fitness_coach/domain/usecases/</location>
+      <location>test/features/fitness_coach/domain/entities/</location>
+      <location>test/features/fitness_coach/data/repositories/</location>
+      <location>test/features/fitness_coach/presentation/widgets/</location>
+      <location>integration_test/features/fitness_coach/exercise_library_flow_test.dart</location>
+    </locations>
+    <ideas>
+      <test-idea ac-ref="AC1,AC2">
+        <description>Unit test: Seed data integrity</description>
+        <approach>Load seed data from JSON/CSV. Verify 500+ exercises. Assert category distribution: each category has exercises. Validate muscle_groups array format. Check no duplicate names. Verify all categories match ExerciseCategory enum.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3">
+        <description>Performance test: Search latency &lt;200ms</description>
+        <approach>Seed database with 500+ exercises. Execute search queries: single word ("bench"), multi-word ("bench press"), partial ("sq"). Measure query time. Assert 95th percentile &lt;200ms. Test with category filter applied.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3">
+        <description>Unit test: SearchExercisesUseCase returns correct results</description>
+        <approach>Mock ExerciseRepository with test data. Search "bench". Assert results contain "Bench Press", "Incline Bench Press", "Dumbbell Bench Press". Verify fuzzy matching (searching "pres" matches "press"). Test case-insensitive search.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC2">
+        <description>Unit test: Category filtering</description>
+        <approach>Mock repository with exercises from multiple categories. Call GetExercisesUseCase with category=Chest. Assert only Chest exercises returned. Verify count matches expected. Test all 8 categories.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC5,AC6">
+        <description>Unit test: AddCustomExerciseUseCase validation</description>
+        <approach>Test invalid inputs: name too short (&lt;2 chars), name too long (&gt;100 chars), invalid category. Assert Failure result with appropriate error. Test valid input returns Success with ExerciseEntity (isCustom=true).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC5,AC6">
+        <description>Integration test: Create custom exercise and retrieve</description>
+        <approach>Call AddCustomExerciseUseCase with valid data. Verify saved to user_exercises table. Call GetExercisesUseCase. Assert custom exercise appears in list with isCustom=true flag. Verify custom exercise searchable.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC7">
+        <description>Unit test: ToggleFavoriteUseCase adds and removes favorite</description>
+        <approach>Mock repository. Call toggleFavorite(exerciseId). Assert returns true (favorited). Call again. Assert returns false (unfavorited). Verify repository methods called correctly.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC7">
+        <description>Integration test: Favorite persistence</description>
+        <approach>Add exercise to favorites. Verify saved to exercise_favorites table. Call GetExercisesUseCase with favoritesOnly=true. Assert favorited exercise in results with isFavorite=true. Unfavorite, verify removed from favorites list.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4">
+        <description>Widget test: ExerciseDetailScreen displays all information</description>
+        <approach>Render ExerciseDetailScreen with test ExerciseEntity. Verify name displayed. Verify category badge shows correct category. Verify muscle groups chips rendered. Verify instructions text visible. Verify favorite star icon present.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3">
+        <description>Widget test: ExerciseSearchDelegate real-time filtering</description>
+        <approach>Render search delegate. Enter query "bench". Wait for debounce (150ms). Verify search results update. Verify loading indicator during search. Test category filter chip toggle updates results.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC7">
+        <description>Widget test: Favorite toggle with haptic feedback</description>
+        <approach>Render exercise tile. Mock HapticFeedback. Tap star icon. Verify haptic feedback triggered (HapticFeedback.lightImpact()). Verify star icon state changes (filled/unfilled). Verify ToggleFavoriteUseCase called.</approach>
+      </test-idea>
+      <test-idea ac-ref="ALL">
+        <description>Integration test: Complete exercise library flow</description>
+        <approach>Launch app first time. Verify 500+ exercises seeded. Search "squat". Verify results appear &lt;200ms. Filter by category=Legs. Add custom exercise "My Custom Squat". Verify appears in list. Favorite an exercise. Verify appears in favorites tab. Navigate to exercise detail. Verify all information displayed.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1">
+        <description>Unit test: Seed idempotency</description>
+        <approach>Run seedExercises() twice. Verify exercises table has exactly 500+ rows, not 1000+. Assert no duplicates created. Verify hasSeededExercises() returns true after first seed.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC2">
+        <description>Unit test: ExerciseCategory enum completeness</description>
+        <approach>Assert ExerciseCategory has exactly 8 values: chest, back, legs, shoulders, arms, core, cardio, other. Verify displayName helper capitalizes correctly ("chest" → "Chest").</approach>
+      </test-idea>
+    </ideas>
+  </tests>
+</story-context>

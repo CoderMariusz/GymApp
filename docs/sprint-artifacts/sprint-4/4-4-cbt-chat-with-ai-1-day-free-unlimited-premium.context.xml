@@ -1,0 +1,510 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/4-4" v="1.0">
+  <metadata>
+    <epicId>4</epicId>
+    <storyId>4.4</storyId>
+    <title>CBT Chat with AI (1/day free, unlimited premium)</title>
+    <status>ready-for-dev</status>
+    <generatedAt>2025-11-17</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/sprint-4/4-4-cbt-chat-with-ai-1-day-free-unlimited-premium.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>user needing CBT support</asA>
+    <iWant>chat with AI for cognitive behavioral therapy</iWant>
+    <soThat>I can work through negative thoughts</soThat>
+    <tasks>
+      <task id="1" ac-ref="AC1,AC2,AC3">
+        <description>Implement CBT chat UI</description>
+        <subtasks>
+          <subtask>Create CBTChatScreen with chat bubble layout</subtask>
+          <subtask>Implement message input field with "Send" button</subtask>
+          <subtask>Design chat bubbles: user messages (right, blue), AI messages (left, gray)</subtask>
+          <subtask>Add typing indicator animation when AI is responding</subtask>
+          <subtask>Implement auto-scroll to latest message</subtask>
+          <subtask>Add chat history list view with efficient rendering (ListView.builder)</subtask>
+        </subtasks>
+      </task>
+      <task id="2" ac-ref="AC1,AC4">
+        <description>Integrate AI chatbot with CBT framework</description>
+        <subtasks>
+          <subtask>Create CBTChatService with AI model integration (Claude, GPT-4, or Llama)</subtask>
+          <subtask>Design CBT system prompt: guide user through thought records, identify cognitive distortions</subtask>
+          <subtask>Implement conversation flow: identify negative thought → challenge evidence → reframe</subtask>
+          <subtask>Add AI response streaming for real-time typing effect</subtask>
+          <subtask>Handle AI timeouts and errors gracefully (retry, error message)</subtask>
+        </subtasks>
+      </task>
+      <task id="3" ac-ref="AC4">
+        <description>Implement CBT frameworks and techniques</description>
+        <subtasks>
+          <subtask>Implement thought record template: situation, automatic thought, emotion, evidence for/against, balanced thought</subtask>
+          <subtask>Add cognitive distortion detection: all-or-nothing thinking, overgeneralization, mental filter, catastrophizing, etc.</subtask>
+          <subtask>Create guided prompts for CBT exercises</subtask>
+          <subtask>Add summary at end of conversation with key insights</subtask>
+        </subtasks>
+      </task>
+      <task id="4" ac-ref="AC2,AC3">
+        <description>Implement tier-based conversation limits</description>
+        <subtasks>
+          <subtask>Check user tier before starting new conversation</subtask>
+          <subtask>Free tier: 1 conversation per day (reset at midnight UTC)</subtask>
+          <subtask>Premium tier: unlimited conversations</subtask>
+          <subtask>Track conversation count in database (cbt_conversations table)</subtask>
+          <subtask>Show premium upsell modal when free user reaches limit: "Upgrade for unlimited CBT conversations"</subtask>
+          <subtask>Add visual indicator: "1 free conversation remaining today"</subtask>
+        </subtasks>
+      </task>
+      <task id="5" ac-ref="AC5">
+        <description>Implement conversation history</description>
+        <subtasks>
+          <subtask>Create cbt_conversations table and cbt_messages table in Drift and Supabase</subtask>
+          <subtask>Save each message (user and AI) to database with timestamp</subtask>
+          <subtask>Implement conversation list view showing past conversations (title = first user message, date)</subtask>
+          <subtask>Allow user to view past conversation details</subtask>
+          <subtask>Implement end-to-end encryption (E2EE) for conversation history</subtask>
+          <subtask>Add search functionality for past conversations</subtask>
+        </subtasks>
+      </task>
+      <task id="6" ac-ref="AC6">
+        <description>Implement GDPR deletion</description>
+        <subtasks>
+          <subtask>Add "Delete conversation" option in conversation list (swipe action)</subtask>
+          <subtask>Add "Delete all conversations" option in settings</subtask>
+          <subtask>Implement hard delete from both Drift and Supabase</subtask>
+          <subtask>Show confirmation dialog before deletion</subtask>
+          <subtask>Add data export option: download conversations as JSON before deletion</subtask>
+        </subtasks>
+      </task>
+      <task id="7" ac-ref="AC1,AC4,AC5,AC6">
+        <description>Ensure privacy and security</description>
+        <subtasks>
+          <subtask>Encrypt all conversation messages with E2EE before saving</subtask>
+          <subtask>Use EncryptionService from Story 4.3 (reusable E2EE service)</subtask>
+          <subtask>Implement RLS policies on cbt_conversations and cbt_messages tables</subtask>
+          <subtask>Add disclaimer: "This is not a substitute for professional therapy"</subtask>
+          <subtask>Ensure AI responses do not store PII on backend (E2EE ensures this)</subtask>
+        </subtasks>
+      </task>
+      <task id="8" ac-ref="ALL">
+        <description>Write comprehensive tests</description>
+        <subtasks>
+          <subtask>Unit tests: tier limit checks, conversation saving, E2EE, CBT logic</subtask>
+          <subtask>Widget tests: chat UI, message bubbles, typing indicator, conversation list</subtask>
+          <subtask>Integration test: end-to-end CBT chat flow with tier limits and history</subtask>
+          <subtask>Achieve 80%+ code coverage</subtask>
+        </subtasks>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="AC1">
+      <text>AI CBT chatbot with conversational interface</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC2">
+      <text>Free tier: 1 conversation per day</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC3">
+      <text>Premium tier: unlimited conversations</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC4">
+      <text>CBT frameworks: thought records, cognitive distortion identification</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC5">
+      <text>Conversation history with E2EE</text>
+      <priority>P1</priority>
+    </criterion>
+    <criterion id="AC6">
+      <text>GDPR deletion (delete conversations with confirmation)</text>
+      <priority>P1</priority>
+    </criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR45: CBT Chat with AI</section>
+        <snippet>AI-powered CBT chatbot helps users work through negative thoughts using cognitive behavioral therapy frameworks. Free: 1 conversation/day. Premium: unlimited. E2EE for all conversations. GDPR deletion support.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR46: CBT Thought Records and Cognitive Distortions</section>
+        <snippet>AI guides users through structured thought records: situation → automatic thought → emotion → evidence for/against → balanced thought. Detects cognitive distortions: all-or-nothing thinking, catastrophizing, mental filter, should statements, etc.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/epics.md</path>
+        <title>Epic 4: Mind &amp; Emotion - Story 4.4</title>
+        <section>Story 4.4: CBT Chat with AI</section>
+        <snippet>AI chatbot for cognitive behavioral therapy. 1 conversation/day (free), unlimited (premium). Thought records, cognitive distortion detection, conversation history (E2EE), GDPR deletion. Disclaimer: not professional therapy.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/monetization.md</path>
+        <title>Monetization Strategy</title>
+        <section>Premium Features - Mind &amp; Emotion</section>
+        <snippet>Free tier: 1 CBT conversation/day. Premium tier: unlimited CBT conversations. Upsell modal after free limit: "Upgrade for unlimited access to AI therapy support. $9.99/month".</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>AI Orchestration Service (D5)</section>
+        <snippet>AI service supports Claude (Anthropic), GPT-4 (OpenAI), and Llama (local/cloud). Use streaming responses for real-time chat. CBT chatbot uses system prompt with CBT framework knowledge. Timeout: 30s for chat responses.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>End-to-End Encryption (D7)</section>
+        <snippet>CBT chat history encrypted with E2EE (AES-256-GCM). Same encryption service as mood notes and journal. Backend stores ciphertext only. Ensures user privacy for sensitive mental health conversations.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/ux-design-specification.md</path>
+        <title>UX Design Specification</title>
+        <section>CBT Chat UX</section>
+        <snippet>Chat interface with user messages (right, blue) and AI messages (left, gray). Typing indicator with animated dots. Free user sees "1 free conversation today" badge. Premium upsell modal on limit. Disclaimer at top: "Not a substitute for professional therapy".</snippet>
+      </doc>
+    </docs>
+    <code>
+      <reference>
+        <path>lib/core/services/encryption_service.dart</path>
+        <description>E2EE service from Story 4.3 for encrypting conversation history</description>
+      </reference>
+      <reference>
+        <path>lib/core/services/ai_orchestration_service.dart</path>
+        <description>AI service for generating responses (may exist from Life Coach Epic 2)</description>
+      </reference>
+    </code>
+    <dependencies>
+      <flutter>
+        <sdk>3.38+</sdk>
+        <dart>3.10+</dart>
+      </flutter>
+      <packages>
+        <package name="flutter_riverpod" version="^3.0.0" usage="State management for chat state" />
+        <package name="drift" version="^2.14.0" usage="Local SQLite for conversation history" />
+        <package name="supabase_flutter" version="^2.0.0" usage="Database sync" />
+        <package name="encrypt" version="^5.0.3" usage="AES encryption for E2EE (via EncryptionService)" />
+        <package name="flutter_secure_storage" version="^9.0.0" usage="Encryption key storage" />
+        <package name="http" version="^1.1.0" usage="HTTP client for AI API calls" />
+        <package name="uuid" version="^4.2.0" usage="Generate conversation and message IDs" />
+        <package name="intl" version="^0.18.1" usage="Date/time formatting for conversation list" />
+        <package name="flutter_test" version="sdk" usage="Unit and widget testing" />
+      </packages>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint id="ARCH-1" type="architectural">
+      <description>Follow feature-first architecture (D1)</description>
+      <details>CBT chat in lib/features/mind_emotion/cbt_chat/ with presentation/, domain/, data/ layers. Reuse EncryptionService and AIOrchestrationService from core/services/.</details>
+    </constraint>
+    <constraint id="ARCH-2" type="architectural">
+      <description>Offline-first for conversation history (D3)</description>
+      <details>Save messages to Drift first, sync to Supabase when online. Conversations and messages encrypted before saving (E2EE). Can view history offline.</details>
+    </constraint>
+    <constraint id="AI-1" type="ai">
+      <description>CBT system prompt design</description>
+      <details>System prompt: "You are a CBT (Cognitive Behavioral Therapy) assistant. Guide users through thought records: identify situation, automatic thought, emotions, evidence for/against, balanced thought. Help identify cognitive distortions. Be empathetic but not a therapist. Encourage professional help for serious issues."</details>
+    </constraint>
+    <constraint id="AI-2" type="ai">
+      <description>AI response streaming for real-time chat</description>
+      <details>Use streaming API (if available) for word-by-word response. Show typing indicator while streaming. Update chat bubble as tokens arrive. Fallback to single response if streaming unavailable.</details>
+    </constraint>
+    <constraint id="TIER-1" type="business">
+      <description>Tier-based conversation limits</description>
+      <details>Free: 1 conversation/day (resets midnight UTC). Premium: unlimited. Check tier in domain layer (CheckConversationLimitUseCase). Track conversation count in cbt_conversations table with date.</details>
+    </constraint>
+    <constraint id="TIER-2" type="business">
+      <description>Premium upsell on limit reached</description>
+      <details>When free user tries to start 2nd conversation in a day, show modal: "You've reached your free limit. Upgrade to Premium for unlimited CBT conversations. $9.99/month" with "Upgrade" and "Cancel" buttons.</details>
+    </constraint>
+    <constraint id="SEC-1" type="security">
+      <description>End-to-end encryption for conversations (D7, NFR-S2)</description>
+      <details>Encrypt all messages (user and AI) with E2EE before saving. Use EncryptionService from Story 4.3. Backend cannot read conversation content (only ciphertext).</details>
+    </constraint>
+    <constraint id="SEC-2" type="security">
+      <description>RLS policies for conversation data</description>
+      <details>Enable RLS on cbt_conversations and cbt_messages tables. Policy: USING (auth.uid() = user_id). Conversations are highly sensitive mental health data.</details>
+    </constraint>
+    <constraint id="UX-1" type="ux">
+      <description>Disclaimer for AI therapy chatbot</description>
+      <details>Show disclaimer at top of chat screen: "This AI assistant is not a substitute for professional therapy. If you're in crisis, please contact a mental health professional or crisis hotline." Link to crisis resources.</details>
+    </constraint>
+    <constraint id="UX-2" type="ux">
+      <description>Typing indicator for AI responses</description>
+      <details>Show animated typing indicator (3 bouncing dots) when AI is generating response. Improves perceived responsiveness. Remove indicator when response complete.</details>
+    </constraint>
+    <constraint id="UX-3" type="ux">
+      <description>Conversation summary at end</description>
+      <details>When user ends conversation or exits, AI can optionally provide summary: "Key insights: [identified cognitive distortions], [balanced thoughts]". Store summary with conversation for future reference.</details>
+    </constraint>
+    <constraint id="GDPR-1" type="compliance">
+      <description>GDPR deletion support</description>
+      <details>Users can delete individual conversations or all conversations. Hard delete from Drift and Supabase (no soft delete). Show confirmation: "Are you sure? This cannot be undone." Provide data export (JSON) before deletion.</details>
+    </constraint>
+    <constraint id="PERF-1" type="performance">
+      <description>AI response time target &lt;5s</description>
+      <details>AI should respond within 5 seconds for good UX. Use streaming to show partial response faster. Implement timeout at 30s with error message and retry option.</details>
+    </constraint>
+    <constraint id="TEST-1" type="testing">
+      <description>80%+ code coverage required</description>
+      <details>Unit tests for tier limits, E2EE, conversation saving, CBT logic. Widget tests for chat UI, message bubbles, typing indicator. Integration test for full chat flow with tier check.</details>
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>CBTConversationEntity</name>
+      <kind>domain-entity</kind>
+      <signature>
+        class CBTConversationEntity {
+          final String id;
+          final String userId;
+          final DateTime startedAt;
+          final DateTime? endedAt;
+          final String title;         // first user message or auto-generated
+          final String? summary;      // optional AI-generated summary
+          final List&lt;CBTMessageEntity&gt; messages;
+        }
+      </signature>
+      <path>lib/features/mind_emotion/cbt_chat/domain/entities/cbt_conversation_entity.dart</path>
+      <notes>Use @freezed for immutability. messages list loaded separately for efficiency. title is decrypted excerpt of first message.</notes>
+    </interface>
+    <interface>
+      <name>CBTMessageEntity</name>
+      <kind>domain-entity</kind>
+      <signature>
+        class CBTMessageEntity {
+          final String id;
+          final String conversationId;
+          final MessageRole role;     // user or assistant
+          final String content;       // decrypted on client
+          final DateTime timestamp;
+        }
+
+        enum MessageRole { user, assistant }
+      </signature>
+      <path>lib/features/mind_emotion/cbt_chat/domain/entities/cbt_message_entity.dart</path>
+      <notes>Use @freezed for immutability. content is decrypted when loaded. Encrypted before saving to database.</notes>
+    </interface>
+    <interface>
+      <name>StartCBTConversationUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class StartCBTConversationUseCase {
+          Future&lt;Result&lt;CBTConversationEntity&gt;&gt; call();
+        }
+      </signature>
+      <path>lib/features/mind_emotion/cbt_chat/domain/usecases/start_cbt_conversation_usecase.dart</path>
+      <notes>Checks tier limit before creating conversation. Free: max 1/day. Premium: unlimited. Creates new conversation record. Returns TierLimitError if limit reached.</notes>
+    </interface>
+    <interface>
+      <name>SendCBTMessageUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class SendCBTMessageUseCase {
+          Stream&lt;String&gt; call({
+            required String conversationId,
+            required String userMessage,
+          });
+        }
+      </signature>
+      <path>lib/features/mind_emotion/cbt_chat/domain/usecases/send_cbt_message_usecase.dart</path>
+      <notes>Saves user message. Calls AI service. Returns stream of AI response tokens (for typing effect). Saves AI response when complete. All messages encrypted before saving.</notes>
+    </interface>
+    <interface>
+      <name>GetCBTConversationsUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class GetCBTConversationsUseCase {
+          Future&lt;Result&lt;List&lt;CBTConversationEntity&gt;&gt;&gt; call();
+        }
+      </signature>
+      <path>lib/features/mind_emotion/cbt_chat/domain/usecases/get_cbt_conversations_usecase.dart</path>
+      <notes>Fetches all conversations for user. Decrypts titles and summaries. Loads messages separately on-demand (not in list view).</notes>
+    </interface>
+    <interface>
+      <name>DeleteCBTConversationUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class DeleteCBTConversationUseCase {
+          Future&lt;Result&lt;void&gt;&gt; call(String conversationId);
+        }
+      </signature>
+      <path>lib/features/mind_emotion/cbt_chat/domain/usecases/delete_cbt_conversation_usecase.dart</path>
+      <notes>Hard deletes conversation and all messages from Drift and Supabase. GDPR compliance. No soft delete. Irreversible operation.</notes>
+    </interface>
+    <interface>
+      <name>CheckCBTConversationLimitUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class CheckCBTConversationLimitUseCase {
+          Future&lt;Result&lt;ConversationLimitStatus&gt;&gt; call();
+        }
+
+        class ConversationLimitStatus {
+          final bool canStartConversation;
+          final int conversationsUsedToday;
+          final int? conversationsRemainingToday; // null for premium (unlimited)
+          final UserTier tier;
+        }
+      </signature>
+      <path>lib/features/mind_emotion/cbt_chat/domain/usecases/check_cbt_conversation_limit_usecase.dart</path>
+      <notes>Checks user tier and conversation count for today. Free: limit 1/day. Premium: unlimited. Used before starting conversation and for UI indicators.</notes>
+    </interface>
+    <interface>
+      <name>CBTChatService</name>
+      <kind>service</kind>
+      <signature>
+        abstract class CBTChatService {
+          Stream&lt;String&gt; sendMessage({
+            required String message,
+            required List&lt;CBTMessageEntity&gt; conversationHistory,
+          });
+        }
+      </signature>
+      <path>lib/features/mind_emotion/cbt_chat/data/services/cbt_chat_service.dart</path>
+      <notes>Wraps AI orchestration service with CBT-specific system prompt. Includes conversation history for context. Returns stream of response tokens.</notes>
+    </interface>
+    <interface>
+      <name>CBTConversationRepository</name>
+      <kind>repository</kind>
+      <signature>
+        abstract class CBTConversationRepository {
+          Future&lt;Result&lt;CBTConversationEntity&gt;&gt; createConversation(String userId);
+          Future&lt;Result&lt;CBTMessageEntity&gt;&gt; saveMessage(CBTMessageEntity message);
+          Future&lt;Result&lt;List&lt;CBTConversationEntity&gt;&gt;&gt; getConversations(String userId);
+          Future&lt;Result&lt;CBTConversationEntity&gt;&gt; getConversationById(String id);
+          Future&lt;Result&lt;List&lt;CBTMessageEntity&gt;&gt;&gt; getMessages(String conversationId);
+          Future&lt;Result&lt;void&gt;&gt; deleteConversation(String conversationId);
+          Future&lt;Result&lt;int&gt;&gt; getConversationCountForDate(String userId, DateTime date);
+        }
+      </signature>
+      <path>lib/features/mind_emotion/cbt_chat/domain/repositories/cbt_conversation_repository.dart</path>
+      <notes>Implemented by CBTConversationRepositoryImpl in data layer. Uses DriftDataSource and SupabaseDataSource. Handles E2EE via EncryptionService.</notes>
+    </interface>
+    <interface>
+      <name>cbt_conversations table (Supabase &amp; Drift)</name>
+      <kind>database-table</kind>
+      <signature>
+        CREATE TABLE cbt_conversations (
+          id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+          user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+          started_at TIMESTAMPTZ DEFAULT NOW(),
+          ended_at TIMESTAMPTZ,
+          encrypted_title TEXT NOT NULL,
+          encrypted_summary TEXT,
+          created_at TIMESTAMPTZ DEFAULT NOW()
+        );
+        CREATE INDEX idx_cbt_conversations_user ON cbt_conversations(user_id, started_at DESC);
+      </signature>
+      <path>supabase/migrations/ and lib/core/database/tables.drift.dart</path>
+      <notes>RLS policy: USING (auth.uid() = user_id). encrypted_title/summary store ciphertext. Mirror in Drift for offline support.</notes>
+    </interface>
+    <interface>
+      <name>cbt_messages table (Supabase &amp; Drift)</name>
+      <kind>database-table</kind>
+      <signature>
+        CREATE TABLE cbt_messages (
+          id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+          conversation_id UUID NOT NULL REFERENCES cbt_conversations(id) ON DELETE CASCADE,
+          role TEXT NOT NULL CHECK (role IN ('user', 'assistant')),
+          encrypted_content TEXT NOT NULL,
+          timestamp TIMESTAMPTZ DEFAULT NOW()
+        );
+        CREATE INDEX idx_cbt_messages_conversation ON cbt_messages(conversation_id, timestamp ASC);
+      </signature>
+      <path>supabase/migrations/ and lib/core/database/tables.drift.dart</path>
+      <notes>RLS policy: USING (auth.uid() = (SELECT user_id FROM cbt_conversations WHERE id = conversation_id)). encrypted_content stores ciphertext.</notes>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Follow 70/20/10 testing pyramid: 70% unit tests (use cases, tier limits, E2EE, CBT logic, message saving), 20% widget tests (chat UI, message bubbles, typing indicator, conversation list), 10% integration tests (end-to-end chat flow). Use flutter_test for unit/widget tests, integration_test for E2E. Mock AI service with predefined responses. Target 80%+ code coverage.
+    </standards>
+    <locations>
+      <location>test/features/mind_emotion/cbt_chat/domain/usecases/</location>
+      <location>test/features/mind_emotion/cbt_chat/domain/entities/</location>
+      <location>test/features/mind_emotion/cbt_chat/data/services/cbt_chat_service_test.dart</location>
+      <location>test/features/mind_emotion/cbt_chat/presentation/widgets/</location>
+      <location>integration_test/features/mind_emotion/cbt_chat_flow_test.dart</location>
+    </locations>
+    <ideas>
+      <test-idea ac-ref="AC2,AC3">
+        <description>Unit test: CheckCBTConversationLimitUseCase for free tier</description>
+        <approach>Mock tier service to return "free". Mock 0 conversations today. Call checkLimit(). Verify canStartConversation=true, conversationsRemainingToday=1. Mock 1 conversation today. Call checkLimit(). Verify canStartConversation=false, conversationsRemainingToday=0.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3">
+        <description>Unit test: CheckCBTConversationLimitUseCase for premium tier</description>
+        <approach>Mock tier service to return "premium". Mock 10 conversations today. Call checkLimit(). Verify canStartConversation=true, conversationsRemainingToday=null (unlimited). Premium has no daily limit.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1,AC4">
+        <description>Unit test: SendCBTMessageUseCase with AI response</description>
+        <approach>Mock CBTChatService to return stream ["Hello", " there", "!"]. Call sendMessage with userMessage="I'm feeling anxious". Verify user message saved. Verify AI response tokens streamed. Verify final AI message saved as "Hello there!".</approach>
+      </test-idea>
+      <test-idea ac-ref="AC5">
+        <description>Unit test: E2EE for conversation messages</description>
+        <approach>Mock EncryptionService. Call saveMessage with content="I'm struggling". Verify EncryptionService.encrypt called. Verify repository saves encrypted_content (ciphertext). Load message. Verify EncryptionService.decrypt called. Verify content returned as plaintext.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6">
+        <description>Unit test: DeleteCBTConversationUseCase</description>
+        <approach>Mock repository. Call deleteConversation with conversationId. Verify repository.deleteConversation called with correct ID. Verify both Drift and Supabase deletes triggered. Verify conversation and all messages deleted.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC2">
+        <description>Unit test: StartCBTConversationUseCase enforces free limit</description>
+        <approach>Mock tier "free" with 1 conversation today. Call startConversation(). Verify returns TierLimitError. Mock tier "free" with 0 conversations today. Verify conversation created successfully.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1,AC4">
+        <description>Widget test: CBT chat UI with message bubbles</description>
+        <approach>Render CBTChatScreen with 2 messages: user="I'm worried" (right, blue), AI="Tell me more" (left, gray). Verify both bubbles present. Verify positioning correct. Verify colors correct.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1">
+        <description>Widget test: Send message and typing indicator</description>
+        <approach>Render CBTChatScreen. Enter message "Help me". Tap Send. Verify message added to chat. Verify typing indicator appears. Mock AI response completes. Verify typing indicator disappears. Verify AI message appears.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC5">
+        <description>Widget test: Conversation history list</description>
+        <approach>Mock GetCBTConversationsUseCase with 3 conversations. Render conversation list screen. Verify 3 conversation cards present. Verify titles and dates displayed. Tap conversation. Verify navigates to chat screen with conversation messages.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6">
+        <description>Widget test: Delete conversation with confirmation</description>
+        <approach>Render conversation list with 1 conversation. Swipe conversation left. Verify delete button appears. Tap delete. Verify confirmation dialog appears. Tap "Confirm". Verify DeleteCBTConversationUseCase called. Verify conversation removed from list.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC2,AC3">
+        <description>Widget test: Premium upsell modal on limit</description>
+        <approach>Mock tier "free" with 1 conversation today. Tap "New Conversation" button. Verify premium upsell modal appears with text "Upgrade for unlimited CBT conversations". Verify "Upgrade" and "Cancel" buttons present. Tap Cancel. Verify modal dismissed.</approach>
+      </test-idea>
+      <test-idea ac-ref="ALL">
+        <description>Integration test: Complete CBT chat flow with tier limit</description>
+        <approach>Launch app as free user. Navigate to CBT Chat. Verify "1 free conversation today" indicator. Start conversation. Send message "I'm feeling anxious". Verify AI responds with CBT guidance. Complete conversation. Try starting 2nd conversation. Verify premium upsell appears. Verify conversation saved to database (encrypted). Verify can view in history.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4,AC5">
+        <description>Integration test: CBT thought record flow</description>
+        <approach>Start conversation. Send "I think I'm going to fail my exam". Verify AI asks for evidence. Respond with evidence. Verify AI guides through balanced thought. Verify conversation summary generated at end. Verify summary stored with conversation.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC5,AC6">
+        <description>Integration test: E2EE and GDPR deletion</description>
+        <approach>Create conversation with sensitive content. Query database directly. Verify encrypted_content is ciphertext (not plaintext). Delete conversation. Verify hard deleted from Drift and Supabase. Verify cannot be recovered.</approach>
+      </test-idea>
+    </ideas>
+  </tests>
+
+  <devAgentRecord>
+    <recordedAt>2025-11-17</recordedAt>
+    <status>ready-for-dev</status>
+    <agent>BMAD Dev Agent</agent>
+    <notes>Story context prepared and validated for development assignment</notes>
+  </devAgentRecord>
+
+  <created>
+    <author>BMAD Story Context Workflow</author>
+    <timestamp>2025-11-17</timestamp>
+  </created>
+</story-context>

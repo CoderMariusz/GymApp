@@ -1,0 +1,618 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>2</epicId>
+    <storyId>2.7</storyId>
+    <title>Progress Dashboard (Life Coach)</title>
+    <status>ready-for-dev</status>
+    <generatedAt>2025-11-17</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/sprint-2/2-7-progress-dashboard-life-coach.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>user tracking personal growth</asA>
+    <iWant>to see my Life Coach progress and insights</iWant>
+    <soThat>I understand my patterns and celebrate wins</soThat>
+    <tasks>
+      <task id="1" ac-ref="AC1,AC2,AC3,AC4">
+        <description>Implement progress dashboard UI with chart widgets</description>
+        <subtasks>
+          <subtask>Create ProgressDashboardScreen widget (ConsumerWidget)</subtask>
+          <subtask>Implement mood trend LineChartWidget (7-day, 30-day toggle)</subtask>
+          <subtask>Implement energy trend LineChartWidget (7-day, 30-day toggle)</subtask>
+          <subtask>Implement sleep quality trend LineChartWidget (7-day, 30-day toggle)</subtask>
+          <subtask>Add interactive chart features (tap data point for details tooltip)</subtask>
+          <subtask>Integrate fl_chart ^0.66.0 library for chart rendering</subtask>
+          <subtask>Add date range selector (7-day, 30-day, last 4 weeks, all time for premium)</subtask>
+        </subtasks>
+      </task>
+      <task id="2" ac-ref="AC2,AC5,AC6,AC7,AC8">
+        <description>Implement weekly summary statistics widget</description>
+        <subtasks>
+          <subtask>Create WeeklySummaryCard widget showing check-ins completed</subtask>
+          <subtask>Display goals progress (% completed this month/week)</subtask>
+          <subtask>Show AI conversations count (conversations per week)</subtask>
+          <subtask>Display daily plan completion rate (% of tasks completed)</subtask>
+          <subtask>Show streak status (current streak, longest streak)</subtask>
+          <subtask>Display top 3 accomplishments this week</subtask>
+          <subtask>Show AI-generated weekly insight message</subtask>
+        </subtasks>
+      </task>
+      <task id="3" ac-ref="AC2,AC3,AC4,AC5,AC6">
+        <description>Implement data aggregation and trend analysis use cases</description>
+        <subtasks>
+          <subtask>Create GetWeeklyStatsUseCase for fetching aggregated statistics</subtask>
+          <subtask>Create GetTrendDataUseCase for chart data (mood, energy, sleep)</subtask>
+          <subtask>Create CalculateStreakUseCase for streak calculation logic</subtask>
+          <subtask>Create GenerateWeeklyInsightUseCase for AI-generated insight</subtask>
+          <subtask>Implement data aggregation queries using materialized views</subtask>
+          <subtask>Add caching layer for dashboard data (refresh every 5 minutes)</subtask>
+        </subtasks>
+      </task>
+      <task id="4" ac-ref="AC9">
+        <description>Implement export weekly report functionality</description>
+        <subtasks>
+          <subtask>Create ExportService for generating reports</subtask>
+          <subtask>Implement PDF export using pdf package (with charts and stats)</subtask>
+          <subtask>Implement CSV export (raw data: date, mood, energy, sleep, goals)</subtask>
+          <subtask>Add export button with format selector (PDF/CSV)</subtask>
+          <subtask>Handle file save/share using share_plus plugin</subtask>
+          <subtask>Format PDF report with branding, charts, and insights</subtask>
+        </subtasks>
+      </task>
+      <task id="5" ac-ref="AC10,AC11">
+        <description>Implement historical data viewing and data retention</description>
+        <subtasks>
+          <subtask>Add date range filtering (last 4 weeks for free, unlimited for premium)</subtask>
+          <subtask>Implement premium feature gate for unlimited historical data</subtask>
+          <subtask>Create pagination for large data sets</subtask>
+          <subtask>Add data retention policy (free: 4 weeks, premium: unlimited)</subtask>
+          <subtask>Implement local data cleanup for expired free tier data</subtask>
+        </subtasks>
+      </task>
+      <task id="6" ac-ref="AC11">
+        <description>Implement refresh functionality and performance optimization</description>
+        <subtasks>
+          <subtask>Add pull-to-refresh gesture on dashboard</subtask>
+          <subtask>Add manual refresh button in app bar</subtask>
+          <subtask>Implement optimistic UI updates during refresh</subtask>
+          <subtask>Create materialized view for daily_stats (mood, energy, sleep aggregation)</subtask>
+          <subtask>Add database indexes on user_id and date columns</subtask>
+          <subtask>Optimize dashboard load time to &lt;1s (target NFR-P4)</subtask>
+        </subtasks>
+      </task>
+      <task id="7" ac-ref="ALL">
+        <description>Write comprehensive tests for dashboard</description>
+        <subtasks>
+          <subtask>Unit tests: GetWeeklyStatsUseCase, trend calculation, streak logic</subtask>
+          <subtask>Unit tests: PDF export, CSV export, date range filtering</subtask>
+          <subtask>Widget tests: chart rendering, interactive tooltips, date range selector</subtask>
+          <subtask>Widget tests: export button, refresh button, summary cards</subtask>
+          <subtask>Integration test: full dashboard load with real data</subtask>
+          <subtask>Integration test: export flow (PDF and CSV generation)</subtask>
+          <subtask>Performance test: dashboard load time under various data sizes</subtask>
+          <subtask>Achieve 75%+ code coverage</subtask>
+        </subtasks>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="AC1">
+      <text>Dashboard accessible from Life Coach tab (dedicated "View Stats" or "Progress" button from Home)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC2">
+      <text>Weekly summary displays: check-ins completed, goals progress, AI conversations count</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC3">
+      <text>Mood trend line chart (7-day and 30-day view toggles)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC4">
+      <text>Energy trend line chart (7-day and 30-day view toggles)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC5">
+      <text>Sleep quality trend line chart (7-day and 30-day view toggles)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC6">
+      <text>Goal completion rate displayed (% completed this month)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC7">
+      <text>Daily plan completion rate (% of tasks completed each day)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC8">
+      <text>Streak status shown (current streak, longest streak)</text>
+      <priority>P1</priority>
+    </criterion>
+    <criterion id="AC9">
+      <text>Top accomplishments this week (top 3 completed goals/tasks)</text>
+      <priority>P1</priority>
+    </criterion>
+    <criterion id="AC10">
+      <text>AI-generated weekly insight message based on patterns</text>
+      <priority>P1</priority>
+    </criterion>
+    <criterion id="AC11">
+      <text>Export weekly report option (PDF and CSV formats)</text>
+      <priority>P1</priority>
+    </criterion>
+    <criterion id="AC12">
+      <text>Historical data viewing: last 4 weeks (free), unlimited (premium)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC13">
+      <text>Refresh button to update dashboard data manually</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC14">
+      <text>Charts are interactive: tap data point to see details tooltip</text>
+      <priority>P1</priority>
+    </criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR27: Progress tracking and insights</section>
+        <snippet>Progress dashboard must display trends for mood, energy, and sleep over time. Charts should be interactive with 7-day and 30-day views. Dashboard load time must be &lt;1s per NFR-P4.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR29: Weekly insights and reports</section>
+        <snippet>AI generates weekly insight based on check-in patterns, goal completion, and mood trends. Users can export weekly reports as PDF (formatted) or CSV (raw data) for external tracking.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/epics.md</path>
+        <title>Epic 2: Life Coach MVP - Story 2.7</title>
+        <section>Story 2.7: Progress Dashboard (Life Coach)</section>
+        <snippet>Progress dashboard with mood/energy/sleep trend charts, weekly summary statistics, AI-generated insights, and export functionality. Prerequisites: Story 2.1 (check-in data), Story 2.5 (reflection data).</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Hybrid Architecture (D1)</section>
+        <snippet>Feature-first architecture with clean architecture layers (presentation/domain/data). Life Coach module located at features/life_coach/. Use Riverpod for state management.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Performance Optimization (NFR-P4)</section>
+        <snippet>Dashboard widgets must load in &lt;1s. Use materialized views for aggregated statistics. Implement caching layer with 5-minute TTL. Pre-compute trends daily via background job.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Database Schema - Materialized Views</section>
+        <snippet>daily_stats materialized view aggregates mood, energy, and sleep by user_id and date. Refreshed every 6 hours via cron job. Indexes on (user_id, date DESC) for fast queries.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/ux-design-specification.md</path>
+        <title>UX Design Specification</title>
+        <section>Progress Dashboard UX</section>
+        <snippet>Dashboard accessible from Life Coach home via "View Stats" button. Charts use fl_chart with smooth animations. Interactive tooltips on data point tap. Export button in app bar. Pull-to-refresh gesture supported.</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/sprint-2/2-7-progress-dashboard-life-coach.md</path>
+        <title>Story 2.7: Progress Dashboard (Life Coach)</title>
+        <section>Charts Library and Materialized Views</section>
+        <snippet>Use fl_chart ^0.66.0 for line charts. Create materialized view daily_stats for performance (AVG mood, energy, sleep per day). Index on (user_id, date DESC).</snippet>
+      </doc>
+    </docs>
+    <code>
+      <existing>
+        <file>
+          <path>lib/features/life_coach/domain/entities/checkin_entity.dart</path>
+          <purpose>CheckinEntity with mood, energy, sleepQuality fields - source data for trends</purpose>
+          <notes>Created in Story 2.1. Contains raw check-in data that feeds trend calculations.</notes>
+        </file>
+        <file>
+          <path>lib/features/life_coach/domain/repositories/checkin_repository.dart</path>
+          <purpose>CheckinRepository with getCheckinsForDateRange method</purpose>
+          <notes>Implemented in Story 2.1. Use for fetching historical check-in data for charts.</notes>
+        </file>
+        <file>
+          <path>lib/features/life_coach/domain/entities/goal_entity.dart</path>
+          <purpose>GoalEntity for goal completion rate calculation</purpose>
+          <notes>Created in Story 2.3/2.4. Needed for goals progress metric in weekly summary.</notes>
+        </file>
+        <file>
+          <path>lib/features/life_coach/domain/entities/daily_plan_entity.dart</path>
+          <purpose>DailyPlanEntity for daily plan completion rate</purpose>
+          <notes>Created in Story 2.2. Needed for task completion rate metric.</notes>
+        </file>
+      </existing>
+    </code>
+    <dependencies>
+      <flutter>
+        <sdk>3.38+</sdk>
+        <dart>3.10+</dart>
+      </flutter>
+      <packages>
+        <package name="fl_chart" version="^0.66.0" usage="Line charts for mood, energy, sleep trends" />
+        <package name="pdf" version="^3.10.0" usage="Generate PDF reports with charts and statistics" />
+        <package name="printing" version="^5.11.0" usage="PDF preview and printing functionality" />
+        <package name="csv" version="^6.0.0" usage="Generate CSV exports of raw data" />
+        <package name="share_plus" version="^7.2.0" usage="Share/save exported PDF and CSV files" />
+        <package name="path_provider" version="^2.1.0" usage="Get temporary directory for file exports" />
+        <package name="flutter_riverpod" version="^3.0.0" usage="State management for dashboard data" />
+        <package name="riverpod_annotation" version="^3.0.0" usage="Code generation for providers" />
+        <package name="intl" version="^0.19.0" usage="Date formatting for charts and reports" />
+        <package name="flutter_test" version="sdk" usage="Unit and widget testing framework" />
+        <package name="integration_test" version="sdk" usage="End-to-end testing framework" />
+      </packages>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint id="ARCH-1" type="architectural">
+      <description>Must follow Hybrid Architecture pattern (D1)</description>
+      <details>Create dashboard components at lib/features/life_coach/presentation/screens/ and lib/features/life_coach/presentation/widgets/. Use clean architecture with presentation/domain/data separation.</details>
+    </constraint>
+    <constraint id="ARCH-2" type="architectural">
+      <description>Use Riverpod for state management (D1, D6)</description>
+      <details>Create providers for dashboard data: weeklyStatsProvider, trendDataProvider, weeklyInsightProvider. Use AsyncValue for loading states. Providers in life_coach/presentation/providers/.</details>
+    </constraint>
+    <constraint id="DATA-1" type="data">
+      <description>Use materialized views for performance</description>
+      <details>CREATE MATERIALIZED VIEW daily_stats AS SELECT user_id, date, AVG(mood) as avg_mood, AVG(energy) as avg_energy, AVG(sleep_quality) as avg_sleep FROM check_ins GROUP BY user_id, date. Create index on (user_id, date DESC).</details>
+    </constraint>
+    <constraint id="DATA-2" type="data">
+      <description>Data retention policy for free vs premium</description>
+      <details>Free tier: retain 4 weeks of historical data locally. Premium: unlimited. Implement cleanup job for expired free tier data. Store retention flag in user preferences.</details>
+    </constraint>
+    <constraint id="PERF-1" type="performance">
+      <description>Dashboard load time &lt;1s (NFR-P4)</description>
+      <details>Use materialized views for aggregation. Implement caching with 5-minute TTL. Pre-fetch data on Life Coach tab focus. Optimize queries with proper indexes. Lazy load charts as user scrolls.</details>
+    </constraint>
+    <constraint id="PERF-2" type="performance">
+      <description>Chart rendering must be smooth (60 FPS)</description>
+      <details>Use fl_chart's built-in optimization. Limit data points: 7-day = 7 points, 30-day = 30 points. Use const constructors. Avoid rebuilding entire chart on interaction.</details>
+    </constraint>
+    <constraint id="PERF-3" type="performance">
+      <description>PDF generation must complete in &lt;3s</description>
+      <details>Generate PDF in isolate to avoid blocking UI. Show progress indicator during generation. Pre-render charts as images before PDF assembly. Optimize PDF file size (&lt;1MB).</details>
+    </constraint>
+    <constraint id="UX-1" type="ux">
+      <description>Charts must be interactive with tooltips</description>
+      <details>Implement onTap callback on LineChartBarData. Show tooltip with exact values: "Mood: 4 (Happy) - Nov 15". Tooltip should auto-dismiss after 3 seconds or on next tap.</details>
+    </constraint>
+    <constraint id="UX-2" type="ux">
+      <description>Export flow must be intuitive</description>
+      <details>Export button in app bar with icon. Modal bottom sheet for format selection (PDF/CSV). Show generation progress. Success toast with "Share" action button.</details>
+    </constraint>
+    <constraint id="UX-3" type="ux">
+      <description>Empty state for no data</description>
+      <details>When user has &lt;2 check-ins, show empty state: "Complete more check-ins to see trends" with CTA button linking to check-in modal. Show sample chart preview.</details>
+    </constraint>
+    <constraint id="SEC-1" type="security">
+      <description>RLS policies on daily_stats materialized view</description>
+      <details>CREATE POLICY ON daily_stats FOR SELECT USING (auth.uid() = user_id). Ensure materialized view refresh preserves RLS isolation.</details>
+    </constraint>
+    <constraint id="TEST-1" type="testing">
+      <description>75%+ code coverage required</description>
+      <details>Follow 70/20/10 testing pyramid. Unit tests for use cases and calculations, widget tests for UI, integration test for export flow. All AC must have test coverage.</details>
+    </constraint>
+    <constraint id="LIB-1" type="library">
+      <description>Chart library selection: fl_chart</description>
+      <details>Use fl_chart ^0.66.0 for all charts. LineChart widget for trends. Configure with bezierBarData for smooth curves. Use theme colors for consistency.</details>
+    </constraint>
+    <constraint id="LIB-2" type="library">
+      <description>PDF generation library: pdf + printing</description>
+      <details>Use pdf package for document generation, printing package for preview. Include: header with logo, date range, charts as images, statistics table, AI insight text.</details>
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>WeeklyStatsEntity</name>
+      <kind>domain-entity</kind>
+      <signature>
+        class WeeklyStatsEntity {
+          final int checkInsCompleted;
+          final int totalCheckInsPossible; // days in week
+          final double goalCompletionRate; // 0.0-1.0
+          final int aiConversationsCount;
+          final double dailyPlanCompletionRate; // 0.0-1.0
+          final int currentStreak;
+          final int longestStreak;
+          final List&lt;String&gt; topAccomplishments; // top 3
+          final String weeklyInsight; // AI-generated
+          final DateTime weekStart;
+          final DateTime weekEnd;
+        }
+      </signature>
+      <path>lib/features/life_coach/domain/entities/weekly_stats_entity.dart</path>
+      <notes>Use @freezed for immutability. All rate fields are 0.0-1.0 (display as percentage in UI).</notes>
+    </interface>
+    <interface>
+      <name>TrendDataEntity</name>
+      <kind>domain-entity</kind>
+      <signature>
+        class TrendDataEntity {
+          final List&lt;DataPoint&gt; moodTrend;
+          final List&lt;DataPoint&gt; energyTrend;
+          final List&lt;DataPoint&gt; sleepQualityTrend;
+          final DateTime startDate;
+          final DateTime endDate;
+        }
+
+        class DataPoint {
+          final DateTime date;
+          final double value; // 1-5
+        }
+      </signature>
+      <path>lib/features/life_coach/domain/entities/trend_data_entity.dart</path>
+      <notes>DataPoint represents single point on line chart. Value range 1-5 for all metrics.</notes>
+    </interface>
+    <interface>
+      <name>GetWeeklyStatsUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class GetWeeklyStatsUseCase {
+          Future&lt;Result&lt;WeeklyStatsEntity&gt;&gt; call({
+            required String userId,
+            required DateTime weekStart,
+          });
+        }
+      </signature>
+      <path>lib/features/life_coach/domain/usecases/get_weekly_stats_usecase.dart</path>
+      <notes>Aggregates data from check-ins, goals, daily plans, and chat logs. Returns weekly summary statistics.</notes>
+    </interface>
+    <interface>
+      <name>GetTrendDataUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class GetTrendDataUseCase {
+          Future&lt;Result&lt;TrendDataEntity&gt;&gt; call({
+            required String userId,
+            required DateTime startDate,
+            required DateTime endDate,
+          });
+        }
+      </signature>
+      <path>lib/features/life_coach/domain/usecases/get_trend_data_usecase.dart</path>
+      <notes>Fetches mood, energy, sleep data from daily_stats materialized view. Returns formatted for chart rendering.</notes>
+    </interface>
+    <interface>
+      <name>GenerateWeeklyReportUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class GenerateWeeklyReportUseCase {
+          Future&lt;Result&lt;ReportFile&gt;&gt; call({
+            required String userId,
+            required DateTime weekStart,
+            required ReportFormat format, // PDF or CSV
+          });
+        }
+
+        enum ReportFormat { pdf, csv }
+
+        class ReportFile {
+          final String filePath;
+          final String fileName;
+          final int fileSizeBytes;
+        }
+      </signature>
+      <path>lib/features/life_coach/domain/usecases/generate_weekly_report_usecase.dart</path>
+      <notes>Generates PDF or CSV report. PDF includes charts and formatted text. CSV contains raw data. Returns file path for sharing.</notes>
+    </interface>
+    <interface>
+      <name>GenerateWeeklyInsightUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class GenerateWeeklyInsightUseCase {
+          Future&lt;Result&lt;String&gt;&gt; call({
+            required String userId,
+            required DateTime weekStart,
+          });
+        }
+      </signature>
+      <path>lib/features/life_coach/domain/usecases/generate_weekly_insight_usecase.dart</path>
+      <notes>Calls AI service with weekly stats to generate personalized insight message. Example: "Your energy was highest on Tuesday and Wednesday. Consider scheduling important tasks mid-week."</notes>
+    </interface>
+    <interface>
+      <name>CalculateStreakUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class CalculateStreakUseCase {
+          Future&lt;Result&lt;StreakData&gt;&gt; call({
+            required String userId,
+          });
+        }
+
+        class StreakData {
+          final int currentStreak;
+          final int longestStreak;
+          final DateTime streakStartDate;
+        }
+      </signature>
+      <path>lib/features/life_coach/domain/usecases/calculate_streak_usecase.dart</path>
+      <notes>Calculates check-in streak: consecutive days with at least one check-in. Current streak ends if day is missed.</notes>
+    </interface>
+    <interface>
+      <name>ProgressRepository</name>
+      <kind>repository</kind>
+      <signature>
+        abstract class ProgressRepository {
+          Future&lt;Result&lt;WeeklyStatsEntity&gt;&gt; getWeeklyStats(String userId, DateTime weekStart);
+          Future&lt;Result&lt;TrendDataEntity&gt;&gt; getTrendData(String userId, DateTime startDate, DateTime endDate);
+          Future&lt;Result&lt;StreakData&gt;&gt; calculateStreak(String userId);
+          Future&lt;Result&lt;List&lt;String&gt;&gt;&gt; getTopAccomplishments(String userId, DateTime weekStart, int limit);
+        }
+      </signature>
+      <path>lib/features/life_coach/domain/repositories/progress_repository.dart</path>
+      <notes>Implemented by ProgressRepositoryImpl in data layer. Queries daily_stats materialized view and aggregates data from multiple tables.</notes>
+    </interface>
+    <interface>
+      <name>ExportService</name>
+      <kind>service</kind>
+      <signature>
+        abstract class ExportService {
+          Future&lt;Result&lt;String&gt;&gt; exportToPdf({
+            required WeeklyStatsEntity stats,
+            required TrendDataEntity trends,
+            required String weeklyInsight,
+          });
+
+          Future&lt;Result&lt;String&gt;&gt; exportToCsv({
+            required List&lt;CheckinEntity&gt; checkIns,
+            required DateTime startDate,
+            required DateTime endDate,
+          });
+        }
+      </signature>
+      <path>lib/features/life_coach/data/services/export_service.dart</path>
+      <notes>PDF export includes branded header, charts as images, stats table, and AI insight. CSV exports raw check-in data with headers.</notes>
+    </interface>
+    <interface>
+      <name>LineChartWidget</name>
+      <kind>widget</kind>
+      <signature>
+        class LineChartWidget extends StatelessWidget {
+          final List&lt;DataPoint&gt; data;
+          final Color color;
+          final String title;
+          final Function(DataPoint)? onPointTap;
+
+          @override
+          Widget build(BuildContext context) {
+            return LineChart(
+              LineChartData(
+                lineBarsData: [
+                  LineChartBarData(
+                    spots: data.map((d) => FlSpot(x, y)).toList(),
+                    isCurved: true,
+                    color: color,
+                  ),
+                ],
+              ),
+            );
+          }
+        }
+      </signature>
+      <path>lib/features/life_coach/presentation/widgets/line_chart_widget.dart</path>
+      <notes>Reusable line chart widget using fl_chart. Supports tap interaction for tooltips. Configurable color and title.</notes>
+    </interface>
+    <interface>
+      <name>daily_stats materialized view (PostgreSQL)</name>
+      <kind>database-view</kind>
+      <signature>
+        CREATE MATERIALIZED VIEW daily_stats AS
+        SELECT
+          user_id,
+          date,
+          AVG(mood) as avg_mood,
+          AVG(energy) as avg_energy,
+          AVG(sleep_quality) as avg_sleep,
+          COUNT(*) as checkin_count
+        FROM check_ins
+        GROUP BY user_id, date;
+
+        CREATE UNIQUE INDEX idx_daily_stats_user_date ON daily_stats(user_id, date DESC);
+
+        -- Refresh strategy: cron job every 6 hours
+        -- Manual refresh: REFRESH MATERIALIZED VIEW CONCURRENTLY daily_stats;
+      </signature>
+      <path>supabase/migrations/</path>
+      <notes>Materialized view for dashboard performance. Refresh via cron job every 6 hours. CONCURRENTLY allows queries during refresh.</notes>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Follow 70/20/10 testing pyramid: 70% unit tests (use cases, calculations, entities), 20% widget tests (UI components, charts, interactions), 10% integration tests (full dashboard load, export flow). Use flutter_test for unit/widget tests, integration_test for E2E. Mock dependencies with mockito. Target 75%+ code coverage. All acceptance criteria must have test coverage.
+    </standards>
+    <locations>
+      <location>test/features/life_coach/domain/usecases/</location>
+      <location>test/features/life_coach/domain/entities/</location>
+      <location>test/features/life_coach/data/repositories/</location>
+      <location>test/features/life_coach/data/services/</location>
+      <location>test/features/life_coach/presentation/widgets/</location>
+      <location>test/features/life_coach/presentation/screens/</location>
+      <location>integration_test/features/life_coach/progress_dashboard_flow_test.dart</location>
+    </locations>
+    <ideas>
+      <test-idea ac-ref="AC2">
+        <description>Unit test: GetWeeklyStatsUseCase calculates correct statistics</description>
+        <approach>Mock ProgressRepository with sample data (7 check-ins, 5 goals completed, 10 AI chats). Verify WeeklyStatsEntity fields calculated correctly: checkInsCompleted=7, goalCompletionRate=0.71, etc.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3,AC4,AC5">
+        <description>Unit test: GetTrendDataUseCase returns correct data points</description>
+        <approach>Mock repository with 7 days of check-in data. Call use case with 7-day range. Verify TrendDataEntity contains 7 DataPoints for each metric (mood, energy, sleep) with correct dates and values.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC8">
+        <description>Unit test: CalculateStreakUseCase handles various scenarios</description>
+        <approach>Test cases: (1) consecutive 5 days → currentStreak=5, (2) 5 days + 1 gap + 3 days → currentStreak=3, (3) no check-ins → currentStreak=0. Verify longestStreak tracks historical max.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC11">
+        <description>Unit test: PDF export generates valid file</description>
+        <approach>Mock WeeklyStatsEntity and TrendDataEntity. Call ExportService.exportToPdf(). Verify file created at expected path, file size &gt; 0, file is valid PDF format.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC11">
+        <description>Unit test: CSV export contains correct data</description>
+        <approach>Mock 7 check-ins. Call ExportService.exportToCsv(). Parse CSV file. Verify headers: date,mood,energy,sleep_quality,note. Verify 7 rows + header row. Verify data matches input.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC12">
+        <description>Unit test: Date range filtering respects premium status</description>
+        <approach>Mock user with free tier (last 4 weeks limit). Request 8 weeks of data. Verify use case returns only 4 weeks. Mock premium user, verify unlimited data returned.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3,AC4,AC5,AC14">
+        <description>Widget test: LineChartWidget renders correctly and handles tap</description>
+        <approach>Render LineChartWidget with 7 DataPoints. Verify LineChart widget present. Simulate tap on data point index 3. Verify onPointTap callback called with correct DataPoint.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC2">
+        <description>Widget test: WeeklySummaryCard displays all statistics</description>
+        <approach>Render WeeklySummaryCard with mock WeeklyStatsEntity. Verify Text widgets display: "7/7 check-ins", "71% goals completed", "10 AI conversations", "5-day streak".</approach>
+      </test-idea>
+      <test-idea ac-ref="AC13">
+        <description>Widget test: Refresh button triggers data reload</description>
+        <approach>Render ProgressDashboardScreen. Tap refresh IconButton in app bar. Verify weeklyStatsProvider.refresh() called. Verify loading indicator appears briefly.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1,AC13">
+        <description>Widget test: Pull-to-refresh gesture works</description>
+        <approach>Render dashboard in RefreshIndicator. Simulate drag-down gesture. Verify onRefresh callback triggered. Verify loading indicator shown during refresh.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC11">
+        <description>Widget test: Export modal shows format options</description>
+        <approach>Tap export button. Verify ModalBottomSheet appears. Verify "Export as PDF" and "Export as CSV" buttons present. Tap PDF option, verify exportToPdf called.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC14">
+        <description>Widget test: Chart tooltip shows on data point tap</description>
+        <approach>Render LineChartWidget. Tap data point with value mood=4 on date Nov 15. Verify tooltip overlay appears with text "Mood: 4 (Happy) - Nov 15". Verify tooltip dismisses after 3 seconds.</approach>
+      </test-idea>
+      <test-idea ac-ref="ALL">
+        <description>Integration test: Full dashboard load with real data</description>
+        <approach>Seed database with 30 days of check-ins, 10 goals, 5 daily plans. Launch ProgressDashboardScreen. Verify all widgets render: charts, weekly summary, top accomplishments. Verify load time &lt;1s.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC11">
+        <description>Integration test: End-to-end PDF export flow</description>
+        <approach>Load dashboard with real data. Tap export button → select PDF → verify progress indicator → verify success toast → verify PDF file exists in temp directory → verify file size &gt; 0.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3,AC14">
+        <description>Integration test: Interactive chart with real data</description>
+        <approach>Load dashboard with 7 days of mood data. Tap mood chart data point for day 3. Verify tooltip displays correct mood value and date. Verify tooltip auto-dismisses after 3 seconds.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC12">
+        <description>Integration test: Historical data respects tier limits</description>
+        <approach>Create free tier user with 8 weeks of data. Load dashboard. Select "All time" date range. Verify only 4 weeks displayed. Verify premium upgrade prompt shown.</approach>
+      </test-idea>
+      <test-idea ac-ref="PERF-1">
+        <description>Performance test: Dashboard load time under 1s</description>
+        <approach>Seed database with 90 days of data (max for premium). Measure time from screen init to all widgets rendered. Assert load time &lt;1000ms. Test with cold cache and warm cache scenarios.</approach>
+      </test-idea>
+      <test-idea ac-ref="PERF-3">
+        <description>Performance test: PDF generation completes in &lt;3s</description>
+        <approach>Generate PDF with 4 weeks of data including 3 charts. Measure time from export button tap to file ready. Assert time &lt;3000ms. Verify UI remains responsive (runs in isolate).</approach>
+      </test-idea>
+    </ideas>
+  </tests>
+</story-context>

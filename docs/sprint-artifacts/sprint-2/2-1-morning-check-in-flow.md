@@ -3,7 +3,7 @@
 **Epic:** Epic 2 - Life Coach MVP
 **Phase:** MVP
 **Priority:** P0
-**Status:** drafted
+**Status:** ready-for-dev
 **Estimated Effort:** 3 SP
 
 ---
@@ -252,5 +252,16 @@ testWidgets('check-in syncs across devices')
 
 ---
 
+## Dev Agent Record
+
+### Context Reference
+
+- **Story Context File:** [2-1-morning-check-in-flow.context.xml](./2-1-morning-check-in-flow.context.xml)
+- **Generated:** 2025-11-17
+- **Status:** Context created, story ready for implementation
+
+---
+
 **Created:** 2025-01-16
 **Author:** Bob (Scrum Master - BMAD)
+**Updated:** 2025-11-17 - Context generated, status changed to ready-for-dev

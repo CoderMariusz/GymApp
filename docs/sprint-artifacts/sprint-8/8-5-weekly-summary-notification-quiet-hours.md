@@ -4,7 +4,17 @@
 **Sprint:** 8
 **Story Points:** 3
 **Priority:** P1
-**Status:** Draft
+**Status:** ready-for-dev
+
+## Dev Agent Record
+
+### Context Reference
+
+- **Story Context File:** [8-5-weekly-summary-notification-quiet-hours.context.xml](./8-5-weekly-summary-notification-quiet-hours.context.xml)
+- **Generated:** 2025-11-17
+- **Status:** Context created, story ready for implementation
+
+---
 
 ---
 

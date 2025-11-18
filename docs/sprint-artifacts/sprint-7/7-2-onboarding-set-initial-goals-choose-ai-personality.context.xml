@@ -1,0 +1,372 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>7</epicId>
+    <storyId>7.2</storyId>
+    <title>Onboarding - Set Goals & Choose AI Personality</title>
+    <status>ready-for-dev</status>
+    <generatedAt>2025-11-17</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/sprint-7/7-2-onboarding-set-initial-goals-choose-ai-personality.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>new user going through onboarding</asA>
+    <iWant>to set initial goals and choose my AI personality</iWant>
+    <soThat>the AI can communicate in my preferred style and help me achieve my objectives</soThat>
+    <tasks>
+      <task id="1" ac-ref="AC1,AC2,AC3">
+        <description>Implement goal setting screen UI</description>
+        <subtasks>
+          <subtask>Create OnboardingGoalsScreen (Screen 3 in flow)</subtask>
+          <subtask>Implement goal input form (title + category dropdown)</subtask>
+          <subtask>Support adding 1-3 goals with add/remove buttons</subtask>
+          <subtask>Show journey-based examples (Fitness: "Lose 10kg", Mind: "Meditate daily", Life: "Morning routine")</subtask>
+          <subtask>Add validation: min 1 goal, max 3 goals, required title</subtask>
+          <subtask>Display category options based on journey choice from 7.1</subtask>
+        </subtasks>
+      </task>
+      <task id="2" ac-ref="AC4,AC5,AC6">
+        <description>Implement AI personality selection screen</description>
+        <subtasks>
+          <subtask>Create OnboardingAIPersonalityScreen (Screen 4 in flow)</subtask>
+          <subtask>Design two personality cards: 🧘 Sage (calm, thoughtful) vs ⚡ Momentum (energetic, motivating)</subtask>
+          <subtask>Implement preview sample messages for each personality</subtask>
+          <subtask>Add personality description and communication style examples</subtask>
+          <subtask>Highlight selected personality card with visual feedback</subtask>
+          <subtask>Default to Sage personality if no selection made</subtask>
+        </subtasks>
+      </task>
+      <task id="3" ac-ref="AC3,AC7">
+        <description>Integrate with goals repository (Story 2.3)</description>
+        <subtasks>
+          <subtask>Use existing GoalsRepository from Epic 2 Life Coach</subtask>
+          <subtask>Create goals with user_id, title, category, created during onboarding</subtask>
+          <subtask>Save to goals table (reuse Story 2.3 schema)</subtask>
+          <subtask>Batch save all goals together for performance</subtask>
+          <subtask>Handle validation errors (duplicate goals, etc.)</subtask>
+        </subtasks>
+      </task>
+      <task id="4" ac-ref="AC6,AC7">
+        <description>Implement AI personality persistence</description>
+        <subtasks>
+          <subtask>Create user_settings table if not exists</subtask>
+          <subtask>Add ai_personality column ('sage' | 'momentum')</subtask>
+          <subtask>Implement saveUserSettings() use case</subtask>
+          <subtask>Store personality choice in both Drift and Supabase</subtask>
+          <subtask>Apply to all AI interactions across app (Life Coach, Mind, chat)</subtask>
+        </subtasks>
+      </task>
+      <task id="5" ac-ref="AC1,AC4">
+        <description>Implement journey-based personalization</description>
+        <subtasks>
+          <subtask>Fetch journey choice from OnboardingProvider (7.1)</subtask>
+          <subtask>Filter goal categories based on journey (Fitness → Workout/Nutrition, Mind → Stress/Sleep, Life → Productivity/Habits)</subtask>
+          <subtask>Show journey-specific goal examples and templates</subtask>
+          <subtask>Adapt AI personality preview messages to journey context</subtask>
+        </subtasks>
+      </task>
+      <task id="6" ac-ref="ALL">
+        <description>Write comprehensive tests</description>
+        <subtasks>
+          <subtask>Unit tests: goal validation, personality selection logic, user settings save</subtask>
+          <subtask>Widget tests: goal form, add/remove goals, personality cards, preview messages</subtask>
+          <subtask>Integration test: set 3 goals + choose personality + verify persistence</subtask>
+          <subtask>Achieve 80%+ code coverage</subtask>
+        </subtasks>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="AC1">
+      <text>Screen 3 allows user to set 1-3 goals (title + category)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC2">
+      <text>Goal examples shown based on journey choice (Fitness: "Lose 10kg", Mind: "Meditate daily")</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC3">
+      <text>Goals saved to goals table (reuses Story 2.3 schema)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC4">
+      <text>Screen 4 shows AI personality choice: 🧘 Sage (calm) vs ⚡ Momentum (energetic)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC5">
+      <text>Preview sample message shown for each personality</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC6">
+      <text>AI personality selection saved to user_settings (ai_personality column)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC7">
+      <text>Selected personality affects all AI interactions across modules</text>
+      <priority>P0</priority>
+    </criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR41: Goal setting during onboarding</section>
+        <snippet>Users set 1-3 initial goals during onboarding. Goals categorized by module (Fitness/Mind/Life Coach). Journey selection determines suggested goal templates.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR42: AI personality customization</section>
+        <snippet>Two AI personalities: Sage (calm, thoughtful, uses metaphors) and Momentum (energetic, direct, action-focused). Selection applies globally to all AI features. Preview messages show communication style difference.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/epics.md</path>
+        <title>Epic 7: Onboarding &amp; Subscriptions</title>
+        <section>Story 7.2: Set Goals &amp; Choose AI Personality</section>
+        <snippet>Goal setting and AI personality selection during onboarding. Integrates with Story 2.3 goals system. Personality choice affects all AI interactions.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>AI Orchestration Service (D5)</section>
+        <snippet>AI personality parameter passed to all LLM calls. System prompt adjusted based on personality: Sage uses reflective tone, Momentum uses motivational language. Affects prompts in daily planning, chat, CBT, meditation guidance.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/ux-design-specification.md</path>
+        <title>UX Design Specification</title>
+        <section>AI Personality Selection UX</section>
+        <snippet>Two card design with emoji icons. Preview messages show real examples. Sage: "Let's take a moment to reflect...", Momentum: "Let's crush this goal!". Clear visual differentiation. Selection persists across all modules.</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/sprint-2/2-3-goal-management-crud.md</path>
+        <title>Story 2.3: Goal Management (CRUD)</title>
+        <section>Goals Table Schema</section>
+        <snippet>goals table: id, user_id, title, category, status, target_date, created_at, updated_at. Categories: workout, nutrition, sleep, stress, productivity, habits, custom. Reused for onboarding goals.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <reference>
+        <path>lib/features/life_coach/domain/entities/goal_entity.dart</path>
+        <description>Existing GoalEntity from Story 2.3</description>
+        <note>Reuse existing entity for onboarding goals. Ensure category values align with journey choices.</note>
+      </reference>
+      <reference>
+        <path>lib/features/life_coach/domain/repositories/goals_repository.dart</path>
+        <description>Existing GoalsRepository from Story 2.3</description>
+        <note>Use createGoal() method to save onboarding goals. Batch create for performance.</note>
+      </reference>
+    </code>
+    <dependencies>
+      <flutter>
+        <sdk>3.38+</sdk>
+        <dart>3.10+</dart>
+      </flutter>
+      <packages>
+        <package name="flutter_riverpod" version="^3.0.0" usage="State management for goal and personality forms" />
+        <package name="drift" version="^2.14.0" usage="Local storage for user settings" />
+        <package name="supabase_flutter" version="^2.0.0" usage="Backend persistence" />
+        <package name="flutter_test" version="sdk" usage="Testing framework" />
+      </packages>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint id="ARCH-1" type="architectural">
+      <description>Reuse existing goals infrastructure from Story 2.3</description>
+      <details>Don't duplicate goals logic. Use existing GoalEntity, GoalsRepository, and database schema. Add onboarding-specific UI only.</details>
+    </constraint>
+    <constraint id="ARCH-2" type="architectural">
+      <description>AI personality must affect all modules</description>
+      <details>Store in user_settings table accessible to all features. AI orchestration service must read personality and adjust system prompts accordingly.</details>
+    </constraint>
+    <constraint id="DATA-1" type="data">
+      <description>User settings schema required</description>
+      <details>user_settings table: user_id (UUID FK, unique), ai_personality (TEXT: 'sage'|'momentum'), created_at, updated_at. One row per user.</details>
+    </constraint>
+    <constraint id="DATA-2" type="data">
+      <description>Goals must link to user and have valid categories</description>
+      <details>Use existing goals table from Story 2.3. Validate category matches journey choice. Limit to 3 goals during onboarding (can add more later).</details>
+    </constraint>
+    <constraint id="SEC-1" type="security">
+      <description>RLS policies required for user_settings</description>
+      <details>Enable RLS. Policy: USING (auth.uid() = user_id). Users can only access their own settings.</details>
+    </constraint>
+    <constraint id="UX-1" type="ux">
+      <description>Goal examples must match journey</description>
+      <details>Fitness journey → fitness-related examples. Mind journey → mental health examples. Life Coach → productivity examples. All → mixed examples.</details>
+    </constraint>
+    <constraint id="UX-2" type="ux">
+      <description>AI personality preview must be authentic</description>
+      <details>Preview messages should use actual AI-generated text in each personality style. Not marketing copy. Show real communication difference.</details>
+    </constraint>
+    <constraint id="UX-3" type="ux">
+      <description>Goal validation with helpful errors</description>
+      <details>Min 1 goal required. Max 3 goals. Title required (non-empty). Category required. Show inline validation errors immediately.</details>
+    </constraint>
+    <constraint id="TEST-1" type="testing">
+      <description>80%+ code coverage required</description>
+      <details>Test goal validation, personality selection, integration with existing goals system. Integration test for full flow.</details>
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>UserSettingsEntity</name>
+      <kind>domain-entity</kind>
+      <signature>
+        class UserSettingsEntity {
+          final String userId;
+          final String aiPersonality; // 'sage' | 'momentum'
+          final DateTime createdAt;
+          final DateTime updatedAt;
+        }
+      </signature>
+      <path>lib/features/onboarding/domain/entities/user_settings_entity.dart</path>
+      <notes>Use @freezed. Validate aiPersonality is 'sage' or 'momentum'. May expand to include other settings in future.</notes>
+    </interface>
+    <interface>
+      <name>SaveUserSettingsUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class SaveUserSettingsUseCase {
+          Future&lt;Result&lt;UserSettingsEntity&gt;&gt; call({
+            required String aiPersonality,
+          });
+        }
+      </signature>
+      <path>lib/features/onboarding/domain/usecases/save_user_settings_usecase.dart</path>
+      <notes>Saves to user_settings table. Upserts if row exists (update), inserts otherwise.</notes>
+    </interface>
+    <interface>
+      <name>CreateOnboardingGoalsUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class CreateOnboardingGoalsUseCase {
+          Future&lt;Result&lt;List&lt;GoalEntity&gt;&gt;&gt; call({
+            required List&lt;GoalInput&gt; goals,
+          });
+        }
+      </signature>
+      <path>lib/features/onboarding/domain/usecases/create_onboarding_goals_usecase.dart</path>
+      <notes>Wraps GoalsRepository.createGoal(). Batch creates goals. Validates 1-3 goals limit.</notes>
+    </interface>
+    <interface>
+      <name>UserSettingsRepository</name>
+      <kind>repository</kind>
+      <signature>
+        abstract class UserSettingsRepository {
+          Future&lt;Result&lt;UserSettingsEntity&gt;&gt; saveSettings(UserSettingsEntity settings);
+          Future&lt;Result&lt;UserSettingsEntity?&gt;&gt; getSettings(String userId);
+        }
+      </signature>
+      <path>lib/features/onboarding/domain/repositories/user_settings_repository.dart</path>
+      <notes>Implemented by UserSettingsRepositoryImpl in data layer.</notes>
+    </interface>
+    <interface>
+      <name>user_settings table (Supabase)</name>
+      <kind>database-table</kind>
+      <signature>
+        CREATE TABLE user_settings (
+          id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+          user_id UUID NOT NULL UNIQUE REFERENCES auth.users(id) ON DELETE CASCADE,
+          ai_personality TEXT NOT NULL DEFAULT 'sage' CHECK (ai_personality IN ('sage', 'momentum')),
+          created_at TIMESTAMPTZ DEFAULT NOW(),
+          updated_at TIMESTAMPTZ DEFAULT NOW()
+        );
+        CREATE INDEX idx_user_settings_user ON user_settings(user_id);
+      </signature>
+      <path>supabase/migrations/</path>
+      <notes>Single row per user. Include RLS policies. May expand with additional settings columns in future.</notes>
+    </interface>
+    <interface>
+      <name>user_settings table (Drift)</name>
+      <kind>database-table</kind>
+      <signature>
+        @DataClassName('UserSettingsTable')
+        class UserSettings extends Table {
+          TextColumn get id => text()();
+          TextColumn get userId => text()();
+          TextColumn get aiPersonality => text()();
+          DateTimeColumn get createdAt => dateTime()();
+          DateTimeColumn get updatedAt => dateTime()();
+
+          @override
+          Set&lt;Column&gt; get primaryKey => {id};
+        }
+      </signature>
+      <path>lib/core/database/tables.drift.dart</path>
+      <notes>Mirror of Supabase schema for offline-first architecture.</notes>
+    </interface>
+    <interface>
+      <name>GoalEntity (existing from Story 2.3)</name>
+      <kind>domain-entity</kind>
+      <signature>
+        class GoalEntity {
+          final String id;
+          final String userId;
+          final String title;
+          final String category;
+          final String status;
+          final DateTime? targetDate;
+          final DateTime createdAt;
+          final DateTime updatedAt;
+        }
+      </signature>
+      <path>lib/features/life_coach/domain/entities/goal_entity.dart</path>
+      <notes>Reuse existing entity. Categories: workout, nutrition, sleep, stress, productivity, habits, custom.</notes>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Follow 70/20/10 testing pyramid. Target 80%+ code coverage. Test integration with existing goals system (Story 2.3).
+    </standards>
+    <locations>
+      <location>test/features/onboarding/domain/usecases/</location>
+      <location>test/features/onboarding/data/repositories/</location>
+      <location>test/features/onboarding/presentation/screens/</location>
+      <location>integration_test/features/onboarding/goals_and_personality_test.dart</location>
+    </locations>
+    <ideas>
+      <test-idea ac-ref="AC1">
+        <description>Widget test: Goal input form validation</description>
+        <approach>Test min 1 goal required. Test max 3 goals enforced. Test title required (empty title shows error). Test add/remove goal buttons.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC2">
+        <description>Unit test: Journey-based goal examples</description>
+        <approach>Mock journey='fitness'. Verify examples are fitness-related ("Lose 10kg", "Run 5K"). Test mind journey shows meditation/stress examples.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3">
+        <description>Unit test: CreateOnboardingGoalsUseCase</description>
+        <approach>Mock GoalsRepository. Create 3 goals. Verify all saved to goals table. Verify batch operation used. Test validation errors.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4,AC5">
+        <description>Widget test: AI personality cards display</description>
+        <approach>Verify both Sage and Momentum cards visible. Test preview messages shown. Verify selection highlights card. Test default selection.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6">
+        <description>Unit test: SaveUserSettingsUseCase</description>
+        <approach>Mock repository. Save personality='momentum'. Verify saved to user_settings table. Test validation (only 'sage' or 'momentum' allowed).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC7">
+        <description>Integration test: AI personality affects AI service</description>
+        <approach>Save personality='sage'. Make AI chat request. Verify system prompt includes Sage instructions. Test Momentum personality uses different prompt.</approach>
+      </test-idea>
+      <test-idea ac-ref="ALL">
+        <description>Integration test: Complete goal and personality setup</description>
+        <approach>Navigate to goals screen. Add 3 goals (workout, nutrition, sleep). Navigate to personality screen. Select Momentum. Verify goals saved to database. Verify personality saved. Confirm sync to Supabase.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC2">
+        <description>Widget test: Goal categories filtered by journey</description>
+        <approach>Set journey='fitness'. Verify categories shown: workout, nutrition. Set journey='mind'. Verify categories: stress, sleep, meditation.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3">
+        <description>Integration test: Goals integrate with Story 2.3 system</description>
+        <approach>Create goals during onboarding. Navigate to Life Coach goals screen (Story 2.3). Verify onboarding goals appear. Test editing/deleting onboarding-created goals.</approach>
+      </test-idea>
+    </ideas>
+  </tests>
+</story-context>

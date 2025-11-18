@@ -1,0 +1,415 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/4-2" v="1.0">
+  <metadata>
+    <epicId>4</epicId>
+    <storyId>4.2</storyId>
+    <title>Meditation Player with Breathing Animation</title>
+    <status>ready-for-dev</status>
+    <generatedAt>2025-11-17</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/sprint-4/4-2-meditation-player-with-breathing-animation.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>user meditating</asA>
+    <iWant>player with breathing animation</iWant>
+    <soThat>I stay focused during meditation</soThat>
+    <tasks>
+      <task id="1" ac-ref="AC1,AC2,AC3,AC4">
+        <description>Implement meditation player UI</description>
+        <subtasks>
+          <subtask>Create MeditationPlayerScreen widget (full-screen immersive)</subtask>
+          <subtask>Design player layout: breathing circle (center), controls (bottom), progress bar (top)</subtask>
+          <subtask>Implement audio player controls: play/pause, seek bar, 15s forward/backward</subtask>
+          <subtask>Add meditation title and duration display</subtask>
+          <subtask>Implement background gradient (calming colors based on category)</subtask>
+          <subtask>Hide status bar for immersive experience (SystemChrome.setEnabledSystemUIMode)</subtask>
+        </subtasks>
+      </task>
+      <task id="2" ac-ref="AC2">
+        <description>Implement breathing circle animation</description>
+        <subtasks>
+          <subtask>Create BreathingCircleWidget with AnimatedContainer</subtask>
+          <subtask>Implement expand/contract animation (4s inhale, 4s exhale cycle)</subtask>
+          <subtask>Add "Breathe In" / "Breathe Out" text hints with fade animation</subtask>
+          <subtask>Sync animation with audio guidance (use audio timestamps or manual sync)</subtask>
+          <subtask>Implement pause animation when audio paused</subtask>
+          <subtask>Add subtle glow effect using BoxShadow with animated opacity</subtask>
+        </subtasks>
+      </task>
+      <task id="3" ac-ref="AC1,AC3">
+        <description>Integrate audio playback engine</description>
+        <subtasks>
+          <subtask>Use just_audio from Story 4.1 for audio playback</subtask>
+          <subtask>Implement play/pause state management with Riverpod</subtask>
+          <subtask>Add audio position tracking (current time / total duration)</subtask>
+          <subtask>Implement seek functionality (user drags progress bar)</subtask>
+          <subtask>Add 15-second skip forward/backward buttons</subtask>
+          <subtask>Handle audio completion (navigate to completion screen)</subtask>
+        </subtasks>
+      </task>
+      <task id="4" ac-ref="AC4">
+        <description>Implement background audio playback</description>
+        <subtasks>
+          <subtask>Configure audio_service for background playback</subtask>
+          <subtask>Create MediaItem for meditation track</subtask>
+          <subtask>Implement notification controls (play/pause, skip) on lock screen</subtask>
+          <subtask>Handle phone calls (pause audio, resume after call)</subtask>
+          <subtask>Test background playback on iOS and Android</subtask>
+        </subtasks>
+      </task>
+      <task id="5" ac-ref="AC5">
+        <description>Implement sleep timer functionality</description>
+        <subtasks>
+          <subtask>Create sleep timer bottom sheet UI (options: 5, 10, 15, 30, 60 min, end of track)</subtask>
+          <subtask>Add timer icon button to player controls</subtask>
+          <subtask>Implement countdown timer with audio fade-out (last 10 seconds)</subtask>
+          <subtask>Pause audio and save session when timer expires</subtask>
+          <subtask>Show remaining time indicator in player UI</subtask>
+          <subtask>Allow timer cancellation</subtask>
+        </subtasks>
+      </task>
+      <task id="6" ac-ref="AC6">
+        <description>Implement completion tracking and stats</description>
+        <subtasks>
+          <subtask>Track meditation session start time and duration listened</subtask>
+          <subtask>Mark session as completed when user reaches 80%+ of audio</subtask>
+          <subtask>Save session to meditation_sessions table (from Story 4.1)</subtask>
+          <subtask>Show completion screen with stats: duration completed, streak count</subtask>
+          <subtask>Add "Rate this meditation" option (1-5 stars)</subtask>
+          <subtask>Implement sync for session data to Supabase</subtask>
+        </subtasks>
+      </task>
+      <task id="7" ac-ref="AC1,AC2,AC3,AC4,AC5,AC6">
+        <description>Handle player edge cases and errors</description>
+        <subtasks>
+          <subtask>Handle network loss during streaming (show buffering, retry)</subtask>
+          <subtask>Handle app backgrounding (continue audio in background)</subtask>
+          <subtask>Save progress when user exits player (resume from last position)</subtask>
+          <subtask>Handle audio loading errors (show error message, retry button)</subtask>
+          <subtask>Prevent device sleep during active playback (Wakelock)</subtask>
+        </subtasks>
+      </task>
+      <task id="8" ac-ref="ALL">
+        <description>Write comprehensive tests</description>
+        <subtasks>
+          <subtask>Unit tests: audio playback logic, sleep timer, session tracking</subtask>
+          <subtask>Widget tests: player UI, breathing animation, controls</subtask>
+          <subtask>Integration test: end-to-end meditation playback with completion</subtask>
+          <subtask>Achieve 80%+ code coverage</subtask>
+        </subtasks>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="AC1">
+      <text>Audio player controls: play/pause, seek, 15s skip forward/backward</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC2">
+      <text>Breathing circle animation (expand/contract, synced with guidance)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC3">
+      <text>Progress bar shows current time / total duration</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC4">
+      <text>Background playback (audio continues when app backgrounded or screen locked)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC5">
+      <text>Sleep timer (5/10/15/30/60 min, end of track, audio fade-out)</text>
+      <priority>P1</priority>
+    </criterion>
+    <criterion id="AC6">
+      <text>Completion stats (duration, streak, rate meditation)</text>
+      <priority>P1</priority>
+    </criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR41: Meditation Player with Breathing Animation</section>
+        <snippet>Player must include breathing animation synced to audio guidance. Controls: play/pause, seek, skip. Background playback required. Sleep timer with audio fade-out for nighttime use.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR43: Meditation Session Tracking</section>
+        <snippet>Track meditation completion (80%+ listened = completed). Record session duration, date, meditation ID. Show completion stats and streak. Used for user insights and motivation.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/epics.md</path>
+        <title>Epic 4: Mind &amp; Emotion - Story 4.2</title>
+        <section>Story 4.2: Meditation Player</section>
+        <snippet>Full-featured meditation player with breathing animation, audio controls, background playback, sleep timer, and completion tracking. Depends on Story 4.1 (meditation library and audio streaming).</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/ux-design-specification.md</path>
+        <title>UX Design Specification</title>
+        <section>Meditation Player UX</section>
+        <snippet>Full-screen immersive player. Breathing circle animates 4s inhale (expand) + 4s exhale (contract). Calming gradient background (purple for sleep, blue for focus, green for stress relief). Hide status bar. Controls at bottom with minimal design.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Background Audio Service</section>
+        <snippet>Use audio_service package for background playback. Configure for iOS background modes (audio) and Android foreground service. Lock screen controls via MediaNotification.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <reference>
+        <path>lib/features/mind_emotion/domain/entities/meditation_entity.dart</path>
+        <description>MeditationEntity from Story 4.1 with audio URL and metadata</description>
+      </reference>
+      <reference>
+        <path>lib/features/mind_emotion/domain/repositories/meditation_repository.dart</path>
+        <description>Audio streaming functionality from Story 4.1</description>
+      </reference>
+    </code>
+    <dependencies>
+      <flutter>
+        <sdk>3.38+</sdk>
+        <dart>3.10+</dart>
+      </flutter>
+      <packages>
+        <package name="flutter_riverpod" version="^3.0.0" usage="State management for player state" />
+        <package name="just_audio" version="^0.9.36" usage="Audio playback engine" />
+        <package name="just_audio_background" version="^0.0.1-beta.10" usage="Background audio support" />
+        <package name="audio_service" version="^0.18.12" usage="Background audio task and lock screen controls" />
+        <package name="wakelock_plus" version="^1.1.4" usage="Prevent device sleep during playback" />
+        <package name="drift" version="^2.14.0" usage="Session persistence" />
+        <package name="supabase_flutter" version="^2.0.0" usage="Session sync" />
+        <package name="flutter_test" version="sdk" usage="Unit and widget testing" />
+      </packages>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint id="ARCH-1" type="architectural">
+      <description>Reuse audio service from Story 4.1</description>
+      <details>Extend MeditationAudioService with player controls, background playback, and session tracking. Keep audio logic in core/services/ for reusability.</details>
+    </constraint>
+    <constraint id="ARCH-2" type="architectural">
+      <description>Session tracking syncs to Supabase (D3)</description>
+      <details>Save session to Drift first, sync to Supabase when online. Session data: meditation_id, user_id, started_at, duration_listened, completed, completed_at.</details>
+    </constraint>
+    <constraint id="UX-1" type="ux">
+      <description>Immersive full-screen experience</description>
+      <details>Hide status bar (SystemChrome.setEnabledSystemUIMode). Use calming gradient backgrounds. Minimal controls at bottom. Breathing animation at center takes visual focus.</details>
+    </constraint>
+    <constraint id="UX-2" type="ux">
+      <description>Breathing animation synced with audio</description>
+      <details>Default breathing cycle: 4s inhale (expand), 4s exhale (contract). If audio has explicit breathing cues, sync animation to audio timestamps. Smooth easing curves (Curves.easeInOut).</details>
+    </constraint>
+    <constraint id="UX-3" type="ux">
+      <description>Sleep timer audio fade-out</description>
+      <details>When timer reaches last 10 seconds, gradually reduce volume from 100% to 0% over 10s. Pause audio when timer expires. Show subtle notification: "Sleep timer ended".</details>
+    </constraint>
+    <constraint id="PERF-1" type="performance">
+      <description>Animation runs at 60fps</description>
+      <details>Breathing circle animation must be smooth (60fps). Use AnimatedContainer or custom animation controller. Avoid heavy computations in build(). Test on low-end devices.</details>
+    </constraint>
+    <constraint id="PERF-2" type="performance">
+      <description>Background playback battery efficiency</description>
+      <details>Use audio_service properly to avoid battery drain. Stop foreground service when audio not playing. Release audio resources when player closed.</details>
+    </constraint>
+    <constraint id="SEC-1" type="security">
+      <description>Session data RLS policies</description>
+      <details>meditation_sessions table has RLS: USING (auth.uid() = user_id). Sessions are user-private. No public access to meditation history.</details>
+    </constraint>
+    <constraint id="TEST-1" type="testing">
+      <description>80%+ code coverage required</description>
+      <details>Unit tests for player logic, session tracking, sleep timer. Widget tests for UI and animation. Integration test for complete playback flow with background mode.</details>
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>MeditationSessionEntity</name>
+      <kind>domain-entity</kind>
+      <signature>
+        class MeditationSessionEntity {
+          final String id;
+          final String userId;
+          final String meditationId;
+          final DateTime startedAt;
+          final int durationListenedSeconds;
+          final bool completed;
+          final DateTime? completedAt;
+          final int? rating; // 1-5 stars, optional
+        }
+      </signature>
+      <path>lib/features/mind_emotion/domain/entities/meditation_session_entity.dart</path>
+      <notes>Use @freezed for immutability. completed = true when durationListened &gt;= 80% of total meditation duration.</notes>
+    </interface>
+    <interface>
+      <name>MeditationPlayerState</name>
+      <kind>state-model</kind>
+      <signature>
+        class MeditationPlayerState {
+          final MeditationEntity meditation;
+          final PlayerStatus status; // loading, playing, paused, completed, error
+          final Duration currentPosition;
+          final Duration totalDuration;
+          final bool isBuffering;
+          final Duration? sleepTimerRemaining;
+          final String? errorMessage;
+        }
+
+        enum PlayerStatus {
+          loading,
+          playing,
+          paused,
+          completed,
+          error,
+        }
+      </signature>
+      <path>lib/features/mind_emotion/presentation/providers/meditation_player_provider.dart</path>
+      <notes>Riverpod StateNotifier for player state. Exposes methods: play(), pause(), seek(), setSleepTimer(). Updates state based on audio events.</notes>
+    </interface>
+    <interface>
+      <name>PlayMeditationUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class PlayMeditationUseCase {
+          Future&lt;Result&lt;void&gt;&gt; call(String meditationId, {Duration? startPosition});
+        }
+      </signature>
+      <path>lib/features/mind_emotion/domain/usecases/play_meditation_usecase.dart</path>
+      <notes>Initializes audio player with meditation audio URL. Optionally resume from saved position. Creates new session record in database.</notes>
+    </interface>
+    <interface>
+      <name>SaveMeditationSessionUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class SaveMeditationSessionUseCase {
+          Future&lt;Result&lt;MeditationSessionEntity&gt;&gt; call({
+            required String meditationId,
+            required Duration durationListened,
+            required bool completed,
+            int? rating,
+          });
+        }
+      </signature>
+      <path>lib/features/mind_emotion/domain/usecases/save_meditation_session_usecase.dart</path>
+      <notes>Saves session to Drift first, syncs to Supabase. Called when user exits player or completes meditation. Updates completion stats.</notes>
+    </interface>
+    <interface>
+      <name>MeditationAudioService</name>
+      <kind>service</kind>
+      <signature>
+        abstract class MeditationAudioService {
+          Future&lt;void&gt; play();
+          Future&lt;void&gt; pause();
+          Future&lt;void&gt; seek(Duration position);
+          Future&lt;void&gt; skipForward(Duration amount);
+          Future&lt;void&gt; skipBackward(Duration amount);
+          Future&lt;void&gt; setSleepTimer(Duration duration);
+          Future&lt;void&gt; cancelSleepTimer();
+          Stream&lt;Duration&gt; get positionStream;
+          Stream&lt;PlayerStatus&gt; get statusStream;
+          Future&lt;void&gt; dispose();
+        }
+      </signature>
+      <path>lib/core/services/meditation_audio_service.dart</path>
+      <notes>Wraps just_audio and audio_service. Handles background playback, lock screen controls, sleep timer logic. Singleton service.</notes>
+    </interface>
+    <interface>
+      <name>meditation_sessions table (already defined in Story 4.1)</name>
+      <kind>database-table</kind>
+      <signature>
+        CREATE TABLE meditation_sessions (
+          id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+          user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+          meditation_id UUID NOT NULL REFERENCES meditations(id) ON DELETE CASCADE,
+          started_at TIMESTAMPTZ DEFAULT NOW(),
+          duration_listened_seconds INT NOT NULL,
+          completed BOOLEAN DEFAULT FALSE,
+          completed_at TIMESTAMPTZ,
+          rating INT CHECK (rating BETWEEN 1 AND 5),
+          created_at TIMESTAMPTZ DEFAULT NOW()
+        );
+        CREATE INDEX idx_sessions_user_meditation ON meditation_sessions(user_id, meditation_id);
+        CREATE INDEX idx_sessions_completed_at ON meditation_sessions(completed_at DESC);
+      </signature>
+      <path>supabase/migrations/ and lib/core/database/tables.drift.dart</path>
+      <notes>RLS policy: USING (auth.uid() = user_id). Sessions synced from Drift to Supabase.</notes>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Follow 70/20/10 testing pyramid: 70% unit tests (use cases, audio service, session logic), 20% widget tests (player UI, controls, animation), 10% integration tests (end-to-end playback). Use flutter_test for unit/widget tests, integration_test for E2E. Mock audio player for unit tests. Target 80%+ code coverage.
+    </standards>
+    <locations>
+      <location>test/features/mind_emotion/domain/usecases/</location>
+      <location>test/features/mind_emotion/presentation/providers/</location>
+      <location>test/core/services/meditation_audio_service_test.dart</location>
+      <location>test/features/mind_emotion/presentation/widgets/meditation_player_test.dart</location>
+      <location>integration_test/features/mind_emotion/meditation_playback_flow_test.dart</location>
+    </locations>
+    <ideas>
+      <test-idea ac-ref="AC1">
+        <description>Unit test: Audio player controls</description>
+        <approach>Mock just_audio player. Call play(). Verify player.play() called. Call pause(). Verify player.pause() called. Call seek(30 seconds). Verify player.seek(Duration(seconds: 30)) called.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1">
+        <description>Unit test: 15-second skip forward/backward</description>
+        <approach>Mock player at position 60 seconds. Call skipForward(). Verify seek called with 75 seconds. Call skipBackward(). Verify seek called with 60 seconds. Test boundary conditions (skip beyond duration).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC5">
+        <description>Unit test: Sleep timer countdown and fade-out</description>
+        <approach>Set sleep timer to 15 seconds. Fast-forward time. At 5 seconds remaining, verify volume starts decreasing. At 0 seconds, verify audio paused and session saved.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6">
+        <description>Unit test: Completion tracking at 80% threshold</description>
+        <approach>Meditation duration = 600 seconds. Listen for 480 seconds (80%). Verify completed = true when saving session. Listen for 400 seconds (66%). Verify completed = false.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6">
+        <description>Unit test: SaveMeditationSessionUseCase</description>
+        <approach>Mock repository. Call saveSession with completed=true. Verify session saved with completed_at timestamp. Verify sync queued to Supabase.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC2">
+        <description>Widget test: Breathing circle animation cycles</description>
+        <approach>Render BreathingCircleWidget. Pump animation for 4 seconds. Verify circle expanded to max size. Pump 4 more seconds. Verify circle contracted to min size. Verify "Breathe In" / "Breathe Out" text changes.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1,AC3">
+        <description>Widget test: Player controls and progress bar</description>
+        <approach>Render MeditationPlayerScreen. Verify play/pause button present. Tap play. Verify state changes to playing. Verify progress bar updates as position changes. Drag seek bar. Verify seek called.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC5">
+        <description>Widget test: Sleep timer bottom sheet</description>
+        <approach>Render player. Tap sleep timer icon. Verify bottom sheet appears. Tap "15 min" option. Verify timer starts and remaining time shown. Verify timer can be cancelled.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4">
+        <description>Integration test: Background playback</description>
+        <approach>Start meditation playback. Send app to background (simulate). Verify audio continues playing. Verify lock screen controls appear. Tap pause on lock screen. Verify audio pauses. Bring app to foreground. Verify player state synced.</approach>
+      </test-idea>
+      <test-idea ac-ref="ALL">
+        <description>Integration test: Complete meditation with session tracking</description>
+        <approach>Launch player with meditation. Play for 80% of duration. Verify completion screen appears. Verify session saved to database with completed=true. Rate meditation 5 stars. Verify rating saved.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3">
+        <description>Widget test: Progress bar displays time correctly</description>
+        <approach>Mock audio at position 90 seconds, total duration 300 seconds. Verify progress bar shows "1:30 / 5:00". Verify progress bar fill width is 30%.</approach>
+      </test-idea>
+    </ideas>
+  </tests>
+
+  <devAgentRecord>
+    <recordedAt>2025-11-17</recordedAt>
+    <status>ready-for-dev</status>
+    <agent>BMAD Dev Agent</agent>
+    <notes>Story context prepared and validated for development assignment</notes>
+  </devAgentRecord>
+
+  <created>
+    <author>BMAD Story Context Workflow</author>
+    <timestamp>2025-11-17</timestamp>
+  </created>
+</story-context>

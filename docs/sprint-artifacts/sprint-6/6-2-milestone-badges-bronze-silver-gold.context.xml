@@ -1,0 +1,532 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>6</epicId>
+    <storyId>6.2</storyId>
+    <title>Milestone Badges (Bronze, Silver, Gold)</title>
+    <status>ready-for-dev</status>
+    <generatedAt>2025-11-17</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/sprint-6/6-2-milestone-badges-bronze-silver-gold.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>user reaching a streak milestone</asA>
+    <iWant>to earn badges</iWant>
+    <soThat>I feel recognized for my commitment</soThat>
+    <tasks>
+      <task id="1" ac-ref="AC1,AC2,AC4">
+        <description>Implement badge data model and database schema</description>
+        <subtasks>
+          <subtask>Create badges table in Drift (local SQLite)</subtask>
+          <subtask>Create badges table in Supabase (PostgreSQL) with RLS policies</subtask>
+          <subtask>Add columns: id, user_id, type (workout/meditation/checkin), tier (bronze/silver/gold), earned_at, created_at, updated_at</subtask>
+          <subtask>Add CHECK constraint on tier ENUM ('bronze', 'silver', 'gold')</subtask>
+          <subtask>Add UNIQUE constraint on (user_id, type, tier) to prevent duplicate badges</subtask>
+          <subtask>Create index on user_id for query performance</subtask>
+        </subtasks>
+      </task>
+      <task id="2" ac-ref="AC1,AC2">
+        <description>Implement BadgeEntity and domain models</description>
+        <subtasks>
+          <subtask>Create BadgeEntity with @freezed annotation (id, userId, type, tier, earnedAt)</subtask>
+          <subtask>Create BadgeTier enum (bronze, silver, gold)</subtask>
+          <subtask>Create milestone constants: BRONZE=7 days, SILVER=30 days, GOLD=100 days</subtask>
+          <subtask>Add validation logic for badge fields</subtask>
+        </subtasks>
+      </task>
+      <task id="3" ac-ref="AC1,AC2">
+        <description>Implement badge detection and awarding logic</description>
+        <subtasks>
+          <subtask>Create CheckBadgeEligibilityUseCase - checks if user reached milestone</subtask>
+          <subtask>Check current_streak from StreakEntity against milestones (7, 30, 100)</subtask>
+          <subtask>Create AwardBadgeUseCase - creates badge record in database</subtask>
+          <subtask>Prevent duplicate badge awards (check if badge already exists)</subtask>
+          <subtask>Trigger badge award after streak increment (hook into Story 6.1)</subtask>
+        </subtasks>
+      </task>
+      <task id="4" ac-ref="AC3">
+        <description>Implement full-screen badge unlock celebration</description>
+        <subtasks>
+          <subtask>Create BadgeUnlockModal widget (full-screen modal)</subtask>
+          <subtask>Integrate Lottie confetti animation (2 seconds duration)</subtask>
+          <subtask>Add badge icon zoom-in animation with bounce effect</subtask>
+          <subtask>Display badge tier emoji: 🥉 Bronze, 🥈 Silver, 🥇 Gold</subtask>
+          <subtask>Show achievement text: "You earned the Silver Meditation Badge!"</subtask>
+          <subtask>Add "Share Achievement" button (links to Story 6.5)</subtask>
+          <subtask>Add "Close" button (dismissible)</subtask>
+        </subtasks>
+      </task>
+      <task id="5" ac-ref="AC5">
+        <description>Implement badge icons and display</description>
+        <subtasks>
+          <subtask>Add badge emojis: 🥉 (Bronze), 🥈 (Silver), 🥇 (Gold)</subtask>
+          <subtask>Create BadgeIcon widget (displays tier emoji with type context)</subtask>
+          <subtask>Implement badge color scheme: Bronze=#CD7F32, Silver=#C0C0C0, Gold=#FFD700</subtask>
+          <subtask>Add glow effect around badge icons</subtask>
+        </subtasks>
+      </task>
+      <task id="6" ac-ref="AC4">
+        <description>Implement Badges Earned section in profile</description>
+        <subtasks>
+          <subtask>Create BadgesSection widget for profile screen</subtask>
+          <subtask>Display grid of earned badges (3 columns: Workout, Meditation, Check-in)</subtask>
+          <subtask>Show badge tier for each streak type (or locked placeholder if not earned)</subtask>
+          <subtask>Add badge count: "3 out of 9 badges earned"</subtask>
+          <subtask>Tappable badges show details: earned date, milestone reached</subtask>
+        </subtasks>
+      </task>
+      <task id="7" ac-ref="AC7">
+        <description>Implement push notification on badge unlock</description>
+        <subtasks>
+          <subtask>Integrate with notification service (Story 8.1 dependency)</subtask>
+          <subtask>Send push notification when badge awarded: "🎉 Silver Meditation Badge earned!"</subtask>
+          <subtask>Add deep link to badge unlock modal</subtask>
+          <subtask>Handle notification permissions (request if not granted)</subtask>
+          <subtask>User can disable badge notifications in settings</subtask>
+        </subtasks>
+      </task>
+      <task id="8" ac-ref="AC6">
+        <description>Implement shareable badge card generation</description>
+        <subtasks>
+          <subtask>Create badge card image template (badge icon, achievement text, LifeOS branding)</subtask>
+          <subtask>Use screenshot package to capture badge unlock screen</subtask>
+          <subtask>Generate PNG image with Deep Blue background, Teal accents</subtask>
+          <subtask>Integrate share_plus package for social sharing</subtask>
+          <subtask>Support sharing to: Instagram, Facebook, Twitter, WhatsApp</subtask>
+          <subtask>Add "Save to Gallery" option</subtask>
+        </subtasks>
+      </task>
+      <task id="9" ac-ref="ALL">
+        <description>Implement BadgeRepository and data sources</description>
+        <subtasks>
+          <subtask>Create BadgeRepository interface in domain layer</subtask>
+          <subtask>Implement BadgeRepositoryImpl in data layer</subtask>
+          <subtask>Create DriftBadgeDataSource for local storage</subtask>
+          <subtask>Create SupabaseBadgeDataSource for cloud sync</subtask>
+          <subtask>Implement offline-first pattern: write to Drift, queue for Supabase sync</subtask>
+        </subtasks>
+      </task>
+      <task id="10" ac-ref="ALL">
+        <description>Write comprehensive tests</description>
+        <subtasks>
+          <subtask>Unit tests: BadgeEntity validation, milestone constants (7, 30, 100)</subtask>
+          <subtask>Unit tests: CheckBadgeEligibilityUseCase - streak 7 unlocks bronze, 30 silver, 100 gold</subtask>
+          <subtask>Unit tests: AwardBadgeUseCase - creates badge, prevents duplicates</subtask>
+          <subtask>Widget tests: BadgeUnlockModal displays correctly, confetti animation plays</subtask>
+          <subtask>Widget tests: BadgesSection in profile shows earned badges, locked placeholders</subtask>
+          <subtask>Integration test: Reach 7-day streak → Bronze badge awarded → notification sent → modal shown</subtask>
+          <subtask>Integration test: Share badge card to social media</subtask>
+          <subtask>Achieve 80%+ code coverage</subtask>
+        </subtasks>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="AC1">
+      <text>Milestone badges: Bronze (7 days), Silver (30 days), Gold (100 days)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC2">
+      <text>Badges awarded for each streak type (9 total badges possible: 3 types × 3 tiers)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC3">
+      <text>Badge unlock: Full-screen celebration (confetti animation)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC4">
+      <text>Badge shown in profile: "Badges Earned" section</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC5">
+      <text>Badge icons: 🥉 🥈 🥇</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC6">
+      <text>Shareable badge card (generate image, share to social media)</text>
+      <priority>P1</priority>
+    </criterion>
+    <criterion id="AC7">
+      <text>Push notification on badge unlock: "🎉 Silver Meditation Badge earned!"</text>
+      <priority>P0</priority>
+    </criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR86: Milestone badges for streak achievements</section>
+        <snippet>Users earn badges for streak milestones (Bronze 7d, Silver 30d, Gold 100d). Badge unlock celebrated with full-screen animation. Badges visible in profile.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR88: Celebration animations for achievements</section>
+        <snippet>System celebrates milestone achievements with animations (confetti, badge unlock). Lottie animations for visual polish.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR89: Shareable milestone cards</section>
+        <snippet>Users can share milestone cards to social media. Generated image with badge, achievement title, LifeOS branding.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/epics.md</path>
+        <title>Epic 6: Gamification & Retention - Story 6.2</title>
+        <section>Story 6.2: Milestone Badges</section>
+        <snippet>Implement badge system with 3 tiers (Bronze, Silver, Gold) for 3 streak types. Full-screen celebration on unlock. Badges in profile. Push notification. Shareable card. Prerequisites: Story 6.1.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Hybrid Architecture (D1)</section>
+        <snippet>Feature-first architecture with clean architecture layers. Gamification module at features/gamification/. Use Riverpod for state management.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/ux-design-specification.md</path>
+        <title>UX Design Specification</title>
+        <section>Badge Unlock Celebration</section>
+        <snippet>Full-screen modal with Lottie confetti (2 seconds). Badge zooms in with bounce effect. Badge emoji prominent. "Share Achievement" button. Can dismiss early.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/ux-design-specification.md</path>
+        <title>UX Design Specification</title>
+        <section>Achievement Celebration Principle</section>
+        <snippet>Every milestone recognized (streaks, PRs, badges). Bold, energetic feedback (confetti animations). Progress always visible.</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/sprint-6/6-2-milestone-badges-bronze-silver-gold.md</path>
+        <title>Story 6.2: Milestone Badges</title>
+        <section>Database Schema and Tech Stack</section>
+        <snippet>CREATE TABLE badges (user_id, type, tier, earned_at). Milestones: Bronze (7d), Silver (30d), Gold (100d). 9 total badges. Lottie confetti animation.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <note>Badge system depends on Story 6.1 (Streak Tracking). Will hook into streak milestone detection. Lottie animation assets need to be added to project.</note>
+      <existing>
+        <file>
+          <path>lib/features/gamification/domain/entities/streak_entity.dart</path>
+          <purpose>Streak data containing current_streak value - used for badge eligibility check</purpose>
+        </file>
+        <file>
+          <path>lib/features/gamification/domain/usecases/increment_streak_usecase.dart</path>
+          <purpose>Streak increment logic - will trigger badge check after streak update</purpose>
+        </file>
+      </existing>
+    </code>
+    <dependencies>
+      <flutter>
+        <sdk>3.38+</sdk>
+        <dart>3.10+</dart>
+      </flutter>
+      <packages>
+        <package name="flutter_riverpod" version="^3.0.0" usage="State management for badge state and UI updates" />
+        <package name="riverpod_annotation" version="^3.0.0" usage="Code generation for providers" />
+        <package name="drift" version="^2.14.0" usage="Local SQLite database for offline badge storage" />
+        <package name="drift_flutter" version="^0.1.0" usage="Flutter integration for Drift" />
+        <package name="sqlite3_flutter_libs" version="^0.5.0" usage="SQLite native libraries" />
+        <package name="supabase_flutter" version="^2.0.0" usage="Supabase client for database sync" />
+        <package name="lottie" version="^2.7.0" usage="Lottie animations for confetti celebration" />
+        <package name="freezed" version="^2.4.0" usage="Immutable entity code generation" />
+        <package name="freezed_annotation" version="^2.4.0" usage="Freezed annotations" />
+        <package name="share_plus" version="^7.2.0" usage="Share badge cards to social media" />
+        <package name="screenshot" version="^2.1.0" usage="Capture badge card as image for sharing" />
+        <package name="path_provider" version="^2.1.0" usage="Get temp directory for image storage" />
+        <package name="flutter_test" version="sdk" usage="Unit and widget testing framework" />
+        <package name="integration_test" version="sdk" usage="End-to-end testing framework" />
+      </packages>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint id="ARCH-1" type="architectural">
+      <description>Must follow Hybrid Architecture pattern (D1)</description>
+      <details>Extend features/gamification/ structure from Story 6.1. Add badge-related entities, use cases, repositories in clean architecture layers.</details>
+    </constraint>
+    <constraint id="ARCH-2" type="architectural">
+      <description>Offline-first implementation required (D3)</description>
+      <details>Save badge awards to Drift (SQLite) first for instant feedback. Queue for Supabase sync when online.</details>
+    </constraint>
+    <constraint id="ARCH-3" type="architectural">
+      <description>Use Riverpod for state management (D1, D6)</description>
+      <details>Badge state should be observable. Badge unlock should trigger modal display reactively.</details>
+    </constraint>
+    <constraint id="DATA-1" type="data">
+      <description>Database schema must match specification</description>
+      <details>badges table: id (UUID PK), user_id (UUID FK auth.users), type (ENUM 'workout'|'meditation'|'checkin'), tier (ENUM 'bronze'|'silver'|'gold'), earned_at (TIMESTAMPTZ), created_at, updated_at. UNIQUE(user_id, type, tier).</details>
+    </constraint>
+    <constraint id="SEC-1" type="security">
+      <description>Row Level Security (RLS) policies required</description>
+      <details>Enable RLS on badges table. Policy: CREATE POLICY "Users can only access own badges" ON badges FOR ALL USING (auth.uid() = user_id);</details>
+    </constraint>
+    <constraint id="BIZ-1" type="business-logic">
+      <description>Badge milestones fixed: Bronze=7, Silver=30, Gold=100 days</description>
+      <details>Milestone values are product constants. Don't make configurable. Changing these would affect all users retroactively.</details>
+    </constraint>
+    <constraint id="BIZ-2" type="business-logic">
+      <description>9 total badges possible (3 types × 3 tiers)</description>
+      <details>Each user can earn: Workout Bronze/Silver/Gold, Meditation Bronze/Silver/Gold, Check-in Bronze/Silver/Gold. Total maximum: 9 badges.</details>
+    </constraint>
+    <constraint id="BIZ-3" type="business-logic">
+      <description>Badges are permanent (never revoked)</description>
+      <details>Once earned, badge stays in profile forever. Even if streak breaks later, badge remains. Permanent achievement recognition.</details>
+    </constraint>
+    <constraint id="BIZ-4" type="business-logic">
+      <description>Badge awarded immediately when milestone reached</description>
+      <details>Check badge eligibility after every streak increment. Award badge instantly (don't wait for cron job). Immediate gratification.</details>
+    </constraint>
+    <constraint id="UX-1" type="ux">
+      <description>Badge unlock celebration must be delightful</description>
+      <details>Full-screen modal with Lottie confetti (2s), badge zoom-in with bounce effect. User should feel accomplished and rewarded. Can dismiss early but should want to watch.</details>
+    </constraint>
+    <constraint id="UX-2" type="ux">
+      <description>Badge display in profile must be clear</description>
+      <details>Grid layout (3 columns: Workout, Meditation, Check-in). Show earned badges with color/glow. Show locked badges as grayscale placeholders. Badge count visible: "3/9 earned".</details>
+    </constraint>
+    <constraint id="UX-3" type="ux">
+      <description>Badge icons must use emojis for universal recognition</description>
+      <details>🥉 Bronze, 🥈 Silver, 🥇 Gold. Emojis render natively on all platforms. No custom assets needed. Instantly recognizable.</details>
+    </constraint>
+    <constraint id="PERF-1" type="performance">
+      <description>Badge eligibility check must be fast (&lt;50ms)</description>
+      <details>Simple comparison: current_streak >= milestone. Execute synchronously after streak increment. No network calls.</details>
+    </constraint>
+    <constraint id="PERF-2" type="performance">
+      <description>Confetti animation must be smooth (60fps)</description>
+      <details>Use Lottie animation (hardware-accelerated). Keep animation file size &lt;100KB. Test on low-end devices (Android 6.0).</details>
+    </constraint>
+    <constraint id="ASSET-1" type="assets">
+      <description>Lottie animation asset required</description>
+      <details>Add confetti.json to assets/animations/. Source from LottieFiles (free, MIT license). Colorful confetti, 2-second duration, transparent background.</details>
+    </constraint>
+    <constraint id="TEST-1" type="testing">
+      <description>80%+ code coverage required</description>
+      <details>Follow 70/20/10 testing pyramid. Unit tests for badge logic, widget tests for UI, integration tests for full flow. All AC must have test coverage.</details>
+    </constraint>
+    <constraint id="INTEG-1" type="integration">
+      <description>Must integrate with Story 6.1 streak tracking</description>
+      <details>Hook into IncrementStreakUseCase. After streak incremented, check badge eligibility. If milestone reached, award badge and show celebration.</details>
+    </constraint>
+    <constraint id="INTEG-2" type="integration">
+      <description>Push notifications depend on Story 8.1</description>
+      <details>If Story 8.1 not implemented yet, stub notification service. Badge award still works, notification sent when service available.</details>
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>BadgeEntity</name>
+      <kind>domain-entity</kind>
+      <signature>
+        @freezed
+        class BadgeEntity with _$BadgeEntity {
+          const factory BadgeEntity({
+            required String id,
+            required String userId,
+            required StreakType type,
+            required BadgeTier tier,
+            required DateTime earnedAt,
+            required DateTime createdAt,
+            required DateTime updatedAt,
+          }) = _BadgeEntity;
+        }
+
+        enum BadgeTier { bronze, silver, gold }
+
+        // Milestone constants
+        const int BRONZE_MILESTONE = 7;
+        const int SILVER_MILESTONE = 30;
+        const int GOLD_MILESTONE = 100;
+      </signature>
+      <path>lib/features/gamification/domain/entities/badge_entity.dart</path>
+      <notes>Use @freezed annotation for immutability. Milestone constants used for badge eligibility checks.</notes>
+    </interface>
+    <interface>
+      <name>CheckBadgeEligibilityUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class CheckBadgeEligibilityUseCase {
+          Future&lt;Result&lt;List&lt;BadgeTier&gt;&gt;&gt; call({
+            required String userId,
+            required StreakType type,
+            required int currentStreak,
+          });
+        }
+      </signature>
+      <path>lib/features/gamification/domain/usecases/check_badge_eligibility_usecase.dart</path>
+      <notes>Returns list of badge tiers user is eligible for based on currentStreak. Check against existing badges to avoid duplicates. Returns empty list if no new badges earned.</notes>
+    </interface>
+    <interface>
+      <name>AwardBadgeUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class AwardBadgeUseCase {
+          Future&lt;Result&lt;BadgeEntity&gt;&gt; call({
+            required String userId,
+            required StreakType type,
+            required BadgeTier tier,
+          });
+        }
+      </signature>
+      <path>lib/features/gamification/domain/usecases/award_badge_usecase.dart</path>
+      <notes>Creates badge record in database. Triggers badge unlock celebration modal. Sends push notification. Returns awarded BadgeEntity.</notes>
+    </interface>
+    <interface>
+      <name>GetUserBadgesUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class GetUserBadgesUseCase {
+          Future&lt;Result&lt;List&lt;BadgeEntity&gt;&gt;&gt; call(String userId);
+        }
+      </signature>
+      <path>lib/features/gamification/domain/usecases/get_user_badges_usecase.dart</path>
+      <notes>Fetches all badges earned by user. Used by profile screen to display badges. Returns empty list if no badges earned.</notes>
+    </interface>
+    <interface>
+      <name>GenerateBadgeCardUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class GenerateBadgeCardUseCase {
+          Future&lt;Result&lt;File&gt;&gt; call({
+            required BadgeEntity badge,
+            String? userName,
+          });
+        }
+      </signature>
+      <path>lib/features/gamification/domain/usecases/generate_badge_card_usecase.dart</path>
+      <notes>Generates shareable image card with badge icon, achievement text, LifeOS branding. Returns File object (PNG image). Used for social sharing.</notes>
+    </interface>
+    <interface>
+      <name>BadgeRepository</name>
+      <kind>repository</kind>
+      <signature>
+        abstract class BadgeRepository {
+          Future&lt;Result&lt;BadgeEntity&gt;&gt; awardBadge(BadgeEntity badge);
+          Future&lt;Result&lt;List&lt;BadgeEntity&gt;&gt;&gt; getUserBadges(String userId);
+          Future&lt;Result&lt;BadgeEntity?&gt;&gt; getBadge(String userId, StreakType type, BadgeTier tier);
+        }
+      </signature>
+      <path>lib/features/gamification/domain/repositories/badge_repository.dart</path>
+      <notes>Implemented by BadgeRepositoryImpl in data layer. Uses both DriftDataSource and SupabaseDataSource.</notes>
+    </interface>
+    <interface>
+      <name>badges table (Supabase PostgreSQL)</name>
+      <kind>database-table</kind>
+      <signature>
+        CREATE TABLE badges (
+          id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+          user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+          type TEXT NOT NULL CHECK (type IN ('workout', 'meditation', 'checkin')),
+          tier TEXT NOT NULL CHECK (tier IN ('bronze', 'silver', 'gold')),
+          earned_at TIMESTAMPTZ NOT NULL,
+          created_at TIMESTAMPTZ DEFAULT NOW(),
+          updated_at TIMESTAMPTZ DEFAULT NOW(),
+          UNIQUE(user_id, type, tier)
+        );
+        CREATE INDEX idx_badges_user_id ON badges(user_id);
+        CREATE INDEX idx_badges_user_type_tier ON badges(user_id, type, tier);
+      </signature>
+      <path>supabase/migrations/</path>
+      <notes>Migration file will be created in Supabase migrations folder. Include RLS policies in same migration. UNIQUE constraint prevents duplicate badges.</notes>
+    </interface>
+    <interface>
+      <name>badges table (Drift SQLite)</name>
+      <kind>database-table</kind>
+      <signature>
+        @DataClassName('BadgeTable')
+        class Badges extends Table {
+          TextColumn get id => text()();
+          TextColumn get userId => text()();
+          TextColumn get type => text()();
+          TextColumn get tier => text()();
+          DateTimeColumn get earnedAt => dateTime()();
+          DateTimeColumn get createdAt => dateTime()();
+          DateTimeColumn get updatedAt => dateTime()();
+
+          @override
+          Set&lt;Column&gt; get primaryKey => {id};
+        }
+      </signature>
+      <path>lib/core/database/tables.drift.dart</path>
+      <notes>Drift table definition. Mirror of Supabase schema for offline-first architecture.</notes>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Follow 70/20/10 testing pyramid: 70% unit tests (use cases, repositories, entities), 20% widget tests (UI components, state management), 10% integration tests (end-to-end flows). Use flutter_test for unit/widget tests, integration_test for E2E. Mock dependencies with mockito. Target 80%+ code coverage. All acceptance criteria must have test coverage.
+    </standards>
+    <locations>
+      <location>test/features/gamification/domain/usecases/</location>
+      <location>test/features/gamification/domain/entities/</location>
+      <location>test/features/gamification/data/repositories/</location>
+      <location>test/features/gamification/presentation/widgets/</location>
+      <location>integration_test/features/gamification/badge_award_flow_test.dart</location>
+    </locations>
+    <ideas>
+      <test-idea ac-ref="AC1">
+        <description>Unit test: Badge milestone constants</description>
+        <approach>Verify BRONZE_MILESTONE=7, SILVER_MILESTONE=30, GOLD_MILESTONE=100. Test that these values are used in CheckBadgeEligibilityUseCase.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1,AC2">
+        <description>Unit test: CheckBadgeEligibilityUseCase - Bronze badge at 7 days</description>
+        <approach>Given currentStreak=7, no existing badges. When check eligibility. Then returns [BadgeTier.bronze].</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1,AC2">
+        <description>Unit test: CheckBadgeEligibilityUseCase - Multiple badges at once</description>
+        <approach>Given currentStreak=30, no existing badges. When check eligibility. Then returns [BadgeTier.bronze, BadgeTier.silver] (both milestones reached).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC2">
+        <description>Unit test: CheckBadgeEligibilityUseCase - Prevent duplicate badges</description>
+        <approach>Given currentStreak=30, bronze badge already earned. When check eligibility. Then returns [BadgeTier.silver] only (skip bronze).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC2">
+        <description>Unit test: AwardBadgeUseCase - Creates badge record</description>
+        <approach>Mock BadgeRepository. Call AwardBadgeUseCase with type=workout, tier=bronze. Verify badge saved to database with correct fields.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3">
+        <description>Widget test: BadgeUnlockModal displays correctly</description>
+        <approach>Render BadgeUnlockModal with badge=Silver Meditation. Verify "🥈" emoji shown. Verify "You earned the Silver Meditation Badge!" text. Verify confetti animation plays.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3">
+        <description>Widget test: Badge unlock modal can be dismissed</description>
+        <approach>Render BadgeUnlockModal. Tap "Close" button. Verify modal dismissed.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4">
+        <description>Widget test: BadgesSection shows earned badges</description>
+        <approach>Render BadgesSection with 3 badges earned (Workout Bronze, Meditation Bronze, Check-in Silver). Verify badges displayed in grid. Verify badge icons colored. Verify locked badges shown as grayscale.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4">
+        <description>Widget test: Badge count shown in profile</description>
+        <approach>Render BadgesSection with 3 badges earned. Verify "3 out of 9 badges earned" text displayed.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC5">
+        <description>Widget test: Badge icons use correct emojis</description>
+        <approach>Render BadgeIcon for each tier. Verify Bronze=🥉, Silver=🥈, Gold=🥇.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6">
+        <description>Unit test: GenerateBadgeCardUseCase creates image</description>
+        <approach>Mock screenshot service. Call GenerateBadgeCardUseCase with badge=Gold Workout. Verify PNG image generated. Verify image contains badge icon, achievement text, LifeOS branding.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC7">
+        <description>Unit test: Push notification sent on badge award</description>
+        <approach>Mock notification service. Award badge (Silver Meditation). Verify notification sent with message "🎉 Silver Meditation Badge earned!".</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1,AC2,AC3">
+        <description>Integration test: Reach 7-day streak unlocks Bronze badge</description>
+        <approach>Start with 6-day workout streak. Complete workout (streak=7). Verify Bronze Workout badge awarded. Verify badge saved to database. Verify BadgeUnlockModal shown. Verify push notification sent.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC2">
+        <description>Integration test: All 9 badges can be earned</description>
+        <approach>Setup user with 100-day streaks for all 3 types. Verify 9 badges awarded (Workout Bronze/Silver/Gold, Meditation Bronze/Silver/Gold, Check-in Bronze/Silver/Gold). Verify all shown in profile.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6">
+        <description>Integration test: Share badge card to social media</description>
+        <approach>Award badge. Tap "Share Achievement" button. Select Instagram. Verify share dialog opens with badge image. Verify image saved to temp directory (deleted after 24h).</approach>
+      </test-idea>
+    </ideas>
+  </tests>
+</story-context>

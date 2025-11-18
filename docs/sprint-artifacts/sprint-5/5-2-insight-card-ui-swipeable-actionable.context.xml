@@ -1,0 +1,472 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/epic-5-story-2" v="1.0">
+  <metadata>
+    <epicId>5</epicId>
+    <storyId>5.2</storyId>
+    <title>Insight Card UI (Swipeable, Actionable)</title>
+    <status>ready-for-dev</status>
+    <generatedAt>2025-11-17</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/sprint-5/5-2-insight-card-ui-swipeable-actionable.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>user</asA>
+    <iWant>to see actionable cross-module insights on my Home tab</iWant>
+    <soThat>I can act on personalized recommendations to optimize my wellness</soThat>
+    <tasks>
+      <task id="1" ac-ref="AC1,AC2,AC3,AC4">
+        <description>Implement InsightCard widget UI</description>
+        <subtasks>
+          <subtask>Create InsightCard widget (StatelessWidget)</subtask>
+          <subtask>Implement gradient background (LinearGradient from Module A color → Module B color)</subtask>
+          <subtask>Add module icons (e.g., 🏋️ Fitness + 🧠 Mind for stress-workout pattern)</subtask>
+          <subtask>Display insight title (Text widget, bold, 18pt)</subtask>
+          <subtask>Display insight description (Text widget, 14pt, max 3 lines with ellipsis)</subtask>
+          <subtask>Add light bulb icon (top-left corner) to indicate insight type</subtask>
+          <subtask>Apply card styling: border radius 16px, shadow elevation 4, padding 20px</subtask>
+        </subtasks>
+      </task>
+      <task id="2" ac-ref="AC5">
+        <description>Implement CTA button with module navigation</description>
+        <subtasks>
+          <subtask>Add CTA button (ElevatedButton) at bottom of card</subtask>
+          <subtask>Display insight.cta text (e.g., "Adjust Workout", "Switch to Light Session")</subtask>
+          <subtask>Implement onPressed handler to navigate to relevant module</subtask>
+          <subtask>Pass context data to module (e.g., light workout template ID, meditation session ID)</subtask>
+          <subtask>Use Navigator.push with MaterialPageRoute or deep linking</subtask>
+          <subtask>Track CTA tap event with analytics (Posthog)</subtask>
+        </subtasks>
+      </task>
+      <task id="3" ac-ref="AC6">
+        <description>Implement swipe gestures (Dismissible widget)</description>
+        <subtasks>
+          <subtask>Wrap InsightCard in Dismissible widget with unique key (insight.id)</subtask>
+          <subtask>Implement onDismissed callback with DismissDirection parameter</subtask>
+          <subtask>Swipe left (DismissDirection.endToStart) → Dismiss insight (call dismissInsight use case)</subtask>
+          <subtask>Swipe right (DismissDirection.startToEnd) → Save for later (call saveForLater use case)</subtask>
+          <subtask>Add background indicators: Red "Dismiss" (left swipe), Green "Save" (right swipe)</subtask>
+          <subtask>Implement haptic feedback on swipe (HapticFeedback.mediumImpact())</subtask>
+          <subtask>Animate card exit with slide + fade transition</subtask>
+        </subtasks>
+      </task>
+      <task id="4" ac-ref="AC8">
+        <description>Implement insight fetching and state management</description>
+        <subtasks>
+          <subtask>Create InsightProvider using Riverpod (StateNotifierProvider)</subtask>
+          <subtask>Implement getTodayInsight() use case call on Home tab load</subtask>
+          <subtask>Handle loading state (show skeleton card or shimmer)</subtask>
+          <subtask>Handle empty state (no insight today → show motivational message)</subtask>
+          <subtask>Handle error state (network error → show retry button)</subtask>
+          <subtask>Cache insight locally (Drift) for offline viewing</subtask>
+          <subtask>Implement max 1 insight/day constraint check</subtask>
+        </subtasks>
+      </task>
+      <task id="5" ac-ref="AC7">
+        <description>Implement module-specific gradient color mappings</description>
+        <subtasks>
+          <subtask>Create InsightColorMapper class</subtask>
+          <subtask>Map insight types to color gradients: stress-workout (Mind Purple → Fitness Orange), sleep-workout (Life Coach Blue → Fitness Orange), correlation (Multi-color gradient)</subtask>
+          <subtask>Define theme colors: Mind Purple (#8B5CF6), Fitness Orange (#F97316), Life Coach Blue (#3B82F6)</subtask>
+          <subtask>Implement gradient direction: top-left to bottom-right (45° diagonal)</subtask>
+          <subtask>Add gradient overlay (opacity 0.9) for better text readability</subtask>
+        </subtasks>
+      </task>
+      <task id="6" ac-ref="AC9">
+        <description>Implement insight history view</description>
+        <subtasks>
+          <subtask>Create InsightHistoryScreen widget</subtask>
+          <subtask>Implement getInsightHistory() use case call (last 30 insights)</subtask>
+          <subtask>Display insights in ListView (reverse chronological order)</subtask>
+          <subtask>Show dismissed insights with "Dismissed" badge</subtask>
+          <subtask>Allow user to re-activate dismissed insights</subtask>
+          <subtask>Add filter: All / Dismissed / Saved</subtask>
+          <subtask>Navigate to history from Settings or Home tab menu</subtask>
+        </subtasks>
+      </task>
+      <task id="7" ac-ref="AC1">
+        <description>Implement Home tab integration</description>
+        <subtasks>
+          <subtask>Add InsightCard at top of Home tab feed (above daily plan summary)</subtask>
+          <subtask>Ensure card is visible without scrolling (above the fold)</subtask>
+          <subtask>Add spacing between insight card and other content (16px margin)</subtask>
+          <subtask>Implement conditional rendering (show only if insight exists for today)</subtask>
+          <subtask>Animate card entrance (slide-in from top with 300ms duration)</subtask>
+        </subtasks>
+      </task>
+      <task id="8" ac-ref="ALL">
+        <description>Write comprehensive tests</description>
+        <subtasks>
+          <subtask>Widget test: InsightCard renders correctly with mock data</subtask>
+          <subtask>Widget test: Gradient colors match insight type (stress-workout → purple-orange)</subtask>
+          <subtask>Widget test: Swipe left dismisses card and calls dismissInsight()</subtask>
+          <subtask>Widget test: Swipe right saves card and calls saveForLater()</subtask>
+          <subtask>Widget test: CTA button navigates to correct module</subtask>
+          <subtask>Widget test: Empty state shows when no insight available</subtask>
+          <subtask>Integration test: Full flow - fetch insight → display card → tap CTA → navigate to Fitness</subtask>
+          <subtask>Achieve 80%+ code coverage</subtask>
+        </subtasks>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="AC1">
+      <text>Insight card appears on Home tab (top of feed, above daily plan)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC2">
+      <text>Card has gradient background (Module A color → Module B color, e.g., Mind purple → Fitness orange)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC3">
+      <text>Module icons shown (🏋️ Fitness + 🧠 Mind)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC4">
+      <text>Insight title + description displayed (clear, concise, max 3 lines)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC5">
+      <text>CTA button with recommendation text (e.g., "Switch to light workout")</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC6">
+      <text>Swipe left → Dismiss, Swipe right → Save for later</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC7">
+      <text>Tap CTA → Opens relevant module with pre-filled action</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC8">
+      <text>Max 1 insight shown per day</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC9">
+      <text>User can view dismissed insights in history (Settings → Insight History)</text>
+      <priority>P1</priority>
+    </criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR82-FR83: Cross-Module Intelligence UI</section>
+        <snippet>FR82: System displays max 1 cross-module insight per day. FR83: Users can dismiss, save, or act on cross-module insights. Insight cards are swipeable and actionable with direct CTAs to relevant modules.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/epics.md</path>
+        <title>Epic 5: Cross-Module Intelligence - Story 5.2</title>
+        <section>Story 5.2: Insight Card UI (Swipeable, Actionable)</section>
+        <snippet>Insight card on Home tab with gradient background (Module A → Module B color). Shows module icons, title, description, CTA button. Swipe left to dismiss, swipe right to save. Tap CTA to open module with pre-filled action. Max 1 insight/day. View history in Settings.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/ux-design-specification.md</path>
+        <title>UX Design Specification</title>
+        <section>Insight Card Pattern (Section 5.1)</section>
+        <snippet>Insight card design: Gradient background (Module colors), 16px border radius, 4px elevation shadow, 20px padding. Light bulb icon (top-left). Module icons shown. Swipeable with background indicators (Red "Dismiss", Green "Save"). CTA button prominent at bottom. Max 1 insight/day to prevent fatigue.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/ux-design-specification.md</path>
+        <title>UX Design Specification</title>
+        <section>Color System - Module Colors</section>
+        <snippet>Mind Purple: #8B5CF6, Fitness Orange: #F97316, Life Coach Blue: #3B82F6. Use gradients for cross-module features (e.g., Mind → Fitness for stress-workout insights).</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Theme System (D9)</section>
+        <snippet>3 adaptive themes: Workout (orange-red), MindPeace (purple-blue), Analytics (blue-green). Use ThemeProvider with auto-switching per module. Insight cards use cross-module gradients.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <reference>
+        <path>lib/features/life_coach/presentation/widgets/morning_checkin_modal.dart</path>
+        <description>Reference for modal UI patterns, emoji sliders, haptic feedback implementation</description>
+      </reference>
+    </code>
+    <dependencies>
+      <flutter>
+        <sdk>3.38+</sdk>
+        <dart>3.10+</dart>
+      </flutter>
+      <packages>
+        <package name="flutter_riverpod" version="^3.0.0" usage="State management for insight card and provider" />
+        <package name="riverpod_annotation" version="^3.0.0" usage="Code generation for InsightProvider" />
+        <package name="drift" version="^2.14.0" usage="Local SQLite cache for offline insight viewing" />
+        <package name="supabase_flutter" version="^2.0.0" usage="Fetch insights from database" />
+        <package name="flutter_test" version="sdk" usage="Widget tests for InsightCard" />
+        <package name="posthog_flutter" version="^3.0.0" usage="Analytics tracking for CTA taps and dismissals" />
+      </packages>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint id="ARCH-1" type="architectural">
+      <description>Follow feature-first clean architecture pattern</description>
+      <details>Create structure at lib/features/cross_module_intelligence/presentation/. Separate widgets/, providers/, screens/. Use Riverpod for state management. Follow existing patterns from life_coach and fitness modules.</details>
+    </constraint>
+    <constraint id="ARCH-2" type="architectural">
+      <description>Offline-first insight display</description>
+      <details>Cache today's insight in Drift (local SQLite) for offline viewing. Show cached insight if network unavailable. Sync dismissals/saves to Supabase when online.</details>
+    </constraint>
+    <constraint id="UX-1" type="ux">
+      <description>Card must be visible without scrolling</description>
+      <details>Position at top of Home tab feed, above daily plan summary. User should see insight immediately on Home tab load without scrolling. Max height: 180px to fit above fold on small screens (iPhone SE).</details>
+    </constraint>
+    <constraint id="UX-2" type="ux">
+      <description>Swipe gestures must be intuitive and discoverable</description>
+      <details>Add background indicators during swipe: Red "Dismiss" icon (left), Green "Save" icon (right). Haptic feedback (HapticFeedback.mediumImpact()) on swipe start. Animate card exit smoothly (300ms duration).</details>
+    </constraint>
+    <constraint id="UX-3" type="ux">
+      <description>Gradient colors must match module branding</description>
+      <details>Stress-workout: Mind Purple (#8B5CF6) → Fitness Orange (#F97316). Sleep-workout: Life Coach Blue (#3B82F6) → Fitness Orange (#F97316). Correlation: Life Coach Blue → Mind Purple. Use 45° diagonal gradient (top-left to bottom-right).</details>
+    </constraint>
+    <constraint id="UX-4" type="ux">
+      <description>Text readability on gradient backgrounds</description>
+      <details>Apply gradient overlay with opacity 0.9 or add semi-transparent scrim. Use white text with drop shadow for contrast. Ensure WCAG AA contrast ratio (4.5:1) for all text.</details>
+    </constraint>
+    <constraint id="PERF-1" type="performance">
+      <description>Card render time must be instant</description>
+      <details>Card should render in <50ms. Use const constructors where possible. Optimize gradient rendering (use ShaderMask if needed). Avoid heavy computations in build().</details>
+    </constraint>
+    <constraint id="PERF-2" type="performance">
+      <description>Smooth swipe animation</description>
+      <details>Maintain 60fps during swipe gesture. Use Transform.translate for smooth animation. Avoid rebuilding entire widget tree during swipe. Test on low-end devices (Android 10, 2GB RAM).</details>
+    </constraint>
+    <constraint id="NAV-1" type="navigation">
+      <description>CTA must navigate to correct module with context</description>
+      <details>Parse insight.cta to determine target module. Pass action context via route arguments (e.g., {templateId: 'light-upper-body', source: 'cmi-insight'}). Use Navigator.pushNamed or go_router if implemented.</details>
+    </constraint>
+    <constraint id="A11Y-1" type="accessibility">
+      <description>Screen reader support for insight card</description>
+      <details>Wrap card in Semantics widget. Label: "Cross-module insight: [title]". Hint: "Swipe left to dismiss, swipe right to save, or tap button to [cta]". Test with TalkBack and VoiceOver.</details>
+    </constraint>
+    <constraint id="TEST-1" type="testing">
+      <description>80%+ code coverage required</description>
+      <details>Widget tests for InsightCard rendering, swipe gestures, CTA navigation. Integration test for full flow (fetch → display → action). Mock InsightRepository for predictable test data.</details>
+    </constraint>
+    <constraint id="BUS-1" type="business">
+      <description>Max 1 insight displayed per day</description>
+      <details>Check if insight already shown today before fetching. Store last_shown_date in local cache. If today's insight already dismissed, show empty state with motivational message ("Great job staying on track! Check back tomorrow for new insights.").</details>
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>InsightCard</name>
+      <kind>widget</kind>
+      <signature>
+        class InsightCard extends StatelessWidget {
+          final InsightEntity insight;
+          final VoidCallback onDismiss;
+          final VoidCallback onSave;
+          final VoidCallback onCtaTap;
+
+          @override
+          Widget build(BuildContext context) {
+            return Dismissible(
+              key: Key(insight.id),
+              onDismissed: (direction) {
+                if (direction == DismissDirection.endToStart) {
+                  onDismiss();
+                } else {
+                  onSave();
+                }
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                  gradient: _getGradient(insight.type),
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [BoxShadow(...)],
+                ),
+                child: Column([...]),
+              ),
+            );
+          }
+        }
+      </signature>
+      <path>lib/features/cross_module_intelligence/presentation/widgets/insight_card.dart</path>
+      <notes>Stateless widget for performance. Callbacks passed from parent provider. Use const constructors for gradient and text widgets.</notes>
+    </interface>
+    <interface>
+      <name>InsightProvider</name>
+      <kind>state-provider</kind>
+      <signature>
+        @riverpod
+        class InsightNotifier extends _$InsightNotifier {
+          @override
+          Future&lt;InsightEntity?&gt; build() async {
+            final repository = ref.read(insightRepositoryProvider);
+            final result = await repository.getTodayInsight(currentUserId);
+            return result.fold(
+              (failure) => null,
+              (insight) => insight,
+            );
+          }
+
+          Future&lt;void&gt; dismissInsight(String insightId) async {
+            final repository = ref.read(insightRepositoryProvider);
+            await repository.dismissInsight(insightId);
+            ref.invalidateSelf();
+          }
+
+          Future&lt;void&gt; saveForLater(String insightId) async {
+            final repository = ref.read(insightRepositoryProvider);
+            await repository.saveForLater(insightId);
+            ref.invalidateSelf();
+          }
+        }
+      </signature>
+      <path>lib/features/cross_module_intelligence/presentation/providers/insight_provider.dart</path>
+      <notes>Use Riverpod code generation (@riverpod annotation). Implements AsyncNotifier for loading states. Auto-refresh on app resume.</notes>
+    </interface>
+    <interface>
+      <name>InsightColorMapper</name>
+      <kind>utility-class</kind>
+      <signature>
+        class InsightColorMapper {
+          static LinearGradient getGradient(String insightType) {
+            switch (insightType) {
+              case 'stress-workout':
+                return LinearGradient(
+                  colors: [AppColors.mindPurple, AppColors.fitnessOrange],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                );
+              case 'sleep-workout':
+                return LinearGradient(
+                  colors: [AppColors.lifeCoachBlue, AppColors.fitnessOrange],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                );
+              case 'correlation':
+                return LinearGradient(
+                  colors: [AppColors.lifeCoachBlue, AppColors.mindPurple],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                );
+              default:
+                return LinearGradient(
+                  colors: [AppColors.primaryBlue, AppColors.accentPurple],
+                );
+            }
+          }
+        }
+      </signature>
+      <path>lib/features/cross_module_intelligence/presentation/utils/insight_color_mapper.dart</path>
+      <notes>Maps insight types to gradient color schemes. Centralized for consistency across app.</notes>
+    </interface>
+    <interface>
+      <name>GetTodayInsightUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class GetTodayInsightUseCase {
+          Future&lt;Result&lt;InsightEntity?&gt;&gt; call(String userId);
+        }
+      </signature>
+      <path>lib/features/cross_module_intelligence/domain/usecases/get_today_insight_usecase.dart</path>
+      <notes>Returns null if no insight for today. Checks local cache first, falls back to Supabase if cache miss.</notes>
+    </interface>
+    <interface>
+      <name>DismissInsightUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class DismissInsightUseCase {
+          Future&lt;Result&lt;void&gt;&gt; call(String insightId);
+        }
+      </signature>
+      <path>lib/features/cross_module_intelligence/domain/usecases/dismiss_insight_usecase.dart</path>
+      <notes>Sets insight.dismissed = true in database. Tracks dismissal event for AI learning (future story).</notes>
+    </interface>
+    <interface>
+      <name>SaveForLaterUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class SaveForLaterUseCase {
+          Future&lt;Result&lt;void&gt;&gt; call(String insightId);
+        }
+      </signature>
+      <path>lib/features/cross_module_intelligence/domain/usecases/save_for_later_usecase.dart</path>
+      <notes>Marks insight as saved (insight.saved = true). Future: Show saved insights in dedicated view.</notes>
+    </interface>
+    <interface>
+      <name>InsightHistoryScreen</name>
+      <kind>screen</kind>
+      <signature>
+        class InsightHistoryScreen extends ConsumerWidget {
+          @override
+          Widget build(BuildContext context, WidgetRef ref) {
+            final historyAsync = ref.watch(insightHistoryProvider);
+            return Scaffold(
+              appBar: AppBar(title: Text('Insight History')),
+              body: historyAsync.when(
+                data: (insights) => ListView.builder(...),
+                loading: () => CircularProgressIndicator(),
+                error: (err, stack) => ErrorWidget(...),
+              ),
+            );
+          }
+        }
+      </signature>
+      <path>lib/features/cross_module_intelligence/presentation/screens/insight_history_screen.dart</path>
+      <notes>Navigate from Settings → Insight History. Shows last 30 insights. Filter by All/Dismissed/Saved.</notes>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Follow 70/20/10 testing pyramid: 70% unit tests (color mapper, use cases), 20% widget tests (InsightCard rendering, swipe gestures, CTA taps), 10% integration tests (full flow from fetch to action). Use flutter_test and mockito for mocking. Target 80%+ code coverage. All AC must have test coverage.
+    </standards>
+    <locations>
+      <location>test/features/cross_module_intelligence/presentation/widgets/</location>
+      <location>test/features/cross_module_intelligence/presentation/providers/</location>
+      <location>test/features/cross_module_intelligence/domain/usecases/</location>
+      <location>integration_test/features/cross_module_intelligence/insight_card_flow_test.dart</location>
+    </locations>
+    <ideas>
+      <test-idea ac-ref="AC2,AC3,AC4">
+        <description>Widget test: InsightCard renders with correct gradient and content</description>
+        <approach>Create mock InsightEntity with type='stress-workout', title="High Stress Alert", description="Your stress is high...". Render InsightCard. Verify gradient colors are Mind Purple → Fitness Orange. Verify title and description text displayed. Verify module icons shown (🏋️ 🧠).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6">
+        <description>Widget test: Swipe left dismisses card</description>
+        <approach>Render InsightCard. Simulate swipe gesture with DismissDirection.endToStart using tester.drag(). Verify onDismiss callback called. Verify card removed from widget tree after animation completes.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6">
+        <description>Widget test: Swipe right saves card</description>
+        <approach>Render InsightCard. Simulate swipe gesture with DismissDirection.startToEnd. Verify onSave callback called. Verify haptic feedback triggered (mock HapticFeedback).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC5,AC7">
+        <description>Widget test: CTA button tap navigates to module</description>
+        <approach>Render InsightCard with cta="Adjust Workout". Tap CTA button. Verify onCtaTap callback called. Mock Navigator.push and verify route arguments contain {templateId: 'light-upper-body', source: 'cmi-insight'}.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC8">
+        <description>Unit test: Max 1 insight per day enforcement</description>
+        <approach>Mock InsightRepository.getTodayInsight() returning insight for today. Call GetTodayInsightUseCase twice. Verify only 1 insight returned. Mock scenario: insight already dismissed → verify null returned.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1">
+        <description>Widget test: InsightCard appears at top of Home tab</description>
+        <approach>Render Home tab with mock InsightProvider returning today's insight. Verify InsightCard widget exists above DailyPlanSummary widget. Measure vertical position (should be <200px from top).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC9">
+        <description>Integration test: Insight history screen displays dismissed insights</description>
+        <approach>Mock InsightRepository.getInsightHistory() returning 5 insights (3 dismissed, 2 active). Navigate to InsightHistoryScreen. Verify ListView displays 5 items. Verify dismissed insights have "Dismissed" badge. Tap filter → Dismissed → verify only 3 shown.</approach>
+      </test-idea>
+      <test-idea ac-ref="ALL">
+        <description>Integration test: Full insight card flow</description>
+        <approach>Launch app. Mock InsightProvider returning stress-workout insight. Navigate to Home tab. Verify InsightCard displayed with purple-orange gradient. Tap "Adjust Workout" CTA. Verify navigation to Fitness module with light workout template pre-selected.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC2">
+        <description>Unit test: InsightColorMapper gradient matching</description>
+        <approach>Test getGradient('stress-workout') → expect [#8B5CF6, #F97316]. Test getGradient('sleep-workout') → expect [#3B82F6, #F97316]. Test getGradient('correlation') → expect [#3B82F6, #8B5CF6]. Test unknown type → expect default gradient.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4">
+        <description>Widget test: Text overflow handling for long descriptions</description>
+        <approach>Create InsightEntity with 10-line description. Render InsightCard. Verify description text uses maxLines: 3 and overflow: TextOverflow.ellipsis. Verify no layout overflow errors.</approach>
+      </test-idea>
+    </ideas>
+  </tests>
+</story-context>

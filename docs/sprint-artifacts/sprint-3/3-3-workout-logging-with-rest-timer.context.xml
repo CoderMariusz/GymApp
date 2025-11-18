@@ -1,0 +1,576 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>3</epicId>
+    <storyId>3.3</storyId>
+    <title>Workout Logging with Rest Timer</title>
+    <status>ready-for-dev</status>
+    <generatedAt>2025-11-17</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/sprint-3/3-3-workout-logging-with-rest-timer.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>user during a workout</asA>
+    <iWant>to log sets with automatic rest timer</iWant>
+    <soThat>I track my workout and rest appropriately</soThat>
+    <tasks>
+      <task id="1" ac-ref="AC1,AC2,AC5">
+        <description>Implement rest timer widget with circular countdown</description>
+        <subtasks>
+          <subtask>Create RestTimerWidget (StatefulWidget with TickerProviderStateMixin)</subtask>
+          <subtask>Implement CircularProgressIndicator with AnimationController</subtask>
+          <subtask>Display large, readable countdown text in center (MM:SS format)</subtask>
+          <subtask>Configure default duration: 90 seconds (customizable 30-300s)</subtask>
+          <subtask>Auto-start timer after set is logged</subtask>
+          <subtask>Add "Next Set" button to skip rest timer</subtask>
+          <subtask>Make timer tappable to adjust rest time mid-workout (show duration picker)</subtask>
+        </subtasks>
+      </task>
+      <task id="2" ac-ref="AC3">
+        <description>Implement rest completion notifications</description>
+        <subtasks>
+          <subtask>Add HapticFeedback.heavyImpact() when timer reaches 0:00</subtask>
+          <subtask>Play sound notification (rest_complete.mp3) on completion</subtask>
+          <subtask>Handle background timer continuation (use WakelockPlus package)</subtask>
+          <subtask>Implement Android foreground service for background timer accuracy</subtask>
+          <subtask>Show notification in system tray during rest timer (Android/iOS)</subtask>
+        </subtasks>
+      </task>
+      <task id="3" ac-ref="AC4,AC9">
+        <description>Implement set logging functionality</description>
+        <subtasks>
+          <subtask>Create set logging form (reps, weight inputs with number pads)</subtask>
+          <subtask>Add optional set notes field with "Failed last rep" placeholder</subtask>
+          <subtask>Implement LogSetUseCase to save set to workout_sets table</subtask>
+          <subtask>Auto-increment set_number for each logged set in workout</subtask>
+          <subtask>Validate inputs: reps (1-999), weight (0.00-999.99)</subtask>
+          <subtask>Save to Drift (offline-first) then queue Supabase sync</subtask>
+        </subtasks>
+      </task>
+      <task id="4" ac-ref="AC6,AC7,AC9">
+        <description>Implement workout session management</description>
+        <subtasks>
+          <subtask>Create StartWorkoutUseCase to create workout record with start_time</subtask>
+          <subtask>Track workout duration (start_time to end_time in seconds)</subtask>
+          <subtask>Display elapsed workout time in header (HH:MM:SS format)</subtask>
+          <subtask>Add workout notes field with "Felt strong today" placeholder</subtask>
+          <subtask>Implement CompleteWorkoutUseCase to finalize workout (set end_time, duration, notes)</subtask>
+          <subtask>Save complete workout session to workouts table</subtask>
+        </subtasks>
+      </task>
+      <task id="5" ac-ref="AC1,AC2,AC3,AC6">
+        <description>Implement RestTimerService for background handling</description>
+        <subtasks>
+          <subtask>Create RestTimerService with start(), pause(), resume(), cancel() methods</subtask>
+          <subtask>Use Isolate for timer to ensure ±1s accuracy even under load</subtask>
+          <subtask>Persist timer state to local storage (survive app backgrounding)</subtask>
+          <subtask>Restore timer state on app resume if timer still running</subtask>
+          <subtask>Handle timer cancellation when user skips rest</subtask>
+        </subtasks>
+      </task>
+      <task id="6" ac-ref="AC1,AC2,AC3,AC4,AC6,AC7,AC9">
+        <description>Create workout logging screen UI</description>
+        <subtasks>
+          <subtask>Design WorkoutSessionScreen with exercise list and timer section</subtask>
+          <subtask>Show current exercise name and target reps/weight from pattern</subtask>
+          <subtask>Display set history for current workout (scrollable list)</subtask>
+          <subtask>Add quick-log buttons for common weight increments</subtask>
+          <subtask>Include "Complete Workout" CTA button at bottom</subtask>
+          <subtask>Show confirmation dialog before completing workout</subtask>
+        </subtasks>
+      </task>
+      <task id="7" ac-ref="AC8">
+        <description>Implement workout and set notes functionality</description>
+        <subtasks>
+          <subtask>Add notes input field to workout session (multi-line, expandable)</subtask>
+          <subtask>Add notes input field to each set (single-line, optional)</subtask>
+          <subtask>Save workout notes to workouts.notes column</subtask>
+          <subtask>Save set notes to workout_sets.notes column</subtask>
+          <subtask>Show notes in workout history view (read-only)</subtask>
+        </subtasks>
+      </task>
+      <task id="8" ac-ref="ALL">
+        <description>Write comprehensive tests</description>
+        <subtasks>
+          <subtask>Unit tests: LogSetUseCase, StartWorkoutUseCase, CompleteWorkoutUseCase, RestTimerService</subtask>
+          <subtask>Widget tests: RestTimerWidget, set logging form, workout duration tracker</subtask>
+          <subtask>Integration test: complete workout flow (start → log sets → rest → complete)</subtask>
+          <subtask>Test timer accuracy (±1s tolerance over 90s duration)</subtask>
+          <subtask>Test background timer continuation (app backgrounded during rest)</subtask>
+          <subtask>Test notification triggering (haptic + sound on rest completion)</subtask>
+          <subtask>Test notes persistence (workout notes and set notes)</subtask>
+          <subtask>Achieve 80%+ code coverage</subtask>
+        </subtasks>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="AC1">
+      <text>User logs set → Rest timer auto-starts (default 90s, customizable)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC2">
+      <text>Timer shown as countdown (large, readable)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC3">
+      <text>Haptic + sound when rest complete</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC4">
+      <text>Skip rest (tap "Next Set")</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC5">
+      <text>Adjust rest time mid-workout (tap timer)</text>
+      <priority>P1</priority>
+    </criterion>
+    <criterion id="AC6">
+      <text>Workout duration tracked (start to finish)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC7">
+      <text>Add notes to workout ("Felt strong today")</text>
+      <priority>P1</priority>
+    </criterion>
+    <criterion id="AC8">
+      <text>Add notes to sets ("Failed last rep")</text>
+      <priority>P1</priority>
+    </criterion>
+    <criterion id="AC9">
+      <text>Workout saves when "Complete Workout" tapped</text>
+      <priority>P0</priority>
+    </criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR34: Workout set logging with reps and weight</section>
+        <snippet>Users must be able to log workout sets with reps (1-999) and weight (0-999.99 kg/lbs). Each set logged in a workout session is tracked with set_number, exercise_id, and optional notes.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR35: Rest timer with notifications</section>
+        <snippet>Automatic rest timer starts after logging a set. Default 90 seconds, customizable 30-300s. Timer runs in background with foreground service (Android). Haptic + sound notification on completion. User can skip rest or adjust timer mid-workout.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR36: Workout session tracking</section>
+        <snippet>Workout session tracks start_time, end_time, total duration, and notes. User can add notes to entire workout and to individual sets. Workout saves to database when user taps "Complete Workout".</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/epics.md</path>
+        <title>Epic 3: Fitness Coach MVP - Story 3.3</title>
+        <section>Story 3.3: Workout Logging with Rest Timer</section>
+        <snippet>Complete workout logging flow with automatic rest timer, set tracking, workout duration tracking, haptic/sound notifications, and notes for workouts and sets. Prerequisites: Story 3.1 (Smart Pattern), Story 3.2 (Exercise Library).</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Hybrid Architecture (D1)</section>
+        <snippet>Feature-first architecture with clean architecture layers (presentation/domain/data). Fitness Coach module located at features/fitness_coach/. Use Riverpod for state management.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Offline-First Sync (D3)</section>
+        <snippet>Hybrid Sync pattern: Write-Through Cache + Sync Queue. Save to Drift (SQLite) first for instant feedback (&lt;100ms), then queue for Supabase sync when online. Offline operations must work seamlessly.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Database Schema - Fitness Coach Tables</section>
+        <snippet>Fitness Coach module uses exercises table, workout_patterns table, workouts table, and workout_sets table. All tables must have RLS policies: USING (auth.uid() = user_id) for user data isolation.</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/sprint-3/3-3-workout-logging-with-rest-timer.md</path>
+        <title>Story 3.3: Workout Logging with Rest Timer</title>
+        <section>Database Schema</section>
+        <snippet>workouts table: id, user_id, start_time, end_time, duration (seconds), notes. workout_sets table: id, workout_id FK, exercise_id, set_number, reps, weight (decimal 5,2), notes.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <reference>
+        <path>lib/features/fitness_coach/domain/entities/</path>
+        <description>Reference ExerciseEntity from Story 3.2 for exercise_id foreign key relationship</description>
+      </reference>
+      <reference>
+        <path>lib/features/fitness_coach/domain/entities/workout_pattern_entity.dart</path>
+        <description>Reference WorkoutPatternEntity from Story 3.1 for suggested reps/weight from AI pattern</description>
+      </reference>
+      <note>This story builds on Story 3.1 (Smart Pattern) and Story 3.2 (Exercise Library). Exercise library provides exercise_id for workout_sets. Pattern provides suggested reps/weight for quick-log buttons.</note>
+    </code>
+    <dependencies>
+      <flutter>
+        <sdk>3.38+</sdk>
+        <dart>3.10+</dart>
+      </flutter>
+      <packages>
+        <package name="flutter_riverpod" version="^3.0.0" usage="State management for workout session and timer state" />
+        <package name="riverpod_annotation" version="^3.0.0" usage="Code generation for providers" />
+        <package name="drift" version="^2.14.0" usage="Local SQLite database for offline workout logging" />
+        <package name="drift_flutter" version="^0.1.0" usage="Flutter integration for Drift" />
+        <package name="sqlite3_flutter_libs" version="^0.5.0" usage="SQLite native libraries" />
+        <package name="path_provider" version="^2.1.0" usage="Get app directories for Drift database" />
+        <package name="supabase_flutter" version="^2.0.0" usage="Supabase client for auth and database sync" />
+        <package name="wakelock_plus" version="^1.1.0" usage="Keep screen awake during workout and rest timer" />
+        <package name="audioplayers" version="^5.2.0" usage="Play sound notification on rest timer completion" />
+        <package name="flutter_local_notifications" version="^16.1.0" usage="Show notification in system tray during rest timer" />
+        <package name="flutter_test" version="sdk" usage="Unit and widget testing framework" />
+        <package name="integration_test" version="sdk" usage="End-to-end testing framework" />
+      </packages>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint id="ARCH-1" type="architectural">
+      <description>Must follow Hybrid Architecture pattern (D1)</description>
+      <details>Create feature structure at lib/features/fitness_coach/ with presentation/, domain/, and data/ layers. Use clean architecture separation of concerns.</details>
+    </constraint>
+    <constraint id="ARCH-2" type="architectural">
+      <description>Offline-first implementation required (D3)</description>
+      <details>Save workout sessions and sets to Drift (SQLite) first for instant feedback (&lt;100ms). Queue for Supabase sync when online. Handle offline mode gracefully.</details>
+    </constraint>
+    <constraint id="ARCH-3" type="architectural">
+      <description>Use Riverpod for state management (D1, D6)</description>
+      <details>Create providers for workout session state, timer state, and set logging. Use StateNotifierProvider for workout session. Providers should be in fitness_coach/presentation/providers/.</details>
+    </constraint>
+    <constraint id="DATA-1" type="data">
+      <description>Database schema must match specification</description>
+      <details>workouts table: id (UUID PK), user_id (UUID FK auth.users), start_time (TIMESTAMPTZ), end_time (TIMESTAMPTZ nullable), duration (INT seconds nullable), notes (TEXT nullable), created_at. workout_sets table: id (UUID PK), workout_id (UUID FK workouts), exercise_id (UUID FK exercises), set_number (INT), reps (INT 1-999), weight (DECIMAL 5,2), notes (TEXT nullable), created_at.</details>
+    </constraint>
+    <constraint id="SEC-1" type="security">
+      <description>Row Level Security (RLS) policies required</description>
+      <details>Enable RLS on workouts and workout_sets tables. Policy: CREATE POLICY "Users can only access own workouts" ON workouts FOR ALL USING (auth.uid() = user_id); workout_sets inherits via workout_id FK.</details>
+    </constraint>
+    <constraint id="TIMER-1" type="performance">
+      <description>Timer accuracy ±1 second tolerance</description>
+      <details>Use Isolate-based timer to ensure accuracy even under UI load. Test timer drift over 90-second duration. Maximum acceptable drift: ±1 second.</details>
+    </constraint>
+    <constraint id="TIMER-2" type="performance">
+      <description>Background timer support required</description>
+      <details>Timer must continue running when app is backgrounded. Use foreground service on Android (flutter_local_notifications). Persist timer state to local storage. Restore timer on app resume.</details>
+    </constraint>
+    <constraint id="UX-1" type="ux">
+      <description>Rest timer default: 90 seconds (customizable 30-300s)</description>
+      <details>Default rest timer duration: 90 seconds. Allow user to adjust 30-300 seconds. Show duration picker when user taps timer. Persist user's preferred rest duration per exercise.</details>
+    </constraint>
+    <constraint id="UX-2" type="ux">
+      <description>Large, readable timer display</description>
+      <details>Timer countdown must be large and readable (minimum 48sp font size). Use MM:SS format. Circular progress indicator surrounds countdown text. Color changes: green (60-90s) → yellow (30-59s) → red (0-29s).</details>
+    </constraint>
+    <constraint id="UX-3" type="ux">
+      <description>Haptic and sound notifications required</description>
+      <details>Use HapticFeedback.heavyImpact() when timer reaches 0:00. Play sound notification (rest_complete.mp3, ~1 second duration). Respect device sound settings (mute if device is silent).</details>
+    </constraint>
+    <constraint id="UX-4" type="ux">
+      <description>Skip rest functionality ("Next Set" button)</description>
+      <details>Show "Next Set" button during rest timer. Tapping button cancels timer and allows logging next set immediately. Button should be large and accessible (minimum 48dp touch target).</details>
+    </constraint>
+    <constraint id="PERF-1" type="performance">
+      <description>Set logging response time &lt;100ms</description>
+      <details>Logging a set must feel instant. Save to Drift first (&lt;50ms), update UI immediately, queue Supabase sync in background. Use optimistic UI updates.</details>
+    </constraint>
+    <constraint id="PERF-2" type="performance">
+      <description>Keep screen awake during workout</description>
+      <details>Use wakelock_plus to prevent screen from sleeping during active workout session. Release wakelock when workout is completed or app is closed.</details>
+    </constraint>
+    <constraint id="TEST-1" type="testing">
+      <description>80%+ code coverage required</description>
+      <details>Follow 70/20/10 testing pyramid. Unit tests for use cases (StartWorkout, LogSet, CompleteWorkout, RestTimerService), widget tests for UI, integration test for complete flow. All AC must have test coverage.</details>
+    </constraint>
+    <constraint id="TEST-2" type="testing">
+      <description>Test timer accuracy and background behavior</description>
+      <details>Dedicated tests for timer accuracy (±1s over 90s). Test timer continuation when app backgrounded. Test notification triggering (haptic + sound). Test timer cancellation on skip.</details>
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>WorkoutEntity</name>
+      <kind>domain-entity</kind>
+      <signature>
+        class WorkoutEntity {
+          final String id;
+          final String userId;
+          final DateTime startTime;
+          final DateTime? endTime;
+          final int? duration; // seconds
+          final String? notes;
+          final DateTime createdAt;
+        }
+      </signature>
+      <path>lib/features/fitness_coach/domain/entities/workout_entity.dart</path>
+      <notes>Use @freezed annotation for immutability and copyWith. Duration calculated as (endTime - startTime) in seconds when workout completed.</notes>
+    </interface>
+    <interface>
+      <name>WorkoutSetEntity</name>
+      <kind>domain-entity</kind>
+      <signature>
+        class WorkoutSetEntity {
+          final String id;
+          final String workoutId;
+          final String exerciseId;
+          final int setNumber;
+          final int reps;        // 1-999
+          final double weight;   // 0.00-999.99
+          final String? notes;
+          final DateTime createdAt;
+        }
+      </signature>
+      <path>lib/features/fitness_coach/domain/entities/workout_set_entity.dart</path>
+      <notes>Use @freezed annotation. Implement validation in constructor (reps 1-999, weight 0-999.99). set_number auto-incremented by LogSetUseCase.</notes>
+    </interface>
+    <interface>
+      <name>StartWorkoutUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class StartWorkoutUseCase {
+          Future&lt;Result&lt;WorkoutEntity&gt;&gt; call();
+        }
+      </signature>
+      <path>lib/features/fitness_coach/domain/usecases/start_workout_usecase.dart</path>
+      <notes>Creates new workout record with start_time = DateTime.now(). Returns workout entity with generated id. Save to WorkoutRepository.</notes>
+    </interface>
+    <interface>
+      <name>LogSetUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class LogSetUseCase {
+          Future&lt;Result&lt;WorkoutSetEntity&gt;&gt; call({
+            required String workoutId,
+            required String exerciseId,
+            required int reps,
+            required double weight,
+            String? notes,
+          });
+        }
+      </signature>
+      <path>lib/features/fitness_coach/domain/usecases/log_set_usecase.dart</path>
+      <notes>Auto-increments set_number for given workoutId and exerciseId. Validates reps (1-999) and weight (0-999.99). Returns Result&lt;T&gt; pattern (Success/Failure). Triggers rest timer after successful save.</notes>
+    </interface>
+    <interface>
+      <name>CompleteWorkoutUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class CompleteWorkoutUseCase {
+          Future&lt;Result&lt;WorkoutEntity&gt;&gt; call({
+            required String workoutId,
+            String? notes,
+          });
+        }
+      </signature>
+      <path>lib/features/fitness_coach/domain/usecases/complete_workout_usecase.dart</path>
+      <notes>Sets end_time = DateTime.now(). Calculates duration = (end_time - start_time).inSeconds. Updates notes if provided. Finalizes workout record in WorkoutRepository.</notes>
+    </interface>
+    <interface>
+      <name>RestTimerService</name>
+      <kind>service</kind>
+      <signature>
+        abstract class RestTimerService {
+          Stream&lt;int&gt; get timerStream; // emits remaining seconds
+          Future&lt;void&gt; start(int durationSeconds);
+          Future&lt;void&gt; pause();
+          Future&lt;void&gt; resume();
+          Future&lt;void&gt; cancel();
+          Future&lt;void&gt; adjustDuration(int newDurationSeconds);
+        }
+      </signature>
+      <path>lib/features/fitness_coach/domain/services/rest_timer_service.dart</path>
+      <notes>Implemented using Isolate for accuracy. Persists state to local storage for background continuation. Emits remaining seconds (90, 89, 88..., 0). Triggers haptic + sound at 0. Android: use foreground service via flutter_local_notifications.</notes>
+    </interface>
+    <interface>
+      <name>WorkoutRepository</name>
+      <kind>repository</kind>
+      <signature>
+        abstract class WorkoutRepository {
+          Future&lt;Result&lt;WorkoutEntity&gt;&gt; createWorkout(WorkoutEntity workout);
+          Future&lt;Result&lt;WorkoutEntity&gt;&gt; updateWorkout(WorkoutEntity workout);
+          Future&lt;Result&lt;WorkoutEntity?&gt;&gt; getWorkout(String workoutId);
+          Future&lt;Result&lt;List&lt;WorkoutEntity&gt;&gt;&gt; getWorkoutsForUser(String userId);
+        }
+      </signature>
+      <path>lib/features/fitness_coach/domain/repositories/workout_repository.dart</path>
+      <notes>Implemented by WorkoutRepositoryImpl in data layer. Uses both DriftDataSource and SupabaseDataSource for offline-first sync.</notes>
+    </interface>
+    <interface>
+      <name>WorkoutSetRepository</name>
+      <kind>repository</kind>
+      <signature>
+        abstract class WorkoutSetRepository {
+          Future&lt;Result&lt;WorkoutSetEntity&gt;&gt; createSet(WorkoutSetEntity set);
+          Future&lt;Result&lt;List&lt;WorkoutSetEntity&gt;&gt;&gt; getSetsForWorkout(String workoutId);
+          Future&lt;Result&lt;int&gt;&gt; getNextSetNumber(String workoutId, String exerciseId);
+        }
+      </signature>
+      <path>lib/features/fitness_coach/domain/repositories/workout_set_repository.dart</path>
+      <notes>Implemented by WorkoutSetRepositoryImpl in data layer. getNextSetNumber() queries max(set_number) + 1 for given workout and exercise.</notes>
+    </interface>
+    <interface>
+      <name>workouts table (Supabase PostgreSQL)</name>
+      <kind>database-table</kind>
+      <signature>
+        CREATE TABLE workouts (
+          id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+          user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+          start_time TIMESTAMPTZ NOT NULL,
+          end_time TIMESTAMPTZ,
+          duration INT, -- seconds
+          notes TEXT,
+          created_at TIMESTAMPTZ DEFAULT NOW()
+        );
+        CREATE INDEX idx_workouts_user_date ON workouts(user_id, start_time DESC);
+      </signature>
+      <path>supabase/migrations/</path>
+      <notes>Migration file will be created in Supabase migrations folder. Include RLS policies in same migration. duration is nullable until workout is completed.</notes>
+    </interface>
+    <interface>
+      <name>workout_sets table (Supabase PostgreSQL)</name>
+      <kind>database-table</kind>
+      <signature>
+        CREATE TABLE workout_sets (
+          id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+          workout_id UUID NOT NULL REFERENCES workouts(id) ON DELETE CASCADE,
+          exercise_id UUID NOT NULL REFERENCES exercises(id),
+          set_number INT NOT NULL,
+          reps INT NOT NULL CHECK (reps BETWEEN 1 AND 999),
+          weight DECIMAL(5, 2) CHECK (weight BETWEEN 0 AND 999.99),
+          notes TEXT,
+          created_at TIMESTAMPTZ DEFAULT NOW()
+        );
+        CREATE INDEX idx_workout_sets_workout ON workout_sets(workout_id, set_number);
+      </signature>
+      <path>supabase/migrations/</path>
+      <notes>Cascade delete when workout deleted. exercise_id references exercises table from Story 3.2. set_number starts at 1 for each exercise in a workout.</notes>
+    </interface>
+    <interface>
+      <name>workouts table (Drift SQLite)</name>
+      <kind>database-table</kind>
+      <signature>
+        @DataClassName('WorkoutTable')
+        class Workouts extends Table {
+          TextColumn get id => text()();
+          TextColumn get userId => text()();
+          DateTimeColumn get startTime => dateTime()();
+          DateTimeColumn get endTime => dateTime().nullable()();
+          IntColumn get duration => integer().nullable()();
+          TextColumn get notes => text().nullable()();
+          DateTimeColumn get createdAt => dateTime()();
+
+          @override
+          Set&lt;Column&gt; get primaryKey => {id};
+        }
+      </signature>
+      <path>lib/core/database/tables.drift.dart</path>
+      <notes>Drift table definition. Mirror of Supabase schema for offline-first architecture. Use drift code generation.</notes>
+    </interface>
+    <interface>
+      <name>workout_sets table (Drift SQLite)</name>
+      <kind>database-table</kind>
+      <signature>
+        @DataClassName('WorkoutSetTable')
+        class WorkoutSets extends Table {
+          TextColumn get id => text()();
+          TextColumn get workoutId => text()();
+          TextColumn get exerciseId => text()();
+          IntColumn get setNumber => integer()();
+          IntColumn get reps => integer().check(reps.isBetweenValues(1, 999))();
+          RealColumn get weight => real().check(weight.isBetweenValues(0, 999.99))();
+          TextColumn get notes => text().nullable()();
+          DateTimeColumn get createdAt => dateTime()();
+
+          @override
+          Set&lt;Column&gt; get primaryKey => {id};
+        }
+      </signature>
+      <path>lib/core/database/tables.drift.dart</path>
+      <notes>Drift table definition. Mirror of Supabase schema. Use RealColumn for weight (DECIMAL in PostgreSQL). Use drift code generation.</notes>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Follow 70/20/10 testing pyramid: 70% unit tests (use cases, repositories, entities, RestTimerService), 20% widget tests (UI components, timer widget, set logging form), 10% integration tests (end-to-end workout flow). Use flutter_test for unit/widget tests, integration_test for E2E. Mock dependencies with mockito. Target 80%+ code coverage. All acceptance criteria must have test coverage.
+    </standards>
+    <locations>
+      <location>test/features/fitness_coach/domain/usecases/</location>
+      <location>test/features/fitness_coach/domain/entities/</location>
+      <location>test/features/fitness_coach/domain/services/</location>
+      <location>test/features/fitness_coach/data/repositories/</location>
+      <location>test/features/fitness_coach/presentation/widgets/</location>
+      <location>integration_test/features/fitness_coach/workout_logging_flow_test.dart</location>
+    </locations>
+    <ideas>
+      <test-idea ac-ref="AC4,AC9">
+        <description>Unit test: WorkoutSetEntity validation</description>
+        <approach>Test that reps throw exception if outside 1-999 range. Test weight throws exception if outside 0-999.99 range. Test nullable notes. Test copyWith immutability.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC9">
+        <description>Unit test: LogSetUseCase success case</description>
+        <approach>Mock WorkoutSetRepository. Verify createSet() called with correct entity. Verify set_number auto-incremented. Assert Success result returned.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC9">
+        <description>Unit test: LogSetUseCase handles offline mode</description>
+        <approach>Mock repository to save to Drift only (no Supabase). Verify set saved locally. Verify sync queued for later.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6,AC9">
+        <description>Unit test: CompleteWorkoutUseCase calculates duration</description>
+        <approach>Create workout with start_time. Wait 5 seconds. Call CompleteWorkoutUseCase. Verify duration ≈ 5 seconds (±1s tolerance). Verify end_time set.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1,AC2,AC3">
+        <description>Unit test: RestTimerService timer accuracy</description>
+        <approach>Start timer with 90 seconds. Use fake timer (clock). Verify timerStream emits 90, 89, 88..., 0 with ±1s accuracy. Verify haptic + sound triggered at 0.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4">
+        <description>Unit test: RestTimerService cancel functionality</description>
+        <approach>Start timer. Wait 30 seconds. Call cancel(). Verify timerStream stops emitting. Verify no notification triggered.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC5">
+        <description>Unit test: RestTimerService adjust duration mid-workout</description>
+        <approach>Start timer with 90s. Wait 30s (60s remaining). Call adjustDuration(120s). Verify new countdown starts from 120s. Verify timer continues accurately.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1,AC2">
+        <description>Widget test: RestTimerWidget displays countdown</description>
+        <approach>Render RestTimerWidget with 90s duration. Verify CircularProgressIndicator rendered. Verify countdown text displays "01:30" (MM:SS format). Advance timer, verify text updates to "01:29".</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3">
+        <description>Widget test: RestTimerWidget triggers haptic on completion</description>
+        <approach>Render RestTimerWidget. Fast-forward timer to 0:00. Verify HapticFeedback.heavyImpact() called. Verify sound played (mock audioplayers).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4">
+        <description>Widget test: Next Set button skips rest</description>
+        <approach>Render workout session screen with rest timer active. Tap "Next Set" button. Verify timer cancelled. Verify set logging form shown.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC5">
+        <description>Widget test: Tapping timer shows duration picker</description>
+        <approach>Render RestTimerWidget. Tap timer. Verify duration picker modal appears. Select 120s. Verify timer adjusts to 120s countdown.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC7,AC8">
+        <description>Widget test: Notes persistence (workout and set)</description>
+        <approach>Render workout screen. Enter workout note "Felt strong". Log set with note "Failed last rep". Verify notes saved in entities.</approach>
+      </test-idea>
+      <test-idea ac-ref="ALL">
+        <description>Integration test: Complete workout logging flow</description>
+        <approach>Launch app. Start workout. Log set (reps=10, weight=100). Verify rest timer auto-starts. Wait for timer completion (or skip). Log 2nd set. Add workout note. Tap Complete Workout. Verify workout saved to database with correct duration. Verify sets saved with correct set_numbers.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1,AC2,AC3">
+        <description>Integration test: Background timer continuation</description>
+        <approach>Start workout. Log set. Verify rest timer starts. Background app (simulate home button). Wait 30s. Resume app. Verify timer continued (60s remaining). Verify notification shown in system tray.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC9">
+        <description>Integration test: Offline workout logging with sync</description>
+        <approach>Disable network. Start workout. Log 3 sets. Complete workout. Verify saved to Drift. Enable network. Verify auto-sync to Supabase. Verify data identical in both databases.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6">
+        <description>Integration test: Workout duration tracking accuracy</description>
+        <approach>Start workout. Log sets over 5 minutes. Complete workout. Verify workout.duration ≈ 300 seconds (±5s tolerance). Verify duration displayed in history view.</approach>
+      </test-idea>
+    </ideas>
+  </tests>
+</story-context>

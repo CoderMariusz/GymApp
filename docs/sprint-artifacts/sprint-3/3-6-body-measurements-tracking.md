@@ -1,7 +1,7 @@
 # Story 3.6: Body Measurements Tracking
 
 **Epic:** Epic 3 - Fitness Coach MVP
-**Priority:** P1 | **Status:** drafted | **Effort:** 2 SP
+**Priority:** P1 | **Status:** ready-for-dev | **Effort:** 2 SP
 
 ---
 
@@ -62,6 +62,16 @@ class UnitConverter {
 **Prerequisites:** Epic 1 (Data Sync)
 
 **Coverage Target:** 80%+
+
+---
+
+## Dev Agent Record
+
+### Context Reference
+
+- **Story Context File:** [3-6-body-measurements-tracking.context.xml](./3-6-body-measurements-tracking.context.xml)
+- **Generated:** 2025-11-17
+- **Status:** Context created, story ready for implementation
 
 ---
 

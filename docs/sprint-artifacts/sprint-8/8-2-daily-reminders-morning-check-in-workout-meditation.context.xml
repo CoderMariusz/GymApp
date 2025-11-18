@@ -1,0 +1,413 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>8</epicId>
+    <storyId>8.2</storyId>
+    <title>Daily Reminders (Morning Check-in, Workout, Meditation)</title>
+    <status>ready-for-dev</status>
+    <generatedAt>2025-11-17</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/sprint-8/8-2-daily-reminders-morning-check-in-workout-meditation.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>user with scheduled activities</asA>
+    <iWant>to receive daily reminder notifications for check-ins and activities</iWant>
+    <soThat>I don't forget my morning check-in, workouts, or meditation sessions</soThat>
+    <tasks>
+      <task id="1" ac-ref="AC1,AC2,AC8">
+        <description>Implement morning check-in and evening reflection reminders</description>
+        <subtasks>
+          <subtask>Create ReminderType enum (morningCheckin, eveningReflection, workout, meditation)</subtask>
+          <subtask>Create reminder_settings table (user_id, reminder_type, enabled, scheduled_time)</subtask>
+          <subtask>Implement morning check-in reminder (default 8:00am, customizable)</subtask>
+          <subtask>Implement evening reflection reminder (default 8:00pm, customizable)</subtask>
+          <subtask>Add time picker UI for customizing reminder times</subtask>
+          <subtask>Store reminder preferences in Drift and Supabase</subtask>
+        </subtasks>
+      </task>
+      <task id="2" ac-ref="AC3,AC4">
+        <description>Implement workout and meditation reminders</description>
+        <subtasks>
+          <subtask>Query daily plan to check if workout scheduled for today</subtask>
+          <subtask>Query meditation goals to check if user has active meditation goal</subtask>
+          <subtask>Schedule workout reminder if workout exists in daily plan (1 hour before scheduled time)</subtask>
+          <subtask>Schedule meditation reminder based on user's preferred time</subtask>
+          <subtask>Cancel reminder if activity already completed</subtask>
+        </subtasks>
+      </task>
+      <task id="3" ac-ref="AC5">
+        <description>Create reminder message templates</description>
+        <subtasks>
+          <subtask>Morning check-in: "Good morning! ☀️ Complete your check-in to start your day"</subtask>
+          <subtask>Evening reflection: "Evening reflection 📝 Review your day in 2 minutes"</subtask>
+          <subtask>Workout: "Time for your workout! 💪 [Workout name] awaits" (dynamic)</subtask>
+          <subtask>Meditation: "Time to meditate 🧘 Find your calm for [duration] minutes" (dynamic)</subtask>
+          <subtask>Add personalization: include user's first name in message</subtask>
+        </subtasks>
+      </task>
+      <task id="4" ac-ref="AC6">
+        <description>Implement deep linking for reminders</description>
+        <subtasks>
+          <subtask>Morning check-in reminder → lifeos://check-in (opens modal)</subtask>
+          <subtask>Evening reflection reminder → lifeos://reflection (opens reflection screen)</subtask>
+          <subtask>Workout reminder → lifeos://workout/{workoutId} (opens workout logging)</subtask>
+          <subtask>Meditation reminder → lifeos://meditation/{meditationId} (opens meditation player)</subtask>
+          <subtask>Register deep link routes in DeepLinkService</subtask>
+        </subtasks>
+      </task>
+      <task id="5" ac-ref="AC5">
+        <description>Create Supabase Edge Function for scheduling reminders</description>
+        <subtasks>
+          <subtask>Create schedule-daily-reminders Edge Function (runs daily at 12:01am)</subtask>
+          <subtask>Query all users with enabled reminders</subtask>
+          <subtask>For each user: schedule reminders based on their preferences</subtask>
+          <subtask>Check if activities already completed (don't send redundant reminders)</subtask>
+          <subtask>Call send-notification Edge Function for each scheduled reminder</subtask>
+          <subtask>Set up pg_cron job to run function daily</subtask>
+        </subtasks>
+      </task>
+      <task id="6" ac-ref="AC7,AC8">
+        <description>Build reminder settings UI</description>
+        <subtasks>
+          <subtask>Add "Daily Reminders" section to NotificationSettingsScreen</subtask>
+          <subtask>Add toggle + time picker for morning check-in reminder</subtask>
+          <subtask>Add toggle + time picker for evening reflection reminder</subtask>
+          <subtask>Add toggle for workout reminders (time based on daily plan)</subtask>
+          <subtask>Add toggle for meditation reminders (time based on user preference)</subtask>
+          <subtask>Implement updateReminderSettings() use case</subtask>
+          <subtask>Sync settings to Supabase on change</subtask>
+        </subtasks>
+      </task>
+      <task id="7" ac-ref="ALL">
+        <description>Write comprehensive tests</description>
+        <subtasks>
+          <subtask>Unit tests: Reminder scheduling logic, message template generation, time calculations</subtask>
+          <subtask>Widget tests: Reminder settings UI, time picker, toggles</subtask>
+          <subtask>Integration test: Schedule reminder → notification sent at correct time → tap → deep link navigation</subtask>
+          <subtask>Test reminder cancellation when activity completed</subtask>
+          <subtask>Achieve 80%+ code coverage</subtask>
+        </subtasks>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="AC1">
+      <text>Morning check-in reminder sent (default 8am, user customizable)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC2">
+      <text>Evening reflection reminder sent (default 8pm, user customizable)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC3">
+      <text>Workout reminder sent if workout scheduled in daily plan</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC4">
+      <text>Meditation reminder sent if meditation goal is active</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC5">
+      <text>Reminder messages are friendly and encouraging ("Good morning! ☀️", "Time for workout! 💪")</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC6">
+      <text>Tapping notification opens relevant screen via deep link</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC7">
+      <text>User can customize reminder times in settings</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC8">
+      <text>User can disable specific reminders (e.g., disable workout reminders but keep check-in)</text>
+      <priority>P0</priority>
+    </criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR105: Daily reminders</section>
+        <snippet>System sends daily reminders for morning check-in (8am), evening reflection (8pm), workout (if scheduled), and meditation (if goal set). Messages: "Good morning! Complete check-in", "Time for workout! Leg day awaits". User can customize times and disable specific reminders.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/epics.md</path>
+        <title>Epic 8: Notifications & Engagement - Story 8.2</title>
+        <section>Story 8.2: Daily Reminders</section>
+        <snippet>Implement daily reminders for morning check-in (8am), evening reflection (8pm), workout (if scheduled), meditation (if goal). Friendly messages. Tap opens relevant screen (deep link). User can customize times and disable specific reminders.</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/sprint-2/2-1-morning-check-in-flow.md</path>
+        <title>Story 2.1: Morning Check-in Flow</title>
+        <section>Morning Check-in Trigger Logic</section>
+        <snippet>Morning check-in modal triggered on first app open if not completed today. Reminder notification sent at 8am (customizable). Deep link: lifeos://check-in opens modal directly.</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/sprint-8/8-1-push-notification-infrastructure.md</path>
+        <title>Story 8.1: Push Notification Infrastructure</title>
+        <section>Deep Linking</section>
+        <snippet>Deep link service handles lifeos:// URLs. Routes: lifeos://check-in (check-in modal), lifeos://workout/{id} (workout logging), lifeos://meditation/{id} (meditation player). Works in foreground, background, and terminated states.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <reference>
+        <path>lib/core/notifications/services/fcm_service.dart</path>
+        <description>FCM service from Story 8.1. Use for sending reminder notifications.</description>
+      </reference>
+      <reference>
+        <path>lib/core/notifications/services/deep_link_service.dart</path>
+        <description>Deep link service from Story 8.1. Register new reminder deep link routes.</description>
+      </reference>
+      <reference>
+        <path>lib/features/life_coach/domain/usecases/get_daily_plan_usecase.dart</path>
+        <description>Query daily plan to check if workout scheduled today.</description>
+      </reference>
+      <reference>
+        <path>lib/features/mind/domain/usecases/get_meditation_goals_usecase.dart</path>
+        <description>Query meditation goals to check if user has active goal.</description>
+      </reference>
+    </code>
+    <dependencies>
+      <flutter>
+        <sdk>3.38+</sdk>
+        <dart>3.10+</dart>
+      </flutter>
+      <packages>
+        <package name="firebase_messaging" version="^14.7.0" usage="Send scheduled reminder notifications via FCM" />
+        <package name="flutter_local_notifications" version="^16.3.0" usage="Schedule local notifications for reminders" />
+        <package name="flutter_riverpod" version="^3.0.0" usage="State management for reminder settings" />
+        <package name="drift" version="^2.14.0" usage="Local SQLite database for reminder settings (offline-first)" />
+        <package name="supabase_flutter" version="^2.0.0" usage="Supabase client for reminder sync and Edge Functions" />
+        <package name="timezone" version="^0.9.0" usage="Handle timezone conversions for reminder scheduling" />
+        <package name="flutter_test" version="sdk" usage="Unit and widget testing framework" />
+        <package name="integration_test" version="sdk" usage="End-to-end testing framework" />
+      </packages>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint id="ARCH-1" type="architectural">
+      <description>Must follow Hybrid Architecture pattern</description>
+      <details>Create reminder logic at lib/core/notifications/domain/usecases/. Use existing FCMService and DeepLinkService from Story 8.1. Follow clean architecture for settings UI.</details>
+    </constraint>
+    <constraint id="ARCH-2" type="architectural">
+      <description>Offline-first implementation required</description>
+      <details>Reminder settings must be stored in Drift (SQLite) first for instant feedback. Sync to Supabase when online. Reminders sent via Supabase Edge Functions (server-side scheduling).</details>
+    </constraint>
+    <constraint id="DATA-1" type="data">
+      <description>Database schema must match specification</description>
+      <details>reminder_settings table: id (UUID PK), user_id (UUID FK), reminder_type (TEXT enum: 'morning_checkin', 'evening_reflection', 'workout', 'meditation'), enabled (BOOLEAN), scheduled_time (TIME), created_at, updated_at. UNIQUE(user_id, reminder_type).</details>
+    </constraint>
+    <constraint id="SEC-1" type="security">
+      <description>Row Level Security (RLS) policies required</description>
+      <details>Enable RLS on reminder_settings table. Policy: CREATE POLICY "Users can only access own reminders" ON reminder_settings FOR ALL USING (auth.uid() = user_id);</details>
+    </constraint>
+    <constraint id="UX-1" type="ux">
+      <description>Reminder messages must be friendly and encouraging</description>
+      <details>Use emoji and positive language. Examples: "Good morning! ☀️", "Time for workout! 💪", "Evening reflection 📝". Include user's first name when possible: "Good morning, Sarah! ☀️"</details>
+    </constraint>
+    <constraint id="UX-2" type="ux">
+      <description>Deep links must navigate directly to action</description>
+      <details>Check-in reminder → open check-in modal immediately. Workout reminder → open workout logging screen with correct workout pre-selected. Meditation reminder → open meditation player with recommended session.</details>
+    </constraint>
+    <constraint id="UX-3" type="ux">
+      <description>Time picker must be intuitive</description>
+      <details>Use native time picker (showTimePicker). Display current time in 12-hour or 24-hour format based on device locale. Show "Save" and "Cancel" buttons.</details>
+    </constraint>
+    <constraint id="LOGIC-1" type="business-logic">
+      <description>Don't send redundant reminders</description>
+      <details>Before sending reminder, check if activity already completed today. If morning check-in done, don't send reminder. If workout completed, don't send workout reminder. Query check_ins, workouts_completed, meditations_completed tables.</details>
+    </constraint>
+    <constraint id="LOGIC-2" type="business-logic">
+      <description>Workout reminder conditional on daily plan</description>
+      <details>Only send workout reminder if workout exists in today's daily plan. Query daily_plans table. If no workout scheduled, don't send reminder even if setting enabled.</details>
+    </constraint>
+    <constraint id="PERF-1" type="performance">
+      <description>Reminder scheduling must be efficient</description>
+      <details>Use pg_cron for server-side scheduling (runs at 12:01am daily). Batch process all users in single Edge Function run. Use database indexes on user_id and date columns.</details>
+    </constraint>
+    <constraint id="TEST-1" type="testing">
+      <description>80%+ code coverage required</description>
+      <details>Follow 70/20/10 testing pyramid. Unit tests for reminder logic, widget tests for settings UI, integration test for full reminder flow (schedule → send → tap → navigate).</details>
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>ReminderSettingsEntity</name>
+      <kind>domain-entity</kind>
+      <signature>
+        class ReminderSettingsEntity {
+          final String id;
+          final String userId;
+          final ReminderType reminderType;
+          final bool enabled;
+          final TimeOfDay scheduledTime;
+          final DateTime createdAt;
+          final DateTime updatedAt;
+        }
+
+        enum ReminderType {
+          morningCheckin,
+          eveningReflection,
+          workout,
+          meditation
+        }
+      </signature>
+      <path>lib/core/notifications/domain/entities/reminder_settings_entity.dart</path>
+      <notes>Use @freezed annotation for immutability. Default scheduled times: morningCheckin: 08:00, eveningReflection: 20:00.</notes>
+    </interface>
+    <interface>
+      <name>UpdateReminderSettingsUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class UpdateReminderSettingsUseCase {
+          Future&lt;Result&lt;ReminderSettingsEntity&gt;&gt; call({
+            required String userId,
+            required ReminderType reminderType,
+            required bool enabled,
+            TimeOfDay? scheduledTime,
+          });
+        }
+      </signature>
+      <path>lib/core/notifications/domain/usecases/update_reminder_settings_usecase.dart</path>
+      <notes>Updates reminder settings for specific type. Saves to Drift first, syncs to Supabase. If scheduledTime null, use existing time.</notes>
+    </interface>
+    <interface>
+      <name>GetReminderSettingsUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class GetReminderSettingsUseCase {
+          Future&lt;Result&lt;List&lt;ReminderSettingsEntity&gt;&gt;&gt; call(String userId);
+        }
+      </signature>
+      <path>lib/core/notifications/domain/usecases/get_reminder_settings_usecase.dart</path>
+      <notes>Retrieves all reminder settings for user. Returns list of 4 settings (one per ReminderType). If not exists, create with defaults.</notes>
+    </interface>
+    <interface>
+      <name>ScheduleReminderUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class ScheduleReminderUseCase {
+          Future&lt;Result&lt;void&gt;&gt; call({
+            required String userId,
+            required ReminderType reminderType,
+            required String message,
+            required String deepLink,
+          });
+        }
+      </signature>
+      <path>lib/core/notifications/domain/usecases/schedule_reminder_usecase.dart</path>
+      <notes>Schedules a reminder notification. Calls send-notification Edge Function. Checks if activity already completed before sending.</notes>
+    </interface>
+    <interface>
+      <name>ReminderMessageBuilder</name>
+      <kind>service</kind>
+      <signature>
+        abstract class ReminderMessageBuilder {
+          String buildMessage({
+            required ReminderType type,
+            required String userName,
+            String? workoutName,
+            int? meditationDuration,
+          });
+        }
+      </signature>
+      <path>lib/core/notifications/services/reminder_message_builder.dart</path>
+      <notes>Builds friendly reminder messages with emoji and personalization. Examples: "Good morning, Sarah! ☀️ Complete your check-in", "Time for workout! 💪 Leg Day awaits".</notes>
+    </interface>
+    <interface>
+      <name>reminder_settings table (Supabase PostgreSQL)</name>
+      <kind>database-table</kind>
+      <signature>
+        CREATE TABLE reminder_settings (
+          id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+          user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+          reminder_type TEXT NOT NULL CHECK (reminder_type IN ('morning_checkin', 'evening_reflection', 'workout', 'meditation')),
+          enabled BOOLEAN DEFAULT TRUE,
+          scheduled_time TIME NOT NULL,
+          created_at TIMESTAMPTZ DEFAULT NOW(),
+          updated_at TIMESTAMPTZ DEFAULT NOW(),
+          UNIQUE(user_id, reminder_type)
+        );
+        CREATE INDEX idx_reminder_settings_user_id ON reminder_settings(user_id);
+      </signature>
+      <path>supabase/migrations/</path>
+      <notes>Migration file for reminder settings. Include RLS policies. Default times: morning_checkin: 08:00, evening_reflection: 20:00.</notes>
+    </interface>
+    <interface>
+      <name>schedule-daily-reminders Edge Function</name>
+      <kind>edge-function</kind>
+      <signature>
+        POST /functions/v1/schedule-daily-reminders
+        (Triggered by pg_cron daily at 12:01am)
+
+        Queries all users with enabled reminders.
+        For each user:
+          - Check if activities completed
+          - Schedule reminders based on settings
+          - Call send-notification for each reminder
+      </signature>
+      <path>supabase/functions/schedule-daily-reminders/index.ts</path>
+      <notes>Scheduled by pg_cron to run daily at 12:01am. Queries reminder_settings, daily_plans, check_ins, meditation_goals. Sends notifications via send-notification Edge Function.</notes>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Follow 70/20/10 testing pyramid: 70% unit tests (use cases, services, entities), 20% widget tests (UI components, state management), 10% integration tests (end-to-end flows). Use flutter_test for unit/widget tests, integration_test for E2E. Mock dependencies with mockito. Target 80%+ code coverage. All acceptance criteria must have test coverage.
+    </standards>
+    <locations>
+      <location>test/core/notifications/domain/usecases/</location>
+      <location>test/core/notifications/services/</location>
+      <location>test/features/settings/presentation/screens/</location>
+      <location>integration_test/notifications/daily_reminders_flow_test.dart</location>
+    </locations>
+    <ideas>
+      <test-idea ac-ref="AC1,AC7">
+        <description>Unit test: UpdateReminderSettingsUseCase - morning check-in</description>
+        <approach>Mock ReminderSettingsRepository. Update morning_checkin reminder to enabled=true, time=07:00. Verify updateSettings() called with correct entity. Assert Success result.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC5">
+        <description>Unit test: ReminderMessageBuilder generates friendly messages</description>
+        <approach>Call buildMessage() for each ReminderType. Verify messages contain emoji and positive language. Verify personalization (user name included). Example: "Good morning, Sarah! ☀️ Complete your check-in".</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3">
+        <description>Unit test: ScheduleReminderUseCase - workout reminder conditional logic</description>
+        <approach>Mock GetDailyPlanUseCase. Test 1: Daily plan has workout → scheduleReminder() called. Test 2: Daily plan empty → scheduleReminder() NOT called. Verify conditional logic.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC8">
+        <description>Widget test: Reminder settings UI - toggle disable</description>
+        <approach>Render NotificationSettingsScreen with reminder section. Tap 'Morning Check-in' toggle to disable. Verify updateReminderSettings() called with enabled=false. Verify UI updates.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC7">
+        <description>Widget test: Time picker for reminder customization</description>
+        <approach>Render NotificationSettingsScreen. Tap 'Morning Check-in' time. Verify showTimePicker() called. Select new time (09:00). Verify updateReminderSettings() called with new time.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6">
+        <description>Unit test: Deep link navigation for reminders</description>
+        <approach>Mock DeepLinkService. Simulate notification tap with deepLink="lifeos://check-in". Verify handleDeepLink() called. Verify navigation to check-in modal.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1,AC6">
+        <description>Integration test: Morning check-in reminder flow</description>
+        <approach>Enable morning check-in reminder at 08:00. Mock system time to 08:00. Trigger schedule-daily-reminders Edge Function. Verify notification sent. Tap notification. Verify check-in modal opens. Complete check-in. Verify modal dismissed.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3">
+        <description>Integration test: Workout reminder (conditional)</description>
+        <approach>Create daily plan with workout scheduled at 14:00. Enable workout reminders. Mock system time to 13:00 (1 hour before). Trigger scheduler. Verify workout reminder sent. Tap notification. Verify workout logging screen opens with correct workout pre-selected.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3">
+        <description>Integration test: Workout reminder NOT sent if no workout scheduled</description>
+        <approach>Create daily plan with no workout. Enable workout reminders. Trigger scheduler. Verify workout reminder NOT sent (conditional logic working).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1">
+        <description>Integration test: Don't send reminder if activity already completed</description>
+        <approach>Complete morning check-in at 07:00. Mock system time to 08:00. Trigger scheduler. Verify morning check-in reminder NOT sent (already completed). Verify logic checks check_ins table before sending.</approach>
+      </test-idea>
+    </ideas>
+  </tests>
+</story-context>

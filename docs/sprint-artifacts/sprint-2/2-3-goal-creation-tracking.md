@@ -1,7 +1,7 @@
 # Story 2.3: Goal Creation & Tracking
 
 **Epic:** Epic 2 - Life Coach MVP
-**Priority:** P0 | **Status:** drafted | **Effort:** 3 SP
+**Priority:** P0 | **Status:** ready-for-dev | **Effort:** 3 SP
 
 ---
 
@@ -68,6 +68,11 @@ Future<Result<Goal>> createGoal(Goal goal) async {
 **Enables:** Story 2.9 (Goal Suggestions)
 
 **Coverage Target:** 80%+
+
+---
+
+## Dev Agent Record
+**Context File:** 2-3-goal-creation-tracking.context.xml
 
 ---
 

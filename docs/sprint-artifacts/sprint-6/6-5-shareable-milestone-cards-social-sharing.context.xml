@@ -1,0 +1,521 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>6</epicId>
+    <storyId>6.5</storyId>
+    <title>Shareable Milestone Cards (Social Sharing)</title>
+    <status>ready-for-dev</status>
+    <generatedAt>2025-11-17</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/sprint-6/6-5-shareable-milestone-cards-social-sharing.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>user earning a badge or achieving a goal</asA>
+    <iWant>to share my achievement</iWant>
+    <soThat>I can celebrate with friends</soThat>
+    <tasks>
+      <task id="1" ac-ref="AC1,AC2">
+        <description>Implement shareable image card design and generation</description>
+        <subtasks>
+          <subtask>Create MilestoneCardTemplate widget (sized for social media: 1080x1080px)</subtask>
+          <subtask>Design card layout: Deep Blue background (#1E3A8A), Teal accents (#14B8A6)</subtask>
+          <subtask>Add badge icon (centered, large: 200x200px)</subtask>
+          <subtask>Add achievement title: "30-Day Meditation Streak!" (Inter Bold, 48sp)</subtask>
+          <subtask>Add user name section (optional, can be removed)</subtask>
+          <subtask>Add "Achieved with LifeOS" branding at bottom (logo + text)</subtask>
+          <subtask>Use RepaintBoundary to isolate card for screenshot</subtask>
+        </subtasks>
+      </task>
+      <task id="2" ac-ref="AC2">
+        <description>Implement card variations for different achievements</description>
+        <subtasks>
+          <subtask>Badge unlock card: Show badge tier emoji (🥉🥈🥇), streak type, days reached</subtask>
+          <subtask>Goal completion card: Show goal title, completion date, celebration emoji</subtask>
+          <subtask>PR achievement card: Show exercise name, weight increase, orange theme</subtask>
+          <subtask>Use module colors: Orange (Fitness), Purple (Mind), Teal (Life Coach)</subtask>
+        </subtasks>
+      </task>
+      <task id="3" ac-ref="AC2">
+        <description>Implement screenshot capture system</description>
+        <subtasks>
+          <subtask>Integrate screenshot package for capturing card as image</subtask>
+          <subtask>Create ScreenshotController for capturing RepaintBoundary</subtask>
+          <subtask>Capture card widget as PNG image (high quality, 1080x1080px)</subtask>
+          <subtask>Save image to temporary directory (app cache)</subtask>
+          <subtask>Return File object for sharing</subtask>
+        </subtasks>
+      </task>
+      <task id="4" ac-ref="AC1">
+        <description>Implement "Share Achievement" button on badge unlock screen</description>
+        <subtasks>
+          <subtask>Add "Share Achievement" button to BadgeUnlockModal (from Story 6.2)</subtask>
+          <subtask>Button style: Secondary button, Teal color, icon: share icon (📤)</subtask>
+          <subtask>Position below badge and celebration text</subtask>
+          <subtask>Tap button → Generate card → Show share options</subtask>
+        </subtasks>
+      </task>
+      <task id="5" ac-ref="AC3">
+        <description>Integrate share_plus package for social sharing</description>
+        <subtasks>
+          <subtask>Add share_plus package to pubspec.yaml</subtask>
+          <subtask>Implement ShareService that wraps share_plus functionality</subtask>
+          <subtask>Share image file with caption text</subtask>
+          <subtask>Support sharing to: Instagram Stories, Facebook, Twitter, WhatsApp, Copy link</subtask>
+          <subtask>Test share functionality on both iOS and Android</subtask>
+        </subtasks>
+      </task>
+      <task id="6" ac-ref="AC3">
+        <description>Implement platform-specific share integrations</description>
+        <subtasks>
+          <subtask>iOS: Use UIActivityViewController for share sheet</subtask>
+          <subtask>Android: Use Intent.ACTION_SEND for share sheet</subtask>
+          <subtask>Instagram Stories: Use sticker API (if available)</subtask>
+          <subtask>Handle app not installed gracefully (e.g., Instagram not installed)</subtask>
+          <subtask>Add analytics tracking for share events</subtask>
+        </subtasks>
+      </task>
+      <task id="7" ac-ref="AC4">
+        <description>Implement "Save to Gallery" option</description>
+        <subtasks>
+          <subtask>Add "Save to Gallery" button alongside "Share" button</subtask>
+          <subtask>Integrate image_gallery_saver package</subtask>
+          <subtask>Request storage permissions (iOS: Photo Library, Android: External Storage)</subtask>
+          <subtask>Save generated card image to user's photo gallery</subtask>
+          <subtask>Show success toast: "Image saved to gallery!"</subtask>
+          <subtask>Handle permission denied gracefully</subtask>
+        </subtasks>
+      </task>
+      <task id="8" ac-ref="AC2">
+        <description>Implement user name privacy control</description>
+        <subtasks>
+          <subtask>Add checkbox: "Include my name" (default: checked)</subtask>
+          <subtask>If unchecked, remove user name from card (show only achievement)</subtask>
+          <subtask>Save preference to local storage (for next share)</subtask>
+          <subtask>Ensures GDPR compliance (user controls personal data sharing)</subtask>
+        </subtasks>
+      </task>
+      <task id="9" ac-ref="AC5">
+        <description>Implement temporary image cleanup</description>
+        <subtasks>
+          <subtask>Store generated images in app cache directory (getTemporaryDirectory())</subtask>
+          <subtask>Create CleanupTempImagesUseCase that deletes images older than 24h</subtask>
+          <subtask>Run cleanup on app start (background task)</subtask>
+          <subtask>Ensure no orphaned temp files accumulate over time</subtask>
+        </subtasks>
+      </task>
+      <task id="10" ac-ref="ALL">
+        <description>Write comprehensive tests</description>
+        <subtasks>
+          <subtask>Unit tests: GenerateMilestoneCardUseCase - creates image file</subtask>
+          <subtask>Unit tests: ShareService - calls share_plus with correct parameters</subtask>
+          <subtask>Unit tests: CleanupTempImagesUseCase - deletes old files</subtask>
+          <subtask>Widget tests: MilestoneCardTemplate renders correctly with all elements</subtask>
+          <subtask>Widget tests: "Share Achievement" button triggers card generation</subtask>
+          <subtask>Widget tests: "Include my name" checkbox toggles user name visibility</subtask>
+          <subtask>Integration test: Badge unlock → Share button → Generate card → Share to WhatsApp</subtask>
+          <subtask>Integration test: Save card to gallery → Verify image saved</subtask>
+          <subtask>Achieve 75%+ code coverage</subtask>
+        </subtasks>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="AC1">
+      <text>"Share Achievement" button on badge unlock screen</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC2">
+      <text>Generate shareable image card: Badge icon (centered), Achievement title ("30-Day Streak!"), User name (optional, can remove), "Achieved with LifeOS" branding (bottom)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC3">
+      <text>Share to: Instagram Stories, Facebook, Twitter, WhatsApp, Copy link</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC4">
+      <text>Image saved to user's gallery (optional)</text>
+      <priority>P1</priority>
+    </criterion>
+    <criterion id="AC5">
+      <text>No personal data in image (GDPR compliant) - user controls name inclusion</text>
+      <priority>P0</priority>
+    </criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR89: Shareable milestone cards</section>
+        <snippet>Users can share milestone cards to social media. Generated image with badge, achievement title, LifeOS branding. No personal data (GDPR compliant).</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/epics.md</path>
+        <title>Epic 6: Gamification & Retention - Story 6.5</title>
+        <section>Story 6.5: Shareable Milestone Cards</section>
+        <snippet>"Share Achievement" button on badge unlock. Generate image card (Badge icon, Title, User name optional, LifeOS branding). Share to Instagram/Facebook/Twitter/WhatsApp. Image saved to gallery (optional). No personal data (GDPR). Prerequisites: Story 6.2.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/ux-design-specification.md</path>
+        <title>UX Design Specification</title>
+        <section>Shareable Card Design</section>
+        <snippet>Card design: LifeOS branding (Deep Blue background, Teal accents). Badge prominent (large, centered). Clean typography (Inter Bold). Social media optimized (1080x1080px).</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>GDPR Compliance</section>
+        <snippet>User controls personal data sharing. No data shared without explicit consent. User can remove name from shareable cards.</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/sprint-6/6-5-shareable-milestone-cards-social-sharing.md</path>
+        <title>Story 6.5: Shareable Milestone Cards</title>
+        <section>Tech Stack</section>
+        <snippet>screenshot package or server-side image gen, share_plus package. Image temp (delete 24h). Support Instagram/Facebook/Twitter/WhatsApp.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <note>Shareable cards depend on Story 6.2 (Badges). Integration with badge unlock modal. Screenshot generation for card images.</note>
+      <existing>
+        <file>
+          <path>lib/features/gamification/presentation/widgets/badge_unlock_modal.dart</path>
+          <purpose>Badge unlock screen - will add "Share Achievement" button</purpose>
+        </file>
+        <file>
+          <path>lib/features/gamification/domain/entities/badge_entity.dart</path>
+          <purpose>Badge data used to generate milestone card content</purpose>
+        </file>
+      </existing>
+    </code>
+    <dependencies>
+      <flutter>
+        <sdk>3.38+</sdk>
+        <dart>3.10+</dart>
+      </flutter>
+      <packages>
+        <package name="flutter_riverpod" version="^3.0.0" usage="State management for sharing state" />
+        <package name="riverpod_annotation" version="^3.0.0" usage="Code generation for providers" />
+        <package name="screenshot" version="^2.1.0" usage="Capture milestone card as image" />
+        <package name="share_plus" version="^7.2.0" usage="Share images to social media platforms" />
+        <package name="image_gallery_saver" version="^2.0.3" usage="Save images to user's photo gallery" />
+        <package name="path_provider" version="^2.1.0" usage="Get temp directory for image storage" />
+        <package name="permission_handler" version="^11.0.0" usage="Request storage permissions for gallery save" />
+        <package name="drift" version="^2.14.0" usage="Local storage for sharing preferences" />
+        <package name="supabase_flutter" version="^2.0.0" usage="Supabase sync for preferences" />
+        <package name="freezed" version="^2.4.0" usage="Immutable entity code generation" />
+        <package name="freezed_annotation" version="^2.4.0" usage="Freezed annotations" />
+        <package name="flutter_test" version="sdk" usage="Unit and widget testing framework" />
+        <package name="integration_test" version="sdk" usage="End-to-end testing framework" />
+      </packages>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint id="ARCH-1" type="architectural">
+      <description>Must follow Hybrid Architecture pattern (D1)</description>
+      <details>Extend features/gamification/ structure. Add sharing-related widgets, use cases in clean architecture layers.</details>
+    </constraint>
+    <constraint id="ARCH-2" type="architectural">
+      <description>Use Riverpod for state management (D1, D6)</description>
+      <details>Sharing state and preferences should be observable. Card generation progress should be tracked.</details>
+    </constraint>
+    <constraint id="DATA-1" type="data">
+      <description>User sharing preferences schema</description>
+      <details>Add to user_preferences table: include_name_in_shares (BOOLEAN DEFAULT true). User controls personal data in shared images.</details>
+    </constraint>
+    <constraint id="SEC-1" type="security">
+      <description>GDPR compliance required</description>
+      <details>User must explicitly control whether name appears in shared card. Default: include name. User can uncheck. No other personal data (email, location) in card.</details>
+    </constraint>
+    <constraint id="UX-1" type="ux">
+      <description>Card design must be visually appealing for social media</description>
+      <details>1080x1080px (Instagram square). Deep Blue background (#1E3A8A), Teal accents (#14B8A6). Badge icon large and centered (200x200px). Clean, minimal design. LifeOS logo subtle at bottom.</details>
+    </constraint>
+    <constraint id="UX-2" type="ux">
+      <description>Share flow must be seamless</description>
+      <details>Tap "Share Achievement" → Card generates (1-2s) → Share sheet appears → User selects app → Shared. &lt;5 seconds total. No confusing intermediate screens.</details>
+    </constraint>
+    <constraint id="UX-3" type="ux">
+      <description>User must control name visibility</description>
+      <details>"Include my name" checkbox visible and clear. User understands choice affects what friends see. Preview card with/without name before sharing.</details>
+    </constraint>
+    <constraint id="PERF-1" type="performance">
+      <description>Card generation must be fast (&lt;2 seconds)</description>
+      <details>Screenshot capture optimized. Use RepaintBoundary to isolate card widget. Generate PNG at high quality but compressed. File size &lt;500KB for fast sharing.</details>
+    </constraint>
+    <constraint id="PERF-2" type="performance">
+      <description>Temp image cleanup must not block app</description>
+      <details>Run cleanup on background isolate. Non-blocking on app start. Delete images older than 24h. Limit temp directory size to &lt;10MB.</details>
+    </constraint>
+    <constraint id="PLATFORM-1" type="platform">
+      <description>iOS share sheet integration</description>
+      <details>Use UIActivityViewController for native share experience. Support sharing to installed apps. Handle Instagram Stories custom sticker API if available.</details>
+    </constraint>
+    <constraint id="PLATFORM-2" type="platform">
+      <description>Android share intent integration</description>
+      <details>Use Intent.ACTION_SEND with image MIME type. Support sharing to installed apps. Handle WhatsApp, Instagram, Facebook, Twitter intents.</details>
+    </constraint>
+    <constraint id="PLATFORM-3" type="platform">
+      <description>Storage permissions required for gallery save</description>
+      <details>iOS: Request Photo Library permission. Android: Request WRITE_EXTERNAL_STORAGE (Android &lt;10) or WRITE_MEDIA_IMAGES (Android 10+). Handle permission denied gracefully.</details>
+    </constraint>
+    <constraint id="BRAND-1" type="branding">
+      <description>LifeOS branding must be subtle but present</description>
+      <details>"Achieved with LifeOS" text at bottom with logo. Small, not dominating. User's achievement is primary focus. LifeOS branding secondary.</details>
+    </constraint>
+    <constraint id="TEST-1" type="testing">
+      <description>75%+ code coverage required</description>
+      <details>Follow 70/20/10 testing pyramid. Unit tests for card generation, widget tests for UI, integration tests for full share flow. All AC must have test coverage.</details>
+    </constraint>
+    <constraint id="INTEG-1" type="integration">
+      <description>Must integrate with Story 6.2 badge unlock modal</description>
+      <details>Add "Share Achievement" button to BadgeUnlockModal. Pass badge data to card generator. Maintain modal UX flow.</details>
+    </constraint>
+    <constraint id="ASSET-1" type="assets">
+      <description>LifeOS logo asset required for card branding</description>
+      <details>Add lifeos_logo_white.png to assets/images/. Small size (100x100px). PNG with transparency. Used in card footer.</details>
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>MilestoneCardData</name>
+      <kind>domain-entity</kind>
+      <signature>
+        @freezed
+        class MilestoneCardData with _$MilestoneCardData {
+          const factory MilestoneCardData({
+            required String achievementTitle,
+            required String achievementSubtitle,
+            required String iconEmoji,
+            required Color moduleColor,
+            String? userName,
+            DateTime? achievedDate,
+          }) = _MilestoneCardData;
+
+          // Factory methods for specific achievement types
+          factory MilestoneCardData.fromBadge(BadgeEntity badge, {String? userName}) {
+            final tierName = badge.tier == BadgeTier.bronze ? 'Bronze'
+                           : badge.tier == BadgeTier.silver ? 'Silver'
+                           : 'Gold';
+            final typeName = badge.type == StreakType.workout ? 'Workout'
+                           : badge.type == StreakType.meditation ? 'Meditation'
+                           : 'Check-in';
+            final tierEmoji = badge.tier == BadgeTier.bronze ? '🥉'
+                            : badge.tier == BadgeTier.silver ? '🥈'
+                            : '🥇';
+            final color = badge.type == StreakType.workout ? Colors.orange
+                        : badge.type == StreakType.meditation ? Colors.purple
+                        : Colors.teal;
+
+            return MilestoneCardData(
+              achievementTitle: '$tierName $typeName Streak',
+              achievementSubtitle: 'Achievement Unlocked!',
+              iconEmoji: tierEmoji,
+              moduleColor: color,
+              userName: userName,
+              achievedDate: badge.earnedAt,
+            );
+          }
+
+          // Similar factory methods for goals and PRs
+        }
+      </signature>
+      <path>lib/features/gamification/domain/entities/milestone_card_data.dart</path>
+      <notes>Data transfer object for milestone card generation. Contains all info needed to render card.</notes>
+    </interface>
+    <interface>
+      <name>GenerateMilestoneCardUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class GenerateMilestoneCardUseCase {
+          Future&lt;Result&lt;File&gt;&gt; call({
+            required MilestoneCardData data,
+            bool includeUserName = true,
+          });
+        }
+      </signature>
+      <path>lib/features/gamification/domain/usecases/generate_milestone_card_usecase.dart</path>
+      <notes>Generates shareable image card. Creates MilestoneCardTemplate widget, captures screenshot, saves to temp directory. Returns File object.</notes>
+    </interface>
+    <interface>
+      <name>ShareMilestoneCardUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class ShareMilestoneCardUseCase {
+          Future&lt;Result&lt;void&gt;&gt; call({
+            required File imageFile,
+            required String caption,
+          });
+        }
+      </signature>
+      <path>lib/features/gamification/domain/usecases/share_milestone_card_usecase.dart</path>
+      <notes>Shares image card using share_plus. Opens platform share sheet. User selects app. Handles share success/failure.</notes>
+    </interface>
+    <interface>
+      <name>SaveCardToGalleryUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class SaveCardToGalleryUseCase {
+          Future&lt;Result&lt;void&gt;&gt; call(File imageFile);
+        }
+      </signature>
+      <path>lib/features/gamification/domain/usecases/save_card_to_gallery_usecase.dart</path>
+      <notes>Saves image to user's photo gallery. Requests storage permission if needed. Returns success or permission denied error.</notes>
+    </interface>
+    <interface>
+      <name>CleanupTempImagesUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class CleanupTempImagesUseCase {
+          Future&lt;Result&lt;int&gt;&gt; call();
+        }
+      </signature>
+      <path>lib/features/gamification/domain/usecases/cleanup_temp_images_usecase.dart</path>
+      <notes>Deletes temp images older than 24h. Returns count of deleted files. Runs on background isolate.</notes>
+    </interface>
+    <interface>
+      <name>MilestoneCardTemplate</name>
+      <kind>widget</kind>
+      <signature>
+        class MilestoneCardTemplate extends StatelessWidget {
+          final MilestoneCardData data;
+          final bool includeUserName;
+
+          const MilestoneCardTemplate({
+            Key? key,
+            required this.data,
+            this.includeUserName = true,
+          }) : super(key: key);
+
+          @override
+          Widget build(BuildContext context) {
+            return Container(
+              width: 1080,
+              height: 1080,
+              color: Color(0xFF1E3A8A), // Deep Blue
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  // Badge icon (200x200px)
+                  Text(data.iconEmoji, style: TextStyle(fontSize: 200)),
+                  SizedBox(height: 40),
+                  // Achievement title
+                  Text(data.achievementTitle, style: TextStyle(fontSize: 48, fontWeight: FontWeight.bold, color: Colors.white)),
+                  SizedBox(height: 16),
+                  // Achievement subtitle
+                  Text(data.achievementSubtitle, style: TextStyle(fontSize: 32, color: Color(0xFF14B8A6))),
+                  if (includeUserName && data.userName != null) ...[
+                    SizedBox(height: 40),
+                    Text(data.userName!, style: TextStyle(fontSize: 28, color: Colors.white70)),
+                  ],
+                  Spacer(),
+                  // LifeOS branding
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset('assets/images/lifeos_logo_white.png', width: 40, height: 40),
+                      SizedBox(width: 12),
+                      Text('Achieved with LifeOS', style: TextStyle(fontSize: 20, color: Colors.white54)),
+                    ],
+                  ),
+                  SizedBox(height: 40),
+                ],
+              ),
+            );
+          }
+        }
+      </signature>
+      <path>lib/features/gamification/presentation/widgets/milestone_card_template.dart</path>
+      <notes>Visual template for shareable milestone card. Sized 1080x1080px for social media. Wrapped with RepaintBoundary for screenshot capture.</notes>
+    </interface>
+    <interface>
+      <name>ShareService</name>
+      <kind>service</kind>
+      <signature>
+        abstract class ShareService {
+          Future&lt;void&gt; shareImage({
+            required File imageFile,
+            required String caption,
+          });
+          Future&lt;bool&gt; canShareToInstagram();
+          Future&lt;void&gt; shareToInstagramStory(File imageFile);
+        }
+      </signature>
+      <path>lib/core/services/share_service.dart</path>
+      <notes>Wraps share_plus functionality. Handles platform-specific share intents. Supports Instagram Stories custom API.</notes>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Follow 70/20/10 testing pyramid: 70% unit tests (use cases, services), 20% widget tests (UI components), 10% integration tests (end-to-end flows). Use flutter_test for unit/widget tests, integration_test for E2E. Mock dependencies with mockito. Target 75%+ code coverage. All acceptance criteria must have test coverage.
+    </standards>
+    <locations>
+      <location>test/features/gamification/domain/usecases/</location>
+      <location>test/core/services/</location>
+      <location>test/features/gamification/presentation/widgets/</location>
+      <location>integration_test/features/gamification/share_card_flow_test.dart</location>
+    </locations>
+    <ideas>
+      <test-idea ac-ref="AC2">
+        <description>Unit test: GenerateMilestoneCardUseCase - creates image file</description>
+        <approach>Given MilestoneCardData with badge info. When generate card. Then verify File object returned. Verify file exists in temp directory. Verify file size &lt;500KB.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC2">
+        <description>Unit test: MilestoneCardData.fromBadge factory</description>
+        <approach>Given BadgeEntity (Silver Meditation). When create card data. Then achievementTitle = "Silver Meditation Streak", iconEmoji = "🥈", moduleColor = purple.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC5">
+        <description>Unit test: Generate card without user name (GDPR)</description>
+        <approach>Given includeUserName=false. When generate card. Then verify card has no user name text. Only achievement and branding.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3">
+        <description>Unit test: ShareMilestoneCardUseCase calls share_plus</description>
+        <approach>Mock ShareService. Call ShareMilestoneCardUseCase with image file. Verify shareImage() called with correct file and caption.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4">
+        <description>Unit test: SaveCardToGalleryUseCase saves image</description>
+        <approach>Mock image_gallery_saver. Call SaveCardToGalleryUseCase. Verify image saved to gallery. Verify success result returned.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4">
+        <description>Unit test: SaveCardToGalleryUseCase handles permission denied</description>
+        <approach>Mock permission_handler to deny permission. Call SaveCardToGalleryUseCase. Verify Failure result returned with permission error.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC5">
+        <description>Unit test: CleanupTempImagesUseCase deletes old files</description>
+        <approach>Create temp images with timestamps: 2 days ago, 1 day ago, 1 hour ago. Call cleanup. Verify 2-day-old and 1-day-old deleted. Verify 1-hour-old kept.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC2">
+        <description>Widget test: MilestoneCardTemplate renders all elements</description>
+        <approach>Render MilestoneCardTemplate with badge data. Verify badge emoji displayed (🥈). Verify achievement title text. Verify subtitle text. Verify LifeOS logo and branding text. Verify user name shown (if includeUserName=true).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC5">
+        <description>Widget test: MilestoneCardTemplate hides user name when disabled</description>
+        <approach>Render MilestoneCardTemplate with includeUserName=false. Verify user name text not displayed. Verify achievement and branding still shown.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1">
+        <description>Widget test: "Share Achievement" button in BadgeUnlockModal</description>
+        <approach>Render BadgeUnlockModal. Verify "Share Achievement" button displayed. Tap button. Verify card generation triggered.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1,AC2,AC3">
+        <description>Integration test: Share badge to WhatsApp</description>
+        <approach>Award Silver Meditation Badge. Tap "Share Achievement" button. Verify card generated. Select WhatsApp in share sheet. Verify WhatsApp opens with image.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4">
+        <description>Integration test: Save card to gallery</description>
+        <approach>Award badge. Tap "Share Achievement". Tap "Save to Gallery". Grant permission. Verify image saved to gallery. Verify success toast shown.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC5">
+        <description>Integration test: Share without user name</description>
+        <approach>Award badge. Tap "Share Achievement". Uncheck "Include my name". Generate card. Verify card has no user name. Share to social media.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC5">
+        <description>Integration test: Temp images cleaned up after 24h</description>
+        <approach>Generate multiple cards over 2 days. Restart app (triggers cleanup). Verify old temp images deleted. Verify temp directory size &lt;10MB.</approach>
+      </test-idea>
+    </ideas>
+  </tests>
+</story-context>

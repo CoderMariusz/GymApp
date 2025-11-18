@@ -1,7 +1,7 @@
 # Story 2.10: Weekly Summary Report (Life Coach)
 
 **Epic:** Epic 2 - Life Coach MVP
-**Priority:** P1 | **Status:** drafted | **Effort:** 3 SP
+**Priority:** P1 | **Status:** ready-for-dev | **Effort:** 3 SP
 
 ---
 
@@ -76,6 +76,11 @@ CREATE TABLE weekly_reports (
 **Prerequisites:** All Sprint 2 stories (uses data from check-ins, goals, plans)
 
 **Coverage Target:** 75%+
+
+---
+
+## Dev Agent Record
+**Context File:** 2-10-weekly-summary-report-life-coach.context.xml
 
 ---
 

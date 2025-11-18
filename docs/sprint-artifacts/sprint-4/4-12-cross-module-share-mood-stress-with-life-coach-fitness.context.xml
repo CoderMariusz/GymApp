@@ -1,0 +1,554 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/4.12" v="1.0">
+  <metadata>
+    <epicId>4</epicId>
+    <storyId>4.12</storyId>
+    <title>Cross-Module (Share Mood/Stress with Life Coach & Fitness)</title>
+    <status>ready-for-dev</status>
+    <generatedAt>2025-11-17</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/sprint-4/4-12-cross-module-share-mood-stress-with-life-coach-fitness.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>Mind & Emotion module</asA>
+    <iWant>share mood/stress data with other modules</iWant>
+    <soThat>Life Coach and Fitness can personalize recommendations</soThat>
+    <tasks>
+      <task id="1" ac-ref="AC1,AC2">
+        <description>Implement user_daily_metrics shared data table</description>
+        <subtasks>
+          <subtask>Create user_daily_metrics table in Supabase (PostgreSQL)</subtask>
+          <subtask>Schema: id, user_id, date, mood (1-5), stress (1-10), energy (1-5), sleep_quality (1-5), metadata (JSONB)</subtask>
+          <subtask>Add UNIQUE constraint on (user_id, date) for upsert pattern</subtask>
+          <subtask>Create RLS policies: USING (auth.uid() = user_id)</subtask>
+          <subtask>Add indexes: (user_id, date DESC), (user_id, date, mood), (user_id, date, stress)</subtask>
+          <subtask>Create corresponding Drift table for offline-first caching</subtask>
+        </subtasks>
+      </task>
+      <task id="2" ac-ref="AC1,AC2">
+        <description>Implement Mind & Emotion write logic</description>
+        <subtasks>
+          <subtask>Create WriteDailyMetricsUseCase in Mind & Emotion module</subtask>
+          <subtask>Write mood and stress to user_daily_metrics on each mood/stress log</subtask>
+          <subtask>Use upsert pattern (INSERT ... ON CONFLICT UPDATE)</subtask>
+          <subtask>Write to Drift first (&lt;100ms), queue for Supabase sync</subtask>
+          <subtask>Include timestamp for sync conflict resolution (last-write-wins)</subtask>
+          <subtask>Handle offline mode: queue writes for sync when online</subtask>
+        </subtasks>
+      </task>
+      <task id="3" ac-ref="AC2">
+        <description>Implement real-time sync mechanism</description>
+        <subtasks>
+          <subtask>Configure Supabase Realtime for user_daily_metrics table</subtask>
+          <subtask>Implement sync latency target: &lt;5 seconds from write to availability</subtask>
+          <subtask>Use Write-Through Cache pattern: Drift → Supabase → broadcast</subtask>
+          <subtask>Subscribe to Realtime updates in Life Coach and Fitness modules</subtask>
+          <subtask>Invalidate local cache on Realtime update</subtask>
+          <subtask>Test sync latency with integration tests</subtask>
+        </subtasks>
+      </task>
+      <task id="4" ac-ref="AC3,AC4">
+        <description>Implement Life Coach read integration</description>
+        <subtasks>
+          <subtask>Create ReadDailyMetricsUseCase in Life Coach module</subtask>
+          <subtask>Query user_daily_metrics for today's mood/stress</subtask>
+          <subtask>Include mood/stress in daily plan generation AI prompt</subtask>
+          <subtask>Adjust plan recommendations based on mood/stress levels</subtask>
+          <subtask>Low mood (&lt;3) → include mood-boosting activities</subtask>
+          <subtask>High stress (&gt;7) → reduce task load, suggest breaks</subtask>
+        </subtasks>
+      </task>
+      <task id="5" ac-ref="AC4">
+        <description>Implement Fitness read integration</description>
+        <subtasks>
+          <subtask>Create ReadDailyMetricsUseCase in Fitness module</subtask>
+          <subtask>Query user_daily_metrics for today's mood/stress/energy</subtask>
+          <subtask>Adjust workout intensity recommendations based on data</subtask>
+          <subtask>Low energy (&lt;3) → suggest light workout or active recovery</subtask>
+          <subtask>High stress (&gt;7) → recommend stress-relief exercises (yoga, stretching)</subtask>
+          <subtask>Low mood (&lt;3) → suggest mood-boosting cardio (running, cycling)</subtask>
+        </subtasks>
+      </task>
+      <task id="6" ac-ref="AC5">
+        <description>Implement privacy toggle for data sharing</description>
+        <subtasks>
+          <subtask>Create user_privacy_settings table: user_id, share_mood_with_life_coach (BOOLEAN), share_mood_with_fitness (BOOLEAN)</subtask>
+          <subtask>Add Privacy Settings screen in Mind & Emotion module</subtask>
+          <subtask>Toggle switches: "Share mood/stress with Life Coach", "Share mood/stress with Fitness"</subtask>
+          <subtask>Default: both enabled (opt-out model)</subtask>
+          <subtask>Implement RLS policies that check privacy settings</subtask>
+          <subtask>Life Coach/Fitness read queries respect privacy flags</subtask>
+        </subtasks>
+      </task>
+      <task id="7" ac-ref="AC6">
+        <description>Implement RLS policies for cross-module access</description>
+        <subtasks>
+          <subtask>Create RLS policy: "Users can read own metrics" - USING (auth.uid() = user_id)</subtask>
+          <subtask>Create RLS policy: "Users can write own metrics" - WITH CHECK (auth.uid() = user_id)</subtask>
+          <subtask>Verify RLS policies with SQL tests (try to access other user's data)</subtask>
+          <subtask>Document security model in architecture docs</subtask>
+          <subtask>Audit RLS policies with Supabase policy analyzer</subtask>
+        </subtasks>
+      </task>
+      <task id="8" ac-ref="AC7">
+        <description>Implement offline caching (7 days)</description>
+        <subtasks>
+          <subtask>Cache user_daily_metrics in Drift for last 7 days</subtask>
+          <subtask>Implement cache eviction policy: delete data older than 7 days</subtask>
+          <subtask>On offline mode: read from Drift cache</subtask>
+          <subtask>Queue writes for sync when back online</subtask>
+          <subtask>Show "Using cached data" indicator if offline &gt;1 hour</subtask>
+          <subtask>Implement background sync job when connectivity restored</subtask>
+        </subtasks>
+      </task>
+      <task id="9" ac-ref="ALL">
+        <description>Write comprehensive tests</description>
+        <subtasks>
+          <subtask>Unit tests: WriteDailyMetricsUseCase, ReadDailyMetricsUseCase, privacy checks</subtask>
+          <subtask>Integration test: Mind & Emotion writes → Life Coach reads (sync latency &lt;5s)</subtask>
+          <subtask>Integration test: Mind & Emotion writes → Fitness reads (sync latency &lt;5s)</subtask>
+          <subtask>Integration test: Privacy toggle blocks read access</subtask>
+          <subtask>Integration test: Offline write → online sync → other modules read</subtask>
+          <subtask>Integration test: RLS policies prevent cross-user data access</subtask>
+          <subtask>Achieve 80%+ code coverage</subtask>
+        </subtasks>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="AC1">
+      <text>Mood/stress written to user_daily_metrics table on each log</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC2">
+      <text>Real-time sync to Life Coach and Fitness (&lt;5 seconds latency)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC3">
+      <text>Life Coach reads mood/stress to personalize daily plan</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC4">
+      <text>Fitness reads mood/stress/energy to adjust workout intensity</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC5">
+      <text>Privacy toggle allows users to disable sharing with specific modules</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC6">
+      <text>RLS policies enforce user data isolation (auth.uid() = user_id)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC7">
+      <text>Offline caching for 7 days (Drift local database)</text>
+      <priority>P0</priority>
+    </criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR56: Cross-module data sharing</section>
+        <snippet>Mind & Emotion module shares mood/stress data via user_daily_metrics table. Life Coach and Fitness modules read this data for personalized recommendations. Real-time sync (&lt;5s). Privacy controls allow opt-out. RLS policies enforce data isolation.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/epics.md</path>
+        <title>Epic 4: Mind & Emotion MVP - Story 4.12</title>
+        <section>Story 4.12: Cross-Module Data Sharing</section>
+        <snippet>Implement shared data layer using user_daily_metrics table. Mind & Emotion writes mood/stress. Life Coach reads for daily plan personalization. Fitness reads for workout intensity adjustment. Include privacy toggles and RLS policies.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Cross-Module Data Sharing Pattern (D5)</section>
+        <snippet>Shared data tables pattern for cross-module communication. user_daily_metrics table acts as integration point. Write modules own data write. Read modules consume via repository pattern. Privacy layer controls access. Supabase Realtime for sync (&lt;5s latency target).</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Row Level Security (RLS) Policies</section>
+        <snippet>All shared tables must have RLS policies. Standard policy: USING (auth.uid() = user_id) for user-owned data. Additional policies for privacy settings. Test RLS with SQL queries attempting cross-user access (should fail).</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/ux-design-specification.md</path>
+        <title>UX Design Specification</title>
+        <section>Privacy Settings UX</section>
+        <snippet>Privacy settings in Mind & Emotion module settings. Two toggle switches: "Share with Life Coach", "Share with Fitness". Default: both enabled. Explanation text: "Sharing helps personalize recommendations across modules." Link to privacy policy.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <reference>
+        <path>lib/features/mind_emotion/</path>
+        <description>Mind & Emotion module (stories 4.1-4.11)</description>
+        <notes>Add WriteDailyMetricsUseCase to write mood/stress to user_daily_metrics. Integrate with existing mood/stress logging flows.</notes>
+      </reference>
+      <reference>
+        <path>lib/features/life_coach/</path>
+        <description>Life Coach module (Epic 2)</description>
+        <notes>Add ReadDailyMetricsUseCase. Integrate mood/stress into daily plan generation AI prompt (Story 2.2).</notes>
+      </reference>
+      <reference>
+        <path>lib/features/fitness/</path>
+        <description>Fitness module (Epic 3)</description>
+        <notes>Add ReadDailyMetricsUseCase. Adjust workout recommendations based on mood/stress/energy levels.</notes>
+      </reference>
+    </code>
+    <dependencies>
+      <flutter>
+        <sdk>3.38+</sdk>
+        <dart>3.10+</dart>
+      </flutter>
+      <packages>
+        <package name="flutter_riverpod" version="^3.0.0" usage="State management for shared data and privacy settings" />
+        <package name="drift" version="^2.14.0" usage="Local cache for user_daily_metrics (7 days)" />
+        <package name="supabase_flutter" version="^2.0.0" usage="Shared table sync and Realtime subscriptions" />
+        <package name="realtime_client" version="^1.4.0" usage="Supabase Realtime for &lt;5s sync" />
+      </packages>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint id="ARCH-1" type="architectural">
+      <description>Shared data table pattern</description>
+      <details>user_daily_metrics is the single source of truth for daily metrics. Mind & Emotion owns writes. Life Coach and Fitness are read-only consumers. Use repository pattern to abstract access. Each module has own repository implementation.</details>
+    </constraint>
+    <constraint id="ARCH-2" type="architectural">
+      <description>Offline-first with Write-Through Cache</description>
+      <details>Write to Drift first (&lt;100ms user feedback). Queue for Supabase sync. Sync when online. Read from Drift cache if offline. Cache last 7 days for historical queries. Implement sync queue with retry logic.</details>
+    </constraint>
+    <constraint id="ARCH-3" type="architectural">
+      <description>Real-time sync architecture</description>
+      <details>Use Supabase Realtime websocket. Subscribe to user_daily_metrics changes (filter: user_id = current user). On INSERT/UPDATE, invalidate local cache and refetch. Target: &lt;5s from write to read availability. Monitor sync latency with telemetry.</details>
+    </constraint>
+    <constraint id="DATA-1" type="data">
+      <description>user_daily_metrics table schema</description>
+      <details>user_daily_metrics: id (UUID PK), user_id (UUID FK auth.users), date (DATE NOT NULL), mood (INT 1-5), stress (INT 1-10), energy (INT 1-5), sleep_quality (INT 1-5), metadata (JSONB), created_at, updated_at. UNIQUE(user_id, date) for upsert.</details>
+    </constraint>
+    <constraint id="DATA-2" type="data">
+      <description>Privacy settings schema</description>
+      <details>user_privacy_settings: user_id (UUID PK FK auth.users), share_mood_with_life_coach (BOOLEAN DEFAULT true), share_mood_with_fitness (BOOLEAN DEFAULT true), updated_at. Single row per user.</details>
+    </constraint>
+    <constraint id="SEC-1" type="security">
+      <description>Row Level Security (RLS) policies</description>
+      <details>
+        Policy 1: "Users can read own metrics" - FOR SELECT USING (auth.uid() = user_id)
+        Policy 2: "Users can write own metrics" - FOR INSERT/UPDATE WITH CHECK (auth.uid() = user_id)
+        Policy 3: "Users cannot read others' metrics" - implicit deny (no policy)
+      </details>
+    </constraint>
+    <constraint id="SEC-2" type="security">
+      <description>Privacy settings enforcement</description>
+      <details>Before Life Coach reads mood/stress, check user_privacy_settings.share_mood_with_life_coach. If false, return null (treat as data not available). Same for Fitness. Do not expose that user disabled sharing (privacy leak).</details>
+    </constraint>
+    <constraint id="PERF-1" type="performance">
+      <description>Sync latency target: &lt;5 seconds</description>
+      <details>Write to Supabase should complete in &lt;2s (P95). Realtime broadcast latency: &lt;1s. Read modules cache invalidation + refetch: &lt;2s. Total: &lt;5s from write to read availability. Monitor with telemetry alerts.</details>
+    </constraint>
+    <constraint id="PERF-2" type="performance">
+      <description>Write performance: &lt;100ms user feedback</description>
+      <details>Save to Drift (local SQLite) in &lt;100ms. Show success feedback immediately. Supabase sync happens asynchronously in background. User never waits for network.</details>
+    </constraint>
+    <constraint id="UX-1" type="ux">
+      <description>Privacy controls visibility and defaults</description>
+      <details>Privacy settings in Mind & Emotion module settings. Default: sharing enabled (opt-out model). Clear explanation: "Sharing helps Life Coach and Fitness personalize recommendations based on your mood and stress." Toggle switches for granular control.</details>
+    </constraint>
+    <constraint id="UX-2" type="ux">
+      <description>Offline indicator</description>
+      <details>Show "Using cached data (last synced: 2 hours ago)" if offline &gt;1 hour. In Life Coach/Fitness, show "Mood data may be outdated" if cache is stale (&gt;24 hours).</details>
+    </constraint>
+    <constraint id="TEST-1" type="testing">
+      <description>80%+ code coverage required</description>
+      <details>Test cross-module integration flows. Test RLS policies (try to read other user's data - should fail). Test privacy toggle blocks access. Test offline write → online sync. Test Realtime sync latency (&lt;5s).</details>
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>DailyMetricsEntity</name>
+      <kind>domain-entity</kind>
+      <signature>
+        class DailyMetricsEntity {
+          final String id;
+          final String userId;
+          final DateTime date;
+          final int? mood; // 1-5, nullable if not logged
+          final int? stress; // 1-10, nullable if not logged
+          final int? energy; // 1-5, nullable if not logged
+          final int? sleepQuality; // 1-5, nullable if not logged
+          final Map&lt;String, dynamic&gt;? metadata; // extensible for future metrics
+          final DateTime createdAt;
+          final DateTime updatedAt;
+        }
+      </signature>
+      <path>lib/core/domain/entities/daily_metrics_entity.dart</path>
+      <notes>Shared entity across modules. Located in lib/core/ not in specific feature. Use @freezed annotation. Nullable metrics allow partial data (mood logged but stress not yet).</notes>
+    </interface>
+    <interface>
+      <name>WriteDailyMetricsUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class WriteDailyMetricsUseCase {
+          Future&lt;Result&lt;void&gt;&gt; call({
+            required String userId,
+            required DateTime date,
+            int? mood,
+            int? stress,
+            int? energy,
+            int? sleepQuality,
+            Map&lt;String, dynamic&gt;? metadata,
+          });
+        }
+      </signature>
+      <path>lib/features/mind_emotion/domain/usecases/write_daily_metrics_usecase.dart</path>
+      <notes>Owned by Mind & Emotion module. Upsert to user_daily_metrics (INSERT ... ON CONFLICT UPDATE). Write to Drift first, queue for Supabase sync. Return success after Drift write (&lt;100ms).</notes>
+    </interface>
+    <interface>
+      <name>ReadDailyMetricsUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class ReadDailyMetricsUseCase {
+          Future&lt;Result&lt;DailyMetricsEntity?&gt;&gt; call({
+            required String userId,
+            required DateTime date,
+          });
+        }
+      </signature>
+      <path>lib/core/domain/usecases/read_daily_metrics_usecase.dart</path>
+      <notes>Shared use case. Implemented in lib/core/. Check privacy settings before returning data. Return null if user disabled sharing. Read from Drift cache first (offline-first).</notes>
+    </interface>
+    <interface>
+      <name>DailyMetricsRepository</name>
+      <kind>repository</kind>
+      <signature>
+        abstract class DailyMetricsRepository {
+          Future&lt;Result&lt;void&gt;&gt; upsertMetrics(DailyMetricsEntity metrics);
+          Future&lt;Result&lt;DailyMetricsEntity?&gt;&gt; getMetricsForDate(String userId, DateTime date);
+          Future&lt;Result&lt;List&lt;DailyMetricsEntity&gt;&gt;&gt; getMetricsForDateRange(String userId, DateTime start, DateTime end);
+          Stream&lt;DailyMetricsEntity?&gt; watchMetricsForDate(String userId, DateTime date); // Realtime updates
+        }
+      </signature>
+      <path>lib/core/domain/repositories/daily_metrics_repository.dart</path>
+      <notes>Shared repository interface. Implemented by DailyMetricsRepositoryImpl in lib/core/data/. Uses DriftDataSource and SupabaseDataSource. watchMetricsForDate returns Stream for Realtime updates.</notes>
+    </interface>
+    <interface>
+      <name>PrivacySettingsEntity</name>
+      <kind>domain-entity</kind>
+      <signature>
+        class PrivacySettingsEntity {
+          final String userId;
+          final bool shareMoodWithLifeCoach;
+          final bool shareMoodWithFitness;
+          final DateTime updatedAt;
+        }
+      </signature>
+      <path>lib/core/domain/entities/privacy_settings_entity.dart</path>
+      <notes>Shared entity. Use @freezed. Defaults: shareMoodWithLifeCoach=true, shareMoodWithFitness=true (opt-out model).</notes>
+    </interface>
+    <interface>
+      <name>GetPrivacySettingsUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class GetPrivacySettingsUseCase {
+          Future&lt;Result&lt;PrivacySettingsEntity&gt;&gt; call(String userId);
+        }
+      </signature>
+      <path>lib/core/domain/usecases/get_privacy_settings_usecase.dart</path>
+      <notes>Read privacy settings for current user. Used by ReadDailyMetricsUseCase to enforce privacy. Cache settings in memory for 1 hour.</notes>
+    </interface>
+    <interface>
+      <name>UpdatePrivacySettingsUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class UpdatePrivacySettingsUseCase {
+          Future&lt;Result&lt;void&gt;&gt; call({
+            required String userId,
+            bool? shareMoodWithLifeCoach,
+            bool? shareMoodWithFitness,
+          });
+        }
+      </signature>
+      <path>lib/core/domain/usecases/update_privacy_settings_usecase.dart</path>
+      <notes>Update privacy settings. Invalidate cache on update. Save to Supabase user_privacy_settings table.</notes>
+    </interface>
+    <interface>
+      <name>user_daily_metrics table (Supabase PostgreSQL)</name>
+      <kind>database-table</kind>
+      <signature>
+        CREATE TABLE user_daily_metrics (
+          id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+          user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+          date DATE NOT NULL,
+          mood INT CHECK (mood BETWEEN 1 AND 5),
+          stress INT CHECK (stress BETWEEN 1 AND 10),
+          energy INT CHECK (energy BETWEEN 1 AND 5),
+          sleep_quality INT CHECK (sleep_quality BETWEEN 1 AND 5),
+          metadata JSONB,
+          created_at TIMESTAMPTZ DEFAULT NOW(),
+          updated_at TIMESTAMPTZ DEFAULT NOW(),
+          UNIQUE(user_id, date)
+        );
+        CREATE INDEX idx_user_daily_metrics_user_date ON user_daily_metrics(user_id, date DESC);
+        CREATE INDEX idx_user_daily_metrics_user_date_mood ON user_daily_metrics(user_id, date, mood);
+        CREATE INDEX idx_user_daily_metrics_user_date_stress ON user_daily_metrics(user_id, date, stress);
+
+        -- Enable Realtime
+        ALTER PUBLICATION supabase_realtime ADD TABLE user_daily_metrics;
+      </signature>
+      <path>supabase/migrations/</path>
+      <notes>Include RLS policies. Add trigger for updated_at. Enable Realtime publication for &lt;5s sync.</notes>
+    </interface>
+    <interface>
+      <name>user_privacy_settings table (Supabase PostgreSQL)</name>
+      <kind>database-table</kind>
+      <signature>
+        CREATE TABLE user_privacy_settings (
+          user_id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+          share_mood_with_life_coach BOOLEAN NOT NULL DEFAULT true,
+          share_mood_with_fitness BOOLEAN NOT NULL DEFAULT true,
+          updated_at TIMESTAMPTZ DEFAULT NOW()
+        );
+
+        -- RLS policies
+        CREATE POLICY "Users can read own privacy settings" ON user_privacy_settings FOR SELECT USING (auth.uid() = user_id);
+        CREATE POLICY "Users can update own privacy settings" ON user_privacy_settings FOR UPDATE USING (auth.uid() = user_id);
+        CREATE POLICY "Users can insert own privacy settings" ON user_privacy_settings FOR INSERT WITH CHECK (auth.uid() = user_id);
+      </signature>
+      <path>supabase/migrations/</path>
+      <notes>Single row per user. Defaults: both true (opt-out). RLS policies for read/write. Trigger for updated_at timestamp.</notes>
+    </interface>
+    <interface>
+      <name>RLS Policy: Read own metrics</name>
+      <kind>security-policy</kind>
+      <signature>
+        CREATE POLICY "Users can read own daily metrics"
+        ON user_daily_metrics
+        FOR SELECT
+        USING (auth.uid() = user_id);
+      </signature>
+      <path>supabase/migrations/</path>
+      <notes>Standard RLS policy. Users can only SELECT their own data. Other users' data is hidden.</notes>
+    </interface>
+    <interface>
+      <name>RLS Policy: Write own metrics</name>
+      <kind>security-policy</kind>
+      <signature>
+        CREATE POLICY "Users can write own daily metrics"
+        ON user_daily_metrics
+        FOR INSERT, UPDATE
+        WITH CHECK (auth.uid() = user_id);
+      </signature>
+      <path>supabase/migrations/</path>
+      <notes>Standard RLS policy. Users can only INSERT/UPDATE their own data. Prevents writing to other users' rows.</notes>
+    </interface>
+    <interface>
+      <name>Realtime Subscription (Life Coach)</name>
+      <kind>realtime-subscription</kind>
+      <signature>
+        supabase
+          .from('user_daily_metrics')
+          .on('*', (payload) => {
+            if (payload.new.user_id === currentUserId) {
+              // Invalidate cache and refetch
+              dailyMetricsCache.invalidate(payload.new.date);
+            }
+          })
+          .subscribe();
+      </signature>
+      <path>lib/features/life_coach/data/datasources/daily_metrics_realtime_datasource.dart</path>
+      <notes>Subscribe to user_daily_metrics changes. Filter by user_id. On INSERT/UPDATE, invalidate cache and trigger refetch. Ensure &lt;5s latency.</notes>
+    </interface>
+    <interface>
+      <name>Realtime Subscription (Fitness)</name>
+      <kind>realtime-subscription</kind>
+      <signature>
+        supabase
+          .from('user_daily_metrics')
+          .on('*', (payload) => {
+            if (payload.new.user_id === currentUserId) {
+              // Invalidate cache and refetch
+              dailyMetricsCache.invalidate(payload.new.date);
+            }
+          })
+          .subscribe();
+      </signature>
+      <path>lib/features/fitness/data/datasources/daily_metrics_realtime_datasource.dart</path>
+      <notes>Same pattern as Life Coach. Subscribe to user_daily_metrics changes. Invalidate cache on update. Trigger refetch for workout recommendations.</notes>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Follow 70/20/10 testing pyramid: 70% unit tests (use cases, repositories, privacy checks), 20% widget tests (privacy settings UI), 10% integration tests (cross-module sync flows). Use flutter_test for unit/widget tests, integration_test for E2E. Mock dependencies with mockito. Target 80%+ code coverage. Critical: test RLS policies with SQL queries, test sync latency (&lt;5s), test privacy enforcement.
+    </standards>
+    <locations>
+      <location>test/features/mind_emotion/domain/usecases/write_daily_metrics_test.dart</location>
+      <location>test/core/domain/usecases/read_daily_metrics_test.dart</location>
+      <location>test/core/data/repositories/daily_metrics_repository_test.dart</location>
+      <location>test/features/mind_emotion/presentation/privacy_settings_test.dart</location>
+      <location>integration_test/cross_module/mood_stress_sync_test.dart</location>
+      <location>integration_test/security/rls_policies_test.dart</location>
+    </locations>
+    <ideas>
+      <test-idea ac-ref="AC1">
+        <description>Unit test: WriteDailyMetricsUseCase saves to Drift and queues Supabase sync</description>
+        <approach>Mock DriftDataSource and SupabaseDataSource. Call WriteDailyMetricsUseCase with mood=4, stress=6. Verify Drift save called first. Verify Supabase sync queued. Verify Success result returned immediately (&lt;100ms).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3,AC4">
+        <description>Unit test: ReadDailyMetricsUseCase returns data</description>
+        <approach>Mock repository with today's metrics (mood=4, stress=7). Call ReadDailyMetricsUseCase for today. Verify DailyMetricsEntity returned with correct values.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC5">
+        <description>Unit test: Privacy settings block access to Life Coach</description>
+        <approach>Mock privacy settings: shareMoodWithLifeCoach=false. Call ReadDailyMetricsUseCase from Life Coach context. Verify null returned (data not accessible). Verify no error thrown (privacy leak).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC5">
+        <description>Unit test: Privacy settings block access to Fitness</description>
+        <approach>Mock privacy settings: shareMoodWithFitness=false. Call ReadDailyMetricsUseCase from Fitness context. Verify null returned. Verify Fitness treats as "data not available" gracefully.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6">
+        <description>Integration test: RLS policies prevent cross-user access</description>
+        <approach>Create User A and User B in test database. User A writes mood=5 to user_daily_metrics. User B attempts to query User A's data. Verify query returns empty (RLS blocks). Verify no error thrown (security - don't reveal other users exist).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC2">
+        <description>Integration test: Real-time sync latency &lt;5s</description>
+        <approach>Mind & Emotion writes mood=4, stress=8. Start timer. Life Coach subscribes to Realtime updates. Wait for update event. Stop timer. Verify latency &lt;5s. Verify Life Coach cache invalidated and refetch triggered.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3">
+        <description>Integration test: Life Coach uses mood/stress in daily plan</description>
+        <approach>Write mood=2 (low), stress=9 (high) to user_daily_metrics. Trigger daily plan generation in Life Coach. Verify AI prompt includes mood=2, stress=9. Verify generated plan includes stress-relief activities and reduces task load.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4">
+        <description>Integration test: Fitness adjusts workout based on mood/energy</description>
+        <approach>Write mood=2, energy=2 to user_daily_metrics. Request workout recommendation in Fitness module. Verify recommendation is light workout or active recovery (not high intensity). Verify reason mentions low energy.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC7">
+        <description>Integration test: Offline write → online sync → read</description>
+        <approach>Disconnect network. Mind & Emotion writes mood=5 to user_daily_metrics. Verify write succeeds (saved to Drift). Verify sync queued. Reconnect network. Wait for sync. Verify data appears in Supabase. Life Coach reads mood=5. Verify read succeeds.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC7">
+        <description>Unit test: Cache eviction after 7 days</description>
+        <approach>Mock Drift cache with data from 8 days ago. Trigger cache eviction job. Verify data deleted. Verify data from 6 days ago retained.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1">
+        <description>Widget test: Privacy settings toggles work</description>
+        <approach>Render Privacy Settings screen. Find "Share with Life Coach" toggle. Tap to disable. Verify UpdatePrivacySettingsUseCase called with shareMoodWithLifeCoach=false. Tap again. Verify called with shareMoodWithLifeCoach=true.</approach>
+      </test-idea>
+    </ideas>
+  </tests>
+
+  <devAgentRecord>
+    <recordedAt>2025-11-17</recordedAt>
+    <status>ready-for-dev</status>
+    <agent>BMAD Dev Agent</agent>
+    <notes>Story context prepared and validated for development assignment</notes>
+  </devAgentRecord>
+
+  <created>
+    <author>BMAD Story Context Workflow</author>
+    <timestamp>2025-11-17</timestamp>
+  </created>
+</story-context>

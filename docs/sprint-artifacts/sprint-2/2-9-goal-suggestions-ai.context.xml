@@ -1,0 +1,592 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>2</epicId>
+    <storyId>2.9</storyId>
+    <title>Goal Suggestions (AI)</title>
+    <status>ready-for-dev</status>
+    <generatedAt>2025-11-17</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/sprint-2/2-9-goal-suggestions-ai.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>user unsure what goals to set</asA>
+    <iWant>AI to suggest personalized goals</iWant>
+    <soThat>I have guidance on meaningful objectives</soThat>
+    <tasks>
+      <task id="1" ac-ref="AC1,AC2,AC3">
+        <description>Implement AI goal suggestion generation service</description>
+        <subtasks>
+          <subtask>Create GenerateGoalSuggestionsUseCase with context analysis logic</subtask>
+          <subtask>Implement AI prompt engineering for goal suggestions</subtask>
+          <subtask>Build user context analyzer (mood patterns, activity, check-in history)</subtask>
+          <subtask>Create Supabase Edge Function for AI processing</subtask>
+          <subtask>Implement suggestion parser to extract title, category, and rationale</subtask>
+          <subtask>Add tier-based rate limiting (Free: 3/week, Premium: unlimited)</subtask>
+          <subtask>Validate AI output format and sanitize suggestions</subtask>
+        </subtasks>
+      </task>
+      <task id="2" ac-ref="AC2,AC9">
+        <description>Implement suggestion persistence and management</description>
+        <subtasks>
+          <subtask>Create goal_suggestions table in Supabase with RLS policies</subtask>
+          <subtask>Create goal_suggestions table in Drift for offline caching</subtask>
+          <subtask>Implement SaveSuggestionsUseCase for persistence</subtask>
+          <subtask>Add suggestion feedback tracking (accepted_suggestions, dismissed_suggestions tables)</subtask>
+          <subtask>Implement weekly refresh logic (expires_at field)</subtask>
+          <subtask>Create GetActiveSuggestionsUseCase to fetch valid suggestions</subtask>
+        </subtasks>
+      </task>
+      <task id="3" ac-ref="AC3,AC4,AC5">
+        <description>Implement Goals screen "Suggested for You" section UI</description>
+        <subtasks>
+          <subtask>Create SuggestionsSection widget for Goals screen</subtask>
+          <subtask>Create SuggestionCard widget (title, category tag, rationale, accept/dismiss buttons)</subtask>
+          <subtask>Add shimmer loading state while fetching suggestions</subtask>
+          <subtask>Implement haptic feedback on accept/dismiss actions</subtask>
+          <subtask>Show empty state when no suggestions available</subtask>
+          <subtask>Add "Get Suggestions" button when user has 0 active suggestions</subtask>
+        </subtasks>
+      </task>
+      <task id="4" ac-ref="AC4">
+        <description>Implement accept suggestion flow</description>
+        <subtasks>
+          <subtask>Create AcceptSuggestionUseCase</subtask>
+          <subtask>Pre-fill goal creation form with suggestion data (title, category)</subtask>
+          <subtask>Navigate to CreateGoalScreen with pre-filled data</subtask>
+          <subtask>Track acceptance in accepted_suggestions table for ML learning</subtask>
+          <subtask>Remove suggestion from active list after acceptance</subtask>
+        </subtasks>
+      </task>
+      <task id="5" ac-ref="AC5,AC8">
+        <description>Implement dismiss suggestion and learning logic</description>
+        <subtasks>
+          <subtask>Create DismissSuggestionUseCase</subtask>
+          <subtask>Track dismissal in dismissed_suggestions table with reason (optional)</subtask>
+          <subtask>Remove dismissed suggestion from active list</subtask>
+          <subtask>Implement ML feedback loop: analyze accepted vs dismissed patterns</subtask>
+          <subtask>Update AI context analyzer to avoid similar dismissed suggestions</subtask>
+        </subtasks>
+      </task>
+      <task id="6" ac-ref="AC6,AC7">
+        <description>Implement suggestion refresh and tier management</description>
+        <subtasks>
+          <subtask>Create CheckSuggestionLimitUseCase for tier validation</subtask>
+          <subtask>Implement weekly refresh logic (check expires_at, auto-refresh if expired)</subtask>
+          <subtask>Add manual "Refresh Suggestions" action (respects tier limits)</subtask>
+          <subtask>Create usage tracking table (suggestion_requests) for Free tier limits</subtask>
+          <subtask>Show paywall prompt when Free tier limit reached</subtask>
+          <subtask>Implement on-demand refresh for Premium users</subtask>
+        </subtasks>
+      </task>
+      <task id="7" ac-ref="AC8,AC9">
+        <description>Implement privacy and data isolation</description>
+        <subtasks>
+          <subtask>Ensure AI context only includes user's own data (no cross-user leakage)</subtask>
+          <subtask>Add RLS policies: USING (auth.uid() = user_id) for all suggestion tables</subtask>
+          <subtask>Implement data anonymization for AI processing</subtask>
+          <subtask>Add user consent check for AI suggestion feature</subtask>
+          <subtask>Create privacy audit log for suggestion generation events</subtask>
+        </subtasks>
+      </task>
+      <task id="8" ac-ref="ALL">
+        <description>Write comprehensive tests</description>
+        <subtasks>
+          <subtask>Unit tests: GenerateGoalSuggestionsUseCase, context analysis, tier limits</subtask>
+          <subtask>Unit tests: AcceptSuggestionUseCase, DismissSuggestionUseCase</subtask>
+          <subtask>Widget tests: SuggestionCard, accept/dismiss actions, loading states</subtask>
+          <subtask>Integration test: end-to-end suggestion generation and acceptance flow</subtask>
+          <subtask>Integration test: tier limits enforcement (Free vs Premium)</subtask>
+          <subtask>Integration test: learning improvement (dismiss tracking affects future suggestions)</subtask>
+          <subtask>Achieve 75%+ code coverage</subtask>
+        </subtasks>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="AC1">
+      <text>"Suggested for You" section appears on Goals screen with AI-generated suggestions</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC2">
+      <text>AI analyzes user context: mood patterns, activity level, check-in history, and existing goals</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC3">
+      <text>AI suggests 3-5 personalized goals, each with title, category, and rationale (AI explanation)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC4">
+      <text>User can accept suggestion with one tap, which pre-fills goal creation form</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC5">
+      <text>User can dismiss suggestion (removes from list, tracks dismissal for learning)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC6">
+      <text>Suggestions refresh weekly automatically or on-demand (manual refresh button)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC7">
+      <text>Tier-based limits: Free tier (3 suggestion requests/week), Premium (unlimited)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC8">
+      <text>AI learns from user feedback: accepted and dismissed suggestions improve future recommendations</text>
+      <priority>P1</priority>
+    </criterion>
+    <criterion id="AC9">
+      <text>Suggestions persist in database (goal_suggestions table) with expiration timestamp</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC10">
+      <text>Privacy: AI uses only the user's own data, no cross-user data leakage</text>
+      <priority>P0</priority>
+    </criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR15: AI-powered goal suggestions</section>
+        <snippet>AI analyzes user's mood patterns, activity levels, and check-in history to suggest 3-5 personalized goals. Suggestions include rationale explaining why each goal is relevant. Free tier: 3 requests/week, Premium: unlimited.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR35: AI personalization and learning</section>
+        <snippet>AI system learns from user behavior (accepted/dismissed suggestions, goal completion rates) to improve future recommendations. Privacy-first: only use individual user's data for their suggestions.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/epics.md</path>
+        <title>Epic 2: Life Coach MVP - Story 2.9</title>
+        <section>Story 2.9: Goal Suggestions (AI)</section>
+        <snippet>AI-powered goal suggestion system that analyzes user context (mood trends, activity patterns, check-in history) to suggest 3-5 relevant goals. Includes acceptance/dismissal tracking for ML learning. Prerequisites: Story 2.3 (Goals), Story 2.1 (Check-ins).</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>AI Processing (D5)</section>
+        <snippet>AI processing handled by Supabase Edge Functions (Deno runtime) with streaming support. Use Llama 3.2 (3B) for fast generation (&lt;2s), Claude Sonnet for complex tasks (&lt;3s). Implement prompt caching and rate limiting.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Tiered Feature Access</section>
+        <snippet>Free tier: Limited AI features (3 suggestion requests/week, 1 daily plan/day). Premium tier: Unlimited AI features, priority processing, advanced personalization. Track usage in tier_usage table.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Privacy and Data Isolation</section>
+        <snippet>RLS policies ensure users can only access their own data. AI processing must never mix user data. Implement data anonymization for analytics, explicit consent for AI features.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/ux-design-specification.md</path>
+        <title>UX Design Specification</title>
+        <section>Goal Suggestions UX</section>
+        <snippet>"Suggested for You" section at top of Goals screen. Card design: Title (bold), Category tag (colored chip), Rationale (2-3 sentences, italic). Two actions: "Add Goal" (primary button), "Dismiss" (icon). Shimmer loading state.</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/sprint-2/2-9-goal-suggestions-ai.md</path>
+        <title>Story 2.9: Goal Suggestions (AI)</title>
+        <section>AI Prompt Engineering</section>
+        <snippet>AI prompt includes user profile: onboarding choice (fitness/stress/life), avg mood/stress, current goals. Output format: JSON array with title, category, rationale fields. Examples: "Lose 5kg" (fitness), "Meditate 5 days/week" (stress).</snippet>
+      </doc>
+    </docs>
+    <code>
+      <reference>
+        <path>lib/features/life_coach/domain/entities/goal_entity.dart</path>
+        <usage>Reference GoalEntity structure for suggestion acceptance flow. Suggestions pre-fill title and category fields.</usage>
+        <note>Story 2.3 (Goals) creates this entity. Reuse for suggestion-to-goal conversion.</note>
+      </reference>
+      <reference>
+        <path>lib/features/life_coach/domain/entities/checkin_entity.dart</path>
+        <usage>Fetch check-in history for AI context analysis (mood trends, energy patterns).</usage>
+        <note>Story 2.1 (Morning Check-in) creates check-in data. Query last 30 days for trend analysis.</note>
+      </reference>
+      <reference>
+        <path>lib/features/life_coach/presentation/screens/goals_screen.dart</path>
+        <usage>Add SuggestionsSection widget to Goals screen (above existing goals list).</usage>
+        <note>Story 2.3 creates Goals screen. Insert suggestions section at top of screen.</note>
+      </reference>
+    </code>
+    <dependencies>
+      <flutter>
+        <sdk>3.38+</sdk>
+        <dart>3.10+</dart>
+      </flutter>
+      <packages>
+        <package name="flutter_riverpod" version="^3.0.0" usage="State management for suggestion fetching and user actions" />
+        <package name="riverpod_annotation" version="^3.0.0" usage="Code generation for providers" />
+        <package name="drift" version="^2.14.0" usage="Local SQLite database for offline suggestion caching" />
+        <package name="supabase_flutter" version="^2.0.0" usage="Supabase client for auth, database, and Edge Functions" />
+        <package name="http" version="^1.1.0" usage="HTTP client for Edge Function calls" />
+        <package name="freezed" version="^2.4.5" usage="Code generation for immutable entities" />
+        <package name="freezed_annotation" version="^2.4.1" usage="Annotations for freezed" />
+        <package name="json_annotation" version="^4.8.1" usage="JSON serialization for AI responses" />
+        <package name="shimmer" version="^3.0.0" usage="Loading shimmer effect for suggestions section" />
+        <package name="flutter_test" version="sdk" usage="Unit and widget testing framework" />
+        <package name="mockito" version="^5.4.0" usage="Mocking for unit tests" />
+      </packages>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint id="ARCH-1" type="architectural">
+      <description>Must follow Hybrid Architecture pattern (D1)</description>
+      <details>Create feature structure at lib/features/life_coach/goal_suggestions/ with presentation/, domain/, and data/ layers. Use clean architecture separation of concerns.</details>
+    </constraint>
+    <constraint id="ARCH-2" type="architectural">
+      <description>Use Supabase Edge Functions for AI processing (D5)</description>
+      <details>Create Edge Function at supabase/functions/generate-goal-suggestions/. Use Deno runtime with Llama 3.2 (3B) for fast generation. Target response time &lt;2s.</details>
+    </constraint>
+    <constraint id="ARCH-3" type="architectural">
+      <description>Offline-first caching for suggestions (D3)</description>
+      <details>Cache active suggestions in Drift (SQLite) for offline viewing. Sync with Supabase when online. Suggestions remain accessible offline until expiration.</details>
+    </constraint>
+    <constraint id="DATA-1" type="data">
+      <description>goal_suggestions table schema</description>
+      <details>goal_suggestions: id (UUID PK), user_id (UUID FK), suggestions (JSONB array), created_at, expires_at (created_at + 7 days). Index on (user_id, expires_at).</details>
+    </constraint>
+    <constraint id="DATA-2" type="data">
+      <description>Feedback tracking tables for ML learning</description>
+      <details>accepted_suggestions: id, user_id, suggestion_id, accepted_at. dismissed_suggestions: id, user_id, suggestion_id, dismissed_at, reason (optional). Used for AI learning.</details>
+    </constraint>
+    <constraint id="SEC-1" type="security">
+      <description>Row Level Security (RLS) policies required</description>
+      <details>Enable RLS on goal_suggestions, accepted_suggestions, dismissed_suggestions tables. Policy: FOR ALL USING (auth.uid() = user_id).</details>
+    </constraint>
+    <constraint id="SEC-2" type="security">
+      <description>Privacy: User data isolation for AI processing</description>
+      <details>AI context analyzer must ONLY access current user's data. No cross-user queries. Validate user_id in all queries. Log privacy audit events.</details>
+    </constraint>
+    <constraint id="TIER-1" type="business">
+      <description>Free tier: 3 suggestion requests/week limit</description>
+      <details>Track usage in suggestion_requests table. Check count WHERE user_id = ? AND created_at &gt; NOW() - INTERVAL '7 days'. Enforce limit before generation.</details>
+    </constraint>
+    <constraint id="TIER-2" type="business">
+      <description>Premium tier: Unlimited suggestion requests</description>
+      <details>Check user.tier = 'premium' to bypass limits. Premium users can refresh on-demand. Show tier upgrade prompt when Free limit reached.</details>
+    </constraint>
+    <constraint id="AI-1" type="ai">
+      <description>AI prompt must include comprehensive user context</description>
+      <details>Context: onboarding choice, avg mood (last 30 days), avg energy, avg stress, current goals count, goal categories, check-in frequency. Limit context window to ~500 tokens.</details>
+    </constraint>
+    <constraint id="AI-2" type="ai">
+      <description>AI output format validation</description>
+      <details>Parse JSON array from AI response. Validate each suggestion has: title (string, 3-50 chars), category (enum: fitness|mindfulness|productivity|social), rationale (string, 20-200 chars). Sanitize output.</details>
+    </constraint>
+    <constraint id="AI-3" type="ai">
+      <description>Suggestion count: 3-5 goals</description>
+      <details>AI must generate between 3 and 5 suggestions. If AI returns &lt;3 or &gt;5, retry with adjusted prompt. Fallback to default suggestions if AI fails after 2 retries.</details>
+    </constraint>
+    <constraint id="UX-1" type="ux">
+      <description>Weekly refresh cycle with expiration</description>
+      <details>Suggestions expire after 7 days (expires_at = created_at + 7 days). Auto-refresh on Goals screen load if expired. Manual refresh button available (respects tier limits).</details>
+    </constraint>
+    <constraint id="UX-2" type="ux">
+      <description>One-tap goal creation from suggestion</description>
+      <details>Tapping "Add Goal" pre-fills CreateGoalScreen with title and category. User can edit before saving. Suggestion removed from list after acceptance.</details>
+    </constraint>
+    <constraint id="PERF-1" type="performance">
+      <description>AI generation &lt;2s target</description>
+      <details>Use Llama 3.2 (3B) for fast generation. Implement timeout at 5s. Show loading state: "Analyzing your journey..." with animated icon. Cache suggestions for 7 days.</details>
+    </constraint>
+    <constraint id="PERF-2" type="performance">
+      <description>Suggestions screen load &lt;300ms</description>
+      <details>Fetch from local Drift cache first (instant). Background sync with Supabase. Show shimmer loading only on initial load. Optimize query with (user_id, expires_at) index.</details>
+    </constraint>
+    <constraint id="TEST-1" type="testing">
+      <description>75%+ code coverage required</description>
+      <details>Follow 70/20/10 testing pyramid. Unit tests for use cases, AI parsing, tier limits. Widget tests for UI. Integration test for full suggestion flow. All AC must have test coverage.</details>
+    </constraint>
+    <constraint id="ML-1" type="machine-learning">
+      <description>Learning from user feedback</description>
+      <details>Track accepted vs dismissed suggestions by category and rationale keywords. Adjust future prompts to favor accepted patterns. Implement basic collaborative filtering for similar users (Premium only).</details>
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>GoalSuggestionEntity</name>
+      <kind>domain-entity</kind>
+      <signature>
+        class GoalSuggestionEntity {
+          final String id;
+          final String userId;
+          final String title;
+          final GoalCategory category; // enum: fitness, mindfulness, productivity, social
+          final String rationale;
+          final DateTime createdAt;
+          final DateTime expiresAt;
+          final bool isDismissed;
+        }
+      </signature>
+      <path>lib/features/life_coach/domain/entities/goal_suggestion_entity.dart</path>
+      <notes>Use @freezed annotation for immutability. Validate title length (3-50 chars), rationale length (20-200 chars), category enum.</notes>
+    </interface>
+    <interface>
+      <name>SuggestionContextEntity</name>
+      <kind>domain-entity</kind>
+      <signature>
+        class SuggestionContextEntity {
+          final String userId;
+          final String onboardingChoice; // "fitness", "stress", "life"
+          final double avgMood;          // 1-5, last 30 days
+          final double avgEnergy;        // 1-5, last 30 days
+          final double avgStress;        // 1-5, last 30 days
+          final int currentGoalsCount;
+          final List&lt;GoalCategory&gt; goalCategories;
+          final int checkinFrequency;    // days checked in last 30 days
+        }
+      </signature>
+      <path>lib/features/life_coach/domain/entities/suggestion_context_entity.dart</path>
+      <notes>Built by context analyzer from check-ins, goals, and onboarding data. Used as input for AI prompt generation.</notes>
+    </interface>
+    <interface>
+      <name>GenerateGoalSuggestionsUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class GenerateGoalSuggestionsUseCase {
+          Future&lt;Result&lt;List&lt;GoalSuggestionEntity&gt;&gt;&gt; call({
+            required String userId,
+            bool forceRefresh = false,
+          });
+        }
+      </signature>
+      <path>lib/features/life_coach/domain/usecases/generate_goal_suggestions_usecase.dart</path>
+      <notes>1) Check tier limits, 2) Build context from user data, 3) Call AI Edge Function, 4) Parse and validate response, 5) Save to DB, 6) Return 3-5 suggestions.</notes>
+    </interface>
+    <interface>
+      <name>AcceptSuggestionUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class AcceptSuggestionUseCase {
+          Future&lt;Result&lt;GoalEntity&gt;&gt; call({
+            required String suggestionId,
+            required GoalSuggestionEntity suggestion,
+          });
+        }
+      </signature>
+      <path>lib/features/life_coach/domain/usecases/accept_suggestion_usecase.dart</path>
+      <notes>1) Track acceptance in accepted_suggestions table, 2) Remove suggestion from active list, 3) Navigate to CreateGoalScreen with pre-filled data (title, category).</notes>
+    </interface>
+    <interface>
+      <name>DismissSuggestionUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class DismissSuggestionUseCase {
+          Future&lt;Result&lt;void&gt;&gt; call({
+            required String suggestionId,
+            String? reason,
+          });
+        }
+      </signature>
+      <path>lib/features/life_coach/domain/usecases/dismiss_suggestion_usecase.dart</path>
+      <notes>1) Track dismissal in dismissed_suggestions table with optional reason, 2) Mark suggestion as dismissed (soft delete), 3) Use for ML learning.</notes>
+    </interface>
+    <interface>
+      <name>CheckSuggestionLimitUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class CheckSuggestionLimitUseCase {
+          Future&lt;Result&lt;SuggestionLimitStatus&gt;&gt; call({
+            required String userId,
+          });
+        }
+
+        class SuggestionLimitStatus {
+          final bool canGenerate;
+          final int usedCount;
+          final int limitCount;
+          final String tier; // "free" or "premium"
+        }
+      </signature>
+      <path>lib/features/life_coach/domain/usecases/check_suggestion_limit_usecase.dart</path>
+      <notes>Check user tier. Free: count requests last 7 days, allow if &lt;3. Premium: always allow. Return status for UI display.</notes>
+    </interface>
+    <interface>
+      <name>GetActiveSuggestionsUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class GetActiveSuggestionsUseCase {
+          Future&lt;Result&lt;List&lt;GoalSuggestionEntity&gt;&gt;&gt; call({
+            required String userId,
+          });
+        }
+      </signature>
+      <path>lib/features/life_coach/domain/usecases/get_active_suggestions_usecase.dart</path>
+      <notes>Fetch suggestions WHERE user_id = ? AND expires_at &gt; NOW() AND is_dismissed = false. Return sorted by created_at DESC.</notes>
+    </interface>
+    <interface>
+      <name>goal_suggestions table (Supabase PostgreSQL)</name>
+      <kind>database-table</kind>
+      <signature>
+        CREATE TABLE goal_suggestions (
+          id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+          user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+          title TEXT NOT NULL CHECK (length(title) BETWEEN 3 AND 50),
+          category TEXT NOT NULL CHECK (category IN ('fitness', 'mindfulness', 'productivity', 'social')),
+          rationale TEXT NOT NULL CHECK (length(rationale) BETWEEN 20 AND 200),
+          is_dismissed BOOLEAN DEFAULT FALSE,
+          created_at TIMESTAMPTZ DEFAULT NOW(),
+          expires_at TIMESTAMPTZ DEFAULT NOW() + INTERVAL '7 days'
+        );
+        CREATE INDEX idx_goal_suggestions_user_expiry ON goal_suggestions(user_id, expires_at DESC);
+      </signature>
+      <path>supabase/migrations/</path>
+      <notes>Each row is one suggestion. AI generates 3-5 suggestions → 3-5 rows inserted. Include RLS policy in migration.</notes>
+    </interface>
+    <interface>
+      <name>accepted_suggestions table (Supabase PostgreSQL)</name>
+      <kind>database-table</kind>
+      <signature>
+        CREATE TABLE accepted_suggestions (
+          id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+          user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+          suggestion_id UUID NOT NULL REFERENCES goal_suggestions(id) ON DELETE CASCADE,
+          goal_id UUID REFERENCES goals(id) ON DELETE SET NULL,
+          accepted_at TIMESTAMPTZ DEFAULT NOW()
+        );
+        CREATE INDEX idx_accepted_suggestions_user ON accepted_suggestions(user_id, accepted_at DESC);
+      </signature>
+      <path>supabase/migrations/</path>
+      <notes>Tracks which suggestions user accepted. Used for ML learning to improve future suggestions.</notes>
+    </interface>
+    <interface>
+      <name>dismissed_suggestions table (Supabase PostgreSQL)</name>
+      <kind>database-table</kind>
+      <signature>
+        CREATE TABLE dismissed_suggestions (
+          id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+          user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+          suggestion_id UUID NOT NULL REFERENCES goal_suggestions(id) ON DELETE CASCADE,
+          reason TEXT,
+          dismissed_at TIMESTAMPTZ DEFAULT NOW()
+        );
+        CREATE INDEX idx_dismissed_suggestions_user ON dismissed_suggestions(user_id, dismissed_at DESC);
+      </signature>
+      <path>supabase/migrations/</path>
+      <notes>Tracks which suggestions user dismissed. Optional reason field for future UX improvement. Used for ML learning.</notes>
+    </interface>
+    <interface>
+      <name>suggestion_requests table (Supabase PostgreSQL)</name>
+      <kind>database-table</kind>
+      <signature>
+        CREATE TABLE suggestion_requests (
+          id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+          user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+          tier TEXT NOT NULL CHECK (tier IN ('free', 'premium')),
+          created_at TIMESTAMPTZ DEFAULT NOW()
+        );
+        CREATE INDEX idx_suggestion_requests_user_date ON suggestion_requests(user_id, created_at DESC);
+      </signature>
+      <path>supabase/migrations/</path>
+      <notes>Tracks each suggestion generation request for tier limit enforcement. Free tier: max 3 requests per 7 days.</notes>
+    </interface>
+    <interface>
+      <name>generate-goal-suggestions Edge Function</name>
+      <kind>edge-function</kind>
+      <signature>
+        POST /functions/v1/generate-goal-suggestions
+        Headers: Authorization: Bearer {supabase_token}
+        Body: {
+          "context": SuggestionContextEntity
+        }
+        Response: {
+          "suggestions": [
+            {"title": string, "category": string, "rationale": string},
+            ...
+          ]
+        }
+      </signature>
+      <path>supabase/functions/generate-goal-suggestions/index.ts</path>
+      <notes>Deno Edge Function. 1) Validate auth, 2) Build AI prompt from context, 3) Call Llama 3.2 (3B) API, 4) Parse JSON response, 5) Validate format, 6) Return 3-5 suggestions.</notes>
+    </interface>
+    <interface>
+      <name>SuggestionCard</name>
+      <kind>widget</kind>
+      <signature>
+        class SuggestionCard extends StatelessWidget {
+          final GoalSuggestionEntity suggestion;
+          final VoidCallback onAccept;
+          final VoidCallback onDismiss;
+        }
+      </signature>
+      <path>lib/features/life_coach/presentation/widgets/suggestion_card.dart</path>
+      <notes>Card with title (bold), category chip (colored by category), rationale (italic, 2-3 lines), "Add Goal" button (primary), dismiss icon (top-right).</notes>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Follow 70/20/10 testing pyramid: 70% unit tests (use cases, entities, AI parsing, tier limits), 20% widget tests (UI components, user interactions), 10% integration tests (end-to-end flows). Use flutter_test for unit/widget tests, integration_test for E2E. Mock dependencies with mockito. Target 75%+ code coverage. All acceptance criteria must have test coverage.
+    </standards>
+    <locations>
+      <location>test/features/life_coach/domain/usecases/</location>
+      <location>test/features/life_coach/domain/entities/</location>
+      <location>test/features/life_coach/data/repositories/</location>
+      <location>test/features/life_coach/presentation/widgets/</location>
+      <location>integration_test/features/life_coach/goal_suggestions_flow_test.dart</location>
+    </locations>
+    <ideas>
+      <test-idea ac-ref="AC2,AC3">
+        <description>Unit test: GenerateGoalSuggestionsUseCase builds correct context</description>
+        <approach>Mock check-in, goal, and onboarding repositories. Call use case. Verify SuggestionContextEntity contains correct avg mood, energy, goal count, etc. Assert AI prompt includes all context fields.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3">
+        <description>Unit test: AI response parsing and validation</description>
+        <approach>Mock AI Edge Function response with valid JSON. Parse response. Assert 3-5 suggestions returned. Verify each has title (3-50 chars), valid category enum, rationale (20-200 chars). Test malformed JSON handling.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC7">
+        <description>Unit test: CheckSuggestionLimitUseCase - Free tier limit enforcement</description>
+        <approach>Mock user with tier="free" and 3 requests in last 7 days. Call use case. Assert canGenerate=false, usedCount=3, limitCount=3. Test with 2 requests: assert canGenerate=true.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC7">
+        <description>Unit test: CheckSuggestionLimitUseCase - Premium tier unlimited</description>
+        <approach>Mock user with tier="premium" and 10 requests in last 7 days. Call use case. Assert canGenerate=true (no limit). Verify Premium users always pass limit check.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4">
+        <description>Unit test: AcceptSuggestionUseCase tracks acceptance and removes suggestion</description>
+        <approach>Mock repositories. Call AcceptSuggestionUseCase with suggestion. Verify accepted_suggestions table insert called. Verify suggestion marked as dismissed. Assert navigation to CreateGoalScreen with pre-filled data.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC5,AC8">
+        <description>Unit test: DismissSuggestionUseCase tracks dismissal for ML learning</description>
+        <approach>Mock repositories. Call DismissSuggestionUseCase with reason="Not relevant". Verify dismissed_suggestions table insert with reason. Verify suggestion marked as dismissed. Assert removed from active list.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6">
+        <description>Unit test: GetActiveSuggestionsUseCase filters expired suggestions</description>
+        <approach>Create 3 suggestions: 1 active (expires_at &gt; NOW()), 1 expired, 1 dismissed. Call use case. Assert only 1 active suggestion returned. Verify query filters by expires_at &gt; NOW() AND is_dismissed=false.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3,AC4,AC5">
+        <description>Widget test: SuggestionCard displays all fields and handles actions</description>
+        <approach>Render SuggestionCard with mock suggestion. Verify title, category chip, rationale displayed. Tap "Add Goal" button, verify onAccept callback called. Tap dismiss icon, verify onDismiss callback called. Test haptic feedback.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1">
+        <description>Widget test: SuggestionsSection shows shimmer loading state</description>
+        <approach>Render SuggestionsSection with loading=true. Verify Shimmer widget displayed. Set loading=false, verify SuggestionCard widgets appear. Test empty state when suggestions list is empty.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC10">
+        <description>Unit test: Privacy - AI context only uses user's own data</description>
+        <approach>Mock check-in repository to return multi-user data. Call context analyzer with userId=123. Verify only data WHERE user_id=123 included in context. Assert no cross-user data leakage.</approach>
+      </test-idea>
+      <test-idea ac-ref="ALL">
+        <description>Integration test: End-to-end suggestion generation and acceptance</description>
+        <approach>1) User has tier="free", 0 requests this week. 2) Tap "Get Suggestions" button. 3) Verify AI called with user context. 4) Assert 3-5 suggestions appear. 5) Tap "Add Goal" on suggestion. 6) Verify CreateGoalScreen pre-filled. 7) Save goal. 8) Assert accepted_suggestions record created. 9) Verify suggestion removed from list.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6,AC7">
+        <description>Integration test: Weekly refresh and tier limits</description>
+        <approach>1) Generate suggestions on Day 1. 2) Mock time to Day 8 (expired). 3) Open Goals screen. 4) Verify auto-refresh triggered. 5) For Free tier with 3 requests, verify 4th request blocked with paywall prompt. 6) For Premium tier, verify unlimited refreshes allowed.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC8">
+        <description>Integration test: ML learning from dismissals improves suggestions</description>
+        <approach>1) Generate suggestions with category="fitness". 2) Dismiss all fitness suggestions. 3) Trigger refresh. 4) Verify next batch has fewer fitness suggestions, more from other categories. Mock ML feedback loop logic.</approach>
+      </test-idea>
+    </ideas>
+  </tests>
+</story-context>

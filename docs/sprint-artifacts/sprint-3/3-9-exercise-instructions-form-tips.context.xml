@@ -1,0 +1,502 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>3</epicId>
+    <storyId>3.9</storyId>
+    <title>Exercise Instructions & Form Tips</title>
+    <status>ready-for-dev</status>
+    <generatedAt>2025-11-17</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/sprint-3/3-9-exercise-instructions-form-tips.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>beginner lifter</asA>
+    <iWant>to see exercise instructions</iWant>
+    <soThat>I can perform exercises with proper form</soThat>
+    <tasks>
+      <task id="1" ac-ref="AC1,AC2,AC4,AC5">
+        <description>Implement exercise detail screen with instructions</description>
+        <subtasks>
+          <subtask>Create ExerciseDetailScreen widget (StatefulWidget)</subtask>
+          <subtask>Add instructions section with text display (300-500 words)</subtask>
+          <subtask>Implement collapsible form tips section with bullet points (3-5 tips)</subtask>
+          <subtask>Add common mistakes section with warning icon and bullet points</subtask>
+          <subtask>Display equipment needed as tags/chips</subtask>
+          <subtask>Show difficulty level badge (beginner/intermediate/advanced)</subtask>
+          <subtask>Add expandable sections for better UX (collapse/expand tips)</subtask>
+        </subtasks>
+      </task>
+      <task id="2" ac-ref="AC3">
+        <description>Implement muscle group visualization</description>
+        <subtasks>
+          <subtask>Create MuscleGroupDiagram widget with SVG/PNG assets</subtask>
+          <subtask>Implement muscle highlighting based on exercise target muscles</subtask>
+          <subtask>Add primary vs secondary muscle differentiation (darker/lighter highlight)</subtask>
+          <subtask>Create front/back body view toggle</subtask>
+          <subtask>Add muscle group labels on tap</subtask>
+        </subtasks>
+      </task>
+      <task id="3" ac-ref="AC6">
+        <description>Implement video tutorial integration</description>
+        <subtasks>
+          <subtask>Add video_url field to exercises table</subtask>
+          <subtask>Integrate video player package (video_player or better_player)</subtask>
+          <subtask>Create VideoPlayerWidget with controls (play/pause, seek, fullscreen)</subtask>
+          <subtask>Implement "How-to Video" button in detail screen</subtask>
+          <subtask>Add overlay for video with instructions overlay option</subtask>
+          <subtask>Handle video loading states and errors gracefully</subtask>
+          <subtask>Implement CDN video hosting for premium users (P1 feature)</subtask>
+        </subtasks>
+      </task>
+      <task id="4" ac-ref="AC1">
+        <description>Implement offline content caching</description>
+        <subtasks>
+          <subtask>Cache exercise instructions in Drift (SQLite) database</subtask>
+          <subtask>Implement CacheInstructionsUseCase for offline access</subtask>
+          <subtask>Pre-cache instructions for popular exercises on app install</subtask>
+          <subtask>Add cache invalidation strategy (update every 30 days)</subtask>
+          <subtask>Show "Offline Available" badge for cached exercises</subtask>
+          <subtask>Handle video download for offline viewing (Premium only)</subtask>
+        </subtasks>
+      </task>
+      <task id="5" ac-ref="AC1">
+        <description>Implement instruction reporting system</description>
+        <subtasks>
+          <subtask>Create ReportInstructionIssueUseCase</subtask>
+          <subtask>Add "Report Issue" button in exercise detail screen</subtask>
+          <subtask>Create report modal with issue types (incorrect info, missing tips, video issues)</subtask>
+          <subtask>Save reports to instruction_reports table</subtask>
+          <subtask>Implement moderation queue for admin review (future story)</subtask>
+          <subtask>Send confirmation toast after report submitted</subtask>
+        </subtasks>
+      </task>
+      <task id="6" ac-ref="AC7">
+        <description>Implement "Start Workout with This Exercise" CTA</description>
+        <subtasks>
+          <subtask>Add floating action button or bottom bar CTA</subtask>
+          <subtask>Create workout session from single exercise</subtask>
+          <subtask>Navigate to workout screen with exercise pre-loaded</subtask>
+          <subtask>Track "Start from Instructions" analytics event</subtask>
+        </subtasks>
+      </task>
+      <task id="7" ac-ref="AC2,AC4,AC5">
+        <description>Seed exercise instruction database</description>
+        <subtasks>
+          <subtask>Create migration to add instructions, form_tips, mistakes, video_url columns</subtask>
+          <subtask>Seed 500+ exercises with complete instructions</subtask>
+          <subtask>Add form tips (3-5 per exercise) as TEXT[] array</subtask>
+          <subtask>Add common mistakes (2-4 per exercise) as TEXT[] array</subtask>
+          <subtask>Populate muscle groups and difficulty levels</subtask>
+          <subtask>Add video URLs for P1 exercises (bench press, squat, deadlift, etc.)</subtask>
+        </subtasks>
+      </task>
+      <task id="8" ac-ref="ALL">
+        <description>Write comprehensive tests</description>
+        <subtasks>
+          <subtask>Unit tests: GetExerciseDetailsUseCase, CacheInstructionsUseCase, ReportInstructionIssueUseCase</subtask>
+          <subtask>Widget tests: ExerciseDetailScreen, MuscleGroupDiagram, VideoPlayerWidget</subtask>
+          <subtask>Widget test: Form tips expansion/collapse</subtask>
+          <subtask>Widget test: Report issue modal flow</subtask>
+          <subtask>Integration test: Complete exercise detail view flow with offline caching</subtask>
+          <subtask>Integration test: Video playback and error handling</subtask>
+          <subtask>Achieve 75%+ code coverage</subtask>
+        </subtasks>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="AC1">
+      <text>Exercise detail screen (tap exercise in library)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC2">
+      <text>Instructions: Text description (300-500 words)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC3">
+      <text>Muscle groups highlighted (visual diagram, P1)</text>
+      <priority>P1</priority>
+    </criterion>
+    <criterion id="AC4">
+      <text>Form tips: Bullet points (3-5 key tips)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC5">
+      <text>Common mistakes to avoid (bullet points)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC6">
+      <text>Video tutorial link (P1: embedded video player)</text>
+      <priority>P1</priority>
+    </criterion>
+    <criterion id="AC7">
+      <text>"Start Workout with This Exercise" CTA</text>
+      <priority>P0</priority>
+    </criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR46: Exercise instructions and form guidance</section>
+        <snippet>Each exercise must include detailed instructions (300-500 words), form tips (3-5 bullet points), common mistakes to avoid, muscle groups targeted (visual diagram), and optional video demonstration. Content must be available offline for premium users.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/epics.md</path>
+        <title>Epic 3: Fitness Coach MVP - Story 3.9</title>
+        <section>Story 3.9: Exercise Instructions & Form Tips</section>
+        <snippet>Provide comprehensive exercise instructions with form tips, muscle group visualization, video tutorials, and offline caching. Prerequisites: Story 3.2 (Exercise Library). Includes reporting system for incorrect instructions.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Hybrid Architecture (D1)</section>
+        <snippet>Feature-first architecture with clean architecture layers (presentation/domain/data). Fitness Coach module located at features/fitness_coach/. Use Riverpod for state management.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Offline-First Sync (D3)</section>
+        <snippet>Hybrid Sync pattern: Cache exercise instructions in Drift (SQLite) for offline access. Pre-cache popular exercises on app install. Implement cache invalidation strategy for content updates.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Database Schema - Fitness Coach Tables</section>
+        <snippet>Fitness Coach module uses exercises table, workout_sessions table, and instruction_reports table. All tables must have RLS policies for user data isolation.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/ux-design-specification.md</path>
+        <title>UX Design Specification</title>
+        <section>Exercise Detail Screen UX</section>
+        <snippet>Exercise detail screen should have hero image, instructions (collapsible), form tips (expandable), muscle diagram (interactive), video player (inline with fullscreen option), and floating "Start Workout" CTA. Use card-based layout for sections.</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/sprint-3/3-9-exercise-instructions-form-tips.md</path>
+        <title>Story 3.9: Exercise Instructions & Form Tips</title>
+        <section>Database Schema</section>
+        <snippet>ALTER TABLE exercises ADD instructions TEXT, form_tips TEXT[], mistakes TEXT[], video_url TEXT. Seed 500+ exercises with complete instruction data. Example: Bench Press instructions with retracted shoulders, flat feet, mid-chest bar path.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <existing>
+        <file>
+          <path>lib/features/fitness_coach/domain/entities/exercise_entity.dart</path>
+          <relevance>Will be extended to include instructions, form_tips, mistakes, video_url fields</relevance>
+          <snippet>Existing ExerciseEntity with id, name, category, muscle_group, equipment fields. Need to add instruction-related fields for this story.</snippet>
+        </file>
+        <file>
+          <path>lib/features/fitness_coach/data/repositories/exercise_repository_impl.dart</path>
+          <relevance>Will be extended to support GetExerciseDetailsUseCase with full instruction data</relevance>
+          <snippet>Existing repository for exercise CRUD operations. Need to add methods for fetching detailed exercise instructions and caching.</snippet>
+        </file>
+        <file>
+          <path>lib/features/fitness_coach/presentation/screens/exercise_library_screen.dart</path>
+          <relevance>Will link to new ExerciseDetailScreen when user taps an exercise</relevance>
+          <snippet>Existing exercise library screen with list view. Add onTap navigation to exercise detail screen.</snippet>
+        </file>
+      </existing>
+    </code>
+    <dependencies>
+      <flutter>
+        <sdk>3.38+</sdk>
+        <dart>3.10+</dart>
+      </flutter>
+      <packages>
+        <package name="flutter_riverpod" version="^3.0.0" usage="State management for exercise detail screen and data flow" />
+        <package name="riverpod_annotation" version="^3.0.0" usage="Code generation for providers" />
+        <package name="drift" version="^2.14.0" usage="Local SQLite database for offline instruction caching" />
+        <package name="drift_flutter" version="^0.1.0" usage="Flutter integration for Drift" />
+        <package name="sqlite3_flutter_libs" version="^0.5.0" usage="SQLite native libraries" />
+        <package name="path_provider" version="^2.1.0" usage="Get app directories for Drift database" />
+        <package name="supabase_flutter" version="^2.0.0" usage="Supabase client for auth and database sync" />
+        <package name="video_player" version="^2.8.0" usage="Video playback for exercise tutorials (P1)" />
+        <package name="flutter_svg" version="^2.0.0" usage="Render muscle group diagrams (SVG assets)" />
+        <package name="cached_network_image" version="^3.3.0" usage="Cache exercise images for offline viewing" />
+        <package name="flutter_test" version="sdk" usage="Unit and widget testing framework" />
+        <package name="integration_test" version="sdk" usage="End-to-end testing framework" />
+      </packages>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint id="ARCH-1" type="architectural">
+      <description>Must follow Hybrid Architecture pattern (D1)</description>
+      <details>Extend existing fitness_coach feature structure at lib/features/fitness_coach/ with presentation/, domain/, and data/ layers. Use clean architecture separation of concerns.</details>
+    </constraint>
+    <constraint id="ARCH-2" type="architectural">
+      <description>Offline-first implementation required (D3)</description>
+      <details>Cache exercise instructions in Drift (SQLite) for offline access. Pre-cache popular exercises (top 50) on app install. Implement cache invalidation every 30 days for content updates.</details>
+    </constraint>
+    <constraint id="ARCH-3" type="architectural">
+      <description>Use Riverpod for state management (D1, D6)</description>
+      <details>Create providers for exercise detail screen. Use FutureProvider for async data loading. Providers should be in fitness_coach/presentation/providers/.</details>
+    </constraint>
+    <constraint id="DATA-1" type="data">
+      <description>Database schema must include instruction fields</description>
+      <details>exercises table: Add instructions (TEXT 300-500 words), form_tips (TEXT[] array 3-5 items), mistakes (TEXT[] array 2-4 items), video_url (TEXT nullable), difficulty_level (ENUM: beginner/intermediate/advanced), target_muscles (TEXT[] array).</details>
+    </constraint>
+    <constraint id="DATA-2" type="data">
+      <description>Seed database with 500+ exercise instructions</description>
+      <details>Content must be high-quality, accurate, and safety-focused. Prioritize compound movements (bench, squat, deadlift) first. Include equipment variations (barbell, dumbbell, machine).</details>
+    </constraint>
+    <constraint id="SEC-1" type="security">
+      <description>Row Level Security (RLS) policies for instruction reports</description>
+      <details>Enable RLS on instruction_reports table. Policy: Users can create reports, admins can view all reports. CREATE POLICY "Users can submit reports" ON instruction_reports FOR INSERT USING (auth.uid() = user_id);</details>
+    </constraint>
+    <constraint id="UX-1" type="ux">
+      <description>Exercise detail screen must be scannable</description>
+      <details>Use card-based layout with collapsible sections. Instructions should be above the fold. Form tips should have icons. Common mistakes should have warning badges. Muscle diagram should be interactive.</details>
+    </constraint>
+    <constraint id="UX-2" type="ux">
+      <description>Video player must be inline with fullscreen option</description>
+      <details>Video should be embedded in detail screen (not modal). Add fullscreen button, seek bar, play/pause controls. Handle portrait/landscape orientation changes. Show loading indicator for buffering.</details>
+    </constraint>
+    <constraint id="UX-3" type="ux">
+      <description>Offline indicator for cached content</description>
+      <details>Show "Available Offline" badge for cached exercises. Use distinct icon (download check mark). Indicate when content was last updated. Allow manual refresh to update instructions.</details>
+    </constraint>
+    <constraint id="PERF-1" type="performance">
+      <description>Exercise detail screen load time &lt;500ms</description>
+      <details>Load from cache first (Drift), then sync from Supabase in background. Optimize image loading with cached_network_image. Lazy load video player (only initialize when user taps play).</details>
+    </constraint>
+    <constraint id="PERF-2" type="performance">
+      <description>Video streaming must be efficient</description>
+      <details>Use adaptive bitrate streaming (HLS/DASH) for video delivery. Implement CDN caching for popular videos. Compress videos to &lt;10MB for mobile. Allow quality selection (720p, 1080p).</details>
+    </constraint>
+    <constraint id="CONTENT-1" type="content">
+      <description>Content quality standards</description>
+      <details>Instructions must be written by certified trainers or reviewed by fitness professionals. Include safety warnings for injury-prone exercises. Provide modifications for beginners. Use clear, jargon-free language.</details>
+    </constraint>
+    <constraint id="CONTENT-2" type="content">
+      <description>Muscle diagram asset requirements</description>
+      <details>Create SVG diagrams for front/back body views. Support highlighting of 12+ major muscle groups. Use color coding: primary muscles (dark), secondary muscles (light). Include labels for muscle names.</details>
+    </constraint>
+    <constraint id="TEST-1" type="testing">
+      <description>75%+ code coverage required</description>
+      <details>Follow 70/20/10 testing pyramid. Unit tests for use cases, widget tests for UI, integration test for full flow. All AC must have test coverage. Mock video player for tests.</details>
+    </constraint>
+    <constraint id="A11Y-1" type="accessibility">
+      <description>Screen reader support for instructions</description>
+      <details>Wrap sections with Semantics widgets. Form tips should be readable as list. Video player must have accessibility controls. Muscle diagram should announce muscle names on tap.</details>
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>ExerciseInstructionEntity</name>
+      <kind>domain-entity</kind>
+      <signature>
+        class ExerciseInstructionEntity {
+          final String exerciseId;
+          final String instructions;      // 300-500 words
+          final List&lt;String&gt; formTips;    // 3-5 tips
+          final List&lt;String&gt; mistakes;    // 2-4 common mistakes
+          final List&lt;String&gt; targetMuscles; // Primary muscles
+          final List&lt;String&gt;? secondaryMuscles;
+          final String? videoUrl;
+          final String difficultyLevel;  // beginner/intermediate/advanced
+          final List&lt;String&gt; equipment;
+          final DateTime? cachedAt;       // For offline tracking
+        }
+      </signature>
+      <path>lib/features/fitness_coach/domain/entities/exercise_instruction_entity.dart</path>
+      <notes>Use @freezed annotation for immutability. Separate from ExerciseEntity for better domain separation. Instructions field should validate 300-500 word count.</notes>
+    </interface>
+    <interface>
+      <name>GetExerciseDetailsUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class GetExerciseDetailsUseCase {
+          Future&lt;Result&lt;ExerciseInstructionEntity&gt;&gt; call(String exerciseId);
+        }
+      </signature>
+      <path>lib/features/fitness_coach/domain/usecases/get_exercise_details_usecase.dart</path>
+      <notes>Returns Result&lt;T&gt; pattern. Load from cache first (Drift), then fetch from Supabase if cache miss or stale (&gt;30 days). Update cache in background.</notes>
+    </interface>
+    <interface>
+      <name>CacheInstructionsUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class CacheInstructionsUseCase {
+          Future&lt;Result&lt;void&gt;&gt; call(List&lt;String&gt; exerciseIds);
+          Future&lt;Result&lt;void&gt;&gt; cachePopularExercises(); // Top 50
+          Future&lt;Result&lt;bool&gt;&gt; isCached(String exerciseId);
+          Future&lt;Result&lt;void&gt;&gt; invalidateCache(String exerciseId);
+        }
+      </signature>
+      <path>lib/features/fitness_coach/domain/usecases/cache_instructions_usecase.dart</path>
+      <notes>Pre-cache top 50 popular exercises on app install. Implement cache invalidation after 30 days. Track cache size to prevent excessive storage usage (&lt;50MB limit).</notes>
+    </interface>
+    <interface>
+      <name>ReportInstructionIssueUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class ReportInstructionIssueUseCase {
+          Future&lt;Result&lt;void&gt;&gt; call({
+            required String exerciseId,
+            required String issueType,  // incorrect_info, missing_tips, video_issue
+            required String description,
+          });
+        }
+      </signature>
+      <path>lib/features/fitness_coach/domain/usecases/report_instruction_issue_usecase.dart</path>
+      <notes>Save to instruction_reports table. Include user_id, exercise_id, issue_type, description, timestamp. Future story will implement admin moderation queue.</notes>
+    </interface>
+    <interface>
+      <name>ExerciseRepository</name>
+      <kind>repository</kind>
+      <signature>
+        abstract class ExerciseRepository {
+          Future&lt;Result&lt;ExerciseInstructionEntity&gt;&gt; getExerciseInstructions(String exerciseId);
+          Future&lt;Result&lt;void&gt;&gt; cacheInstructions(ExerciseInstructionEntity instructions);
+          Future&lt;Result&lt;ExerciseInstructionEntity?&gt;&gt; getCachedInstructions(String exerciseId);
+          Future&lt;Result&lt;void&gt;&gt; reportInstructionIssue(String exerciseId, String issueType, String description);
+        }
+      </signature>
+      <path>lib/features/fitness_coach/domain/repositories/exercise_repository.dart</path>
+      <notes>Extend existing ExerciseRepository interface. Implementation uses both DriftDataSource (cache) and SupabaseDataSource (remote).</notes>
+    </interface>
+    <interface>
+      <name>exercises table (Supabase PostgreSQL)</name>
+      <kind>database-table</kind>
+      <signature>
+        ALTER TABLE exercises
+        ADD COLUMN instructions TEXT,
+        ADD COLUMN form_tips TEXT[],
+        ADD COLUMN mistakes TEXT[],
+        ADD COLUMN video_url TEXT,
+        ADD COLUMN difficulty_level VARCHAR(20) CHECK (difficulty_level IN ('beginner', 'intermediate', 'advanced')),
+        ADD COLUMN target_muscles TEXT[],
+        ADD COLUMN secondary_muscles TEXT[],
+        ADD COLUMN updated_at TIMESTAMPTZ DEFAULT NOW();
+
+        CREATE INDEX idx_exercises_difficulty ON exercises(difficulty_level);
+      </signature>
+      <path>supabase/migrations/</path>
+      <notes>Migration extends existing exercises table. Add CHECK constraint for difficulty_level. Include updated_at for cache invalidation logic.</notes>
+    </interface>
+    <interface>
+      <name>instruction_reports table (Supabase PostgreSQL)</name>
+      <kind>database-table</kind>
+      <signature>
+        CREATE TABLE instruction_reports (
+          id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+          user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+          exercise_id UUID NOT NULL REFERENCES exercises(id) ON DELETE CASCADE,
+          issue_type VARCHAR(50) NOT NULL CHECK (issue_type IN ('incorrect_info', 'missing_tips', 'video_issue', 'other')),
+          description TEXT NOT NULL,
+          status VARCHAR(20) DEFAULT 'pending' CHECK (status IN ('pending', 'reviewed', 'resolved')),
+          created_at TIMESTAMPTZ DEFAULT NOW(),
+          reviewed_at TIMESTAMPTZ,
+          reviewer_id UUID REFERENCES auth.users(id)
+        );
+        CREATE INDEX idx_instruction_reports_status ON instruction_reports(status);
+        CREATE INDEX idx_instruction_reports_exercise ON instruction_reports(exercise_id);
+      </signature>
+      <path>supabase/migrations/</path>
+      <notes>New table for instruction issue reporting. Include status tracking for future admin moderation. RLS policies: users can insert, admins can view all.</notes>
+    </interface>
+    <interface>
+      <name>MuscleGroupDiagram widget</name>
+      <kind>flutter-widget</kind>
+      <signature>
+        class MuscleGroupDiagram extends StatelessWidget {
+          final List&lt;String&gt; primaryMuscles;
+          final List&lt;String&gt;? secondaryMuscles;
+          final bool showLabels;
+          final VoidCallback? onMuscleTap;
+
+          @override
+          Widget build(BuildContext context) {
+            // Render SVG with highlighted muscles
+          }
+        }
+      </signature>
+      <path>lib/features/fitness_coach/presentation/widgets/muscle_group_diagram.dart</path>
+      <notes>Use flutter_svg package. Load SVG assets from assets/images/muscles/. Implement color overlay for muscle highlighting (primary: 0.8 opacity, secondary: 0.4 opacity). Support front/back view toggle.</notes>
+    </interface>
+    <interface>
+      <name>ExerciseVideoPlayer widget</name>
+      <kind>flutter-widget</kind>
+      <signature>
+        class ExerciseVideoPlayer extends StatefulWidget {
+          final String? videoUrl;
+          final bool autoPlay;
+          final VoidCallback? onFullscreen;
+
+          @override
+          State&lt;ExerciseVideoPlayer&gt; createState() => _ExerciseVideoPlayerState();
+        }
+      </signature>
+      <path>lib/features/fitness_coach/presentation/widgets/exercise_video_player.dart</path>
+      <notes>Use video_player package. Lazy load controller (only initialize when play tapped). Implement custom controls: play/pause, seek bar, fullscreen button, quality selector. Handle loading/error states gracefully.</notes>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Follow 70/20/10 testing pyramid: 70% unit tests (use cases, repositories, entities), 20% widget tests (UI components, state management), 10% integration tests (end-to-end flows). Use flutter_test for unit/widget tests, integration_test for E2E. Mock dependencies with mockito. Target 75%+ code coverage. All acceptance criteria must have test coverage. Mock video player for tests to avoid real video playback.
+    </standards>
+    <locations>
+      <location>test/features/fitness_coach/domain/usecases/</location>
+      <location>test/features/fitness_coach/domain/entities/</location>
+      <location>test/features/fitness_coach/data/repositories/</location>
+      <location>test/features/fitness_coach/presentation/widgets/</location>
+      <location>integration_test/features/fitness_coach/exercise_instructions_flow_test.dart</location>
+    </locations>
+    <ideas>
+      <test-idea ac-ref="AC2,AC4,AC5">
+        <description>Unit test: ExerciseInstructionEntity validation</description>
+        <approach>Test that instructions field validates 300-500 word count. Test formTips has 3-5 items, mistakes has 2-4 items. Test immutability with copyWith.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1,AC2">
+        <description>Unit test: GetExerciseDetailsUseCase cache-first strategy</description>
+        <approach>Mock ExerciseRepository. Test cache hit scenario (returns cached data immediately). Test cache miss scenario (fetches from remote, saves to cache). Test stale cache scenario (cached_at &gt; 30 days).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1">
+        <description>Unit test: CacheInstructionsUseCase pre-caching</description>
+        <approach>Mock repository. Test cachePopularExercises() caches top 50 exercises. Test cache size limit (&lt;50MB). Test isCached() returns true for cached exercises.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1">
+        <description>Unit test: ReportInstructionIssueUseCase</description>
+        <approach>Mock repository. Verify reportInstructionIssue() called with correct parameters (exerciseId, issueType, description). Assert Success result returned.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1,AC2,AC4,AC5">
+        <description>Widget test: ExerciseDetailScreen displays all sections</description>
+        <approach>Render ExerciseDetailScreen with mock data. Verify instructions text displayed (300-500 words). Verify form tips section with 3-5 bullet points. Verify common mistakes section with warning icons. Verify equipment tags displayed.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3">
+        <description>Widget test: MuscleGroupDiagram highlights correct muscles</description>
+        <approach>Render MuscleGroupDiagram with primaryMuscles=['chest', 'triceps']. Verify chest and triceps are highlighted with correct opacity (0.8). Test front/back view toggle.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6">
+        <description>Widget test: ExerciseVideoPlayer loads and plays video</description>
+        <approach>Mock VideoPlayerController. Render ExerciseVideoPlayer with videoUrl. Tap play button. Verify controller.play() called. Verify loading indicator shown during buffering. Test fullscreen button tap.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC7">
+        <description>Widget test: "Start Workout with This Exercise" CTA</description>
+        <approach>Render ExerciseDetailScreen. Tap "Start Workout with This Exercise" button. Verify navigation to workout screen with exercise pre-loaded. Verify analytics event tracked.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1">
+        <description>Widget test: Report issue modal flow</description>
+        <approach>Render ExerciseDetailScreen. Tap "Report Issue" button. Verify modal appears. Select issue type "incorrect_info". Enter description. Submit. Verify success toast shown.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1,AC2,AC4">
+        <description>Integration test: Complete exercise detail view flow</description>
+        <approach>Launch app. Navigate to exercise library. Tap exercise (Bench Press). Verify detail screen loads with instructions, form tips, mistakes, muscle diagram. Verify "Available Offline" badge shown for cached exercise. Tap video play button. Verify video loads and plays.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1">
+        <description>Integration test: Offline caching and retrieval</description>
+        <approach>Load exercise detail screen while online. Verify data cached to Drift. Disconnect from network. Reload exercise detail screen. Verify data loads from cache. Verify offline indicator shown.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6">
+        <description>Integration test: Video playback error handling</description>
+        <approach>Mock video URL that returns 404 error. Load exercise detail screen. Tap video play button. Verify error message shown: "Video unavailable. Please try again later." Verify fallback to text instructions.</approach>
+      </test-idea>
+    </ideas>
+  </tests>
+</story-context>

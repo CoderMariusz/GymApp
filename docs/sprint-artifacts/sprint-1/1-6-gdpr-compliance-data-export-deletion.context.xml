@@ -1,0 +1,481 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>1</epicId>
+    <storyId>1.6</storyId>
+    <title>GDPR Compliance (Data Export &amp; Deletion)</title>
+    <status>ready-for-dev</status>
+    <generatedAt>2025-11-17</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/sprint-1/1-6-gdpr-compliance-data-export-deletion.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>user concerned about data privacy</asA>
+    <iWant>to export or delete my data</iWant>
+    <soThat>I comply with my rights under GDPR</soThat>
+    <tasks>
+      <task id="1" ac-ref="AC1,AC2,AC3">
+        <description>Implement Data &amp; Privacy settings page UI</description>
+        <subtasks>
+          <subtask>Create DataPrivacyPage widget in settings feature</subtask>
+          <subtask>Add "Export Data" button with icon</subtask>
+          <subtask>Add "Delete Account" button (red, bottom section)</subtask>
+          <subtask>Display data export history (pending/completed exports)</subtask>
+          <subtask>Implement "Preparing your data..." loading state</subtask>
+          <subtask>Show "Email sent" confirmation dialog after export request</subtask>
+        </subtasks>
+      </task>
+      <task id="2" ac-ref="AC2,AC3,AC4">
+        <description>Implement Supabase Edge Function for data export</description>
+        <subtasks>
+          <subtask>Create export-user-data Edge Function (TypeScript/Deno)</subtask>
+          <subtask>Fetch all user data: workouts, mood_logs, goals, meditations, journal_entries, account info</subtask>
+          <subtask>Generate JSON export file with complete data structure</subtask>
+          <subtask>Generate CSV export files for each data type</subtask>
+          <subtask>Create ZIP archive containing JSON + CSV files</subtask>
+          <subtask>Upload ZIP to Supabase Storage with 7-day expiration</subtask>
+          <subtask>Generate signed download URL (expires in 7 days)</subtask>
+          <subtask>Send email notification with download link</subtask>
+        </subtasks>
+      </task>
+      <task id="3" ac-ref="AC5,AC6,AC7">
+        <description>Implement account deletion flow with grace period</description>
+        <subtasks>
+          <subtask>Create delete confirmation modal with password input field</subtask>
+          <subtask>Add "I understand this is permanent" checkbox (required)</subtask>
+          <subtask>Verify user password before proceeding with deletion</subtask>
+          <subtask>Create delete-account Edge Function (soft delete)</subtask>
+          <subtask>Add deletion_requested_at column to users table</subtask>
+          <subtask>Display "Account will be deleted in 7 days" confirmation</subtask>
+          <subtask>Send deletion confirmation email with cancellation link</subtask>
+          <subtask>Implement cancellation endpoint to abort deletion</subtask>
+        </subtasks>
+      </task>
+      <task id="4" ac-ref="AC6,AC8">
+        <description>Implement hard delete cron job and cascading deletes</description>
+        <subtasks>
+          <subtask>Create cleanup-deleted-accounts Edge Function (scheduled)</subtask>
+          <subtask>Query users where deletion_requested_at &gt; 7 days ago</subtask>
+          <subtask>Delete all user data using cascading deletes</subtask>
+          <subtask>Add ON DELETE CASCADE constraints to all user-related tables</subtask>
+          <subtask>Purge user data from Storage (exports, encrypted files)</subtask>
+          <subtask>Schedule backup purge after 30 days (compliance requirement)</subtask>
+          <subtask>Log deletion events for audit trail</subtask>
+        </subtasks>
+      </task>
+      <task id="5" ac-ref="AC2,AC3">
+        <description>Create email templates for export and deletion</description>
+        <subtasks>
+          <subtask>Design "Your LifeOS Data Export is Ready" email template</subtask>
+          <subtask>Include download link with 7-day expiration notice</subtask>
+          <subtask>Design "Account Deletion Requested" confirmation email</subtask>
+          <subtask>Include deletion date and cancellation instructions</subtask>
+          <subtask>Add security warning: "If you didn't request this, contact support"</subtask>
+        </subtasks>
+      </task>
+      <task id="6" ac-ref="AC1,AC5">
+        <description>Implement data export and deletion use cases</description>
+        <subtasks>
+          <subtask>Create ExportDataUseCase in domain layer</subtask>
+          <subtask>Create DeleteAccountUseCase in domain layer</subtask>
+          <subtask>Create CancelDeletionUseCase for grace period cancellation</subtask>
+          <subtask>Implement validation and error handling</subtask>
+          <subtask>Add rate limiting (max 1 export per hour)</subtask>
+        </subtasks>
+      </task>
+      <task id="7" ac-ref="ALL">
+        <description>Write comprehensive tests for GDPR compliance</description>
+        <subtasks>
+          <subtask>Unit tests: ExportDataUseCase success and error cases</subtask>
+          <subtask>Unit tests: DeleteAccountUseCase validation and password verification</subtask>
+          <subtask>Integration test: Complete data export flow with ZIP generation</subtask>
+          <subtask>Integration test: Account deletion with 7-day grace period</subtask>
+          <subtask>Integration test: Deletion cancellation flow</subtask>
+          <subtask>Test cascading deletes across all user tables</subtask>
+          <subtask>Test email delivery for export and deletion</subtask>
+          <subtask>Verify 80%+ code coverage</subtask>
+        </subtasks>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="AC1">
+      <text>User can request data export from Profile → Data &amp; Privacy</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC2">
+      <text>Export generates ZIP file (JSON + CSV formats)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC3">
+      <text>Export includes: workouts, mood logs, goals, meditations, journal entries, account info</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC4">
+      <text>Export download link sent via email (expires in 7 days)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC5">
+      <text>User can request account deletion (requires password confirmation)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC6">
+      <text>Account deletion removes all data within 7 days (GDPR compliance)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC7">
+      <text>Deletion is irreversible (clear warning shown)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC8">
+      <text>Deleted data purged from backups after 30 days</text>
+      <priority>P0</priority>
+    </criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR100: Data Export in Machine-Readable Format</section>
+        <snippet>Users can export all their data in machine-readable format (JSON + CSV) for GDPR compliance (Article 20: Right to Data Portability). Export must include all user-generated content and account information.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR101: Account Deletion with Grace Period</section>
+        <snippet>Users can request data deletion (GDPR Article 17: Right to be Forgotten). System implements 7-day grace period allowing users to cancel deletion. Hard delete occurs after grace period expires.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR102: Privacy Policy and Data Usage Transparency</section>
+        <snippet>System displays clear privacy policy and data usage information. Users must provide informed consent for data processing. Export and deletion features easily accessible from settings.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>NFR-S2: GDPR Compliance</section>
+        <snippet>Full GDPR compliance including RLS policies, data export/delete endpoints, consent management, and audit trails. Data purged from backups within 30 days of deletion request.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/epics.md</path>
+        <title>Epic 1: Core Platform Foundation - Story 1.6</title>
+        <section>Story 1.6: GDPR Compliance (Data Export &amp; Deletion)</section>
+        <snippet>Complete GDPR compliance implementation with data export (ZIP with JSON+CSV), account deletion with 7-day grace period, and backup purge after 30 days. Prerequisites: Story 1.1 (user accounts). Technical: Supabase Edge Functions for export, RLS cascading deletes, email notifications.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Security &amp; GDPR Compliance</section>
+        <snippet>Row Level Security (RLS) policies enforce data isolation. GDPR compliance through export/delete endpoints, consent management, and audit trails. E2EE for sensitive data (journals). All user-related tables have ON DELETE CASCADE for efficient data removal.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Supabase Edge Functions (D4)</section>
+        <snippet>Server-side Edge Functions (Deno) handle complex operations like AI orchestration, data export generation, and scheduled tasks. Functions secure API keys and enforce business logic server-side.</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/sprint-1/1-6-gdpr-compliance-data-export-deletion.md</path>
+        <title>Story 1.6: GDPR Compliance (Data Export &amp; Deletion)</title>
+        <section>Technical Implementation</section>
+        <snippet>Export via Supabase Edge Function generates ZIP with JSON+CSV. Deletion uses soft delete flag (deletion_requested_at), followed by hard delete cron job after 7 days. All tables use ON DELETE CASCADE for complete data removal.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <note>This story requires creating new Supabase Edge Functions and database migrations. Frontend uses existing settings module structure. Follow architecture patterns from D1 (Clean Architecture), D3 (Offline-First), and D5 (E2EE for sensitive exports).</note>
+    </code>
+    <dependencies>
+      <flutter>
+        <sdk>3.38+</sdk>
+        <dart>3.10+</dart>
+      </flutter>
+      <packages>
+        <package name="flutter_riverpod" version="^3.0.0" usage="State management for data privacy page and export/delete flows" />
+        <package name="supabase_flutter" version="^2.0.0" usage="Supabase client for Edge Function calls and auth" />
+        <package name="flutter_secure_storage" version="^9.0.0" usage="Store password verification securely" />
+        <package name="encrypt" version="^5.0.3" usage="Decrypt journal entries for export (E2EE compliance)" />
+        <package name="path_provider" version="^2.1.0" usage="Temporary file storage for export processing" />
+        <package name="flutter_test" version="sdk" usage="Unit and widget testing framework" />
+        <package name="integration_test" version="sdk" usage="End-to-end testing for export and deletion flows" />
+      </packages>
+      <supabase>
+        <component name="Edge Functions" usage="export-user-data, delete-account, cleanup-deleted-accounts functions" />
+        <component name="PostgreSQL" usage="Database schema with cascading deletes and deletion_requested_at column" />
+        <component name="Storage" usage="Store export ZIP files with 7-day expiration policy" />
+        <component name="Auth" usage="Verify user identity for password confirmation" />
+      </supabase>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint id="GDPR-1" type="legal">
+      <description>GDPR Article 20 compliance (Right to Data Portability)</description>
+      <details>Export must include ALL user data in machine-readable format (JSON + CSV). Data must be complete, accurate, and include metadata (timestamps, IDs). Export must be delivered within 24 hours of request.</details>
+    </constraint>
+    <constraint id="GDPR-2" type="legal">
+      <description>GDPR Article 17 compliance (Right to Erasure)</description>
+      <details>Users must be able to request complete data deletion. Deletion must be irreversible after grace period. All data including backups must be purged within 30 days. Provide clear confirmation and warnings.</details>
+    </constraint>
+    <constraint id="SEC-1" type="security">
+      <description>Password confirmation required for deletion</description>
+      <details>Before allowing account deletion, verify user password using Supabase Auth. Prevent unauthorized deletion through stolen sessions. Display irreversibility warning with checkbox confirmation.</details>
+    </constraint>
+    <constraint id="SEC-2" type="security">
+      <description>Export link security and expiration</description>
+      <details>Export download links must expire after 7 days. Use signed URLs from Supabase Storage. Links sent only to verified user email. Prevent unauthorized access to exported data.</details>
+    </constraint>
+    <constraint id="SEC-3" type="security">
+      <description>Cascading deletes for complete data removal</description>
+      <details>All user-related tables (workouts, meditations, journal_entries, daily_plans, goals, mood_logs, etc.) must have ON DELETE CASCADE foreign key constraints to users table. Ensure no orphaned data remains.</details>
+    </constraint>
+    <constraint id="DATA-1" type="data">
+      <description>Complete data export coverage</description>
+      <details>Export must include: account info (email, name, created_at), workouts (all exercises and sets), mood_logs, goals, meditations, journal_entries (decrypted with user key), daily_plans, user preferences, subscription history.</details>
+    </constraint>
+    <constraint id="DATA-2" type="data">
+      <description>Export format requirements</description>
+      <details>JSON: Single file with nested structure (account → modules → data arrays). CSV: Separate file per data type (workouts.csv, mood_logs.csv, etc.). ZIP archive combining both formats. Include README.txt explaining structure.</details>
+    </constraint>
+    <constraint id="UX-1" type="ux">
+      <description>Clear irreversibility warnings</description>
+      <details>Deletion modal must display prominent warning: "This action is PERMANENT and cannot be undone." Require checkbox: "I understand this is permanent." Show countdown: "Your account will be deleted in 7 days. You can cancel anytime."</details>
+    </constraint>
+    <constraint id="UX-2" type="ux">
+      <description>7-day grace period implementation</description>
+      <details>After deletion request, account soft-deleted (deletion_requested_at timestamp set). User can log in during grace period and cancel deletion. Countdown displayed in app. Email sent with cancellation link.</details>
+    </constraint>
+    <constraint id="UX-3" type="ux">
+      <description>Export request feedback</description>
+      <details>Immediate feedback: "Preparing your data..." loading indicator. After request: "Export requested successfully. You'll receive an email with download link within 24 hours." Prevent multiple concurrent exports (rate limit).</details>
+    </constraint>
+    <constraint id="PERF-1" type="performance">
+      <description>Export generation performance</description>
+      <details>Target export generation time &lt;30s for average user (&lt;1000 workouts, &lt;500 journal entries). Use efficient queries with proper indexing. Stream large datasets to avoid memory issues. Process asynchronously via Edge Function.</details>
+    </constraint>
+    <constraint id="PERF-2" type="performance">
+      <description>Email delivery timing</description>
+      <details>Export email must be sent within 5 minutes of generation. Deletion confirmation email sent immediately after request. Use reliable email service with delivery tracking.</details>
+    </constraint>
+    <constraint id="TEST-1" type="testing">
+      <description>Comprehensive GDPR testing</description>
+      <details>Test complete export flow (all data types included). Test deletion cascade across all tables. Test grace period cancellation. Test email delivery. Test edge cases: encrypted journals, large datasets, concurrent requests. Achieve 80%+ coverage.</details>
+    </constraint>
+    <constraint id="AUDIT-1" type="compliance">
+      <description>Audit trail for deletion events</description>
+      <details>Log all deletion requests (user_id, requested_at, reason). Log deletion confirmations (completed_at). Log cancellations (cancelled_at). Retain audit logs for 90 days for compliance verification.</details>
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>ExportDataUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class ExportDataUseCase {
+          Future&lt;Result&lt;void&gt;&gt; call();
+        }
+      </signature>
+      <path>lib/features/settings/domain/usecases/export_data_usecase.dart</path>
+      <notes>Triggers Supabase Edge Function to generate export. Returns immediately after request (async processing). User receives email when export ready. Rate limit: max 1 export per hour per user.</notes>
+    </interface>
+    <interface>
+      <name>DeleteAccountUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class DeleteAccountUseCase {
+          Future&lt;Result&lt;void&gt;&gt; call({
+            required String password,
+            required bool confirmed,
+          });
+        }
+      </signature>
+      <path>lib/features/settings/domain/usecases/delete_account_usecase.dart</path>
+      <notes>Verifies password with Supabase Auth. Checks confirmed flag (checkbox). Calls delete-account Edge Function to soft delete. Logs out user immediately. Returns Success or Failure with error.</notes>
+    </interface>
+    <interface>
+      <name>CancelDeletionUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class CancelDeletionUseCase {
+          Future&lt;Result&lt;void&gt;&gt; call();
+        }
+      </signature>
+      <path>lib/features/settings/domain/usecases/cancel_deletion_usecase.dart</path>
+      <notes>Clears deletion_requested_at timestamp. Only works during 7-day grace period. Returns error if grace period expired.</notes>
+    </interface>
+    <interface>
+      <name>export-user-data Edge Function</name>
+      <kind>edge-function</kind>
+      <signature>
+        Deno.serve(async (req) => {
+          const userId = req.headers.get('user-id');
+          // Fetch all user data from all tables
+          // Generate JSON and CSV files
+          // Create ZIP archive
+          // Upload to Storage with 7-day expiration
+          // Send email with download link
+          return new Response(JSON.stringify({ success: true }));
+        });
+      </signature>
+      <path>supabase/functions/export-user-data/index.ts</path>
+      <notes>Async processing. Queries all user tables: workouts, exercises, meditations, journal_entries, mood_logs, goals, daily_plans, user profile. Decrypts journals using user's encryption key. Generates comprehensive JSON structure and individual CSV files.</notes>
+    </interface>
+    <interface>
+      <name>delete-account Edge Function</name>
+      <kind>edge-function</kind>
+      <signature>
+        Deno.serve(async (req) => {
+          const userId = req.headers.get('user-id');
+          // Set deletion_requested_at = NOW()
+          // Schedule hard delete in 7 days
+          // Send confirmation email
+          return new Response(JSON.stringify({
+            success: true,
+            deletion_date: deletionDate
+          }));
+        });
+      </signature>
+      <path>supabase/functions/delete-account/index.ts</path>
+      <notes>Soft delete implementation. Updates users table with deletion_requested_at timestamp. User can still log in and cancel during grace period. Does not immediately delete data.</notes>
+    </interface>
+    <interface>
+      <name>cleanup-deleted-accounts Edge Function</name>
+      <kind>edge-function</kind>
+      <signature>
+        Deno.serve(async (req) => {
+          const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+          // Find users with deletion_requested_at &lt; 7 days ago
+          // Delete from users table (cascading deletes trigger)
+          // Purge from Storage
+          // Log deletion events
+          return new Response('Cleanup complete', { status: 200 });
+        });
+      </signature>
+      <path>supabase/functions/cleanup-deleted-accounts/index.ts</path>
+      <notes>Scheduled cron job (runs daily). Performs hard delete for accounts past grace period. Cascading deletes handle all related data. Logs audit trail. Triggers backup purge schedule (30 days).</notes>
+    </interface>
+    <interface>
+      <name>users table schema extension</name>
+      <kind>database-migration</kind>
+      <signature>
+        ALTER TABLE users ADD COLUMN deletion_requested_at TIMESTAMPTZ;
+        CREATE INDEX idx_users_deletion_requested
+          ON users(deletion_requested_at)
+          WHERE deletion_requested_at IS NOT NULL;
+      </signature>
+      <path>supabase/migrations/add_deletion_grace_period.sql</path>
+      <notes>Adds soft delete flag to users table. Index for efficient cleanup query. Nullable column (NULL = active account, NOT NULL = scheduled for deletion).</notes>
+    </interface>
+    <interface>
+      <name>cascading delete constraints</name>
+      <kind>database-migration</kind>
+      <signature>
+        ALTER TABLE workouts
+          ADD CONSTRAINT fk_user
+          FOREIGN KEY (user_id) REFERENCES users(id)
+          ON DELETE CASCADE;
+
+        -- Repeat for all user tables: meditations, journal_entries,
+        -- mood_logs, daily_plans, goals, exercises, detected_patterns, etc.
+      </signature>
+      <path>supabase/migrations/add_cascading_deletes.sql</path>
+      <notes>Critical for GDPR compliance. Ensures complete data removal when user deleted from users table. Apply to ALL tables with user_id foreign key.</notes>
+    </interface>
+    <interface>
+      <name>exports Storage bucket</name>
+      <kind>storage-bucket</kind>
+      <signature>
+        CREATE BUCKET exports
+          WITH (
+            public = false,
+            file_size_limit = 100MB,
+            allowed_mime_types = ['application/zip']
+          );
+
+        -- RLS policy: users can only access their own exports
+        CREATE POLICY "Users access own exports"
+          ON storage.objects FOR SELECT
+          USING (bucket_id = 'exports' AND (storage.foldername(name))[1] = auth.uid()::text);
+      </signature>
+      <path>supabase/storage/exports/</path>
+      <notes>Private bucket for export ZIP files. RLS enforces user isolation. Files auto-expire after 7 days (Supabase lifecycle policy). Organize as: exports/{user_id}/export-{timestamp}.zip</notes>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Follow 70/20/10 testing pyramid: 70% unit tests (use cases, validation, business logic), 20% widget tests (UI flows, confirmation dialogs), 10% integration tests (end-to-end export/delete flows with Edge Functions). Use flutter_test for unit/widget tests, integration_test for E2E. Mock Supabase client and Edge Functions. Target 80%+ code coverage. All GDPR compliance features must have comprehensive test coverage.
+    </standards>
+    <locations>
+      <location>test/features/settings/domain/usecases/</location>
+      <location>test/features/settings/presentation/pages/</location>
+      <location>test/features/settings/presentation/widgets/</location>
+      <location>integration_test/features/settings/gdpr_compliance_test.dart</location>
+      <location>supabase/functions/export-user-data/_test.ts</location>
+      <location>supabase/functions/delete-account/_test.ts</location>
+      <location>supabase/functions/cleanup-deleted-accounts/_test.ts</location>
+    </locations>
+    <ideas>
+      <test-idea ac-ref="AC1,AC2,AC3,AC4">
+        <description>Integration test: Complete data export flow</description>
+        <approach>Request export from UI. Mock Edge Function to generate ZIP. Verify all data types included: workouts, mood_logs, goals, meditations, journal_entries, account info. Check JSON structure and CSV files. Verify email sent with download link. Assert link expires in 7 days.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC2,AC3">
+        <description>Unit test: Export data completeness validation</description>
+        <approach>Create test dataset with all data types populated. Call export function. Parse generated JSON. Verify all tables represented. Check field completeness. Verify encrypted journals decrypted in export.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4">
+        <description>Unit test: Export email delivery</description>
+        <approach>Mock email service. Trigger export. Verify email sent to correct address. Check email contains download link. Verify expiration notice (7 days) present. Check security warning included.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC5,AC7">
+        <description>Widget test: Delete account confirmation modal</description>
+        <approach>Render deletion modal. Verify password field present. Verify "I understand this is permanent" checkbox required. Try submit without password → assert error. Try submit without checkbox → assert error. Valid submission triggers delete flow.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC5">
+        <description>Unit test: Password verification for deletion</description>
+        <approach>Mock Supabase Auth. Call DeleteAccountUseCase with incorrect password → assert Failure. Call with correct password + confirmed=true → assert Success. Call with correct password but confirmed=false → assert Failure.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6">
+        <description>Integration test: Account deletion with grace period</description>
+        <approach>Request deletion. Verify deletion_requested_at set in database. Verify user can still log in. Verify countdown displayed. Wait 7 days (simulate). Run cleanup cron job. Verify user deleted from database. Verify all related data deleted (cascading).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6">
+        <description>Unit test: Cascading deletes validation</description>
+        <approach>Create user with data in all tables: workouts, meditations, journal_entries, mood_logs, goals, daily_plans. Delete user from users table. Query all related tables → assert 0 rows for user_id. Verify complete data removal.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6">
+        <description>Integration test: Deletion cancellation during grace period</description>
+        <approach>Request deletion. Verify deletion_requested_at set. Call CancelDeletionUseCase within 7 days. Verify deletion_requested_at cleared. Verify account remains active. Verify countdown removed from UI.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6">
+        <description>Unit test: Deletion cancellation after grace period fails</description>
+        <approach>Set deletion_requested_at to 8 days ago. Call CancelDeletionUseCase. Assert Failure with "Grace period expired" error. Verify deletion_requested_at unchanged.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC8">
+        <description>Unit test: Cleanup cron job logic</description>
+        <approach>Create test users: (A) deletion_requested_at = 8 days ago, (B) deletion_requested_at = 6 days ago, (C) no deletion request. Run cleanup function. Verify user A deleted. Verify users B and C still exist.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1,AC2">
+        <description>Widget test: Data Privacy page UI</description>
+        <approach>Render DataPrivacyPage. Verify "Export Data" button present. Verify "Delete Account" button present and styled red. Tap Export → verify loading state. Verify confirmation dialog appears after export.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC2,AC3">
+        <description>Unit test: Export rate limiting</description>
+        <approach>Call ExportDataUseCase. Immediately call again. Assert second call returns Failure with "Rate limit exceeded" error. Wait 1 hour. Call again → assert Success.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3">
+        <description>Unit test: Encrypted journal export</description>
+        <approach>Create encrypted journal entry. Request export. Verify export contains decrypted content (not encrypted blob). Verify encryption_iv not included in export. Check plaintext readable in JSON.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4">
+        <description>Integration test: Export link expiration</description>
+        <approach>Generate export. Extract download URL. Verify URL accessible immediately. Simulate 7-day passage. Attempt download → assert 403 Forbidden or 404 Not Found. Verify file purged from Storage.</approach>
+      </test-idea>
+    </ideas>
+  </tests>
+</story-context>

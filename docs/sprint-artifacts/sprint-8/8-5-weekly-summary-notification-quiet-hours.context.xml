@@ -1,0 +1,453 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>8</epicId>
+    <storyId>8.5</storyId>
+    <title>Weekly Summary Notification & Quiet Hours</title>
+    <status>ready-for-dev</status>
+    <generatedAt>2025-11-17</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/sprint-8/8-5-weekly-summary-notification-quiet-hours.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>user</asA>
+    <iWant>to receive a weekly summary notification every Monday morning and configure quiet hours</iWant>
+    <soThat>I can review my progress and not be disturbed during sleep or focus time</soThat>
+    <tasks>
+      <task id="1" ac-ref="AC1,AC2,AC3,AC5">
+        <description>Implement weekly summary notification system</description>
+        <subtasks>
+          <subtask>Create SendWeeklySummaryNotificationUseCase</subtask>
+          <subtask>Query weekly_reports table for user's latest weekly report (from Story 6.6)</subtask>
+          <subtask>Generate summary message: "[X] workouts, [Y] meditations, [Z] goals, [top insight]"</subtask>
+          <subtask>Format example: "4 workouts, +5kg squat, 5 meditations, stress -23%"</subtask>
+          <subtask>Schedule notification for Monday 8:00am (user's local timezone)</subtask>
+          <subtask>Deep link: lifeos://home/weekly-report (opens Weekly Report Card)</subtask>
+        </subtasks>
+      </task>
+      <task id="2" ac-ref="AC1">
+        <description>Create Supabase Edge Function for weekly summary</description>
+        <subtasks>
+          <subtask>Create send-weekly-summary-notifications Edge Function</subtask>
+          <subtask>Query all users with weekly_summary_enabled=true</subtask>
+          <subtask>For each user: query latest weekly_reports entry</subtask>
+          <subtask>Generate summary text from report_data JSON</subtask>
+          <subtask>Check quiet hours before sending</subtask>
+          <subtask>Call send-notification Edge Function with summary message</subtask>
+          <subtask>Set up pg_cron job to run every Monday at 8:00am</subtask>
+        </subtasks>
+      </task>
+      <task id="3" ac-ref="AC6,AC7,AC8,AC9,AC10,AC11">
+        <description>Implement quiet hours system</description>
+        <subtasks>
+          <subtask>Add quiet_hours_enabled, quiet_hours_start, quiet_hours_end to notification_settings table</subtask>
+          <subtask>Default values: enabled=true, start=22:00, end=07:00</subtask>
+          <subtask>Create CheckQuietHoursUseCase to check if current time is in quiet hours</subtask>
+          <subtask>Handle midnight-spanning ranges (e.g., 22:00-07:00)</subtask>
+          <subtask>Implement time comparison logic in minutes (e.g., 22:00 = 1320 minutes)</subtask>
+          <subtask>Integrate quiet hours check into all notification sending logic</subtask>
+        </subtasks>
+      </task>
+      <task id="4" ac-ref="AC7">
+        <description>Implement critical alert bypass for quiet hours</description>
+        <subtasks>
+          <subtask>Add bypassQuietHours parameter to send() method in NotificationService</subtask>
+          <subtask>Default bypassQuietHours=false (respect quiet hours)</subtask>
+          <subtask>For critical alerts (e.g., account security), set bypassQuietHours=true</subtask>
+          <subtask>Skip quiet hours check when bypass flag is true</subtask>
+          <subtask>Log when critical alert bypasses quiet hours</subtask>
+        </subtasks>
+      </task>
+      <task id="5" ac-ref="AC8,AC9,AC10">
+        <description>Build quiet hours settings UI</description>
+        <subtasks>
+          <subtask>Add "Quiet Hours" section to NotificationSettingsScreen</subtask>
+          <subtask>Add toggle for quiet_hours_enabled</subtask>
+          <subtask>Add time picker for quiet_hours_start (default 22:00)</subtask>
+          <subtask>Add time picker for quiet_hours_end (default 07:00)</subtask>
+          <subtask>Show helper text: "No notifications during quiet hours"</subtask>
+          <subtask>Implement UpdateQuietHoursUseCase</subtask>
+          <subtask>Sync settings to Supabase on change</subtask>
+        </subtasks>
+      </task>
+      <task id="6" ac-ref="AC5">
+        <description>Add weekly summary settings UI</description>
+        <subtasks>
+          <subtask>Add "Weekly Summary" toggle to NotificationSettingsScreen</subtask>
+          <subtask>Show description: "Get a weekly progress report every Monday at 8am"</subtask>
+          <subtask>Implement UpdateWeeklySummarySettingsUseCase</subtask>
+          <subtask>Sync setting to notification_settings table (weekly_summary_enabled)</subtask>
+        </subtasks>
+      </task>
+      <task id="7" ac-ref="AC11">
+        <description>Integrate quiet hours into all notification types</description>
+        <subtasks>
+          <subtask>Update SendReminderUseCase to check quiet hours (Story 8.2)</subtask>
+          <subtask>Update SendStreakAlertUseCase to check quiet hours (Story 8.3)</subtask>
+          <subtask>Update SendInsightNotificationUseCase to check quiet hours (Story 8.4)</subtask>
+          <subtask>Update SendWeeklySummaryNotificationUseCase to check quiet hours</subtask>
+          <subtask>Ensure all notification Edge Functions check quiet hours before sending</subtask>
+        </subtasks>
+      </task>
+      <task id="8" ac-ref="ALL">
+        <description>Write comprehensive tests</description>
+        <subtasks>
+          <subtask>Unit tests: CheckQuietHoursUseCase (normal range, midnight-spanning range), summary message generation</subtask>
+          <subtask>Widget tests: Quiet hours settings UI, time pickers, weekly summary toggle</subtask>
+          <subtask>Integration test: Weekly summary sent Monday 8am → tap → Weekly Report Card opens</subtask>
+          <subtask>Integration test: Notification scheduled during quiet hours → skipped</subtask>
+          <subtask>Integration test: Critical alert bypasses quiet hours</subtask>
+          <subtask>Integration test: Quiet hours disabled → notifications sent 24/7</subtask>
+          <subtask>Achieve 80%+ code coverage</subtask>
+        </subtasks>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="AC1">
+      <text>Weekly summary notification sent every Monday at 8am (user's local timezone)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC2">
+      <text>Notification includes week summary: workouts, meditations, goals, top insight</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC3">
+      <text>Tapping notification opens Weekly Report Card</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC4">
+      <text>Deep link: lifeos://home/weekly-report</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC5">
+      <text>User can disable weekly summary notifications in Settings</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC6">
+      <text>Default quiet hours: 10pm - 7am (user customizable)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC7">
+      <text>No notifications sent during quiet hours (all types: reminders, streaks, insights, weekly summary)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC8">
+      <text>Exception: Critical alerts (e.g., account security) bypass quiet hours</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC9">
+      <text>User can toggle quiet hours ON/OFF in Settings</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC10">
+      <text>User can customize start/end time (time picker UI)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC11">
+      <text>Quiet hours apply to all notification types globally</text>
+      <priority>P0</priority>
+    </criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR108: Weekly summary notifications</section>
+        <snippet>System sends weekly summary notification every Monday at 8am. Message: "📊 Your Week in Review: 4 workouts, +5kg squat, 5 meditations, stress -23%". Tap opens Weekly Report Card. User can disable in settings.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR109: Quiet hours</section>
+        <snippet>Users can set quiet hours for notifications (default 10pm-7am). No notifications sent during quiet hours (reminders, streaks, insights, weekly summary). Exception: critical alerts bypass quiet hours. User can customize start/end time and toggle ON/OFF.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/epics.md</path>
+        <title>Epic 8: Notifications & Engagement - Story 8.5</title>
+        <section>Story 8.5: Weekly Summary & Quiet Hours</section>
+        <snippet>Implement weekly summary notification (Monday 8am). Include workouts, meditations, goals, top insight. Deep link to Weekly Report Card. Implement quiet hours (default 10pm-7am, customizable). Apply to all notification types globally. Critical alerts bypass quiet hours.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/epics.md</path>
+        <title>Epic 6: Gamification & Retention - Story 6.6</title>
+        <section>Story 6.6: Weekly Summary Report</section>
+        <snippet>Weekly Report Card generated every Monday. Includes: workouts completed, PRs achieved, meditations, mood trends, stress change, top insight. Stored in weekly_reports table (user_id, week_start_date, week_end_date, report_data JSONB).</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/sprint-8/8-5-weekly-summary-notification-quiet-hours.md</path>
+        <title>Story 8.5: Weekly Summary & Quiet Hours</title>
+        <section>Technical Implementation</section>
+        <snippet>send-weekly-summary-notifications Edge Function runs Monday 8am. Queries weekly_reports. Generates summary from report_data JSONB. Checks quiet hours. QuietHoursService checks time ranges (handles midnight-spanning). Integrated into all notification types.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <reference>
+        <path>lib/core/notifications/services/fcm_service.dart</path>
+        <description>FCM service from Story 8.1. Use for sending weekly summary notifications.</description>
+      </reference>
+      <reference>
+        <path>lib/core/notifications/services/deep_link_service.dart</path>
+        <description>Deep link service from Story 8.1. Register weekly report deep link route: lifeos://home/weekly-report.</description>
+      </reference>
+      <reference>
+        <path>lib/features/gamification/domain/usecases/get_weekly_report_usecase.dart</path>
+        <description>Query weekly reports from Story 6.6. Get latest report for user.</description>
+      </reference>
+      <reference>
+        <path>lib/core/notifications/domain/usecases/send_reminder_usecase.dart</path>
+        <description>Reminder notification logic from Story 8.2. Update to check quiet hours.</description>
+      </reference>
+      <reference>
+        <path>lib/core/notifications/domain/usecases/send_streak_alert_usecase.dart</path>
+        <description>Streak alert logic from Story 8.3. Update to check quiet hours.</description>
+      </reference>
+      <reference>
+        <path>lib/core/notifications/domain/usecases/send_insight_notification_usecase.dart</path>
+        <description>Insight notification logic from Story 8.4. Update to check quiet hours.</description>
+      </reference>
+    </code>
+    <dependencies>
+      <flutter>
+        <sdk>3.38+</sdk>
+        <dart>3.10+</dart>
+      </flutter>
+      <packages>
+        <package name="firebase_messaging" version="^14.7.0" usage="Send weekly summary notifications via FCM" />
+        <package name="flutter_local_notifications" version="^16.3.0" usage="Display notifications with quiet hours respect" />
+        <package name="flutter_riverpod" version="^3.0.0" usage="State management for quiet hours and weekly summary settings" />
+        <package name="drift" version="^2.14.0" usage="Local SQLite database for notification settings (offline-first)" />
+        <package name="supabase_flutter" version="^2.0.0" usage="Supabase client for sync and Edge Functions" />
+        <package name="timezone" version="^0.9.0" usage="Handle timezone conversions for weekly summary scheduling" />
+        <package name="flutter_test" version="sdk" usage="Unit and widget testing framework" />
+        <package name="integration_test" version="sdk" usage="End-to-end testing framework" />
+      </packages>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint id="ARCH-1" type="architectural">
+      <description>Must follow Hybrid Architecture pattern</description>
+      <details>Create quiet hours logic at lib/core/notifications/domain/usecases/. Weekly summary logic at lib/core/notifications/domain/usecases/. Integrate with existing notification services. Follow clean architecture separation.</details>
+    </constraint>
+    <constraint id="ARCH-2" type="architectural">
+      <description>Offline-first implementation required</description>
+      <details>Quiet hours and weekly summary settings stored in Drift (SQLite) first for instant feedback. Sync to Supabase when online. Weekly summary sent via Supabase Edge Functions (server-side scheduling Monday 8am).</details>
+    </constraint>
+    <constraint id="DATA-1" type="data">
+      <description>Database schema must support quiet hours and weekly summary</description>
+      <details>notification_settings table: Add quiet_hours_enabled (BOOLEAN), quiet_hours_start (TIME), quiet_hours_end (TIME), weekly_summary_enabled (BOOLEAN). Default: quiet_hours_enabled=true, start=22:00, end=07:00, weekly_summary_enabled=true.</details>
+    </constraint>
+    <constraint id="SEC-1" type="security">
+      <description>Row Level Security (RLS) policies required</description>
+      <details>Use existing RLS policies on notification_settings table (from Story 8.1). RLS: USING (auth.uid() = user_id).</details>
+    </constraint>
+    <constraint id="LOGIC-1" type="business-logic">
+      <description>Quiet hours must handle midnight-spanning ranges</description>
+      <details>Support ranges like 22:00-07:00 (spans midnight). Convert times to minutes (22:00 = 1320, 07:00 = 420). If start > end, range spans midnight: currentTime >= start OR currentTime &lt; end. If start &lt; end, normal range: currentTime >= start AND currentTime &lt; end.</details>
+    </constraint>
+    <constraint id="LOGIC-2" type="business-logic">
+      <description>Weekly summary generation from report_data</description>
+      <details>Query weekly_reports table (user_id, report_data JSONB from Story 6.6). Extract: workoutsCompleted, prAchieved, meditationsCompleted, stressChange. Format: "4 workouts, +5kg squat, 5 meditations, stress -23%". Limit to 100 chars for notification.</details>
+    </constraint>
+    <constraint id="LOGIC-3" type="business-logic">
+      <description>Critical alerts must bypass quiet hours</description>
+      <details>Define critical alert types: account security (suspicious login, password changed), payment failure, terms of service updates. Pass bypassQuietHours=true flag. Skip quiet hours check for these alerts. Log bypass for audit trail.</details>
+    </constraint>
+    <constraint id="UX-1" type="ux">
+      <description>Weekly summary message must be concise and motivating</description>
+      <details>Use 📊 emoji. Highlight progress: workouts, PRs, meditations, stress change. Keep under 100 chars. Example: "📊 Your Week in Review: 4 workouts, +5kg squat, 5 meditations, stress -23%". CTA: tap to view full report.</details>
+    </constraint>
+    <constraint id="UX-2" type="ux">
+      <description>Quiet hours UI must be intuitive</description>
+      <details>Show toggle with clear label: "Quiet Hours (No notifications during sleep)". Time pickers for start/end with 12-hour or 24-hour format based on device locale. Show preview: "Quiet Hours: 10:00 PM - 7:00 AM". Immediate feedback on change.</details>
+    </constraint>
+    <constraint id="TIMING-1" type="timing">
+      <description>Weekly summary timing must respect user timezone</description>
+      <details>Store user timezone in user_settings. Schedule weekly summary for Monday 8:00am local time. Edge Function uses timezone-aware scheduling (pg_cron with timezone conversion). Handle DST transitions correctly.</details>
+    </constraint>
+    <constraint id="INT-1" type="integration">
+      <description>Quiet hours must be integrated globally</description>
+      <details>All notification sending functions must check quiet hours before sending. Update: SendReminderUseCase, SendStreakAlertUseCase, SendInsightNotificationUseCase, SendWeeklySummaryNotificationUseCase. Consistent quiet hours check across all notification types.</details>
+    </constraint>
+    <constraint id="TEST-1" type="testing">
+      <description>80%+ code coverage required</description>
+      <details>Follow 70/20/10 testing pyramid. Unit tests for quiet hours logic (normal and midnight-spanning ranges), widget tests for settings UI, integration test for full weekly summary flow (Monday 8am → send → tap → report opens).</details>
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>CheckQuietHoursUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class CheckQuietHoursUseCase {
+          Future&lt;Result&lt;bool&gt;&gt; call(String userId);
+        }
+      </signature>
+      <path>lib/core/notifications/domain/usecases/check_quiet_hours_usecase.dart</path>
+      <notes>Checks if current time is within user's quiet hours. Queries notification_settings for quiet_hours_enabled, quiet_hours_start, quiet_hours_end. Returns true if in quiet hours, false otherwise. Handles midnight-spanning ranges.</notes>
+    </interface>
+    <interface>
+      <name>UpdateQuietHoursUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class UpdateQuietHoursUseCase {
+          Future&lt;Result&lt;NotificationSettingsEntity&gt;&gt; call({
+            required String userId,
+            required bool enabled,
+            TimeOfDay? start,
+            TimeOfDay? end,
+          });
+        }
+      </signature>
+      <path>lib/core/notifications/domain/usecases/update_quiet_hours_usecase.dart</path>
+      <notes>Updates quiet hours settings. Saves to Drift first, syncs to Supabase. If start/end null, use existing values. Returns updated settings entity.</notes>
+    </interface>
+    <interface>
+      <name>SendWeeklySummaryNotificationUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class SendWeeklySummaryNotificationUseCase {
+          Future&lt;Result&lt;void&gt;&gt; call({
+            required String userId,
+            required Map&lt;String, dynamic&gt; reportData,
+          });
+        }
+      </signature>
+      <path>lib/core/notifications/domain/usecases/send_weekly_summary_notification_usecase.dart</path>
+      <notes>Sends weekly summary notification. Generates summary message from reportData. Checks weekly_summary_enabled. Checks quiet hours. Sends notification via send-notification Edge Function. Deep link: lifeos://home/weekly-report.</notes>
+    </interface>
+    <interface>
+      <name>WeeklySummaryMessageBuilder</name>
+      <kind>service</kind>
+      <signature>
+        abstract class WeeklySummaryMessageBuilder {
+          String buildMessage(Map&lt;String, dynamic&gt; reportData);
+        }
+      </signature>
+      <path>lib/core/notifications/services/weekly_summary_message_builder.dart</path>
+      <notes>Builds weekly summary message from report_data JSONB. Example: "4 workouts, +5kg squat, 5 meditations, stress -23%". Limit to 100 chars. Include emoji 📊.</notes>
+    </interface>
+    <interface>
+      <name>QuietHoursService</name>
+      <kind>service</kind>
+      <signature>
+        abstract class QuietHoursService {
+          Future&lt;bool&gt; isInQuietHours(String userId);
+          bool isTimeBetween(TimeOfDay current, TimeOfDay start, TimeOfDay end);
+        }
+      </signature>
+      <path>lib/core/notifications/services/quiet_hours_service.dart</path>
+      <notes>Service for quiet hours logic. isInQuietHours() queries settings and checks current time. isTimeBetween() handles time range comparison including midnight-spanning ranges. Used by all notification use cases.</notes>
+    </interface>
+    <interface>
+      <name>notification_settings table update (Supabase PostgreSQL)</name>
+      <kind>database-table</kind>
+      <signature>
+        ALTER TABLE notification_settings ADD COLUMN IF NOT EXISTS
+          weekly_summary_enabled BOOLEAN DEFAULT TRUE,
+          quiet_hours_enabled BOOLEAN DEFAULT TRUE,
+          quiet_hours_start TIME DEFAULT '22:00',
+          quiet_hours_end TIME DEFAULT '07:00';
+      </signature>
+      <path>supabase/migrations/</path>
+      <notes>Add columns for weekly summary and quiet hours settings. Default quiet hours: 10pm-7am (22:00-07:00). Default weekly summary: enabled.</notes>
+    </interface>
+    <interface>
+      <name>send-weekly-summary-notifications Edge Function</name>
+      <kind>edge-function</kind>
+      <signature>
+        POST /functions/v1/send-weekly-summary-notifications
+        (Triggered by pg_cron every Monday at 8:00am)
+
+        Queries all users with weekly_summary_enabled=true.
+        For each user:
+          - Query latest weekly_reports entry
+          - Generate summary message from report_data
+          - Check quiet hours
+          - Send notification via send-notification Edge Function
+      </signature>
+      <path>supabase/functions/send-weekly-summary-notifications/index.ts</path>
+      <notes>Scheduled by pg_cron to run every Monday at 8:00am user local time. Queries notification_settings, weekly_reports tables. Sends notifications via send-notification Edge Function. Respects quiet hours and weekly_summary_enabled setting.</notes>
+    </interface>
+    <interface>
+      <name>NotificationService update</name>
+      <kind>service</kind>
+      <signature>
+        abstract class NotificationService {
+          Future&lt;void&gt; send({
+            required String userId,
+            required String title,
+            required String body,
+            String? deepLink,
+            bool bypassQuietHours = false,  // For critical alerts
+          });
+        }
+      </signature>
+      <path>lib/core/notifications/services/notification_service.dart</path>
+      <notes>Updated send() method with bypassQuietHours parameter. Default false (respect quiet hours). Set true for critical alerts (account security, payment issues). Integrates with QuietHoursService.</notes>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Follow 70/20/10 testing pyramid: 70% unit tests (use cases, services, entities), 20% widget tests (UI components, state management), 10% integration tests (end-to-end flows). Use flutter_test for unit/widget tests, integration_test for E2E. Mock dependencies with mockito. Target 80%+ code coverage. All acceptance criteria must have test coverage.
+    </standards>
+    <locations>
+      <location>test/core/notifications/domain/usecases/</location>
+      <location>test/core/notifications/services/</location>
+      <location>test/features/settings/presentation/screens/</location>
+      <location>integration_test/notifications/weekly_summary_and_quiet_hours_flow_test.dart</location>
+    </locations>
+    <ideas>
+      <test-idea ac-ref="AC6,AC7">
+        <description>Unit test: CheckQuietHoursUseCase - normal range</description>
+        <approach>Set quiet hours: 08:00-20:00 (normal range, doesn't span midnight). Mock current time: 10:00. Call checkQuietHours(). Verify returns true (in quiet hours). Mock time: 21:00. Call again. Verify returns false (outside quiet hours).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6,AC7">
+        <description>Unit test: CheckQuietHoursUseCase - midnight-spanning range</description>
+        <approach>Set quiet hours: 22:00-07:00 (spans midnight). Mock time: 23:00. Call checkQuietHours(). Verify returns true (after 22:00). Mock time: 02:00. Call again. Verify returns true (before 07:00). Mock time: 08:00. Call again. Verify returns false (outside quiet hours).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC2">
+        <description>Unit test: WeeklySummaryMessageBuilder</description>
+        <approach>Call buildMessage() with reportData: {workoutsCompleted: 4, prAchieved: '+5kg squat', meditationsCompleted: 5, stressChange: '-23%'}. Verify message: "4 workouts, +5kg squat, 5 meditations, stress -23%". Verify message length &lt;= 100 chars. Verify 📊 emoji included.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC9,AC10">
+        <description>Widget test: Quiet hours settings UI</description>
+        <approach>Render NotificationSettingsScreen with quiet hours section. Verify toggle displayed (enabled by default). Tap start time. Verify showTimePicker() called. Select 23:00. Verify updateQuietHours() called with start=23:00. Tap end time. Select 06:00. Verify updateQuietHours() called with end=06:00.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC5">
+        <description>Widget test: Weekly summary toggle</description>
+        <approach>Render NotificationSettingsScreen with weekly summary toggle. Verify toggle enabled by default. Tap to disable. Verify updateWeeklySummarySettings() called with enabled=false. Verify UI updates.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC8">
+        <description>Unit test: Critical alert bypasses quiet hours</description>
+        <approach>Set quiet hours: 22:00-07:00, enabled. Mock time: 23:00 (in quiet hours). Call send() with bypassQuietHours=false. Verify notification NOT sent. Call send() with bypassQuietHours=true. Verify notification sent (bypassed quiet hours). Verify log entry created.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1,AC3">
+        <description>Integration test: Weekly summary notification flow</description>
+        <approach>Create weekly report for user. Mock system time to Monday 8:00am. Trigger send-weekly-summary-notifications Edge Function. Verify notification sent with summary message. Tap notification. Verify deep link navigation to lifeos://home/weekly-report. Verify Weekly Report Card displayed with correct data.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC7,AC11">
+        <description>Integration test: Quiet hours blocks all notification types</description>
+        <approach>Set quiet hours: 22:00-07:00, enabled. Mock time: 23:00. Trigger reminder notification. Verify NOT sent (quiet hours). Trigger streak alert. Verify NOT sent. Trigger insight notification. Verify NOT sent. Trigger weekly summary. Verify NOT sent. Mock time: 08:00. Trigger all again. Verify all sent (outside quiet hours).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC9">
+        <description>Integration test: Quiet hours disabled → notifications sent 24/7</description>
+        <approach>Set quiet hours: enabled=false. Mock time: 23:00 (would be in quiet hours if enabled). Trigger reminder notification. Verify sent (quiet hours disabled). Verify notifications work at all times when quiet hours OFF.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC7">
+        <description>Integration test: Notification scheduled during quiet hours → skipped</description>
+        <approach>Set quiet hours: 22:00-07:00. Schedule morning check-in reminder at 06:30 (within quiet hours). Trigger scheduler. Verify notification NOT sent (still in quiet hours). Mock time to 07:01. Trigger scheduler. Verify notification sent (quiet hours ended).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC5">
+        <description>Integration test: Weekly summary disabled → no notification</description>
+        <approach>Disable weekly summary in settings (weekly_summary_enabled=false). Mock time to Monday 8:00am. Trigger send-weekly-summary-notifications. Verify notification NOT sent (disabled). Enable setting. Trigger again. Verify notification sent.</approach>
+      </test-idea>
+    </ideas>
+  </tests>
+</story-context>

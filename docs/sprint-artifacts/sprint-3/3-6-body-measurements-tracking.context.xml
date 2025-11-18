@@ -1,0 +1,611 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>3</epicId>
+    <storyId>3.6</storyId>
+    <title>Body Measurements Tracking</title>
+    <status>ready-for-dev</status>
+    <generatedAt>2025-11-17</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/sprint-3/3-6-body-measurements-tracking.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>user tracking body composition</asA>
+    <iWant>to log body measurements</iWant>
+    <soThat>I can see non-scale victories</soThat>
+    <tasks>
+      <task id="1" ac-ref="AC1,AC2,AC3">
+        <description>Implement body measurements UI screen</description>
+        <subtasks>
+          <subtask>Create MeasurementsScreen widget accessible from Fitness tab</subtask>
+          <subtask>Implement measurement input form with fields: weight, body fat %, chest, waist, hips, arms, legs</subtask>
+          <subtask>Add date picker for measurement timestamp (default: today)</subtask>
+          <subtask>Implement unit toggle (kg/lbs, cm/inches) with user preference persistence</subtask>
+          <subtask>Add "Save Measurement" CTA button with loading state</subtask>
+          <subtask>Implement input validation (numeric, range checks)</subtask>
+        </subtasks>
+      </task>
+      <task id="2" ac-ref="AC4">
+        <description>Implement measurement trend charts</description>
+        <subtasks>
+          <subtask>Integrate fl_chart package for line chart rendering</subtask>
+          <subtask>Create MeasurementChart widget with time period selector (30-day, 90-day)</subtask>
+          <subtask>Implement multi-line chart showing weight, body fat %, and measurements over time</subtask>
+          <subtask>Add touch interaction to view specific measurement values on chart</subtask>
+          <subtask>Handle empty state when no measurements exist</subtask>
+          <subtask>Optimize chart rendering for smooth scrolling (60fps target)</subtask>
+        </subtasks>
+      </task>
+      <task id="3" ac-ref="AC5,AC6">
+        <description>Implement goal setting and progress tracking</description>
+        <subtasks>
+          <subtask>Create goal setting dialog for target weight and measurements</subtask>
+          <subtask>Implement progress calculation logic (current vs. target)</subtask>
+          <subtask>Display progress indicator with text: "Xkg to go!" or "Goal reached!"</subtask>
+          <subtask>Show goal line on measurement charts</subtask>
+          <subtask>Store goals in user_preferences table</subtask>
+        </subtasks>
+      </task>
+      <task id="4" ac-ref="AC3,AC7">
+        <description>Implement measurement data persistence and sync</description>
+        <subtasks>
+          <subtask>Create body_measurements table in Drift (local SQLite)</subtask>
+          <subtask>Create body_measurements table in Supabase (PostgreSQL) with RLS policies</subtask>
+          <subtask>Implement LogMeasurementUseCase for saving measurements</subtask>
+          <subtask>Implement GetMeasurementHistoryUseCase for retrieving measurements</subtask>
+          <subtask>Add UNIQUE constraint on (user_id, date) to prevent duplicate entries</subtask>
+          <subtask>Implement offline-first sync with Write-Through Cache pattern</subtask>
+        </subtasks>
+      </task>
+      <task id="5" ac-ref="AC7">
+        <description>Implement unit conversion system</description>
+        <subtasks>
+          <subtask>Create UnitConverter utility class (kg↔lbs, cm↔inches)</subtask>
+          <subtask>Store measurements in metric (kg, cm) as canonical format</subtask>
+          <subtask>Convert to imperial units for display based on user preference</subtask>
+          <subtask>Implement unit preference persistence in user settings</subtask>
+          <subtask>Handle precision rounding (2 decimal places)</subtask>
+        </subtasks>
+      </task>
+      <task id="6" ac-ref="EXTENDED">
+        <description>Implement photo progress tracking with E2EE</description>
+        <subtasks>
+          <subtask>Create photo upload UI (before/after comparison view)</subtask>
+          <subtask>Implement image picker with compression (max 2MB per photo)</subtask>
+          <subtask>Implement AES-256-GCM encryption for photo storage</subtask>
+          <subtask>Store encrypted photos locally with secure key management</subtask>
+          <subtask>Create photo gallery view with side-by-side comparison slider</subtask>
+          <subtask>Add photo metadata (date, associated measurement)</subtask>
+        </subtasks>
+      </task>
+      <task id="7" ac-ref="EXTENDED">
+        <description>Implement CSV export functionality</description>
+        <subtasks>
+          <subtask>Create ExportMeasurementsUseCase for CSV generation</subtask>
+          <subtask>Implement CSV format: date, weight, body_fat_pct, chest, waist, hips, arms, legs, unit</subtask>
+          <subtask>Add export button with date range selector</subtask>
+          <subtask>Implement file save dialog using share_plus package</subtask>
+          <subtask>Include goal data in export (if set)</subtask>
+        </subtasks>
+      </task>
+      <task id="8" ac-ref="ALL">
+        <description>Write comprehensive tests</description>
+        <subtasks>
+          <subtask>Unit tests: MeasurementEntity validation, unit conversion accuracy, CSV export format</subtask>
+          <subtask>Unit tests: LogMeasurementUseCase, GetMeasurementHistoryUseCase, photo encryption/decryption</subtask>
+          <subtask>Widget tests: measurement form input, chart rendering, unit toggle, goal setting dialog</subtask>
+          <subtask>Integration test: complete measurement logging flow with photo upload and sync</subtask>
+          <subtask>Integration test: CSV export with verification</subtask>
+          <subtask>Achieve 80%+ code coverage</subtask>
+        </subtasks>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="AC1">
+      <text>Body measurements screen accessible from Fitness tab → "Measurements"</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC2">
+      <text>User can log: Weight, body fat %, chest, waist, hips, arms, legs</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC3">
+      <text>Measurements saved with timestamp (date)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC4">
+      <text>Trend charts display measurements as line graphs (30-day, 90-day views)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC5">
+      <text>User can set optional goal weight and target measurements</text>
+      <priority>P1</priority>
+    </criterion>
+    <criterion id="AC6">
+      <text>Progress to goal shown with indicator ("3kg to go!" or "Goal reached!")</text>
+      <priority>P1</priority>
+    </criterion>
+    <criterion id="AC7">
+      <text>Unit conversion support: kg/lbs for weight, cm/inches for measurements (user preference)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC8">
+      <text>Photo progress tracking with before/after comparison view</text>
+      <priority>P1</priority>
+    </criterion>
+    <criterion id="AC9">
+      <text>Photos stored locally with AES-256-GCM end-to-end encryption</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC10">
+      <text>Measurements sync across devices via Supabase</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC11">
+      <text>Export measurements as CSV with date range selection</text>
+      <priority>P1</priority>
+    </criterion>
+    <criterion id="AC12">
+      <text>GDPR compliance: user can delete all measurement data and photos</text>
+      <priority>P0</priority>
+    </criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR39: Body measurements and progress tracking</section>
+        <snippet>Users must be able to log body measurements (weight, body fat %, circumferences) and view trends over time via charts. Support photo progress tracking with privacy protection. Allow goal setting and progress indicators.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/epics.md</path>
+        <title>Epic 3: Fitness Coach MVP - Story 3.6</title>
+        <section>Story 3.6: Body Measurements Tracking</section>
+        <snippet>Complete body measurements tracking feature with measurements screen, trend charts, goal setting, photo progress with E2EE, and CSV export. Prerequisites: Epic 1 (auth, data sync).</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Hybrid Architecture (D1)</section>
+        <snippet>Feature-first architecture with clean architecture layers (presentation/domain/data). Fitness Coach module located at features/fitness_coach/. Use Riverpod for state management.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Offline-First Sync (D3)</section>
+        <snippet>Hybrid Sync pattern: Write-Through Cache + Sync Queue. Save to Drift (SQLite) first for instant feedback (&lt;100ms), then queue for Supabase sync when online. Offline operations must work seamlessly.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Data Security - E2EE for sensitive data</section>
+        <snippet>Sensitive user data (photos, health metrics) must use end-to-end encryption (AES-256-GCM). Encryption keys stored in secure device storage (iOS Keychain, Android KeyStore). Server never has access to unencrypted data.</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/sprint-3/3-6-body-measurements-tracking.md</path>
+        <title>Story 3.6: Body Measurements Tracking</title>
+        <section>Database Schema</section>
+        <snippet>body_measurements table with columns: id (UUID), user_id (UUID FK), date (DATE), weight (DECIMAL), body_fat_pct (DECIMAL), chest/waist/hips/arms/legs (DECIMAL), unit (TEXT CHECK), created_at. UNIQUE(user_id, date).</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/ux-design-specification.md</path>
+        <title>UX Design Specification</title>
+        <section>Fitness Coach - Measurements Screen</section>
+        <snippet>Measurements screen shows latest measurement at top with trend indicator (↑↓). Chart below shows 30-day view (swipe for 90-day). "Log Measurement" FAB. Photo gallery carousel at bottom. Unit toggle in top-right corner.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <existing>
+        <file>
+          <path>lib/features/fitness_coach/</path>
+          <description>Fitness Coach module structure - add measurements feature here</description>
+        </file>
+        <file>
+          <path>lib/core/database/tables.drift.dart</path>
+          <description>Central Drift database schema - add body_measurements table definition</description>
+        </file>
+        <file>
+          <path>lib/core/utils/unit_converter.dart</path>
+          <description>Utility class for unit conversions (create if not exists)</description>
+        </file>
+        <file>
+          <path>lib/core/security/encryption_service.dart</path>
+          <description>Encryption service for photo E2EE (create if not exists)</description>
+        </file>
+      </existing>
+    </code>
+    <dependencies>
+      <flutter>
+        <sdk>3.38+</sdk>
+        <dart>3.10+</dart>
+      </flutter>
+      <packages>
+        <package name="flutter_riverpod" version="^3.0.0" usage="State management for measurements screen and data flow" />
+        <package name="riverpod_annotation" version="^3.0.0" usage="Code generation for providers" />
+        <package name="drift" version="^2.14.0" usage="Local SQLite database for offline measurement storage" />
+        <package name="drift_flutter" version="^0.1.0" usage="Flutter integration for Drift" />
+        <package name="sqlite3_flutter_libs" version="^0.5.0" usage="SQLite native libraries" />
+        <package name="supabase_flutter" version="^2.0.0" usage="Supabase client for auth and database sync" />
+        <package name="fl_chart" version="^0.66.0" usage="Line chart rendering for measurement trends" />
+        <package name="image_picker" version="^1.0.0" usage="Photo selection from camera/gallery for progress photos" />
+        <package name="image" version="^4.1.0" usage="Image compression and manipulation" />
+        <package name="encrypt" version="^5.0.0" usage="AES-256-GCM encryption for progress photos" />
+        <package name="flutter_secure_storage" version="^9.0.0" usage="Secure key storage for photo encryption keys" />
+        <package name="share_plus" version="^7.2.0" usage="CSV file export and sharing" />
+        <package name="csv" version="^6.0.0" usage="CSV file generation for measurement export" />
+        <package name="path_provider" version="^2.1.0" usage="Get app directories for photo storage" />
+        <package name="flutter_test" version="sdk" usage="Unit and widget testing framework" />
+        <package name="integration_test" version="sdk" usage="End-to-end testing framework" />
+      </packages>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint id="ARCH-1" type="architectural">
+      <description>Must follow Hybrid Architecture pattern (D1)</description>
+      <details>Create feature structure at lib/features/fitness_coach/measurements/ with presentation/, domain/, and data/ layers. Use clean architecture separation of concerns.</details>
+    </constraint>
+    <constraint id="ARCH-2" type="architectural">
+      <description>Offline-first implementation required (D3)</description>
+      <details>Save measurements to Drift (SQLite) first for instant feedback (&lt;100ms per NFR-P4). Queue for Supabase sync when online. Handle offline mode gracefully with sync indicators.</details>
+    </constraint>
+    <constraint id="ARCH-3" type="architectural">
+      <description>Use Riverpod for state management (D1, D6)</description>
+      <details>Create providers following feature-first structure. Use ConsumerStatefulWidget for measurements screen. Providers should be in fitness_coach/measurements/presentation/providers/.</details>
+    </constraint>
+    <constraint id="DATA-1" type="data">
+      <description>Database schema must match specification</description>
+      <details>body_measurements table: id (UUID PK), user_id (UUID FK auth.users), date (DATE), weight (DECIMAL 5,2), body_fat_pct (DECIMAL 4,2), chest/waist/hips/arms/legs (DECIMAL 5,2), unit (TEXT CHECK 'metric'/'imperial'), created_at. UNIQUE(user_id, date).</details>
+    </constraint>
+    <constraint id="DATA-2" type="data">
+      <description>Store measurements in canonical metric format</description>
+      <details>All measurements stored in database as metric (kg, cm). Convert to imperial (lbs, inches) only for display based on user preference. Ensures consistency and avoids conversion errors.</details>
+    </constraint>
+    <constraint id="DATA-3" type="data">
+      <description>CSV export format specification</description>
+      <details>CSV columns: date,weight_kg,body_fat_pct,chest_cm,waist_cm,hips_cm,arms_cm,legs_cm,goal_weight_kg,progress. Include header row. Use RFC 4180 format. Export in user's preferred unit with clear column headers.</details>
+    </constraint>
+    <constraint id="SEC-1" type="security">
+      <description>Row Level Security (RLS) policies required</description>
+      <details>Enable RLS on body_measurements table. Policy: CREATE POLICY "Users can only access own measurements" ON body_measurements FOR ALL USING (auth.uid() = user_id);</details>
+    </constraint>
+    <constraint id="SEC-2" type="security">
+      <description>Photo E2EE with AES-256-GCM required</description>
+      <details>Progress photos must be encrypted using AES-256-GCM before storage. Encryption keys stored in iOS Keychain / Android KeyStore. Photos never transmitted unencrypted. Key rotation every 90 days.</details>
+    </constraint>
+    <constraint id="SEC-3" type="security">
+      <description>GDPR compliance - data deletion</description>
+      <details>Users must be able to delete all measurement data and photos via "Delete My Data" option in settings. Implement cascade delete for measurements and secure photo file deletion (overwrite before delete).</details>
+    </constraint>
+    <constraint id="UX-1" type="ux">
+      <description>Photo compression to reduce storage</description>
+      <details>Compress progress photos to max 2MB per image. Use 80% JPEG quality. Resize to max 1920x1080 resolution while maintaining aspect ratio. Show compression progress indicator.</details>
+    </constraint>
+    <constraint id="UX-2" type="ux">
+      <description>Chart rendering performance</description>
+      <details>Charts must render at 60fps with smooth scrolling. Optimize data points (max 90 points for 90-day view). Use fl_chart optimizations: clipData, lineBarsData caching. Profile with Flutter DevTools.</details>
+    </constraint>
+    <constraint id="UX-3" type="ux">
+      <description>Unit conversion precision</description>
+      <details>Display weight to 1 decimal place (kg/lbs), measurements to 1 decimal place (cm/inches). Use rounding, not truncation. Show unit suffix clearly ("kg" / "lbs", "cm" / "in").</details>
+    </constraint>
+    <constraint id="UX-4" type="ux">
+      <description>Input validation and error handling</description>
+      <details>Validate numeric inputs: weight 20-300kg (44-660lbs), body fat 3-60%, measurements 10-200cm (4-80in). Show clear error messages. Prevent save if invalid. Auto-format decimal separator based on locale.</details>
+    </constraint>
+    <constraint id="PERF-1" type="performance">
+      <description>Measurement save latency &lt;100ms</description>
+      <details>Save to Drift must complete in &lt;100ms for instant feedback. Show success toast immediately. Background sync to Supabase should not block UI.</details>
+    </constraint>
+    <constraint id="PERF-2" type="performance">
+      <description>Photo encryption performance</description>
+      <details>Photo encryption/decryption must complete in &lt;500ms for 2MB image. Use isolates for encryption to avoid blocking main thread. Show progress indicator for operations &gt;200ms.</details>
+    </constraint>
+    <constraint id="TEST-1" type="testing">
+      <description>80%+ code coverage required</description>
+      <details>Follow 70/20/10 testing pyramid. Unit tests for use cases and unit conversion, widget tests for UI and charts, integration test for full measurement flow with photo and sync. All AC must have test coverage.</details>
+    </constraint>
+    <constraint id="TEST-2" type="testing">
+      <description>Encryption testing mandatory</description>
+      <details>Test photo encryption/decryption round-trip. Verify encrypted data is unreadable without key. Test key storage/retrieval from secure storage. Test encryption with different image sizes.</details>
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>MeasurementEntity</name>
+      <kind>domain-entity</kind>
+      <signature>
+        class MeasurementEntity {
+          final String id;
+          final String userId;
+          final DateTime date;
+          final double? weight;         // kg (nullable - user may not log all fields)
+          final double? bodyFatPct;     // percentage
+          final double? chest;          // cm
+          final double? waist;          // cm
+          final double? hips;           // cm
+          final double? arms;           // cm
+          final double? legs;           // cm
+          final String unit;            // 'metric' or 'imperial' (stored as metric)
+          final DateTime createdAt;
+        }
+      </signature>
+      <path>lib/features/fitness_coach/measurements/domain/entities/measurement_entity.dart</path>
+      <notes>Use @freezed annotation for immutability and copyWith. All measurement fields nullable (user may log partial data). Validate ranges in constructor. Store in metric, convert to imperial for display only.</notes>
+    </interface>
+    <interface>
+      <name>MeasurementGoalEntity</name>
+      <kind>domain-entity</kind>
+      <signature>
+        class MeasurementGoalEntity {
+          final String userId;
+          final double? goalWeight;     // kg (nullable - optional goal)
+          final double? goalBodyFatPct;
+          final double? goalWaist;      // cm
+          final DateTime? targetDate;   // optional target completion date
+          final DateTime createdAt;
+          final DateTime updatedAt;
+        }
+      </signature>
+      <path>lib/features/fitness_coach/measurements/domain/entities/measurement_goal_entity.dart</path>
+      <notes>Stores user's target measurements. All goal fields optional. Used for progress calculation and goal line display on charts.</notes>
+    </interface>
+    <interface>
+      <name>ProgressPhotoEntity</name>
+      <kind>domain-entity</kind>
+      <signature>
+        class ProgressPhotoEntity {
+          final String id;
+          final String userId;
+          final DateTime date;
+          final String encryptedPhotoPath;  // local file path to encrypted photo
+          final String? associatedMeasurementId;  // link to measurement taken same day
+          final String encryptionKeyId;     // reference to encryption key in secure storage
+          final DateTime createdAt;
+        }
+      </signature>
+      <path>lib/features/fitness_coach/measurements/domain/entities/progress_photo_entity.dart</path>
+      <notes>Metadata for encrypted progress photos. Photos stored as encrypted files locally, never transmitted. encryptionKeyId references key in FlutterSecureStorage.</notes>
+    </interface>
+    <interface>
+      <name>LogMeasurementUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class LogMeasurementUseCase {
+          Future&lt;Result&lt;MeasurementEntity&gt;&gt; call(MeasurementEntity measurement);
+        }
+      </signature>
+      <path>lib/features/fitness_coach/measurements/domain/usecases/log_measurement_usecase.dart</path>
+      <notes>Saves measurement to database. Converts imperial to metric if needed before storage. Returns Result pattern (Success/Failure). Offline-first: save to Drift, queue for Supabase sync.</notes>
+    </interface>
+    <interface>
+      <name>GetMeasurementHistoryUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class GetMeasurementHistoryUseCase {
+          Future&lt;Result&lt;List&lt;MeasurementEntity&gt;&gt;&gt; call({
+            required String userId,
+            required DateTime startDate,
+            required DateTime endDate,
+          });
+        }
+      </signature>
+      <path>lib/features/fitness_coach/measurements/domain/usecases/get_measurement_history_usecase.dart</path>
+      <notes>Retrieves measurements for date range. Used for chart data. Sorts by date descending. Handles empty results gracefully.</notes>
+    </interface>
+    <interface>
+      <name>UploadProgressPhotoUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class UploadProgressPhotoUseCase {
+          Future&lt;Result&lt;ProgressPhotoEntity&gt;&gt; call({
+            required String userId,
+            required File photoFile,
+            required DateTime date,
+            String? associatedMeasurementId,
+          });
+        }
+      </signature>
+      <path>lib/features/fitness_coach/measurements/domain/usecases/upload_progress_photo_usecase.dart</path>
+      <notes>Compresses photo (max 2MB), encrypts with AES-256-GCM, stores locally. Generates encryption key if not exists. Returns metadata entity. Never uploads photo to server.</notes>
+    </interface>
+    <interface>
+      <name>ExportMeasurementsUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class ExportMeasurementsUseCase {
+          Future&lt;Result&lt;File&gt;&gt; call({
+            required String userId,
+            required DateTime startDate,
+            required DateTime endDate,
+            required bool useImperialUnits,
+          });
+        }
+      </signature>
+      <path>lib/features/fitness_coach/measurements/domain/usecases/export_measurements_usecase.dart</path>
+      <notes>Generates CSV file with measurements for date range. Converts units based on preference. Includes goal data if set. Returns File for sharing via share_plus.</notes>
+    </interface>
+    <interface>
+      <name>UnitConverter</name>
+      <kind>utility</kind>
+      <signature>
+        class UnitConverter {
+          static double kgToLbs(double kg) => kg * 2.20462;
+          static double lbsToKg(double lbs) => lbs / 2.20462;
+          static double cmToInches(double cm) => cm / 2.54;
+          static double inchesToCm(double inches) => inches * 2.54;
+          static String formatWeight(double kg, bool imperial);
+          static String formatMeasurement(double cm, bool imperial);
+        }
+      </signature>
+      <path>lib/core/utils/unit_converter.dart</path>
+      <notes>Utility class for unit conversions. Static methods for easy access. Formatting methods include unit suffix and proper rounding (1 decimal place).</notes>
+    </interface>
+    <interface>
+      <name>EncryptionService</name>
+      <kind>service</kind>
+      <signature>
+        abstract class EncryptionService {
+          Future&lt;Result&lt;File&gt;&gt; encryptPhoto(File photoFile, String keyId);
+          Future&lt;Result&lt;File&gt;&gt; decryptPhoto(File encryptedFile, String keyId);
+          Future&lt;String&gt; generateEncryptionKey();
+          Future&lt;void&gt; storeKey(String keyId, String key);
+          Future&lt;String?&gt; retrieveKey(String keyId);
+        }
+      </signature>
+      <path>lib/core/security/encryption_service.dart</path>
+      <notes>Handles AES-256-GCM encryption for photos. Keys stored in FlutterSecureStorage (iOS Keychain/Android KeyStore). Use isolates for encryption to avoid blocking main thread.</notes>
+    </interface>
+    <interface>
+      <name>MeasurementRepository</name>
+      <kind>repository</kind>
+      <signature>
+        abstract class MeasurementRepository {
+          Future&lt;Result&lt;MeasurementEntity&gt;&gt; saveMeasurement(MeasurementEntity measurement);
+          Future&lt;Result&lt;MeasurementEntity?&gt;&gt; getMeasurementForDate(String userId, DateTime date);
+          Future&lt;Result&lt;List&lt;MeasurementEntity&gt;&gt;&gt; getMeasurementsForDateRange(String userId, DateTime start, DateTime end);
+          Future&lt;Result&lt;MeasurementGoalEntity?&gt;&gt; getGoal(String userId);
+          Future&lt;Result&lt;MeasurementGoalEntity&gt;&gt; saveGoal(MeasurementGoalEntity goal);
+        }
+      </signature>
+      <path>lib/features/fitness_coach/measurements/domain/repositories/measurement_repository.dart</path>
+      <notes>Implemented by MeasurementRepositoryImpl in data layer. Uses both DriftDataSource and SupabaseDataSource for offline-first sync.</notes>
+    </interface>
+    <interface>
+      <name>body_measurements table (Supabase PostgreSQL)</name>
+      <kind>database-table</kind>
+      <signature>
+        CREATE TABLE body_measurements (
+          id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+          user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+          date DATE NOT NULL,
+          weight DECIMAL(5, 2),
+          body_fat_pct DECIMAL(4, 2),
+          chest DECIMAL(5, 2),
+          waist DECIMAL(5, 2),
+          hips DECIMAL(5, 2),
+          arms DECIMAL(5, 2),
+          legs DECIMAL(5, 2),
+          unit TEXT NOT NULL CHECK (unit IN ('metric', 'imperial')),
+          created_at TIMESTAMPTZ DEFAULT NOW(),
+          UNIQUE(user_id, date)
+        );
+        CREATE INDEX idx_body_measurements_user_date ON body_measurements(user_id, date DESC);
+      </signature>
+      <path>supabase/migrations/</path>
+      <notes>Migration file will be created in Supabase migrations folder. Include RLS policies in same migration. All measurement columns nullable (user may log partial data).</notes>
+    </interface>
+    <interface>
+      <name>body_measurements table (Drift SQLite)</name>
+      <kind>database-table</kind>
+      <signature>
+        @DataClassName('BodyMeasurementTable')
+        class BodyMeasurements extends Table {
+          TextColumn get id => text()();
+          TextColumn get userId => text()();
+          DateTimeColumn get date => dateTime()();
+          RealColumn get weight => real().nullable()();
+          RealColumn get bodyFatPct => real().nullable()();
+          RealColumn get chest => real().nullable()();
+          RealColumn get waist => real().nullable()();
+          RealColumn get hips => real().nullable()();
+          RealColumn get arms => real().nullable()();
+          RealColumn get legs => real().nullable()();
+          TextColumn get unit => text().check(unit.isIn(['metric', 'imperial']))();
+          DateTimeColumn get createdAt => dateTime()();
+
+          @override
+          Set&lt;Column&gt; get primaryKey => {id};
+        }
+      </signature>
+      <path>lib/core/database/tables.drift.dart</path>
+      <notes>Drift table definition. Mirror of Supabase schema for offline-first architecture. Use drift code generation. All measurement columns nullable.</notes>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Follow 70/20/10 testing pyramid: 70% unit tests (use cases, repositories, entities, unit conversion, encryption), 20% widget tests (UI components, charts, state management), 10% integration tests (end-to-end flows). Use flutter_test for unit/widget tests, integration_test for E2E. Mock dependencies with mockito. Target 80%+ code coverage. All acceptance criteria must have test coverage. Encryption tests are mandatory.
+    </standards>
+    <locations>
+      <location>test/features/fitness_coach/measurements/domain/usecases/</location>
+      <location>test/features/fitness_coach/measurements/domain/entities/</location>
+      <location>test/features/fitness_coach/measurements/data/repositories/</location>
+      <location>test/features/fitness_coach/measurements/presentation/widgets/</location>
+      <location>test/core/utils/unit_converter_test.dart</location>
+      <location>test/core/security/encryption_service_test.dart</location>
+      <location>integration_test/features/fitness_coach/measurements_flow_test.dart</location>
+    </locations>
+    <ideas>
+      <test-idea ac-ref="AC2,AC3">
+        <description>Unit test: MeasurementEntity validation</description>
+        <approach>Test that measurement values validate ranges (weight 20-300kg, body_fat_pct 3-60%). Test nullable fields. Test copyWith immutability. Test date validation.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC7">
+        <description>Unit test: Unit conversion accuracy</description>
+        <approach>Test kgToLbs(100) = 220.462. Test lbsToKg(220.462) = 100. Test cmToInches(100) = 39.37. Test inchesToCm(39.37) = 100. Test rounding to 1 decimal place. Test edge cases (0, negative).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC2,AC3">
+        <description>Unit test: LogMeasurementUseCase success case</description>
+        <approach>Mock MeasurementRepository. Verify saveMeasurement() called with correct entity in metric units. Assert Success result returned. Test unit conversion from imperial to metric before save.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4">
+        <description>Unit test: GetMeasurementHistoryUseCase date filtering</description>
+        <approach>Mock repository with 100 days of data. Call usecase with 30-day range. Verify only measurements within range returned. Test empty result handling. Test sorting (date DESC).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC9">
+        <description>Unit test: Photo encryption/decryption round-trip</description>
+        <approach>Create test image file. Encrypt with EncryptionService. Verify encrypted file is different from original. Decrypt encrypted file. Verify decrypted file matches original byte-for-byte. Test with multiple image sizes.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC9">
+        <description>Unit test: Encryption key storage and retrieval</description>
+        <approach>Generate encryption key. Store with keyId "test_key_1". Retrieve key by keyId. Verify retrieved key matches stored key. Test key not found case returns null.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC11">
+        <description>Unit test: CSV export format validation</description>
+        <approach>Create 10 measurements. Call ExportMeasurementsUseCase. Parse CSV output. Verify header row: "date,weight_kg,body_fat_pct,chest_cm,...". Verify 10 data rows. Verify RFC 4180 format (quoted fields, comma separator). Test with imperial units flag.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC2,AC7">
+        <description>Widget test: Measurement form input and validation</description>
+        <approach>Render measurement form. Enter weight "75.5". Select unit "kg". Verify value displayed correctly. Change unit to "lbs". Verify value converted to "166.4". Test invalid input (negative weight) shows error message. Test save button disabled when invalid.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4">
+        <description>Widget test: Chart rendering with data</description>
+        <approach>Mock GetMeasurementHistoryUseCase with 30 days of weight data. Render MeasurementChart with 30-day period. Verify fl_chart LineChart widget displayed. Verify 30 data points rendered. Test touch interaction shows value tooltip. Test empty state when no data.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC5,AC6">
+        <description>Widget test: Goal setting and progress display</description>
+        <approach>Render goal setting dialog. Enter goal weight "70kg". Save goal. Verify goal stored. Mock current weight "75kg". Verify progress indicator shows "5.0kg to go!". Test "Goal reached!" when current = goal. Test goal line displayed on chart.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC8">
+        <description>Widget test: Photo upload and compression</description>
+        <approach>Mock ImagePicker to return 5MB test image. Trigger photo upload. Verify compression applied (output &lt; 2MB). Verify progress indicator shown during compression. Test compression error handling.</approach>
+      </test-idea>
+      <test-idea ac-ref="ALL">
+        <description>Integration test: Complete measurement logging flow</description>
+        <approach>Launch app. Navigate to Fitness tab → Measurements. Tap "Log Measurement" FAB. Enter weight=75kg, body_fat_pct=18%, waist=85cm. Save. Verify measurement saved to Drift database. Verify sync to Supabase. Verify measurement displayed in chart. Verify offline mode works (save while offline, sync when online).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC8,AC9">
+        <description>Integration test: Photo progress tracking with encryption</description>
+        <approach>Navigate to Measurements. Upload progress photo. Verify photo compressed. Verify photo encrypted (check file is not readable as image). Verify metadata saved. View photo in gallery. Verify photo decrypted and displayed. Test before/after comparison slider.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC11">
+        <description>Integration test: CSV export end-to-end</description>
+        <approach>Create 30 days of measurements. Navigate to export screen. Select date range (last 30 days). Select unit preference (metric). Tap export. Verify CSV file generated. Open file. Verify 30 rows + header. Verify data accuracy matches measurements. Test share dialog appears.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC10">
+        <description>Integration test: Cross-device sync</description>
+        <approach>Save measurement on Device A. Mock Supabase realtime sync. Verify measurement appears on Device B. Test offline save → online sync flow. Test conflict resolution (same date, different values).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC12">
+        <description>Integration test: GDPR data deletion</description>
+        <approach>Create measurements and photos. Navigate to Settings → Delete My Data. Confirm deletion. Verify all measurements deleted from Drift and Supabase. Verify all photo files deleted (check file system). Verify encryption keys removed from secure storage.</approach>
+      </test-idea>
+    </ideas>
+  </tests>
+</story-context>

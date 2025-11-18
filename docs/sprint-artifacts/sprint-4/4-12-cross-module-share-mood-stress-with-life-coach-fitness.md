@@ -1,5 +1,5 @@
 # Story 4.12: Cross-Module: Share Mood/Stress with Life Coach & Fitness
-**Epic:** 4 - Mind & Emotion | **P0** | **2 SP** | **drafted**
+**Epic:** 4 - Mind & Emotion | **P0** | **2 SP** | **ready-for-dev**
 
 ## User Story
 **As a** user logging mood/stress, **I want** other modules to use this data, **So that** I get personalized recommendations across the app.
@@ -33,3 +33,9 @@ ALTER TABLE user_settings ADD COLUMN share_data_across_modules BOOLEAN DEFAULT T
 **Dependencies:** 4.3 (Mood/Stress), Epic 2 (Life Coach), Epic 3 (Fitness)
 **Enables:** Story 2.2 (AI Daily Plan), Story 3.10 (Fitness stress query)
 **Coverage:** 80%+
+
+## Dev Agent Record
+
+- **Status Updated to ready-for-dev:** 2025-11-17
+- **Dev Agent:** Claude Haiku 4.5
+- **Purpose:** Ready for development phase

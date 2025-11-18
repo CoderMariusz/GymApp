@@ -1,0 +1,486 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>9</epicId>
+    <storyId>9.1</storyId>
+    <title>Personal Settings (Name, Email, Password, Avatar)</title>
+    <status>ready-for-dev</status>
+    <generatedAt>2025-11-17</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/sprint-9/9-1-personal-settings.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>user</asA>
+    <iWant>to update my personal information (name, email, password, avatar)</iWant>
+    <soThat>my profile is accurate and secure</soThat>
+    <tasks>
+      <task id="1" ac-ref="AC1,AC2,AC3,AC4,AC5">
+        <description>Implement PersonalSettingsScreen UI</description>
+        <subtasks>
+          <subtask>Create PersonalSettingsScreen widget in settings feature</subtask>
+          <subtask>Add circular avatar at top with "tap to change" overlay</subtask>
+          <subtask>Add name field with inline editing and validation (1-50 characters)</subtask>
+          <subtask>Add email field with inline editing and verification warning</subtask>
+          <subtask>Add "Change Password" button navigating to ChangePasswordScreen</subtask>
+          <subtask>Implement optimistic UI updates (<200ms perceived latency)</subtask>
+          <subtask>Display success/error messages via SnackBar</subtask>
+        </subtasks>
+      </task>
+      <task id="2" ac-ref="AC4">
+        <description>Implement avatar upload with compression</description>
+        <subtasks>
+          <subtask>Integrate image_picker for gallery and camera options</subtask>
+          <subtask>Implement image compression to 512x512px using flutter_image_compress</subtask>
+          <subtask>Validate file size (max 5MB) and format (JPG/PNG)</subtask>
+          <subtask>Upload compressed image to Supabase Storage user-avatars bucket</subtask>
+          <subtask>Update user_settings.avatar_url with public URL</subtask>
+          <subtask>Target upload time <2s with progress indicator</subtask>
+        </subtasks>
+      </task>
+      <task id="3" ac-ref="AC1,AC8">
+        <description>Implement name update with optimistic UI</description>
+        <subtasks>
+          <subtask>Create UpdateNameUseCase in domain layer</subtask>
+          <subtask>Validate name (1-50 characters, not empty)</subtask>
+          <subtask>Update user_settings table via UserSettingsService</subtask>
+          <subtask>Implement optimistic UI: update local state immediately</subtask>
+          <subtask>Sync to Supabase in background</subtask>
+          <subtask>Revert on error with user notification</subtask>
+        </subtasks>
+      </task>
+      <task id="4" ac-ref="AC2,AC6">
+        <description>Implement email update with verification</description>
+        <subtasks>
+          <subtask>Create UpdateEmailUseCase in domain layer</subtask>
+          <subtask>Validate email format</subtask>
+          <subtask>Call Supabase auth.updateUser() to trigger verification email</subtask>
+          <subtask>Show confirmation dialog: "Verification email sent to [new email]"</subtask>
+          <subtask>Send notification email to old email (security measure)</subtask>
+          <subtask>Update email only after user clicks verification link</subtask>
+        </subtasks>
+      </task>
+      <task id="5" ac-ref="AC3,AC7">
+        <description>Implement password change flow</description>
+        <subtasks>
+          <subtask>Create ChangePasswordScreen with three fields: current, new, confirm</subtask>
+          <subtask>Add password strength indicator (weak/medium/strong)</subtask>
+          <subtask>Display requirements checklist: 8+ chars, 1 uppercase, 1 number, 1 special char</subtask>
+          <subtask>Implement ChangePasswordUseCase requiring current password confirmation</subtask>
+          <subtask>Validate password strength before submission</subtask>
+          <subtask>Call Supabase auth.updateUser() for password change</subtask>
+          <subtask>Show success message and navigate back</subtask>
+        </subtasks>
+      </task>
+      <task id="6" ac-ref="AC5">
+        <description>Implement settings sync and avatar display</description>
+        <subtasks>
+          <subtask>Create user_settings table in Supabase (if not exists)</subtask>
+          <subtask>Implement RLS policies for user-specific access</subtask>
+          <subtask>Display avatar in header, profile screen, and settings</subtask>
+          <subtask>Ensure changes sync immediately to Supabase</subtask>
+          <subtask>Update cached user profile across app</subtask>
+        </subtasks>
+      </task>
+      <task id="7" ac-ref="ALL">
+        <description>Write comprehensive tests</description>
+        <subtasks>
+          <subtask>Unit tests: UpdateNameUseCase, UpdateEmailUseCase, ChangePasswordUseCase</subtask>
+          <subtask>Unit tests: Avatar compression, file size validation, password strength validation</subtask>
+          <subtask>Widget tests: PersonalSettingsScreen, ChangePasswordScreen, avatar picker modal</subtask>
+          <subtask>Integration test: Complete profile update flow with optimistic UI</subtask>
+          <subtask>Integration test: Email verification and password change flows</subtask>
+          <subtask>Achieve 80%+ code coverage</subtask>
+        </subtasks>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="AC1">
+      <text>User can update name (1-50 characters, instant update with optimistic UI)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC2">
+      <text>User can update email (requires verification, confirmation email sent)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC3">
+      <text>User can change password (requires current password, must be 8+ chars with 1 uppercase, 1 number, 1 special char)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC4">
+      <text>User can upload/change avatar (compressed to 512x512, upload &lt;2s)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC5">
+      <text>Avatar displayed in header, profile screen, and settings</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC6">
+      <text>Email change requires verification (user must click link in email)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC7">
+      <text>Password change requires current password confirmation</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC8">
+      <text>Settings update with optimistic UI (&lt;200ms perceived latency)</text>
+      <priority>P0</priority>
+    </criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR116: Personal settings management</section>
+        <snippet>Users can manage personal settings including profile information, avatar uploads, and password changes. All changes must sync across devices with optimistic UI for instant feedback.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/epics.md</path>
+        <title>Epic 9: Settings &amp; Profile - Story 9.1</title>
+        <section>Story 9.1: Personal Settings</section>
+        <snippet>User can update name (instant with optimistic UI), email (requires verification), password (requires current password, strength validation), and avatar (compressed to 512x512, upload &lt;2s). Prerequisites: Story 1.4 (profile management patterns), Story 1.1 (auth).</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Hybrid Architecture (D1)</section>
+        <snippet>Feature-first architecture with clean architecture layers (presentation/domain/data). Settings module located at features/settings/. Use Riverpod for state management and optimistic UI updates.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Supabase Storage</section>
+        <snippet>Supabase Storage provides CDN-backed object storage. Create user-avatars bucket with public read and user-specific write RLS policies. Compress images client-side before upload to reduce bandwidth and storage costs.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/ux-design-specification.md</path>
+        <title>UX Design Specification</title>
+        <section>Settings &amp; Profile UX</section>
+        <snippet>Personal settings screen displays avatar at top (circular, tap to change), followed by editable name and email fields. Password change navigates to separate screen with strength indicator. Optimistic UI provides instant feedback (&lt;200ms).</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/sprint-1/1-4-user-profile-management.md</path>
+        <title>Story 1.4: User Profile Management</title>
+        <section>Technical Implementation</section>
+        <snippet>Avatar upload with FlutterImageCompress (512x512px, 85% quality). Email update triggers re-verification via Supabase Auth. Password change requires current password confirmation for security.</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/sprint-9/9-1-personal-settings.md</path>
+        <title>Story 9.1: Personal Settings</title>
+        <section>Avatar Upload Flow</section>
+        <snippet>User selects photo (camera or gallery) → Compress to 512x512 using image package → Upload to Supabase Storage bucket: user-avatars → Get public URL → Update user_settings.avatar_url → Display immediately (optimistic UI).</snippet>
+      </doc>
+    </docs>
+    <code>
+      <file>
+        <path>lib/features/settings/presentation/pages/personal_settings_screen.dart</path>
+        <description>Personal settings screen with avatar, name, email, and password change</description>
+      </file>
+      <file>
+        <path>lib/features/settings/presentation/pages/change_password_screen.dart</path>
+        <description>Password change screen with strength indicator and requirements checklist</description>
+      </file>
+      <file>
+        <path>lib/features/settings/domain/usecases/update_name_usecase.dart</path>
+        <description>Use case for updating user name with optimistic UI support</description>
+      </file>
+      <file>
+        <path>lib/features/settings/domain/usecases/update_email_usecase.dart</path>
+        <description>Use case for updating email with verification trigger</description>
+      </file>
+      <file>
+        <path>lib/features/settings/domain/usecases/change_password_usecase.dart</path>
+        <description>Use case for changing password with current password confirmation</description>
+      </file>
+      <file>
+        <path>lib/features/settings/domain/usecases/upload_avatar_usecase.dart</path>
+        <description>Use case for uploading and compressing avatar images</description>
+      </file>
+      <file>
+        <path>lib/features/profile/domain/entities/profile_entity.dart</path>
+        <description>Profile entity from Story 1.4 - reuse for avatar URL and user info (REFERENCE ONLY)</description>
+      </file>
+    </code>
+    <dependencies>
+      <flutter>
+        <sdk>3.38+</sdk>
+        <dart>3.10+</dart>
+      </flutter>
+      <packages>
+        <package name="flutter_riverpod" version="^3.0.0" usage="State management for settings and optimistic UI" />
+        <package name="riverpod_annotation" version="^3.0.0" usage="Code generation for providers" />
+        <package name="supabase_flutter" version="^2.0.0" usage="Supabase client for auth, database, and storage operations" />
+        <package name="image_picker" version="^1.0.0" usage="Select images from gallery or camera" />
+        <package name="flutter_image_compress" version="^2.1.0" usage="Compress images to 512x512px before upload" />
+        <package name="cached_network_image" version="^3.3.0" usage="Display cached avatar images" />
+        <package name="flutter_test" version="sdk" usage="Unit and widget testing framework" />
+        <package name="integration_test" version="sdk" usage="End-to-end testing framework" />
+      </packages>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint id="ARCH-1" type="architectural">
+      <description>Must follow Hybrid Architecture pattern (D1)</description>
+      <details>Create feature structure at lib/features/settings/ with presentation/, domain/, and data/ layers. Use clean architecture separation of concerns. Reuse patterns from Story 1.4 (User Profile Management).</details>
+    </constraint>
+    <constraint id="ARCH-2" type="architectural">
+      <description>Use Riverpod for state management (D1, D6)</description>
+      <details>Create providers following feature-first structure. Implement optimistic UI with local state updates. Providers should be in settings/presentation/providers/.</details>
+    </constraint>
+    <constraint id="STORAGE-1" type="storage">
+      <description>Avatar compression: 512x512px, 85% quality</description>
+      <details>Use flutter_image_compress to resize images to 512x512px with 85% quality. Target compressed size ~100KB. Compression time must be &lt;1s.</details>
+    </constraint>
+    <constraint id="STORAGE-2" type="storage">
+      <description>Avatar upload time &lt;2s</description>
+      <details>Compressed avatar (~100KB) must upload to Supabase Storage in &lt;2s. Show progress indicator during upload. Display avatar immediately after upload (optimistic UI).</details>
+    </constraint>
+    <constraint id="STORAGE-3" type="storage">
+      <description>Avatar storage structure</description>
+      <details>Store avatar at user-avatars/{userId}/avatar.jpg. Overwrite on each upload (no version history). Public read access, user-specific write access via RLS.</details>
+    </constraint>
+    <constraint id="SEC-1" type="security">
+      <description>Email verification required for email changes</description>
+      <details>When email is updated via supabase.auth.updateUser(), Supabase automatically sends verification email. User must click link in email to verify. Old email receives security notification.</details>
+    </constraint>
+    <constraint id="SEC-2" type="security">
+      <description>Password change requires current password</description>
+      <details>User must confirm current password before changing to new password. Prevents unauthorized password changes if device is unlocked. Use Supabase auth.updateUser() with password verification.</details>
+    </constraint>
+    <constraint id="SEC-3" type="security">
+      <description>Password strength requirements</description>
+      <details>New password must be 8+ characters with 1 uppercase letter, 1 number, and 1 special character. Display requirements checklist with real-time validation. Show password strength indicator (weak/medium/strong).</details>
+    </constraint>
+    <constraint id="SEC-4" type="security">
+      <description>Row Level Security (RLS) policies required</description>
+      <details>Enable RLS on user_settings table. Policy: CREATE POLICY "Users can only update own settings" ON user_settings FOR ALL USING (auth.uid() = user_id);</details>
+    </constraint>
+    <constraint id="UX-1" type="ux">
+      <description>Optimistic UI &lt;200ms perceived latency</description>
+      <details>Update local state immediately when user changes name. Show changes in UI instantly. Sync to Supabase in background. Revert on error with toast notification.</details>
+    </constraint>
+    <constraint id="UX-2" type="ux">
+      <description>Avatar change modal: Camera or Gallery</description>
+      <details>When user taps avatar, show modal with two options: "Take Photo" (camera) and "Choose from Gallery". Preview selected image before uploading. Show compression and upload progress.</details>
+    </constraint>
+    <constraint id="UX-3" type="ux">
+      <description>Email verification flow messaging</description>
+      <details>After email change, show confirmation dialog: "Verification email sent to [new-email@example.com]. Please check your inbox." Old email receives notification: "Your LifeOS email was changed to [new email]."</details>
+    </constraint>
+    <constraint id="UX-4" type="ux">
+      <description>Password strength indicator and checklist</description>
+      <details>Display real-time password strength indicator (weak/medium/strong) with color coding. Show requirements checklist with checkmarks: ✅ 8+ characters, ✅ 1 uppercase letter, ✅ 1 number, ✅ 1 special character.</details>
+    </constraint>
+    <constraint id="PERF-1" type="performance">
+      <description>Image compression &lt;1s</description>
+      <details>flutter_image_compress must complete in &lt;1s for 512x512px output. Show loading indicator during compression: "Preparing image...".</details>
+    </constraint>
+    <constraint id="PERF-2" type="performance">
+      <description>Name update sync &lt;500ms</description>
+      <details>Name update to Supabase database must complete in &lt;500ms. Use optimistic UI so user sees change instantly. Background sync failure triggers retry mechanism.</details>
+    </constraint>
+    <constraint id="TEST-1" type="testing">
+      <description>80%+ code coverage required</description>
+      <details>Follow 70/20/10 testing pyramid. Unit tests for use cases, widget tests for UI, integration test for full flow. All AC must have test coverage.</details>
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>UpdateNameUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class UpdateNameUseCase {
+          Future&lt;Result&lt;void&gt;&gt; call({
+            required String userId,
+            required String name,
+          });
+        }
+      </signature>
+      <path>lib/features/settings/domain/usecases/update_name_usecase.dart</path>
+      <notes>Validates name (1-50 chars, not empty). Updates user_settings table. Supports optimistic UI pattern. Returns Result&lt;T&gt; (Success/Failure).</notes>
+    </interface>
+    <interface>
+      <name>UpdateEmailUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class UpdateEmailUseCase {
+          Future&lt;Result&lt;void&gt;&gt; call({
+            required String newEmail,
+          });
+        }
+      </signature>
+      <path>lib/features/settings/domain/usecases/update_email_usecase.dart</path>
+      <notes>Validates email format. Calls supabase.auth.updateUser() to trigger verification email. Sends security notification to old email. Returns Result&lt;T&gt;.</notes>
+    </interface>
+    <interface>
+      <name>ChangePasswordUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class ChangePasswordUseCase {
+          Future&lt;Result&lt;void&gt;&gt; call({
+            required String currentPassword,
+            required String newPassword,
+          });
+        }
+      </signature>
+      <path>lib/features/settings/domain/usecases/change_password_usecase.dart</path>
+      <notes>Validates current password. Checks new password strength (8+ chars, uppercase, number, special char). Calls supabase.auth.updateUser() for password change. Returns Result&lt;T&gt;.</notes>
+    </interface>
+    <interface>
+      <name>UploadAvatarUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class UploadAvatarUseCase {
+          Future&lt;Result&lt;String&gt;&gt; call({
+            required String userId,
+            required File imageFile,
+          });
+        }
+      </signature>
+      <path>lib/features/settings/domain/usecases/upload_avatar_usecase.dart</path>
+      <notes>Validates file size (&lt;5MB). Compresses image to 512x512px. Uploads to user-avatars/{userId}/avatar.jpg. Returns public URL. Supports progress callbacks.</notes>
+    </interface>
+    <interface>
+      <name>UserSettingsService</name>
+      <kind>service</kind>
+      <signature>
+        abstract class UserSettingsService {
+          Future&lt;void&gt; updateName(String name);
+          Future&lt;void&gt; updateEmail(String email);
+          Future&lt;void&gt; updatePassword(String currentPassword, String newPassword);
+          Future&lt;String&gt; updateAvatar(File imageFile);
+        }
+      </signature>
+      <path>lib/features/settings/domain/services/user_settings_service.dart</path>
+      <notes>High-level service interface for all personal settings operations. Implemented in data layer with Supabase integration.</notes>
+    </interface>
+    <interface>
+      <name>user_settings table (Supabase PostgreSQL)</name>
+      <kind>database-table</kind>
+      <signature>
+        CREATE TABLE user_settings (
+          user_id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+          name TEXT NOT NULL,
+          avatar_url TEXT,
+          created_at TIMESTAMPTZ DEFAULT NOW(),
+          updated_at TIMESTAMPTZ DEFAULT NOW()
+        );
+        CREATE INDEX idx_user_settings_user_id ON user_settings(user_id);
+      </signature>
+      <path>supabase/migrations/</path>
+      <notes>Stores user personal settings. Email is managed by auth.users table. Include RLS policy: USING (auth.uid() = user_id).</notes>
+    </interface>
+    <interface>
+      <name>user-avatars storage bucket (Supabase Storage)</name>
+      <kind>storage-bucket</kind>
+      <signature>
+        CREATE POLICY "Users can upload own avatar" ON storage.objects
+          FOR INSERT WITH CHECK (
+            bucket_id = 'user-avatars' AND
+            auth.uid()::text = (storage.foldername(name))[1]
+          );
+
+        CREATE POLICY "Anyone can view avatars" ON storage.objects
+          FOR SELECT USING (bucket_id = 'user-avatars');
+      </signature>
+      <path>supabase/storage/user-avatars</path>
+      <notes>Public read access for avatars. User-specific write access. Path structure: {userId}/avatar.jpg. Avatars overwritten on each upload.</notes>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Follow 70/20/10 testing pyramid: 70% unit tests (use cases, validation, business logic), 20% widget tests (UI components, forms, state management), 10% integration tests (end-to-end flows). Use flutter_test for unit/widget tests, integration_test for E2E. Mock dependencies with mockito. Target 80%+ code coverage. All acceptance criteria must have test coverage.
+    </standards>
+    <locations>
+      <location>test/features/settings/domain/usecases/</location>
+      <location>test/features/settings/presentation/pages/</location>
+      <location>test/features/settings/presentation/widgets/</location>
+      <location>integration_test/features/settings/personal_settings_flow_test.dart</location>
+    </locations>
+    <ideas>
+      <test-idea ac-ref="AC1,AC8">
+        <description>Unit test: UpdateNameUseCase with optimistic UI support</description>
+        <approach>Mock UserSettingsService. Call updateName with valid name. Verify service.updateName() called with correct parameters. Assert Success result. Test optimistic UI: local state updates immediately, sync happens in background.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1">
+        <description>Unit test: Name validation (1-50 characters)</description>
+        <approach>Call UpdateNameUseCase with empty name → assert Failure. Call with 51-character name → assert Failure. Call with valid 25-char name → assert Success.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC2,AC6">
+        <description>Unit test: UpdateEmailUseCase triggers verification email</description>
+        <approach>Mock Supabase Auth. Call updateEmail with valid email. Verify auth.updateUser() called. Verify verification email sent to new address. Verify security notification sent to old email.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC2">
+        <description>Unit test: Email format validation</description>
+        <approach>Call UpdateEmailUseCase with invalid email "notanemail" → assert Failure with InvalidEmailException. Call with "valid@email.com" → assert Success.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3,AC7">
+        <description>Unit test: ChangePasswordUseCase validates current password</description>
+        <approach>Mock Supabase Auth. Call changePassword with incorrect current password → assert Failure with "Current password incorrect". Call with correct current password + valid new password → assert Success.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3">
+        <description>Unit test: Password strength validation</description>
+        <approach>Test weak passwords: "abc123" (no uppercase, no special) → Failure. "Abc123" (no special) → Failure. "Abc123!" (valid) → Success. Verify all requirements checked.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4">
+        <description>Unit test: UploadAvatarUseCase compresses image to 512x512px</description>
+        <approach>Mock flutter_image_compress. Provide 2000x2000px test image. Verify compression called with maxWidth: 512, maxHeight: 512, quality: 85. Verify compressed image used for upload.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4">
+        <description>Unit test: Avatar file size validation (&lt;5MB)</description>
+        <approach>Provide test file &gt;5MB → assert Failure with FileTooLargeException. Provide 2MB file → assert Success. Verify upload only attempted for valid files.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4">
+        <description>Unit test: UploadAvatarUseCase returns public URL</description>
+        <approach>Mock Supabase Storage. Verify upload called with path user-avatars/{userId}/avatar.jpg. Verify getPublicUrl() called. Assert Success with public URL returned.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1,AC5,AC8">
+        <description>Widget test: PersonalSettingsScreen displays and updates name</description>
+        <approach>Render PersonalSettingsScreen with test user. Verify name field displays current name. Change name to "New Name". Verify UI updates immediately (optimistic UI &lt;200ms). Verify success message shown.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC2,AC5">
+        <description>Widget test: Email change shows verification warning</description>
+        <approach>Render PersonalSettingsScreen. Tap email field. Change email to "new@email.com". Verify warning dialog: "Verification email will be sent to new@email.com". Confirm → verify email update triggered.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4,AC5">
+        <description>Widget test: Avatar picker modal appears on tap</description>
+        <approach>Render PersonalSettingsScreen. Tap circular avatar at top. Verify modal appears with two options: "Take Photo" (camera icon) and "Choose from Gallery" (gallery icon).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3,AC7">
+        <description>Widget test: ChangePasswordScreen validates and shows strength</description>
+        <approach>Render ChangePasswordScreen. Enter weak password "abc123" in new password field. Verify strength indicator shows "Weak" in red. Verify checklist shows unchecked items. Enter strong password "Abc123!@" → verify "Strong" in green, all items checked.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3">
+        <description>Widget test: Password change requires current password</description>
+        <approach>Render ChangePasswordScreen. Leave current password empty. Enter new password. Tap Save. Verify error: "Please enter your current password". Verify save not triggered.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC8">
+        <description>Widget test: Optimistic UI reverts on error</description>
+        <approach>Mock service to fail. Change name to "New Name". Verify UI updates immediately. Simulate network error. Verify UI reverts to old name. Verify error toast: "Failed to update name. Try again."</approach>
+      </test-idea>
+      <test-idea ac-ref="ALL">
+        <description>Integration test: Complete personal settings update flow</description>
+        <approach>Launch app as logged-in user. Navigate to Personal Settings. Update name, email, avatar. Verify name updates instantly (optimistic UI). Verify email verification triggered. Upload avatar → verify compression → verify upload &lt;2s → verify avatar displayed in header and settings. Change password with validation. Verify all changes synced to Supabase.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4,AC5">
+        <description>Integration test: Avatar upload and display across app</description>
+        <approach>Navigate to Personal Settings. Tap avatar. Choose image from gallery. Verify compression to 512x512px. Verify upload progress indicator. Verify avatar updates in settings screen, header, and profile screen simultaneously.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC2,AC6">
+        <description>Integration test: Email verification flow end-to-end</description>
+        <approach>Change email to new address. Verify confirmation dialog. Check email inbox (mock or real). Click verification link. Verify email updated in account. Verify old email receives security notification.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3,AC7">
+        <description>Integration test: Password change with validation</description>
+        <approach>Navigate to Change Password screen. Enter current password. Try weak password → verify error. Enter strong password matching requirements. Submit. Verify password updated. Optionally test re-authentication required on next login.</approach>
+      </test-idea>
+    </ideas>
+  </tests>
+</story-context>

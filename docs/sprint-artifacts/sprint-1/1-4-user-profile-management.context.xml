@@ -1,0 +1,472 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>1</epicId>
+    <storyId>1.4</storyId>
+    <title>User Profile Management</title>
+    <status>ready-for-dev</status>
+    <generatedAt>2025-11-17</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/sprint-1/1-4-user-profile-management.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>user</asA>
+    <iWant>to update my profile information</iWant>
+    <soThat>my account reflects my current details</soThat>
+    <tasks>
+      <task id="1" ac-ref="AC1,AC3,AC6">
+        <description>Implement Profile Edit UI</description>
+        <subtasks>
+          <subtask>Create ProfileEditPage widget with inline editing</subtask>
+          <subtask>Add name text field with validation</subtask>
+          <subtask>Add email text field with verification warning</subtask>
+          <subtask>Implement circular avatar with "Change photo" button overlay</subtask>
+          <subtask>Add "Save" button with form validation</subtask>
+          <subtask>Display success/error messages via SnackBar</subtask>
+        </subtasks>
+      </task>
+      <task id="2" ac-ref="AC3,AC6">
+        <description>Implement avatar upload with compression</description>
+        <subtasks>
+          <subtask>Integrate image picker (gallery and camera options)</subtask>
+          <subtask>Implement image compression to 512x512px using FlutterImageCompress</subtask>
+          <subtask>Validate file size (max 5MB) and format (JPG/PNG)</subtask>
+          <subtask>Upload compressed image to Supabase Storage avatars bucket</subtask>
+          <subtask>Return and save public URL to user profile</subtask>
+        </subtasks>
+      </task>
+      <task id="3" ac-ref="AC1,AC2,AC5">
+        <description>Implement profile update use cases</description>
+        <subtasks>
+          <subtask>Create UpdateProfileUseCase for name updates</subtask>
+          <subtask>Create UpdateEmailUseCase with re-verification trigger</subtask>
+          <subtask>Create UploadAvatarUseCase with storage integration</subtask>
+          <subtask>Implement data validation (email format, name length)</subtask>
+          <subtask>Save updates to user_profiles table in Supabase</subtask>
+        </subtasks>
+      </task>
+      <task id="4" ac-ref="AC4">
+        <description>Implement password change functionality</description>
+        <subtasks>
+          <subtask>Create ChangePasswordUseCase requiring current password</subtask>
+          <subtask>Add password validation (8+ chars, uppercase, number, special char)</subtask>
+          <subtask>Implement current password confirmation dialog</subtask>
+          <subtask>Call Supabase auth.updateUser for password change</subtask>
+          <subtask>Show success message and optionally re-authenticate</subtask>
+        </subtasks>
+      </task>
+      <task id="5" ac-ref="AC5">
+        <description>Implement Supabase Storage and RLS policies</description>
+        <subtasks>
+          <subtask>Create avatars storage bucket in Supabase</subtask>
+          <subtask>Configure public read policy on avatars bucket</subtask>
+          <subtask>Implement user-specific write policy (users can upload own avatar only)</subtask>
+          <subtask>Set up folder structure: {userId}/avatar.jpg</subtask>
+          <subtask>Implement avatar overwrite (no version history)</subtask>
+        </subtasks>
+      </task>
+      <task id="6" ac-ref="AC7">
+        <description>Implement comprehensive error handling</description>
+        <subtasks>
+          <subtask>Handle invalid email format errors</subtask>
+          <subtask>Handle weak password errors with requirement display</subtask>
+          <subtask>Handle file upload failures with retry option</subtask>
+          <subtask>Handle file too large errors (>5MB)</subtask>
+          <subtask>Handle network errors with retry button</subtask>
+        </subtasks>
+      </task>
+      <task id="7" ac-ref="ALL">
+        <description>Write comprehensive tests</description>
+        <subtasks>
+          <subtask>Unit tests: UpdateProfileUseCase, UploadAvatarUseCase, ChangePasswordUseCase</subtask>
+          <subtask>Unit tests: Image compression, file size validation, email validation</subtask>
+          <subtask>Widget tests: ProfileEditPage, avatar picker, form validation</subtask>
+          <subtask>Integration test: Complete profile update flow with avatar upload</subtask>
+          <subtask>Achieve 80%+ code coverage</subtask>
+        </subtasks>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="AC1">
+      <text>User can update name</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC2">
+      <text>User can update email (requires re-verification)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC3">
+      <text>User can update avatar (upload from gallery or camera)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC4">
+      <text>User can change password (requires current password confirmation)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC5">
+      <text>Changes saved to Supabase and synced across devices</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC6">
+      <text>Avatar uploaded to Supabase Storage (max 5MB, JPG/PNG)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC7">
+      <text>Error handling: Invalid email, weak password, upload failed</text>
+      <priority>P0</priority>
+    </criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR4: User profile updates</section>
+        <snippet>Users can update profile information (name, email, avatar). Email updates require re-verification to maintain account security.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR116: Personal settings management</section>
+        <snippet>Users can manage personal settings including profile information, avatar uploads, and password changes. All changes must sync across devices.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/epics.md</path>
+        <title>Epic 1: Core Platform Foundation - Story 1.4</title>
+        <section>Story 1.4: User Profile Management</section>
+        <snippet>User can update name, email (requires re-verification), avatar (upload from gallery or camera), and change password (requires current password confirmation). Avatar uploaded to Supabase Storage (max 5MB, JPG/PNG) with compression to 512x512px.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Hybrid Architecture (D1)</section>
+        <snippet>Feature-first architecture with clean architecture layers (presentation/domain/data). Profile module located at features/profile/. Use Riverpod for state management.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Supabase Storage</section>
+        <snippet>Supabase Storage provides CDN-backed object storage. Create buckets with RLS policies for secure file uploads. Public read policies for avatars, user-specific write policies to prevent unauthorized uploads.</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/sprint-1/1-4-user-profile-management.md</path>
+        <title>Story 1.4: User Profile Management</title>
+        <section>Technical Implementation</section>
+        <snippet>Profile edit page with inline editing. Avatar upload with FlutterImageCompress (512x512px, 85% quality). Supabase Storage bucket for avatars with public read and user-specific write policies. Email update triggers re-verification email.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <file>
+        <path>lib/features/profile/presentation/pages/profile_edit_page.dart</path>
+        <description>Profile edit page with name, email, avatar, and password change fields</description>
+      </file>
+      <file>
+        <path>lib/features/profile/domain/usecases/update_profile_usecase.dart</path>
+        <description>Use case for updating user profile (name, email)</description>
+      </file>
+      <file>
+        <path>lib/features/profile/domain/usecases/upload_avatar_usecase.dart</path>
+        <description>Use case for uploading and compressing avatar images</description>
+      </file>
+      <file>
+        <path>lib/features/profile/domain/usecases/change_password_usecase.dart</path>
+        <description>Use case for changing user password with current password confirmation</description>
+      </file>
+      <file>
+        <path>lib/features/profile/data/repositories/profile_repository_impl.dart</path>
+        <description>Profile repository implementation with Supabase integration</description>
+      </file>
+    </code>
+    <dependencies>
+      <flutter>
+        <sdk>3.38+</sdk>
+        <dart>3.10+</dart>
+      </flutter>
+      <packages>
+        <package name="flutter_riverpod" version="^3.0.0" usage="State management for profile edit state" />
+        <package name="riverpod_annotation" version="^3.0.0" usage="Code generation for providers" />
+        <package name="supabase_flutter" version="^2.0.0" usage="Supabase client for database and storage operations" />
+        <package name="image_picker" version="^1.0.0" usage="Select images from gallery or camera" />
+        <package name="flutter_image_compress" version="^2.1.0" usage="Compress images to 512x512px before upload" />
+        <package name="cached_network_image" version="^3.3.0" usage="Display cached avatar images" />
+        <package name="flutter_secure_storage" version="^9.0.0" usage="Secure storage for temporary credentials" />
+        <package name="flutter_test" version="sdk" usage="Unit and widget testing framework" />
+        <package name="integration_test" version="sdk" usage="End-to-end testing framework" />
+      </packages>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint id="ARCH-1" type="architectural">
+      <description>Must follow Hybrid Architecture pattern (D1)</description>
+      <details>Create feature structure at lib/features/profile/ with presentation/, domain/, and data/ layers. Use clean architecture separation of concerns.</details>
+    </constraint>
+    <constraint id="ARCH-2" type="architectural">
+      <description>Use Riverpod for state management (D1, D6)</description>
+      <details>Create providers following feature-first structure. Use ConsumerWidget for profile edit page. Providers should be in profile/presentation/providers/.</details>
+    </constraint>
+    <constraint id="STORAGE-1" type="storage">
+      <description>Avatar size limit: 5MB max</description>
+      <details>Validate file size client-side before upload. Show error message "Image must be under 5MB" if validation fails.</details>
+    </constraint>
+    <constraint id="STORAGE-2" type="storage">
+      <description>Avatar compression: 512x512px</description>
+      <details>Use FlutterImageCompress to resize images to 512x512px with 85% quality. Target compressed size ~100KB. Compression time must be &lt;1s.</details>
+    </constraint>
+    <constraint id="STORAGE-3" type="storage">
+      <description>Avatar overwrite policy</description>
+      <details>Store avatar at {userId}/avatar.jpg. Overwrite on each upload (no version history). Old avatar automatically replaced to save storage costs.</details>
+    </constraint>
+    <constraint id="SEC-1" type="security">
+      <description>Row Level Security (RLS) policies required</description>
+      <details>Enable RLS on user_profiles table. Policy: CREATE POLICY "Users can only update own profile" ON user_profiles FOR UPDATE USING (auth.uid() = id);</details>
+    </constraint>
+    <constraint id="SEC-2" type="security">
+      <description>Storage bucket RLS policies</description>
+      <details>Avatars bucket: Public read for all. User-specific write: auth.uid()::text = (storage.foldername(name))[1]. Prevents users from uploading to other users' folders.</details>
+    </constraint>
+    <constraint id="SEC-3" type="security">
+      <description>Email re-verification required</description>
+      <details>When email is updated via supabase.auth.updateUser(), Supabase automatically sends verification email. User must verify new email before it becomes active.</details>
+    </constraint>
+    <constraint id="SEC-4" type="security">
+      <description>Password change requires current password</description>
+      <details>User must confirm current password before changing to new password. Prevents unauthorized password changes if device is unlocked.</details>
+    </constraint>
+    <constraint id="UX-1" type="ux">
+      <description>Inline editing with Save button</description>
+      <details>Profile fields editable inline. Save button at bottom saves all changes at once. Show loading state during save. Display success SnackBar on success.</details>
+    </constraint>
+    <constraint id="UX-2" type="ux">
+      <description>Avatar UI: Circular with overlay button</description>
+      <details>Display avatar as circular image. On tap or "Change photo" button overlay, show image picker (gallery or camera). Preview new image before saving.</details>
+    </constraint>
+    <constraint id="UX-3" type="ux">
+      <description>Form validation before save</description>
+      <details>Validate all fields before saving: email format, name not empty, password strength (if changed). Show inline error messages. Disable save button if validation fails.</details>
+    </constraint>
+    <constraint id="PERF-1" type="performance">
+      <description>Image compression &lt;1s</description>
+      <details>FlutterImageCompress must complete in &lt;1s for 512x512px output. Show loading indicator during compression.</details>
+    </constraint>
+    <constraint id="PERF-2" type="performance">
+      <description>Upload time &lt;3s</description>
+      <details>Avatar upload to Supabase Storage must complete in &lt;3s for compressed image (~100KB). Show progress indicator during upload.</details>
+    </constraint>
+    <constraint id="PERF-3" type="performance">
+      <description>Profile update &lt;1s</description>
+      <details>Database update (name, email, avatar URL) must complete in &lt;1s. Provide instant feedback to user.</details>
+    </constraint>
+    <constraint id="TEST-1" type="testing">
+      <description>80%+ code coverage required</description>
+      <details>Follow 70/20/10 testing pyramid. Unit tests for use cases, widget tests for UI, integration test for full flow. All AC must have test coverage.</details>
+    </constraint>
+    <constraint id="GDPR-1" type="compliance">
+      <description>GDPR compliance for avatar storage</description>
+      <details>User can delete avatar (Story 1.6 - account deletion). Avatar stored in user-specific folder for privacy. No shared access between users.</details>
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>ProfileEntity</name>
+      <kind>domain-entity</kind>
+      <signature>
+        class ProfileEntity {
+          final String id;
+          final String name;
+          final String email;
+          final String? avatarUrl;
+          final DateTime createdAt;
+          final DateTime updatedAt;
+        }
+      </signature>
+      <path>lib/features/profile/domain/entities/profile_entity.dart</path>
+      <notes>Use @freezed annotation for immutability and copyWith. Include validation in constructor (name not empty, valid email format).</notes>
+    </interface>
+    <interface>
+      <name>UpdateProfileUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class UpdateProfileUseCase {
+          Future&lt;Result&lt;ProfileEntity&gt;&gt; call({
+            required String userId,
+            String? name,
+            String? email,
+          });
+        }
+      </signature>
+      <path>lib/features/profile/domain/usecases/update_profile_usecase.dart</path>
+      <notes>Returns Result&lt;T&gt; pattern (Success/Failure). If email is updated, triggers re-verification email via Supabase auth. Validate input before saving.</notes>
+    </interface>
+    <interface>
+      <name>UploadAvatarUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class UploadAvatarUseCase {
+          Future&lt;Result&lt;String&gt;&gt; call({
+            required String userId,
+            required File imageFile,
+          });
+        }
+      </signature>
+      <path>lib/features/profile/domain/usecases/upload_avatar_usecase.dart</path>
+      <notes>Compresses image to 512x512px, uploads to Supabase Storage avatars/{userId}/avatar.jpg, returns public URL. Validates file size &lt;5MB.</notes>
+    </interface>
+    <interface>
+      <name>ChangePasswordUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class ChangePasswordUseCase {
+          Future&lt;Result&lt;void&gt;&gt; call({
+            required String currentPassword,
+            required String newPassword,
+          });
+        }
+      </signature>
+      <path>lib/features/profile/domain/usecases/change_password_usecase.dart</path>
+      <notes>Validates current password, checks new password strength (8+ chars, uppercase, number, special char), calls supabase.auth.updateUser() for password change.</notes>
+    </interface>
+    <interface>
+      <name>ProfileRepository</name>
+      <kind>repository</kind>
+      <signature>
+        abstract class ProfileRepository {
+          Future&lt;Result&lt;ProfileEntity&gt;&gt; getProfile(String userId);
+          Future&lt;Result&lt;ProfileEntity&gt;&gt; updateProfile({
+            required String userId,
+            String? name,
+            String? email,
+            String? avatarUrl,
+          });
+          Future&lt;Result&lt;String&gt;&gt; uploadAvatar(String userId, File imageFile);
+          Future&lt;Result&lt;void&gt;&gt; changePassword({
+            required String currentPassword,
+            required String newPassword,
+          });
+        }
+      </signature>
+      <path>lib/features/profile/domain/repositories/profile_repository.dart</path>
+      <notes>Implemented by ProfileRepositoryImpl in data layer. Uses SupabaseDataSource for database operations and storage operations.</notes>
+    </interface>
+    <interface>
+      <name>user_profiles table (Supabase PostgreSQL)</name>
+      <kind>database-table</kind>
+      <signature>
+        CREATE TABLE user_profiles (
+          id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+          name TEXT NOT NULL,
+          email TEXT NOT NULL,
+          avatar_url TEXT,
+          created_at TIMESTAMPTZ DEFAULT NOW(),
+          updated_at TIMESTAMPTZ DEFAULT NOW()
+        );
+        CREATE INDEX idx_user_profiles_email ON user_profiles(email);
+      </signature>
+      <path>supabase/migrations/</path>
+      <notes>Migration file will be created in Supabase migrations folder. Include RLS policies in same migration: USING (auth.uid() = id) for row-level access.</notes>
+    </interface>
+    <interface>
+      <name>avatars storage bucket (Supabase Storage)</name>
+      <kind>storage-bucket</kind>
+      <signature>
+        CREATE POLICY "Users can upload own avatar" ON storage.objects
+          FOR INSERT WITH CHECK (
+            bucket_id = 'avatars' AND
+            auth.uid()::text = (storage.foldername(name))[1]
+          );
+
+        CREATE POLICY "Anyone can view avatars" ON storage.objects
+          FOR SELECT USING (bucket_id = 'avatars');
+      </signature>
+      <path>supabase/storage/avatars</path>
+      <notes>Public read access for displaying avatars in UI. User-specific write access to prevent unauthorized uploads. Path structure: {userId}/avatar.jpg</notes>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Follow 70/20/10 testing pyramid: 70% unit tests (use cases, repositories, entities), 20% widget tests (UI components, state management), 10% integration tests (end-to-end flows). Use flutter_test for unit/widget tests, integration_test for E2E. Mock dependencies with mockito. Target 80%+ code coverage. All acceptance criteria must have test coverage.
+    </standards>
+    <locations>
+      <location>test/features/profile/domain/usecases/</location>
+      <location>test/features/profile/domain/entities/</location>
+      <location>test/features/profile/data/repositories/</location>
+      <location>test/features/profile/presentation/widgets/</location>
+      <location>integration_test/features/profile/profile_update_flow_test.dart</location>
+    </locations>
+    <ideas>
+      <test-idea ac-ref="AC1">
+        <description>Unit test: UpdateProfileUseCase updates name successfully</description>
+        <approach>Mock ProfileRepository. Call updateProfile with new name. Verify repository.updateProfile() called with correct parameters. Assert Success result returned.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC2">
+        <description>Unit test: UpdateProfileUseCase triggers email re-verification</description>
+        <approach>Mock ProfileRepository and AuthService. Call updateProfile with new email. Verify auth.updateUser() called. Verify verification email sent.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC7">
+        <description>Unit test: UpdateProfileUseCase validates email format</description>
+        <approach>Call updateProfile with invalid email "notanemail". Assert Failure result returned with InvalidEmailException.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3,AC6">
+        <description>Unit test: UploadAvatarUseCase compresses image to 512x512px</description>
+        <approach>Mock FlutterImageCompress. Provide 2000x2000px test image. Verify compression called with maxWidth: 512, maxHeight: 512, quality: 85.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6,AC7">
+        <description>Unit test: UploadAvatarUseCase validates file size &lt;5MB</description>
+        <approach>Provide test file &gt;5MB. Assert Failure result returned with FileTooLargeException. Verify upload not attempted.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3">
+        <description>Unit test: UploadAvatarUseCase returns public URL</description>
+        <approach>Mock storage upload. Verify upload called with correct path {userId}/avatar.jpg. Verify getPublicUrl() called. Assert Success with public URL returned.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4,AC7">
+        <description>Unit test: ChangePasswordUseCase validates password strength</description>
+        <approach>Call changePassword with weak password "abc123". Assert Failure result with WeakPasswordException. Verify password requirements message includes "8+ chars, uppercase, number, special char".</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4">
+        <description>Unit test: ChangePasswordUseCase confirms current password</description>
+        <approach>Mock AuthService. Call changePassword with correct current password and valid new password. Verify auth.updateUser() called. Assert Success result.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1,AC3">
+        <description>Widget test: ProfileEditPage displays profile fields</description>
+        <approach>Render ProfileEditPage with test profile. Verify name field displays current name. Verify email field displays current email. Verify avatar displays current avatarUrl.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3">
+        <description>Widget test: Avatar picker shows on tap</description>
+        <approach>Render ProfileEditPage. Tap avatar or "Change photo" button. Verify image picker dialog appears with gallery and camera options.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1">
+        <description>Widget test: Save button triggers update</description>
+        <approach>Render ProfileEditPage. Change name field. Tap Save button. Verify loading state appears. Verify success SnackBar shown after save completes.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC7">
+        <description>Widget test: Form validation prevents invalid saves</description>
+        <approach>Render ProfileEditPage. Enter invalid email. Verify Save button disabled. Verify inline error message shown: "Please enter a valid email address".</approach>
+      </test-idea>
+      <test-idea ac-ref="AC7">
+        <description>Widget test: Upload error shows retry button</description>
+        <approach>Mock upload to fail with NetworkException. Tap avatar upload. Verify error message shown: "Avatar upload failed. Try again or choose smaller image." Verify Retry button appears.</approach>
+      </test-idea>
+      <test-idea ac-ref="ALL">
+        <description>Integration test: Complete profile update flow</description>
+        <approach>Launch app as logged-in user. Navigate to Profile Edit page. Change name, email, avatar. Tap Save. Verify profile updated in database. Verify avatar uploaded to storage. Verify email verification email sent. Verify changes synced across devices.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3,AC6">
+        <description>Integration test: Avatar upload and display</description>
+        <approach>Launch app. Navigate to Profile Edit. Pick image from gallery. Verify image compressed to 512x512px. Verify upload to avatars/{userId}/avatar.jpg. Verify avatar displayed in UI after save.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4">
+        <description>Integration test: Password change flow</description>
+        <approach>Navigate to Profile Edit. Tap Change Password. Enter current password, new password. Tap Save. Verify password updated. Optionally verify re-authentication required on next app launch.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC7">
+        <description>Integration test: Network error handling</description>
+        <approach>Disable network. Attempt profile update. Verify error message: "Connection failed. Changes not saved." Verify Retry button. Re-enable network. Tap Retry. Verify update succeeds.</approach>
+      </test-idea>
+    </ideas>
+  </tests>
+</story-context>

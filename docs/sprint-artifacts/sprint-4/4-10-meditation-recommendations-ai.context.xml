@@ -1,0 +1,469 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/4.10" v="1.0">
+  <metadata>
+    <epicId>4</epicId>
+    <storyId>4.10</storyId>
+    <title>Meditation Recommendations (AI)</title>
+    <status>ready-for-dev</status>
+    <generatedAt>2025-11-17</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/sprint-4/4-10-meditation-recommendations-ai.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>user unsure what to meditate on</asA>
+    <iWant>AI meditation recommendations</iWant>
+    <soThat>I get personalized suggestions</soThat>
+    <tasks>
+      <task id="1" ac-ref="AC1,AC2">
+        <description>Implement AI meditation recommendation engine</description>
+        <subtasks>
+          <subtask>Create GetMeditationRecommendationsUseCase</subtask>
+          <subtask>Fetch user data: mood (last 7 days avg), stress (last 7 days avg), sleep (last 3 nights avg)</subtask>
+          <subtask>Create AI prompt template for meditation recommendations</subtask>
+          <subtask>Call AI orchestration service (Llama/Claude/GPT) with user context</subtask>
+          <subtask>Parse AI response to extract 3-5 meditation recommendations</subtask>
+          <subtask>Implement fallback logic if AI fails (rule-based recommendations)</subtask>
+        </subtasks>
+      </task>
+      <task id="2" ac-ref="AC2,AC3">
+        <description>Design recommendation response schema</description>
+        <subtasks>
+          <subtask>Define MeditationRecommendation entity (id, title, duration, reason, meditation_id)</subtask>
+          <subtask>Map recommendations to existing meditation content library</subtask>
+          <subtask>Include personalization reason ("Based on your high stress levels...")</subtask>
+          <subtask>Ensure AI returns 3-5 recommendations sorted by relevance</subtask>
+          <subtask>Validate recommendation format (title, duration, reason required)</subtask>
+        </subtasks>
+      </task>
+      <task id="3" ac-ref="AC3,AC5">
+        <description>Implement "Suggested for You" UI section</description>
+        <subtasks>
+          <subtask>Create SuggestedMeditationsWidget in meditation home screen</subtask>
+          <subtask>Display recommendation cards: title, duration, reason, thumbnail</subtask>
+          <subtask>Implement horizontal scroll carousel (3-5 cards)</subtask>
+          <subtask>Add "Why?" button to show personalization reason modal</subtask>
+          <subtask>Implement tap-to-start meditation navigation</subtask>
+          <subtask>Show loading shimmer while fetching recommendations</subtask>
+        </subtasks>
+      </task>
+      <task id="4" ac-ref="AC4">
+        <description>Implement daily refresh logic</description>
+        <subtasks>
+          <subtask>Store recommendations in local cache with timestamp</subtask>
+          <subtask>Check if recommendations are stale (>24 hours old)</subtask>
+          <subtask>Trigger refresh on app open if stale</subtask>
+          <subtask>Implement background refresh at midnight (00:00)</subtask>
+          <subtask>Add manual refresh button ("Get Fresh Suggestions")</subtask>
+          <subtask>Cache recommendations in Drift for offline access</subtask>
+        </subtasks>
+      </task>
+      <task id="5" ac-ref="AC5">
+        <description>Implement tap-to-start meditation flow</description>
+        <subtasks>
+          <subtask>Add CTA button on recommendation card ("Start Meditation")</subtask>
+          <subtask>Navigate to meditation player screen with pre-loaded content</subtask>
+          <subtask>Pass meditation_id to player for content lookup</subtask>
+          <subtask>Log recommendation → start event for learning</subtask>
+          <subtask>Track which recommendations are acted upon</subtask>
+        </subtasks>
+      </task>
+      <task id="6" ac-ref="AC6">
+        <description>Implement learning from completed meditations</description>
+        <subtasks>
+          <subtask>Track completed meditations in meditation_sessions table</subtask>
+          <subtask>Store meditation_id, completed_at, duration, source (recommended/browsed)</subtask>
+          <subtask>Include completion data in AI context: "User often completes stress meditations"</subtask>
+          <subtask>Weight recommendations based on past preferences</subtask>
+          <subtask>Implement feedback mechanism ("Was this helpful?" thumbs up/down)</subtask>
+          <subtask>Store feedback in recommendation_feedback table</subtask>
+        </subtasks>
+      </task>
+      <task id="7" ac-ref="ALL">
+        <description>Write comprehensive tests</description>
+        <subtasks>
+          <subtask>Unit tests: AI recommendation parsing, fallback logic, cache staleness</subtask>
+          <subtask>Widget tests: Suggested section UI, recommendation cards, tap-to-start</subtask>
+          <subtask>Integration test: full recommendation flow from AI call to meditation start</subtask>
+          <subtask>Integration test: learning algorithm updates based on completed meditations</subtask>
+          <subtask>Achieve 80%+ code coverage</subtask>
+        </subtasks>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="AC1">
+      <text>AI analyzes mood, stress, and sleep data (last 7 days avg)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC2">
+      <text>AI recommends 3-5 personalized meditations</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC3">
+      <text>"Suggested for You" section displays recommendations on meditation home</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC4">
+      <text>Recommendations refresh daily (midnight or app open after 24h)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC5">
+      <text>Tap recommendation card to start meditation immediately</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC6">
+      <text>AI learns from completed meditations (preferences, patterns)</text>
+      <priority>P1</priority>
+    </criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR51: AI-powered meditation recommendations</section>
+        <snippet>Mind & Emotion module uses AI to recommend meditations based on mood/stress/sleep patterns. AI analyzes last 7 days of data to suggest 3-5 meditations. Learning algorithm improves over time based on completion rates and feedback.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/epics.md</path>
+        <title>Epic 4: Mind & Emotion MVP - Story 4.10</title>
+        <section>Story 4.10: Meditation Recommendations (AI)</section>
+        <snippet>Implement AI meditation recommendation engine using Llama/Claude/GPT. Analyze user mood/stress/sleep data to suggest 3-5 personalized meditations. Display in "Suggested for You" section. Refresh daily and learn from user behavior.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>AI Orchestration Service (D8)</section>
+        <snippet>AI service supports multiple providers: Llama (self-hosted), Claude (Anthropic API), GPT-4 (OpenAI API). Use prompt templates for consistency. Implement fallback cascade: Llama → Claude → GPT → rule-based. Cache AI responses for 24h to reduce API costs.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/ux-design-specification.md</path>
+        <title>UX Design Specification</title>
+        <section>Meditation Recommendations UX</section>
+        <snippet>"Suggested for You" section at top of meditation home. Horizontal scroll carousel with 3-5 cards. Each card shows meditation thumbnail, title, duration (5-20 min), and reason ("Based on your high stress levels"). Tap to start. Refresh button for manual update.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <reference>
+        <path>lib/features/mind_emotion/meditation/</path>
+        <description>Meditation module base structure (from stories 4.4-4.7)</description>
+        <notes>Add recommendations feature to existing meditation module. Reuse meditation player and content library infrastructure.</notes>
+      </reference>
+      <reference>
+        <path>lib/core/ai/</path>
+        <description>AI orchestration service (from Epic 2 story 2.2)</description>
+        <notes>Reuse existing AI service for daily plan generation. Add meditation recommendation prompt template. Use same fallback cascade pattern.</notes>
+      </reference>
+    </code>
+    <dependencies>
+      <flutter>
+        <sdk>3.38+</sdk>
+        <dart>3.10+</dart>
+      </flutter>
+      <packages>
+        <package name="flutter_riverpod" version="^3.0.0" usage="State management for recommendation state and caching" />
+        <package name="drift" version="^2.14.0" usage="Local cache for recommendations and feedback" />
+        <package name="supabase_flutter" version="^2.0.0" usage="Sync meditation sessions and feedback to cloud" />
+        <package name="http" version="^1.1.0" usage="AI API calls (Claude/GPT)" />
+        <package name="json_annotation" version="^4.8.0" usage="JSON parsing for AI responses" />
+        <package name="cached_network_image" version="^3.3.0" usage="Meditation thumbnail images in cards" />
+        <package name="shimmer" version="^3.0.0" usage="Loading shimmer for recommendation cards" />
+      </packages>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint id="ARCH-1" type="architectural">
+      <description>Must follow feature-first architecture pattern</description>
+      <details>Add recommendations feature at lib/features/mind_emotion/meditation/recommendations/ with presentation/, domain/, and data/ layers. Reuse existing AI service from core/ai/.</details>
+    </constraint>
+    <constraint id="ARCH-2" type="architectural">
+      <description>Offline-first caching required</description>
+      <details>Cache recommendations in Drift for 24h. Display cached recommendations if offline. Refresh when back online. User should never see empty state.</details>
+    </constraint>
+    <constraint id="AI-1" type="ai">
+      <description>AI prompt template structure</description>
+      <details>Prompt includes: user mood avg (last 7 days), stress avg (last 7 days), sleep avg (last 3 nights), past meditation preferences, current time of day. Request JSON response with 3-5 recommendations: {title, duration, reason, meditation_id}.</details>
+    </constraint>
+    <constraint id="AI-2" type="ai">
+      <description>AI response parsing and validation</description>
+      <details>Parse JSON response from AI. Validate required fields (title, duration, reason, meditation_id). Map meditation_id to content library. If parsing fails, use rule-based fallback.</details>
+    </constraint>
+    <constraint id="AI-3" type="ai">
+      <description>Fallback cascade for AI failures</description>
+      <details>1. Try Llama (self-hosted). 2. If fails, try Claude API. 3. If fails, try GPT-4 API. 4. If all fail, use rule-based recommendations (high stress → stress relief meditation, low mood → positive affirmations, poor sleep → sleep meditation).</details>
+    </constraint>
+    <constraint id="PERF-1" type="performance">
+      <description>AI recommendation generation &lt;5s</description>
+      <details>Target: Llama &lt;2s, Claude &lt;3s, GPT-4 &lt;5s. Show loading state immediately. Timeout at 10s and use cached or fallback recommendations.</details>
+    </constraint>
+    <constraint id="DATA-1" type="data">
+      <description>Recommendation cache schema</description>
+      <details>meditation_recommendations table: id (UUID PK), user_id (UUID FK), meditation_id (UUID FK), title (TEXT), duration (INT minutes), reason (TEXT), source (ai/rule-based), relevance_score (FLOAT), generated_at (TIMESTAMPTZ), expires_at (TIMESTAMPTZ, 24h). Index on (user_id, expires_at).</details>
+    </constraint>
+    <constraint id="DATA-2" type="data">
+      <description>Learning data schema</description>
+      <details>meditation_sessions table: id (UUID), user_id (UUID), meditation_id (UUID), started_at, completed_at, duration_seconds, source (recommended/browsed), recommendation_id (UUID nullable FK). recommendation_feedback table: id, recommendation_id, user_id, helpful (BOOLEAN), feedback_at.</details>
+    </constraint>
+    <constraint id="UX-1" type="ux">
+      <description>Personalization reason visibility</description>
+      <details>Each recommendation card shows brief reason (1 sentence). "Why?" button expands to full explanation with data points ("Your average stress: 7/10, last 7 days. This meditation helps reduce stress by 35%.").</details>
+    </constraint>
+    <constraint id="TEST-1" type="testing">
+      <description>80%+ code coverage required</description>
+      <details>Test AI parsing with various response formats. Test fallback cascade (mock API failures). Test cache expiration logic. Test learning algorithm with different user patterns.</details>
+    </constraint>
+    <constraint id="COST-1" type="cost">
+      <description>AI API cost optimization</description>
+      <details>Cache recommendations for 24h to minimize API calls. Use Llama (self-hosted, free) as primary. Batch user data in single API call. Estimated cost: &lt;$0.01 per user per day with Claude/GPT fallback.</details>
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>MeditationRecommendationEntity</name>
+      <kind>domain-entity</kind>
+      <signature>
+        class MeditationRecommendationEntity {
+          final String id;
+          final String userId;
+          final String meditationId;
+          final String title;
+          final int durationMinutes;
+          final String reason;
+          final String source; // 'ai' | 'rule-based'
+          final double relevanceScore; // 0.0-1.0
+          final DateTime generatedAt;
+          final DateTime expiresAt; // generatedAt + 24h
+        }
+      </signature>
+      <path>lib/features/mind_emotion/meditation/recommendations/domain/entities/meditation_recommendation_entity.dart</path>
+      <notes>Use @freezed annotation. expiresAt = generatedAt + 24 hours. relevanceScore for sorting recommendations.</notes>
+    </interface>
+    <interface>
+      <name>GetMeditationRecommendationsUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class GetMeditationRecommendationsUseCase {
+          Future&lt;Result&lt;List&lt;MeditationRecommendationEntity&gt;&gt;&gt; call({
+            required String userId,
+            bool forceRefresh = false,
+          });
+        }
+      </signature>
+      <path>lib/features/mind_emotion/meditation/recommendations/domain/usecases/get_meditation_recommendations_usecase.dart</path>
+      <notes>Check cache first. If stale or forceRefresh=true, call AI service. Return 3-5 recommendations sorted by relevanceScore. Handle errors with fallback.</notes>
+    </interface>
+    <interface>
+      <name>GenerateMeditationRecommendationsAI</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class GenerateMeditationRecommendationsAI {
+          Future&lt;Result&lt;List&lt;MeditationRecommendationEntity&gt;&gt;&gt; call({
+            required String userId,
+            required double avgMood, // 1-5, last 7 days
+            required double avgStress, // 1-10, last 7 days
+            required double avgSleep, // 1-5, last 3 nights
+            required List&lt;String&gt; pastMeditationIds, // last 30 days
+          });
+        }
+      </signature>
+      <path>lib/features/mind_emotion/meditation/recommendations/domain/usecases/generate_meditation_recommendations_ai.dart</path>
+      <notes>Calls AI orchestration service with prompt template. Parses JSON response. Maps meditation_id to content library. Returns validated recommendations.</notes>
+    </interface>
+    <interface>
+      <name>TrackMeditationSessionUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class TrackMeditationSessionUseCase {
+          Future&lt;Result&lt;void&gt;&gt; call({
+            required String userId,
+            required String meditationId,
+            required DateTime startedAt,
+            DateTime? completedAt,
+            required int durationSeconds,
+            required String source, // 'recommended' | 'browsed'
+            String? recommendationId,
+          });
+        }
+      </signature>
+      <path>lib/features/mind_emotion/meditation/recommendations/domain/usecases/track_meditation_session_usecase.dart</path>
+      <notes>Save session to meditation_sessions table. Used for learning algorithm. If source='recommended', link to recommendationId for feedback.</notes>
+    </interface>
+    <interface>
+      <name>RecommendationRepository</name>
+      <kind>repository</kind>
+      <signature>
+        abstract class RecommendationRepository {
+          Future&lt;Result&lt;List&lt;MeditationRecommendationEntity&gt;&gt;&gt; getRecommendations(String userId);
+          Future&lt;Result&lt;void&gt;&gt; saveRecommendations(List&lt;MeditationRecommendationEntity&gt; recommendations);
+          Future&lt;Result&lt;void&gt;&gt; trackSession(MeditationSessionEntity session);
+          Future&lt;Result&lt;void&gt;&gt; submitFeedback(String recommendationId, bool helpful);
+        }
+      </signature>
+      <path>lib/features/mind_emotion/meditation/recommendations/domain/repositories/recommendation_repository.dart</path>
+      <notes>Implemented by RecommendationRepositoryImpl. Uses DriftDataSource for cache, SupabaseDataSource for sync, AiService for generation.</notes>
+    </interface>
+    <interface>
+      <name>meditation_recommendations table (Supabase PostgreSQL)</name>
+      <kind>database-table</kind>
+      <signature>
+        CREATE TABLE meditation_recommendations (
+          id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+          user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+          meditation_id UUID NOT NULL REFERENCES meditation_content(id),
+          title TEXT NOT NULL,
+          duration_minutes INT NOT NULL CHECK (duration_minutes BETWEEN 1 AND 60),
+          reason TEXT NOT NULL,
+          source TEXT NOT NULL CHECK (source IN ('ai', 'rule-based')),
+          relevance_score FLOAT NOT NULL CHECK (relevance_score BETWEEN 0 AND 1),
+          generated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+          expires_at TIMESTAMPTZ NOT NULL,
+          created_at TIMESTAMPTZ DEFAULT NOW()
+        );
+        CREATE INDEX idx_meditation_recs_user_expires ON meditation_recommendations(user_id, expires_at DESC);
+      </signature>
+      <path>supabase/migrations/</path>
+      <notes>Include RLS policies: USING (auth.uid() = user_id). Add cleanup job to delete expired recommendations (>7 days old).</notes>
+    </interface>
+    <interface>
+      <name>meditation_sessions table (Supabase PostgreSQL)</name>
+      <kind>database-table</kind>
+      <signature>
+        CREATE TABLE meditation_sessions (
+          id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+          user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+          meditation_id UUID NOT NULL REFERENCES meditation_content(id),
+          started_at TIMESTAMPTZ NOT NULL,
+          completed_at TIMESTAMPTZ,
+          duration_seconds INT NOT NULL,
+          source TEXT NOT NULL CHECK (source IN ('recommended', 'browsed')),
+          recommendation_id UUID REFERENCES meditation_recommendations(id) ON DELETE SET NULL,
+          created_at TIMESTAMPTZ DEFAULT NOW()
+        );
+        CREATE INDEX idx_meditation_sessions_user_started ON meditation_sessions(user_id, started_at DESC);
+      </signature>
+      <path>supabase/migrations/</path>
+      <notes>Track all meditation sessions for learning algorithm. RLS policies: USING (auth.uid() = user_id).</notes>
+    </interface>
+    <interface>
+      <name>recommendation_feedback table (Supabase PostgreSQL)</name>
+      <kind>database-table</kind>
+      <signature>
+        CREATE TABLE recommendation_feedback (
+          id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+          recommendation_id UUID NOT NULL REFERENCES meditation_recommendations(id) ON DELETE CASCADE,
+          user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+          helpful BOOLEAN NOT NULL,
+          feedback_at TIMESTAMPTZ DEFAULT NOW(),
+          UNIQUE(recommendation_id, user_id)
+        );
+        CREATE INDEX idx_rec_feedback_user ON recommendation_feedback(user_id, feedback_at DESC);
+      </signature>
+      <path>supabase/migrations/</path>
+      <notes>Store thumbs up/down feedback. Used to improve future recommendations. RLS policies: USING (auth.uid() = user_id).</notes>
+    </interface>
+    <interface>
+      <name>AI Prompt Template</name>
+      <kind>prompt-template</kind>
+      <signature>
+        You are a meditation recommendation expert. Analyze user data and recommend 3-5 meditations.
+
+        User Context:
+        - Average mood (last 7 days): {avgMood}/5
+        - Average stress (last 7 days): {avgStress}/10
+        - Average sleep quality (last 3 nights): {avgSleep}/5
+        - Past meditation preferences: {pastMeditationIds}
+        - Current time: {timeOfDay}
+
+        Return JSON array:
+        [
+          {
+            "meditation_id": "uuid",
+            "title": "Meditation Title",
+            "duration_minutes": 10,
+            "reason": "One sentence explaining why this is recommended",
+            "relevance_score": 0.95
+          },
+          ...
+        ]
+
+        Recommendations should be diverse (not all same type) and match user's current state.
+      </signature>
+      <path>lib/core/ai/prompts/meditation_recommendations_prompt.dart</path>
+      <notes>Template includes user context placeholders. AI response parsed as JSON. Validate response format and handle parsing errors.</notes>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Follow 70/20/10 testing pyramid: 70% unit tests (use cases, AI parsing, fallback logic, cache), 20% widget tests (UI components, recommendation cards), 10% integration tests (end-to-end recommendation flow). Use flutter_test for unit/widget tests, integration_test for E2E. Mock dependencies (AI service, repositories) with mockito. Target 80%+ code coverage. All acceptance criteria must have test coverage.
+    </standards>
+    <locations>
+      <location>test/features/mind_emotion/meditation/recommendations/domain/usecases/</location>
+      <location>test/features/mind_emotion/meditation/recommendations/data/repositories/</location>
+      <location>test/features/mind_emotion/meditation/recommendations/presentation/widgets/</location>
+      <location>integration_test/features/mind_emotion/meditation_recommendations_test.dart</location>
+    </locations>
+    <ideas>
+      <test-idea ac-ref="AC1,AC2">
+        <description>Unit test: AI recommendation generation</description>
+        <approach>Mock AI service response with 4 recommendations. Call GenerateMeditationRecommendationsAI. Verify 4 recommendations returned. Verify JSON parsing correct (title, duration, reason, meditation_id).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC2">
+        <description>Unit test: AI response validation</description>
+        <approach>Mock AI service with invalid JSON (missing required field). Call use case. Verify error handling and fallback to rule-based recommendations.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1,AC2">
+        <description>Unit test: Fallback cascade on AI failure</description>
+        <approach>Mock Llama API failure. Verify Claude API called. Mock Claude failure. Verify GPT API called. Mock GPT failure. Verify rule-based recommendations returned.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4">
+        <description>Unit test: Cache staleness check</description>
+        <approach>Mock cached recommendations with generatedAt = 25 hours ago. Call GetMeditationRecommendationsUseCase. Verify fresh recommendations fetched from AI (cache expired).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4">
+        <description>Unit test: Cache hit within 24h</description>
+        <approach>Mock cached recommendations with generatedAt = 12 hours ago. Call use case. Verify cached recommendations returned (no AI call).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6">
+        <description>Unit test: Learning from completed meditations</description>
+        <approach>Mock user completed 5 stress meditations, 1 sleep meditation. Generate recommendations. Verify stress meditations have higher relevanceScore.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3">
+        <description>Widget test: Suggested for You section renders</description>
+        <approach>Mock 4 recommendations. Render SuggestedMeditationsWidget. Verify 4 cards displayed in horizontal scroll. Verify titles, durations, reasons visible.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC5">
+        <description>Widget test: Tap recommendation to start meditation</description>
+        <approach>Render recommendation card. Tap "Start Meditation" button. Verify navigation to meditation player with correct meditation_id. Verify session tracking triggered.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3">
+        <description>Widget test: Why button shows reason modal</description>
+        <approach>Render recommendation card. Tap "Why?" button. Verify modal appears with full explanation including user data points (mood avg, stress avg).</approach>
+      </test-idea>
+      <test-idea ac-ref="ALL">
+        <description>Integration test: Complete recommendation flow</description>
+        <approach>Launch app. Navigate to meditation home. Verify "Suggested for You" section. Mock AI generates 4 recommendations. Verify recommendations displayed. Tap first recommendation. Verify meditation starts. Complete meditation. Verify session tracked. Verify future recommendations weighted by completion.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4">
+        <description>Integration test: Daily refresh at midnight</description>
+        <approach>Mock recommendations generated yesterday. Mock system time = 00:01 today. Open app. Verify fresh recommendations fetched. Verify old recommendations expired in database.</approach>
+      </test-idea>
+    </ideas>
+  </tests>
+
+  <devAgentRecord>
+    <recordedAt>2025-11-17</recordedAt>
+    <status>ready-for-dev</status>
+    <agent>BMAD Dev Agent</agent>
+    <notes>Story context prepared and validated for development assignment</notes>
+  </devAgentRecord>
+
+  <created>
+    <author>BMAD Story Context Workflow</author>
+    <timestamp>2025-11-17</timestamp>
+  </created>
+</story-context>

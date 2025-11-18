@@ -1,5 +1,5 @@
 # Story 4.7: Breathing Exercises (5 Techniques)
-**Epic:** 4 - Mind & Emotion | **P1** | **2 SP** | **drafted**
+**Epic:** 4 - Mind & Emotion | **P1** | **2 SP** | **ready-for-dev**
 
 ## User Story
 **As a** user needing quick stress relief, **I want** guided breathing exercises, **So that** I calm down in 2-5 minutes.
@@ -31,3 +31,9 @@ CREATE TABLE breathing_completions (
 );
 ```
 **Dependencies:** Epic 1 | **Coverage:** 75%+
+
+## Dev Agent Record
+
+- **Status Updated to ready-for-dev:** 2025-11-17
+- **Dev Agent:** Claude Haiku 4.5
+- **Purpose:** Ready for development phase
