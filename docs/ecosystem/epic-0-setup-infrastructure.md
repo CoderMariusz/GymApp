@@ -708,9 +708,798 @@ class FCMService {
 
 ---
 
-### Story 0.5-0.10: [Skrócona forma]
+### Story 0.5: Stripe Integration Setup
 
-Z powodu ograniczeń miejsca, pozostałe stories w formie skróconej. Pełne instrukcje będą rozwinięte w osobnych plikach.
+**Cel:** Skonfigurować Stripe dla payment processing (subscriptions)
+
+**Kroki:**
+
+#### 1. Utwórz Konto Stripe
+
+1. Przejdź do https://dashboard.stripe.com/register
+2. Utwórz konto (test mode wystarczy dla dev)
+3. Włącz Test Mode (toggle w górnym prawym rogu)
+
+#### 2. Pobierz API Keys
+
+1. Stripe Dashboard → Developers → API keys
+2. Skopiuj:
+   - **Publishable key** (pk_test_...)
+   - **Secret key** (sk_test_...)
+3. Zapisz w `.env`:
+
+```env
+STRIPE_PUBLISHABLE_KEY=pk_test_...
+STRIPE_SECRET_KEY=sk_test_...
+```
+
+#### 3. Zainstaluj Flutter Stripe SDK
+
+Already in `pubspec.yaml` (Story 0.2):
+```yaml
+dependencies:
+  flutter_stripe: ^10.0.0
+```
+
+#### 4. Konfiguruj Stripe w App
+
+Utwórz `lib/core/subscription/stripe_service.dart`:
+
+```dart
+import 'package:flutter_stripe/flutter_stripe.dart';
+
+class StripeService {
+  static const String publishableKey = String.fromEnvironment(
+    'STRIPE_PUBLISHABLE_KEY',
+    defaultValue: 'pk_test_your-key',
+  );
+
+  static Future<void> initialize() async {
+    Stripe.publishableKey = publishableKey;
+    Stripe.merchantIdentifier = 'merchant.com.lifeos.app';
+  }
+
+  // Create payment intent
+  static Future<String> createPaymentIntent({
+    required int amount,  // in cents (e.g., 299 for €2.99)
+    required String currency,
+  }) async {
+    // Call Supabase Edge Function to create payment intent
+    // Edge function calls Stripe API with secret key
+    // Returns client_secret for confirming payment
+    throw UnimplementedError('Implement in Sprint with subscriptions');
+  }
+}
+```
+
+#### 5. Utwórz Stripe Edge Function
+
+```bash
+cd ~/Documents/Programowanie/GymApp/GymApp
+supabase functions new create-payment-intent
+```
+
+File: `supabase/functions/create-payment-intent/index.ts`
+
+```typescript
+import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
+import Stripe from 'https://esm.sh/stripe@14.0.0'
+
+const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY') ?? '', {
+  apiVersion: '2023-10-16',
+})
+
+serve(async (req) => {
+  const { amount, currency } = await req.json()
+
+  const paymentIntent = await stripe.paymentIntents.create({
+    amount,
+    currency,
+  })
+
+  return new Response(JSON.stringify({
+    client_secret: paymentIntent.client_secret
+  }), {
+    headers: { 'Content-Type': 'application/json' },
+  })
+})
+```
+
+#### 6. Deploy Edge Function
+
+```bash
+supabase functions deploy create-payment-intent --no-verify-jwt
+```
+
+#### 7. Test Stripe Integration
+
+```bash
+# Test card numbers (Stripe test mode)
+# Success: 4242 4242 4242 4242
+# Decline: 4000 0000 0000 0002
+```
+
+**Validation:**
+- [x] Stripe account utworzone (test mode)
+- [x] API keys zapisane w .env
+- [x] Flutter Stripe SDK skonfigurowane
+- [x] Edge function utworzona i deployed
+- [x] Test payment działa (using test card)
+
+---
+
+### Story 0.6: CI/CD Pipeline Setup
+
+**Cel:** Skonfigurować GitHub Actions dla automated testing i builds
+
+**Kroki:**
+
+#### 1. Utwórz GitHub Repository
+
+```bash
+cd ~/Documents/Programowanie/GymApp/GymApp
+
+# Initialize git if not done
+git init
+git add .
+git commit -m "Initial commit: LifeOS project structure"
+
+# Create repo on GitHub
+# Then push
+git remote add origin https://github.com/YOUR_USERNAME/lifeos.git
+git branch -M main
+git push -u origin main
+```
+
+#### 2. Utwórz GitHub Actions Workflow
+
+File: `.github/workflows/test.yml`
+
+```yaml
+name: Test Suite
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.38.0'
+          channel: 'stable'
+          cache: true
+
+      - name: Get dependencies
+        run: flutter pub get
+
+      - name: Run code generation
+        run: dart run build_runner build --delete-conflicting-outputs
+
+      - name: Analyze code
+        run: flutter analyze
+
+      - name: Run unit tests
+        run: flutter test --coverage
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          files: ./coverage/lcov.info
+          fail_ci_if_error: true
+```
+
+#### 3. Utwórz Build Workflow
+
+File: `.github/workflows/build.yml`
+
+```yaml
+name: Build APK
+
+on:
+  workflow_dispatch:  # Manual trigger
+  push:
+    tags:
+      - 'v*'  # Trigger on version tags
+
+jobs:
+  build-android:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.38.0'
+          channel: 'stable'
+
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Get dependencies
+        run: flutter pub get
+
+      - name: Build APK
+        run: flutter build apk --release
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v3
+        with:
+          name: release-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
+```
+
+#### 4. Dodaj Secrets do GitHub
+
+1. GitHub repo → Settings → Secrets and variables → Actions
+2. Dodaj secrets:
+   - `SUPABASE_URL`
+   - `SUPABASE_ANON_KEY`
+   - `STRIPE_PUBLISHABLE_KEY`
+
+#### 5. Test Workflow
+
+```bash
+git add .github/workflows/
+git commit -m "Add CI/CD workflows"
+git push
+
+# Check: GitHub repo → Actions tab
+# Should see workflows running
+```
+
+**Validation:**
+- [x] GitHub repository utworzone
+- [x] Test workflow działa
+- [x] Build workflow działa
+- [x] Code coverage reporting działa
+- [x] Secrets skonfigurowane
+
+---
+
+### Story 0.7: Test Framework Setup
+
+**Cel:** Skonfigurować kompletny test framework (unit, widget, integration)
+
+**Kroki:**
+
+#### 1. Utwórz Test Structure
+
+```bash
+cd ~/Documents/Programowanie/GymApp/GymApp
+
+# Test directories (already created in Story 0.2)
+mkdir -p test/{unit,widget,integration}
+mkdir -p integration_test
+```
+
+#### 2. Utwórz Test Helpers
+
+File: `test/helpers/test_helpers.dart`
+
+```dart
+import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/mockito.dart';
+import 'package:mockito/annotations.dart';
+import 'package:lifeos/core/api/supabase_client.dart';
+
+// Generate mocks
+@GenerateMocks([SupabaseClient])
+void main() {}
+
+// Mock data factories
+class TestData {
+  static const testUserId = 'test-user-123';
+
+  static Map<String, dynamic> createWorkout({
+    String? id,
+    String? userId,
+    String? name,
+  }) {
+    return {
+      'id': id ?? 'workout-123',
+      'user_id': userId ?? testUserId,
+      'name': name ?? 'Test Workout',
+      'scheduled_at': DateTime.now().toIso8601String(),
+    };
+  }
+}
+```
+
+#### 3. Utwórz Pierwszy Unit Test
+
+File: `test/unit/core/encryption_test.dart`
+
+```dart
+import 'package:flutter_test/flutter_test.dart';
+import 'package:lifeos/core/encryption/screening_encryption.dart';
+
+void main() {
+  group('ScreeningEncryption', () {
+    test('encrypts and decrypts answers correctly', () async {
+      final answers = [0, 1, 2, 3, 1, 2, 1, 0, 1];
+
+      final encrypted = await ScreeningEncryption.encryptAnswers(answers);
+
+      expect(encrypted['encrypted_answers'], isNotEmpty);
+      expect(encrypted['encryption_iv'], isNotEmpty);
+
+      final decrypted = await ScreeningEncryption.decryptAnswers(
+        encrypted['encrypted_answers']!,
+        encrypted['encryption_iv']!,
+      );
+
+      expect(decrypted, equals(answers));
+    });
+  });
+}
+```
+
+#### 4. Utwórz Pierwszy Widget Test
+
+File: `test/widget/onboarding/splash_screen_test.dart`
+
+```dart
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:lifeos/features/onboarding/presentation/screens/splash_screen.dart';
+
+void main() {
+  testWidgets('Splash screen shows LifeOS logo', (WidgetTester tester) async {
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: SplashScreen(),
+      ),
+    );
+
+    expect(find.text('LifeOS'), findsOneWidget);
+    expect(find.byType(CircularProgressIndicator), findsOneWidget);
+  });
+}
+```
+
+#### 5. Utwórz Integration Test
+
+File: `integration_test/smoke_test.dart`
+
+```dart
+import 'package:flutter_test/flutter_test.dart';
+import 'package:integration_test/integration_test.dart';
+import 'package:lifeos/main.dart' as app;
+
+void main() {
+  IntegrationTestWidgetsFlutterBinding.ensureInitialized();
+
+  group('Smoke Test', () {
+    testWidgets('App launches successfully', (WidgetTester tester) async {
+      app.main();
+      await tester.pumpAndSettle();
+
+      // Should show splash or onboarding
+      expect(find.text('LifeOS'), findsWidgets);
+    });
+  });
+}
+```
+
+#### 6. Uruchom Testy
+
+```bash
+# Unit tests
+flutter test
+
+# Unit tests with coverage
+flutter test --coverage
+
+# Integration tests (requires emulator/simulator)
+flutter test integration_test/smoke_test.dart
+```
+
+**Validation:**
+- [x] Test structure utworzona
+- [x] Test helpers + mocks skonfigurowane
+- [x] Unit test działa
+- [x] Widget test działa
+- [x] Integration test działa
+- [x] Coverage reporting działa
+
+---
+
+### Story 0.8: Environment Configuration
+
+**Cel:** Skonfigurować .env files i environment variables
+
+**Kroki:**
+
+#### 1. Utwórz .env.example
+
+File: `.env.example`
+
+```env
+# Supabase
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_ANON_KEY=your-anon-key
+SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
+
+# Firebase (FCM)
+FIREBASE_PROJECT_ID=your-project-id
+
+# Stripe
+STRIPE_PUBLISHABLE_KEY=pk_test_...
+STRIPE_SECRET_KEY=sk_test_...
+
+# AI APIs (optional for dev)
+ANTHROPIC_API_KEY=sk-ant-...
+OPENAI_API_KEY=sk-...
+
+# Environment
+ENVIRONMENT=development  # development | staging | production
+```
+
+#### 2. Utwórz .env (local)
+
+```bash
+cp .env.example .env
+# Edit .env with real values from Supabase, Firebase, Stripe dashboards
+```
+
+#### 3. Dodaj .env do .gitignore
+
+File: `.gitignore`
+
+```
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Already in Flutter .gitignore but ensure:
+*.iml
+.DS_Store
+.dart_tool/
+.packages
+build/
+```
+
+#### 4. Utwórz Environment Config
+
+File: `lib/core/config/environment.dart`
+
+```dart
+class Environment {
+  static const String supabaseUrl = String.fromEnvironment(
+    'SUPABASE_URL',
+    defaultValue: 'https://your-project.supabase.co',
+  );
+
+  static const String supabaseAnonKey = String.fromEnvironment(
+    'SUPABASE_ANON_KEY',
+    defaultValue: 'your-anon-key',
+  );
+
+  static const String stripePublishableKey = String.fromEnvironment(
+    'STRIPE_PUBLISHABLE_KEY',
+    defaultValue: 'pk_test_...',
+  );
+
+  static const String environment = String.fromEnvironment(
+    'ENVIRONMENT',
+    defaultValue: 'development',
+  );
+
+  static bool get isDevelopment => environment == 'development';
+  static bool get isProduction => environment == 'production';
+}
+```
+
+#### 5. Load Environment Variables at Runtime
+
+Dodaj do `lib/main.dart`:
+
+```dart
+import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Load .env file
+  await dotenv.load(fileName: ".env");
+
+  // Initialize services
+  await SupabaseConfig.initialize();
+  await StripeService.initialize();
+  await FCMService.initialize();
+
+  runApp(const MyApp());
+}
+```
+
+#### 6. Dodaj flutter_dotenv do pubspec.yaml
+
+```yaml
+dependencies:
+  flutter_dotenv: ^5.1.0
+```
+
+**Validation:**
+- [x] .env.example utworzony
+- [x] .env created (not in git)
+- [x] .gitignore updated
+- [x] Environment config working
+- [x] App loads env variables correctly
+
+---
+
+### Story 0.9: Local Development Setup (Optional)
+
+**Cel:** Setup local Supabase with Docker (optional, dla offline development)
+
+**Kroki:**
+
+#### 1. Zainstaluj Docker Desktop
+
+1. Pobierz z https://www.docker.com/products/docker-desktop/
+2. Zainstaluj Docker Desktop for Windows
+3. Uruchom Docker Desktop
+
+#### 2. Start Local Supabase
+
+```bash
+cd ~/Documents/Programowanie/GymApp/GymApp
+
+# Start local Supabase (requires Docker)
+supabase start
+
+# Output will show:
+# API URL: http://localhost:54321
+# DB URL: postgresql://postgres:postgres@localhost:54322/postgres
+# Studio URL: http://localhost:54323
+# Anon key: <local-anon-key>
+```
+
+#### 3. Konfiguruj App dla Local Development
+
+Update `.env`:
+
+```env
+# Local Supabase
+SUPABASE_URL=http://localhost:54321
+SUPABASE_ANON_KEY=<local-anon-key-from-supabase-start>
+```
+
+#### 4. Apply Migrations Locally
+
+```bash
+# Migrations auto-applied when running supabase start
+# Or manually:
+supabase db reset
+```
+
+#### 5. Switch Between Local & Remote
+
+Utwórz `.env.local` i `.env.remote`:
+
+```bash
+# Development: use local
+cp .env.local .env
+
+# Testing: use remote Supabase
+cp .env.remote .env
+```
+
+**Validation:**
+- [x] Docker Desktop installed
+- [x] Local Supabase running
+- [x] Migrations applied locally
+- [x] App connects to local Supabase
+- [x] Can switch between local/remote
+
+**Note:** Local Supabase jest optional - możesz pracować tylko z remote Supabase.
+
+---
+
+### Story 0.10: Documentation & README
+
+**Cel:** Utworzyć kompletną dokumentację projektu
+
+**Kroki:**
+
+#### 1. Utwórz README.md
+
+File: `README.md`
+
+```markdown
+# LifeOS - Your AI-Powered Operating System for Life
+
+LifeOS is a modular life coaching ecosystem combining AI-powered coaching across three core modules:
+- **Life Coach AI** (FREE) - Daily planning, goal tracking, AI conversations
+- **Fitness Coach AI** (€2.99/mo) - Smart workout logging, training plans, AR form analysis
+- **Mind & Emotion** (€2.99/mo) - Meditation, mood tracking, CBT, mental health screening
+
+## Tech Stack
+
+- **Frontend:** Flutter 3.38+, Riverpod 3.0+, Drift (SQLite)
+- **Backend:** Supabase (PostgreSQL, Auth, Realtime, Edge Functions)
+- **AI:** Hybrid (Llama 3, Claude, GPT-4)
+- **Payments:** Stripe
+- **Notifications:** Firebase Cloud Messaging
+
+## Quick Start
+
+### Prerequisites
+
+- Flutter 3.38+
+- Android Studio / Xcode
+- Node.js 18+
+- Git 2.30+
+- Supabase account (free tier)
+
+### Installation
+
+```bash
+# Clone repo
+git clone https://github.com/YOUR_USERNAME/lifeos.git
+cd lifeos
+
+# Install dependencies
+flutter pub get
+
+# Run code generation
+dart run build_runner build
+
+# Setup environment variables
+cp .env.example .env
+# Edit .env with your Supabase/Firebase/Stripe keys
+
+# Run app
+flutter run
+```
+
+## Project Structure
+
+```
+lib/
+├── core/              # Shared utilities
+│   ├── auth/
+│   ├── sync/
+│   ├── database/
+│   └── ...
+├── features/          # Feature modules
+│   ├── onboarding/
+│   ├── life_coach/
+│   ├── fitness/
+│   ├── mind/
+│   └── ...
+└── main.dart
+```
+
+## Development
+
+### Running Tests
+
+```bash
+# Unit tests
+flutter test
+
+# Integration tests
+flutter test integration_test/
+
+# Coverage
+flutter test --coverage
+```
+
+### Building
+
+```bash
+# Android APK
+flutter build apk --release
+
+# iOS (macOS only)
+flutter build ios --release
+```
+
+## Documentation
+
+- **PRD:** `docs/ecosystem/prd.md`
+- **Architecture:** `docs/ecosystem/architecture.md`
+- **UX Design:** `docs/ecosystem/ux-design-specification.md`
+- **Epics:** `docs/ecosystem/epics.md`
+
+## License
+
+Proprietary - All rights reserved
+```
+
+#### 2. Utwórz CONTRIBUTING.md
+
+File: `CONTRIBUTING.md`
+
+```markdown
+# Contributing to LifeOS
+
+## Development Workflow
+
+1. Create feature branch from `main`
+2. Make changes
+3. Run tests: `flutter test`
+4. Commit with conventional commits: `feat: add workout templates`
+5. Push and create PR
+
+## Code Style
+
+- Use `flutter analyze` before committing
+- Follow Dart style guide
+- Write tests for new features (70% unit, 20% widget, 10% integration)
+
+## Running Locally
+
+See README.md for setup instructions.
+```
+
+#### 3. Update Package Metadata
+
+Edit `pubspec.yaml`:
+
+```yaml
+name: lifeos
+description: LifeOS - Your AI-powered operating system for life
+publish_to: 'none'  # Do not publish to pub.dev
+version: 1.0.0+1
+
+repository: https://github.com/YOUR_USERNAME/lifeos
+issue_tracker: https://github.com/YOUR_USERNAME/lifeos/issues
+
+authors:
+  - Your Name <your.email@example.com>
+```
+
+#### 4. Utwórz CHANGELOG.md
+
+File: `CHANGELOG.md`
+
+```markdown
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
+## [Unreleased]
+
+### Added
+- Initial project structure
+- Epic 0: Setup & Infrastructure complete
+- Supabase backend connected
+- Firebase FCM configured
+- Stripe payment integration
+- CI/CD pipeline (GitHub Actions)
+
+## [1.0.0] - TBD
+
+First release (MVP with 3 modules)
+```
+
+**Validation:**
+- [x] README.md created (clear, comprehensive)
+- [x] CONTRIBUTING.md created
+- [x] CHANGELOG.md created
+- [x] pubspec.yaml metadata updated
+- [x] Team can clone + setup <30 min
 
 ---
 

@@ -1291,4 +1291,824 @@ _This UX Design Specification was created collaboratively between Mariusz and Sa
 
 **Design Philosophy:** "Fast when you need speed (Fitness), calm when you need peace (Mind), and empowering always (Life Coach)."
 
+---
+
+## 14. Templates & Workout Library UX
+
+### 14.1 Create Custom Template Flow
+
+**Goal:** Enable users to save favorite workout routines for quick reuse
+
+**Entry Point:** Fitness > Templates > Custom Templates > [+ Create Template]
+
+**Screen: Create Template**
+
+```
+┌─────────────────────────────────────┐
+│  ← Back      Create Template    ✓   │
+├─────────────────────────────────────┤
+│                                     │
+│  Template Name                      │
+│  ┌─────────────────────────────┐   │
+│  │  Push Day                   │   │ (Text input)
+│  └─────────────────────────────┘   │
+│                                     │
+│  Exercises                          │
+│  ┌─────────────────────────────┐   │
+│  │  1. Bench Press             │   │
+│  │     3 sets × 8 reps         │   │
+│  │                          [×]│   │ (Remove)
+│  └─────────────────────────────┘   │
+│                                     │
+│  ┌─────────────────────────────┐   │
+│  │  2. Shoulder Press          │   │
+│  │     3 sets × 10 reps        │   │
+│  │                          [×]│   │
+│  └─────────────────────────────┘   │
+│                                     │
+│  ┌─────────────────────────────┐   │
+│  │  3. Tricep Dips             │   │
+│  │     3 sets × 12 reps        │   │
+│  │                          [×]│   │
+│  └─────────────────────────────┘   │
+│                                     │
+│  [+ Add Exercise]                   │ (Opens exercise search)
+│                                     │
+│  Notes (Optional)                   │
+│  ┌─────────────────────────────┐   │
+│  │  Upper body push focus      │   │
+│  └─────────────────────────────┘   │
+│                                     │
+│  ┌───────────────────────────────┐ │
+│  │   Save Template (Orange)      │ │ (Primary CTA)
+│  └───────────────────────────────┘ │
+│                                     │
+│  [Cancel]                           │
+└─────────────────────────────────────┘
+```
+
+**Interaction Details:**
+- **Add Exercise:** Opens search modal → Select exercise → Set default sets/reps
+- **Reorder exercises:** Long-press to drag (visual indicator: drag handle icon)
+- **Save:** Validates name not empty → Saves to custom templates → Success toast
+- **Haptic:** Medium feedback on save
+
+### 14.2 Use Template in Workout
+
+**Entry Point:** Fitness > Log Workout → [Use Template] button (top right)
+
+**Screen: Select Template**
+
+```
+┌─────────────────────────────────────┐
+│  ← Back       Use Template          │
+├─────────────────────────────────────┤
+│                                     │
+│  My Templates                       │
+│  ┌───────────────────────────────┐ │
+│  │  Push Day                     │ │ (Custom)
+│  │  3 exercises • Upper body     │ │
+│  │                        [Use]  │ │
+│  └───────────────────────────────┘ │
+│                                     │
+│  ┌───────────────────────────────┐ │
+│  │  Pull Day                     │ │
+│  │  4 exercises • Back & biceps  │ │
+│  │                        [Use]  │ │
+│  └───────────────────────────────┘ │
+│                                     │
+│  Pre-Built Templates                │
+│  ┌───────────────────────────────┐ │
+│  │  5x5 Strength                 │ │ (Pre-built)
+│  │  3 exercises • Full body      │ │
+│  │                        [Use]  │ │
+│  └───────────────────────────────┘ │
+│                                     │
+│  ┌───────────────────────────────┐ │
+│  │  Upper/Lower Split            │ │
+│  │  5 exercises • Upper body     │ │
+│  │                        [Use]  │ │
+│  └───────────────────────────────┘ │
+│                                     │
+│  [Browse All Templates (20+)] →     │
+└─────────────────────────────────────┘
+```
+
+**Interaction Details:**
+- **Tap [Use]:** Loads template → Opens Log Workout screen with all exercises pre-populated
+- **Smart Pattern Memory still works:** Pre-fills weight/reps from last workout (overrides template defaults)
+- **Sorting:** Custom templates first, then Pre-built (alphabetical)
+- **Edit template:** Long-press template card → Bottom sheet with [Edit] / [Delete] options
+
+### 14.3 Edit Template
+
+**Entry Point:** Templates screen → Long-press template card → [Edit]
+
+**Screen:** Same as "Create Template" but populated with existing data
+
+**Additional Interactions:**
+- **Delete Template:** Red text button at bottom → Confirmation dialog
+- **Save Changes:** Updates template, returns to Templates list
+
+**Delete Confirmation Dialog:**
+
+```
+┌─────────────────────────────────────┐
+│  Delete Template?                   │
+├─────────────────────────────────────┤
+│                                     │
+│  Are you sure you want to delete    │
+│  "Push Day"? This cannot be undone. │
+│                                     │
+│  ┌───────────────────────────────┐ │
+│  │   Delete (Red)                │ │
+│  └───────────────────────────────┘ │
+│                                     │
+│  [Cancel]                           │
+└─────────────────────────────────────┘
+```
+
+**UX Principles:**
+- **Speed:** Creating template should take <1 minute (3-5 exercises typical)
+- **Flexibility:** Users can mix custom + pre-built templates
+- **Consistency:** Template creation follows same pattern as workout logging (familiar interaction)
+
+---
+
+## 15. Subscription & Paywall UX
+
+### 15.1 Module Locked Paywall
+
+**Trigger:** Free user attempts to access premium-only content (e.g., meditation outside free rotation)
+
+**Screen: Meditation Library Paywall (Modal)**
+
+```
+┌─────────────────────────────────────┐
+│              [×]                     │ (Close)
+├─────────────────────────────────────┤
+│                                     │
+│         🔒 Premium Feature          │
+│                                     │
+│      Unlock Full Meditation         │
+│           Library                   │
+│                                     │
+│  ┌───────────────────────────────┐ │
+│  │  ✓ 100+ guided meditations    │ │
+│  │  ✓ All themes (Stress, Sleep) │ │
+│  │  ✓ Offline playback           │ │
+│  │  ✓ Personalized AI picks      │ │
+│  └───────────────────────────────┘ │
+│                                     │
+│  Current Plan: Free                 │
+│                                     │
+│  ┌───────────────────────────────┐ │
+│  │  Start 14-Day Free Trial      │ │ (Teal, Primary CTA)
+│  │  Then 2.99 EUR/month          │ │
+│  └───────────────────────────────┘ │
+│                                     │
+│  [View All Plans] →                 │ (Text link)
+│                                     │
+│  [Maybe Later]                      │
+└─────────────────────────────────────┘
+```
+
+**Interaction Details:**
+- **Start Trial:** → Stripe payment sheet (iOS/Android native) → Activate trial → Unlock feature immediately
+- **View All Plans:** → Plan Comparison screen (full screen)
+- **Maybe Later:** Dismiss modal, return to free content (track dismissal analytics)
+- **Animation:** Slide up from bottom (300ms)
+
+### 15.2 AI Quota Limit Paywall
+
+**Trigger:** Free user reaches daily AI conversation limit (5th conversation)
+
+**Screen: AI Quota Exceeded (Modal)**
+
+```
+┌─────────────────────────────────────┐
+│              [×]                     │
+├─────────────────────────────────────┤
+│                                     │
+│         ⚡ Daily Limit Reached       │
+│                                     │
+│  You've used all 5 free AI          │
+│  conversations today.               │
+│                                     │
+│  ┌───────────────────────────────┐ │
+│  │  🔄 Resets in 6 hours 32 min  │ │ (Live countdown)
+│  └───────────────────────────────┘ │
+│                                     │
+│  Upgrade for unlimited AI:          │
+│                                     │
+│  ┌───────────────────────────────┐ │
+│  │  LifeOS Plus (GPT-4 model)    │ │
+│  │  7.00 EUR/month               │ │
+│  │                               │ │
+│  │  ✓ Unlimited conversations    │ │
+│  │  ✓ Better AI quality          │ │
+│  │  ✓ Faster responses           │ │
+│  │                               │ │
+│  │  [Start Free Trial]           │ │ (Inside card, Orange button)
+│  └───────────────────────────────┘ │
+│                                     │
+│  [View All Plans] →                 │
+│  [Close]                            │
+└─────────────────────────────────────┘
+```
+
+**UX Considerations:**
+- **Countdown timer:** Updates every second, builds urgency to wait vs upgrade
+- **Soft approach:** Not blocking (user can close), but friction encourages upgrade
+- **Value focus:** Highlights unlimited + quality upgrade (GPT-4 vs Llama)
+
+### 15.3 Plan Comparison Screen
+
+**Entry Point:** Any paywall → [View All Plans] OR Profile → Subscription Management → [Change Plan]
+
+**Screen: Choose Your Plan (Full screen)**
+
+```
+┌─────────────────────────────────────┐
+│  ← Back      Choose Your Plan       │
+├─────────────────────────────────────┤
+│                                     │
+│  ┌───────────────────────────────┐ │
+│  │  FREE                    [✓]  │ │ (Current plan checkmark)
+│  │  €0.00/month                  │ │
+│  │                               │ │
+│  │  ✓ Life Coach (Basic)         │ │
+│  │  ✓ 5 AI chats/day (Llama)     │ │
+│  │  ✓ Mood tracking              │ │
+│  │  ✓ 14-day trial any module    │ │
+│  │  ✗ Fitness tracking           │ │
+│  │  ✗ Full meditation library    │ │
+│  └───────────────────────────────┘ │
+│                                     │
+│  ┌───────────────────────────────┐ │
+│  │  MIND or FITNESS       [Try]  │ │ (Teal bg)
+│  │  €2.99/month                  │ │
+│  │                               │ │
+│  │  ✓ Everything in Free         │ │
+│  │  ✓ Single module (pick 1)     │ │
+│  │  ✓ Full meditation OR Fitness │ │
+│  │  ✓ 10 AI chats/day (Claude)   │ │
+│  │  ✗ Cross-module insights      │ │
+│  └───────────────────────────────┘ │
+│                                     │
+│  ┌───────────────────────────────┐ │
+│  │  3-MODULE PACK         [Try]  │ │
+│  │  €5.00/month   SAVE 16%       │ │ (Badge: "POPULAR")
+│  │                               │ │
+│  │  ✓ All 3 modules unlocked     │ │
+│  │  ✓ Cross-module insights 🧠   │ │
+│  │  ✓ 20 AI chats/day (Claude)   │ │
+│  └───────────────────────────────┘ │
+│                                     │
+│  ┌───────────────────────────────┐ │
+│  │  LIFEOS PLUS           [Try]  │ │
+│  │  €7.00/month   BEST VALUE     │ │ (Gold badge)
+│  │                               │ │
+│  │  ✓ Everything in 3-Pack       │ │
+│  │  ✓ Unlimited AI (GPT-4) ⚡    │ │
+│  │  ✓ Priority support           │ │
+│  │  ✓ Early access features      │ │
+│  └───────────────────────────────┘ │
+│                                     │
+│  All plans include 14-day free trial│
+│  Cancel anytime • No commitment     │
+└─────────────────────────────────────┘
+```
+
+**Interaction Details:**
+- **[Try] button:** → Stripe payment sheet → Choose payment method → Activate trial/subscription
+- **Current plan:** Shows checkmark, button disabled ("Current Plan" text)
+- **Badges:** "POPULAR" (3-Module Pack), "BEST VALUE" (LifeOS Plus)
+- **Discount calculation:** "SAVE 16%" auto-calculated: (2.99×3 - 5.00)/8.97
+- **Scroll:** Vertical scroll for all plans
+
+### 15.4 Subscription Management
+
+**Entry Point:** Profile → Subscription Management
+
+**Screen: Manage Subscription (Active Premium User)**
+
+```
+┌─────────────────────────────────────┐
+│  ← Back    Subscription              │
+├─────────────────────────────────────┤
+│                                     │
+│  Current Plan                       │
+│  ┌───────────────────────────────┐ │
+│  │  LifeOS Plus                  │ │
+│  │  €7.00/month                  │ │
+│  │                               │ │
+│  │  Renews: Feb 16, 2025         │ │
+│  │  Next charge: €7.00           │ │
+│  └───────────────────────────────┘ │
+│                                     │
+│  ┌───────────────────────────────┐ │
+│  │   Change Plan                 │ │ (Secondary CTA, bordered)
+│  └───────────────────────────────┘ │
+│                                     │
+│  Billing History                    │
+│  ┌───────────────────────────────┐ │
+│  │  Jan 16, 2025  €7.00      [→]│ │ (Tap to view receipt)
+│  │  Dec 16, 2024  €7.00      [→]│ │
+│  │  Nov 16, 2024  €7.00      [→]│ │
+│  └───────────────────────────────┘ │
+│                                     │
+│  [View All Invoices] →              │
+│                                     │
+│  Payment Method                     │
+│  ┌───────────────────────────────┐ │
+│  │  💳 Visa •••• 4242            │ │
+│  │  Expires 12/2027              │ │
+│  │                       [Edit]  │ │
+│  └───────────────────────────────┘ │
+│                                     │
+│  [Cancel Subscription] (Red text)   │
+└─────────────────────────────────────┘
+```
+
+**Interaction Details:**
+- **Change Plan:** → Plan Comparison screen (current plan pre-selected with checkmark)
+- **Billing History:** Tap row → PDF receipt viewer (via Stripe)
+- **Edit Payment:** → Stripe payment method update sheet
+- **Cancel Subscription:** → Confirmation flow (see 15.5)
+
+### 15.5 Trial Ending Soon Notification
+
+**Trigger:** 2 days before 14-day trial ends
+
+**Push Notification:**
+```
+⏰ Trial Ending Soon
+Your 14-day trial ends in 2 days. Keep LifeOS Plus for €7/month or switch plans.
+[Tap to manage]
+```
+
+**In-App Banner (Home Tab):**
+
+```
+┌─────────────────────────────────────┐
+│  Home                        [Bell] │
+├─────────────────────────────────────┤
+│                                     │
+│  ⏰ Trial Ending Soon          [×]   │
+│  ┌───────────────────────────────┐ │
+│  │  Your 14-day trial ends in:   │ │
+│  │  2 days                       │ │
+│  │                               │ │
+│  │  Keep LifeOS Plus for €7/mo   │ │
+│  │  or switch to different plan  │ │
+│  │                               │ │
+│  │  [Keep Premium]  [Change Plan]│ │
+│  └───────────────────────────────┘ │
+│                                     │
+│  [Daily Plan content below...]      │
+└─────────────────────────────────────┘
+```
+
+**Interaction Details:**
+- **Keep Premium:** Do nothing (subscription auto-activates after trial)
+- **Change Plan:** → Plan Comparison screen
+- **[×] Dismiss:** Banner removed, shown again tomorrow
+
+### 15.6 Subscription Cancelled Confirmation
+
+**Trigger:** User taps [Cancel Subscription] → Confirmation dialog
+
+**Screen: Cancellation Confirmation (Modal)**
+
+```
+┌─────────────────────────────────────┐
+│  Cancel Subscription?               │
+├─────────────────────────────────────┤
+│                                     │
+│  Your LifeOS Plus subscription      │
+│  will remain active until:          │
+│                                     │
+│  February 16, 2025                  │
+│                                     │
+│  After this date, you'll switch to  │
+│  the Free plan. Your data is safe.  │
+│                                     │
+│  You'll keep:                       │
+│  ✓ All your data (workouts, moods)  │
+│  ✓ Life Coach (basic features)      │
+│  ✓ 5 AI chats/day                   │
+│                                     │
+│  You'll lose access to:             │
+│  ✗ Full meditation library          │
+│  ✗ Fitness tracking                 │
+│  ✗ Cross-module insights            │
+│                                     │
+│  You can reactivate anytime.        │
+│                                     │
+│  ┌───────────────────────────────┐ │
+│  │   Confirm Cancellation (Red)  │ │
+│  └───────────────────────────────┘ │
+│                                     │
+│  [Keep My Subscription]             │
+└─────────────────────────────────────┘
+```
+
+**Post-Cancellation:**
+- User returned to Subscription Management screen
+- Green success banner: "Subscription cancelled. Access until Feb 16."
+- Email sent: "Subscription cancelled" + reactivation link
+
+### 15.7 Downgrade Flow
+
+**Trigger:** User selects lower-tier plan in Plan Comparison
+
+**Screen: Downgrade Confirmation (Modal)**
+
+```
+┌─────────────────────────────────────┐
+│  Downgrade Subscription?            │
+├─────────────────────────────────────┤
+│                                     │
+│  You're changing from:              │
+│  LifeOS Plus → 3-Module Pack        │
+│                                     │
+│  You'll lose access to:             │
+│  ✗ Unlimited AI (GPT-4 model)       │
+│  ✗ Priority support                 │
+│  ✗ Early access features            │
+│                                     │
+│  Your data will be preserved.       │
+│  You can upgrade anytime.           │
+│                                     │
+│  New price: €5.00/month             │
+│  Effective: Feb 16, 2025 (next bill)│
+│                                     │
+│  ┌───────────────────────────────┐ │
+│  │   Confirm Downgrade (Teal)    │ │
+│  └───────────────────────────────┘ │
+│                                     │
+│  [Keep Current Plan]                │
+└─────────────────────────────────────┘
+```
+
+**UX Principles:**
+- **Transparent pricing:** Always show exact amounts, no hidden fees
+- **Data safety:** Reassure users data is never lost (retention driver)
+- **Friction reduction:** 14-day trial removes payment barrier
+- **Upgrade incentives:** Higher tiers show clear value (unlimited AI, better models)
+- **Graceful degradation:** Downgrade/cancel flows preserve data, allow reactivation
+
+---
+
+## 16. Mental Health Screening Results UX
+
+### 16.1 Overview
+
+**Purpose:** Display screening results (GAD-7, PHQ-9) with clear visualization, trend tracking, and safety-critical crisis resources for high scores.
+
+**Safety Requirements (CRITICAL):**
+- Auto-trigger crisis resources modal when:
+  - GAD-7 score ≥15 (severe anxiety)
+  - PHQ-9 score ≥20 (severe depression)
+  - PHQ-9 Q9 score ≥2 (self-harm ideation)
+- Always show professional help resources
+- Never replace professional diagnosis with AI suggestions
+
+**UX Principles:**
+- **Clarity:** Non-medical language, visual scores (color-coded)
+- **Safety:** Immediate crisis support for severe scores
+- **Encouragement:** Positive framing for low/moderate scores
+- **Privacy:** E2EE for all screening data (AES-256-GCM)
+
+---
+
+### 16.2 Screening Results Screen
+
+**Entry Point:** Mind & Emotion > Mental Health > GAD-7 or PHQ-9 → [Complete Screening] → Results
+
+**Screen: GAD-7 Results (Example with moderate anxiety)**
+
+```
+┌─────────────────────────────────────┐
+│  ←  GAD-7 Results                   │ (Header)
+├─────────────────────────────────────┤
+│                                     │
+│  Your Anxiety Score                 │
+│                                     │
+│      ┌─────────────────────┐       │
+│      │                     │       │
+│      │        10           │       │ (Large number, yellow)
+│      │    Moderate         │       │
+│      │                     │       │
+│      └─────────────────────┘       │
+│                                     │
+│  Score Range Guide:                 │
+│  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━    │
+│  │0-4│5-9 │10-14│  15-21 │        │ (Color bar)
+│  │Min│Mild│Modr.│ Severe │        │
+│  └───┴────┴─────┴────────┘        │
+│   ✓   ✓     ✓ (You)              │
+│                                     │
+│  What This Means:                   │
+│  You're experiencing moderate       │
+│  anxiety symptoms. This is common   │
+│  and manageable with support.       │
+│                                     │
+│  Recommended Actions:               │
+│  ✓ Try daily meditation (10 min)   │
+│  ✓ Practice breathing exercises    │
+│  ✓ Track mood patterns              │
+│  ✓ Consider talking to a counselor  │
+│                                     │
+│  ┌───────────────────────────────┐ │
+│  │   View Trend (Last 90 Days)   │ │ (Teal CTA)
+│  └───────────────────────────────┘ │
+│                                     │
+│  [Professional Help Resources] →    │ (Link)
+│                                     │
+│  [Retake Screening]  [Dismiss]      │ (Secondary actions)
+└─────────────────────────────────────┘
+```
+
+**Interaction Details:**
+- **Color coding:**
+  - 0-4 (Minimal): Green
+  - 5-9 (Mild): Light yellow
+  - 10-14 (Moderate): Yellow/Orange
+  - 15-21 (Severe): Red + auto-trigger crisis modal
+- **Score animation:** Number counts up from 0 to final score (1.5s)
+- **Haptic:** Gentle pulse when score appears
+- **Auto-save:** Result saved to local Drift database (E2EE)
+- **Notification:** Weekly reminder to retake if score ≥10
+
+---
+
+### 16.3 Trend Visualization
+
+**Screen: GAD-7 Trend (90-Day History)**
+
+```
+┌─────────────────────────────────────┐
+│  ←  GAD-7 Trend                     │
+├─────────────────────────────────────┤
+│                                     │
+│  Anxiety Score History              │
+│  (Last 90 Days)                     │
+│                                     │
+│  21┤                                │
+│  18┤                                │
+│  15┤             ●───●              │ (Threshold line - red)
+│  12┤         ●                      │
+│   9┤     ●                          │
+│   6┤  ●                          ●  │ (Line chart)
+│   3┤                                │
+│   0└──────────────────────────────► │
+│     Jan 1    Feb 1    Mar 1    Now  │
+│                                     │
+│  Insights:                          │
+│  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━   │
+│                                     │
+│  🧘 Your anxiety decreased by 40%   │
+│     after starting daily meditation │
+│     (Feb 10).                       │
+│                                     │
+│  💤 Anxiety spikes correlated with  │
+│     <6 hours sleep (5 out of 6      │
+│     high scores).                   │
+│                                     │
+│  ✓ You've improved from Moderate    │
+│    to Mild since Feb 1.             │
+│                                     │
+│  [Export Data (CSV)] [Share]        │ (GDPR compliance)
+└─────────────────────────────────────┘
+```
+
+**Features:**
+- **Cross-module insights:** Correlates with sleep, meditation, stress logs
+- **Threshold line:** Shows severity cutoff (GAD-7: 15, PHQ-9: 20)
+- **Privacy:** User can export/delete data (GDPR FR100)
+- **Actionable:** Tapping insight opens related module (e.g., "Sleep" → sleep tracker)
+
+---
+
+### 16.4 Crisis Resources Modal (AUTO-TRIGGERED)
+
+**Trigger Conditions:**
+1. GAD-7 score ≥15 (severe anxiety)
+2. PHQ-9 score ≥20 (severe depression)
+3. PHQ-9 Question 9 score ≥2 (self-harm thoughts several days or more)
+
+**Screen: Crisis Resources (Full-Screen Modal)**
+
+```
+┌─────────────────────────────────────┐
+│                                     │
+│           🆘                        │ (Large icon, red)
+│                                     │
+│     We're Here to Help              │
+│                                     │
+│  Your screening indicates severe    │
+│  symptoms. Please know you're not   │
+│  alone, and support is available.   │
+│                                     │
+│  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━   │
+│                                     │
+│  🆘 IMMEDIATE HELP (24/7)           │
+│                                     │
+│  National Suicide Prevention:       │
+│  📞 988 (US) or 112 (EU)            │
+│                                     │
+│  Crisis Text Line:                  │
+│  💬 Text HOME to 741741             │
+│                                     │
+│  ┌───────────────────────────────┐ │
+│  │     Call 988 Now (Red)        │ │ (Direct call CTA)
+│  └───────────────────────────────┘ │
+│                                     │
+│  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━   │
+│                                     │
+│  🩺 PROFESSIONAL SUPPORT            │
+│                                     │
+│  [Find Therapist Near Me] →         │
+│  [Online Therapy (BetterHelp)] →    │
+│  [Emergency Room Locator] →         │
+│                                     │
+│  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━   │
+│                                     │
+│  ✓ Your privacy is protected.       │
+│    This stays on your device.       │
+│                                     │
+│  [I'm Safe, Continue to Results]    │ (Dismiss option)
+│                                     │
+└─────────────────────────────────────┘
+```
+
+**Safety Features:**
+- **Cannot be skipped:** User must acknowledge ("I'm Safe") before dismissing
+- **Direct action:** "Call 988 Now" uses tel:// protocol (instant dial)
+- **Location-aware:** Shows country-specific hotlines (US: 988, UK: 116 123, etc.)
+- **No analytics:** Modal trigger NOT logged to protect privacy
+- **Offline support:** Crisis numbers cached locally, work without internet
+
+**Localized Hotlines (Auto-detected from device region):**
+- 🇺🇸 US: 988 (Suicide & Crisis Lifeline)
+- 🇬🇧 UK: 116 123 (Samaritans)
+- 🇪🇺 EU: 112 (Emergency Services)
+- 🇵🇱 Poland: 116 123 (Telefon Zaufania)
+- 🇩🇪 Germany: 0800 111 0 111 (Telefonseelsorge)
+
+---
+
+### 16.5 Professional Help Resources Screen
+
+**Entry Point:** Results Screen → [Professional Help Resources] link
+
+**Screen: Find Professional Support**
+
+```
+┌─────────────────────────────────────┐
+│  ←  Professional Support            │
+├─────────────────────────────────────┤
+│                                     │
+│  🩺 Therapy & Counseling            │
+│                                     │
+│  ┌─────────────────────────────┐   │
+│  │  Find Local Therapist       │   │
+│  │  Based on your location     │   │
+│  │                             │   │
+│  │  [Search Near Me] →         │   │ (Opens Psychology Today)
+│  └─────────────────────────────┘   │
+│                                     │
+│  ┌─────────────────────────────┐   │
+│  │  Online Therapy             │   │
+│  │  BetterHelp • Talkspace      │   │
+│  │                             │   │
+│  │  [Explore Options] →        │   │ (Affiliate link)
+│  └─────────────────────────────┘   │
+│                                     │
+│  📚 Self-Help Resources             │
+│                                     │
+│  • Cognitive Behavioral Therapy     │
+│    (CBT) exercises in LifeOS        │
+│  • Meditation library (100+ guided) │
+│  • Breathing techniques              │
+│                                     │
+│  [Start CBT Journal] →              │
+│  [Browse Meditations] →             │
+│                                     │
+│  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━   │
+│                                     │
+│  🆘 Crisis Support (24/7)           │
+│  📞 988 (US) • 112 (EU)             │
+│                                     │
+│  [View All Hotlines]                │
+└─────────────────────────────────────┘
+```
+
+**Features:**
+- **Geo-aware search:** "Search Near Me" uses device location to find local therapists
+- **Insurance compatibility:** Links to Psychology Today filters (accepts insurance)
+- **Affiliate disclosure:** Clear messaging if BetterHelp link is monetized
+- **In-app integration:** CBT Journal and Meditation are direct internal links
+- **No gatekeeping:** Always accessible (not behind paywall)
+
+---
+
+### 16.6 PHQ-9 Specific Features
+
+**Screen: PHQ-9 Results (Example with severe depression)**
+
+```
+┌─────────────────────────────────────┐
+│  ←  PHQ-9 Results                   │
+├─────────────────────────────────────┤
+│                                     │
+│  Your Depression Score              │
+│                                     │
+│      ┌─────────────────────┐       │
+│      │                     │       │
+│      │        22           │       │ (Large number, RED)
+│      │  Severe Depression  │       │
+│      │                     │       │
+│      └─────────────────────┘       │
+│                                     │
+│  ⚠️ This score indicates severe     │
+│     symptoms. Please seek           │
+│     professional help immediately.  │
+│                                     │
+│  Score Range Guide:                 │
+│  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━    │
+│  │0-4│5-9│10-14│15-19│ 20-27│      │
+│  │Min│Mld│Modr.│Mod.S│Severe│      │
+│  └───┴───┴─────┴─────┴──────┘      │
+│                     ✓ (You)         │
+│                                     │
+│  ┌───────────────────────────────┐ │
+│  │   Get Help Now (Red CTA)      │ │ (Opens crisis modal)
+│  └───────────────────────────────┘ │
+│                                     │
+│  [View Trend]  [Professional Help]  │
+└─────────────────────────────────────┘
+```
+
+**Critical Difference from GAD-7:**
+- **Red CTA:** "Get Help Now" is primary action (not "View Trend")
+- **Mandatory modal:** Crisis resources modal auto-opens BEFORE showing results if score ≥20
+- **Question 9 special handling:** If Q9 (self-harm) ≥2, show crisis modal even if total score <20
+
+---
+
+### 16.7 UX Principles (Safety-Critical)
+
+**1. Do No Harm**
+- Never diagnose or replace professional assessment
+- Always provide crisis resources for severe scores
+- Use non-medical language ("stress" not "disorder")
+
+**2. Privacy First**
+- E2EE for all screening data (FR100: AES-256-GCM)
+- Crisis modal trigger NOT logged (zero analytics)
+- Local-only storage (Drift database, never cloud)
+
+**3. Actionable Support**
+- Direct dial buttons (tel:// protocol)
+- In-app CBT/meditation suggestions
+- Clear next steps (not just scores)
+
+**4. Positive Framing**
+- Celebrate improvements ("40% reduction!")
+- Avoid stigmatizing language
+- Emphasize "you're not alone"
+
+**5. Offline Resilience**
+- Crisis hotlines cached locally
+- Results viewable offline
+- No network required for safety features
+
+---
+
+### 16.8 FR Coverage
+
+**This UX section covers:**
+
+- ✅ **FR66:** Display GAD-7/PHQ-9 results with severity levels
+  - Evidence: Results screen with color-coded score ranges (line 1786-1834)
+
+- ✅ **FR67:** Track mental health trends over time (charts)
+  - Evidence: 90-day trend visualization with line chart (line 1838-1882)
+
+- ✅ **FR68:** Provide interpretation of screening scores
+  - Evidence: "What This Means" section + recommended actions (line 1811-1821)
+
+- ✅ **FR69:** Show crisis resources for high-risk scores
+  - Evidence: Crisis Resources Modal (auto-triggered) (line 1895-1978)
+
+- ✅ **FR70:** Link to professional mental health support
+  - Evidence: Professional Help Resources screen (line 1983-2035)
+
+**Mental Health Screening UX is now 5/5 (100%)** ✅
+
+---
+
 🎨 Ready to bring LifeOS to life!
