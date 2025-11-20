@@ -1,0 +1,522 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>6</epicId>
+    <storyId>6.3</storyId>
+    <title>Streak Break Alerts (Push Notification)</title>
+    <status>ready-for-dev</status>
+    <generatedAt>2025-11-17</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/sprint-6/6-3-streak-break-alerts-push-notification.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>user about to break a streak</asA>
+    <iWant>a reminder notification</iWant>
+    <soThat>I don't lose my progress</soThat>
+    <tasks>
+      <task id="1" ac-ref="AC1,AC2">
+        <description>Implement streak alert notification scheduling logic</description>
+        <subtasks>
+          <subtask>Create CheckStreakAlertEligibilityUseCase - checks if user needs streak alert</subtask>
+          <subtask>Check if activity completed today (if yes, no alert needed)</subtask>
+          <subtask>Check if freeze available (if yes, no alert needed - freeze auto-applied)</subtask>
+          <subtask>Check user's alert preferences (can be disabled in settings)</subtask>
+          <subtask>Return list of streaks that need alerts</subtask>
+        </subtasks>
+      </task>
+      <task id="2" ac-ref="AC1,AC2">
+        <description>Implement notification message generation</description>
+        <subtasks>
+          <subtask>Create StreakAlertMessage entity with template: "🔥 Streak Alert! Your X-day Y streak is about to break. Z now!"</subtask>
+          <subtask>Inject streak type into message: "meditation", "workout", "check-in"</subtask>
+          <subtask>Inject current streak count: "15-day"</subtask>
+          <subtask>Inject call-to-action based on type: "Meditate now!", "Log workout now!", "Check in now!"</subtask>
+          <subtask>Ensure message is encouraging, not guilt-tripping</subtask>
+        </subtasks>
+      </task>
+      <task id="3" ac-ref="AC1">
+        <description>Implement 8pm daily streak alert cron job</description>
+        <subtasks>
+          <subtask>Create Supabase Edge Function for daily alerts (triggered 8pm UTC)</subtask>
+          <subtask>Fetch all users with active streaks</subtask>
+          <subtask>For each user, check if activity completed today</subtask>
+          <subtask>If not completed and no freeze available, queue notification</subtask>
+          <subtask>Handle timezone conversions (user's local 8pm, not UTC)</subtask>
+          <subtask>Batch notifications for performance (10,000 users)</subtask>
+        </subtasks>
+      </task>
+      <task id="4" ac-ref="AC1,AC2,AC3">
+        <description>Integrate with Firebase Cloud Messaging (FCM)</description>
+        <subtasks>
+          <subtask>Setup FCM for iOS and Android (Firebase console configuration)</subtask>
+          <subtask>Request notification permissions on first app launch</subtask>
+          <subtask>Store FCM device token in user profile (for push notifications)</subtask>
+          <subtask>Create NotificationService to send push notifications via FCM</subtask>
+          <subtask>Implement notification payload: title, body, data (deep link)</subtask>
+        </subtasks>
+      </task>
+      <task id="5" ac-ref="AC3">
+        <description>Implement deep link navigation from notification</description>
+        <subtasks>
+          <subtask>Add deep link URLs: lifeos://meditation, lifeos://workout, lifeos://checkin</subtask>
+          <subtask>Handle notification tap: parse deep link, navigate to relevant module</subtask>
+          <subtask>For meditation: open meditation player</subtask>
+          <subtask>For workout: open workout log screen</subtask>
+          <subtask>For check-in: open morning check-in modal</subtask>
+          <subtask>Test deep link navigation on both iOS and Android</subtask>
+        </subtasks>
+      </task>
+      <task id="6" ac-ref="AC5">
+        <description>Implement user settings for streak alerts</description>
+        <subtasks>
+          <subtask>Add "Streak Alerts" toggle to Settings screen</subtask>
+          <subtask>Create user_preferences table: streak_alerts_enabled (BOOLEAN, default true)</subtask>
+          <subtask>Save preference to local database (Drift) and sync to Supabase</subtask>
+          <subtask>Check preference before sending notification (respect user choice)</subtask>
+          <subtask>Add granular controls: enable/disable per streak type (optional enhancement)</subtask>
+        </subtasks>
+      </task>
+      <task id="7" ac-ref="AC4">
+        <description>Implement freeze availability check in alert logic</description>
+        <subtasks>
+          <subtask>Before sending alert, check if freeze_used_this_week = false</subtask>
+          <subtask>If freeze available, skip notification (freeze will auto-apply at midnight)</subtask>
+          <subtask>Only send alert if freeze already used and streak will break</subtask>
+          <subtask>Add logging: "Notification skipped: freeze available"</subtask>
+        </subtasks>
+      </task>
+      <task id="8" ac-ref="AC1,AC2">
+        <description>Implement notification UI and display</description>
+        <subtasks>
+          <subtask>Configure notification appearance: icon (LifeOS logo), color (Orange/Purple)</subtask>
+          <subtask>Set notification priority: HIGH (ensure delivery)</subtask>
+          <subtask>Add notification sound (default system sound, can disable)</subtask>
+          <subtask>Test notification display on locked screen, notification center</subtask>
+          <subtask>Handle notification when app is foreground, background, terminated</subtask>
+        </subtasks>
+      </task>
+      <task id="9" ac-ref="ALL">
+        <description>Implement notification repository and data sources</description>
+        <subtasks>
+          <subtask>Create NotificationRepository interface in domain layer</subtask>
+          <subtask>Implement NotificationRepositoryImpl in data layer</subtask>
+          <subtask>Create FCMDataSource for Firebase Cloud Messaging integration</subtask>
+          <subtask>Create LocalNotificationDataSource for user preferences</subtask>
+          <subtask>Implement SendNotificationUseCase</subtask>
+        </subtasks>
+      </task>
+      <task id="10" ac-ref="ALL">
+        <description>Write comprehensive tests</description>
+        <subtasks>
+          <subtask>Unit tests: CheckStreakAlertEligibilityUseCase - alert needed vs not needed scenarios</subtask>
+          <subtask>Unit tests: StreakAlertMessage generation - correct text for each streak type</subtask>
+          <subtask>Unit tests: Freeze availability check - alert skipped when freeze available</subtask>
+          <subtask>Unit tests: User preference check - alert skipped when disabled</subtask>
+          <subtask>Widget tests: Settings toggle for streak alerts</subtask>
+          <subtask>Integration test: 8pm cron job → notification sent → tap notification → deep link to module</subtask>
+          <subtask>Integration test: Alert not sent if activity already completed today</subtask>
+          <subtask>Integration test: Alert not sent if freeze available</subtask>
+          <subtask>Achieve 75%+ code coverage</subtask>
+        </subtasks>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="AC1">
+      <text>Push notification sent if streak about to break (8pm, if activity not done today)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC2">
+      <text>Notification message: "🔥 Streak Alert! Your 15-day meditation streak is about to break. Meditate now!"</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC3">
+      <text>Tap notification opens relevant module (Meditation player, Workout log, Check-in modal)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC4">
+      <text>Notification NOT sent if freeze available (automatic freeze used instead)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC5">
+      <text>User can disable streak alerts in settings</text>
+      <priority>P1</priority>
+    </criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR87: Streak freeze mechanism</section>
+        <snippet>Users can use 1 streak freeze per week. Freeze automatically applied on first miss to prevent accidental streak break.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR106: Push notifications for reminders</section>
+        <snippet>System sends push notifications for reminders and alerts. User can customize notification preferences in settings.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/epics.md</path>
+        <title>Epic 6: Gamification & Retention - Story 6.3</title>
+        <section>Story 6.3: Streak Break Alerts</section>
+        <snippet>Push notification at 8pm if activity not done. Message: "🔥 Streak Alert! Your 15-day meditation streak is about to break." NOT sent if freeze available. Deep link to module. Prerequisites: Story 6.1, Story 8.1.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Notification Infrastructure</section>
+        <snippet>Firebase Cloud Messaging (FCM) for push notifications. Supabase Edge Functions for notification scheduling. Deep links for navigation from notifications.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/ux-design-specification.md</path>
+        <title>UX Design Specification</title>
+        <section>Notification Tone</section>
+        <snippet>Notifications should be encouraging, not guilt-tripping. Use motivational language. User should feel supported, not pressured.</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/sprint-6/6-3-streak-break-alerts-push-notification.md</path>
+        <title>Story 6.3: Streak Break Alerts</title>
+        <section>Tech Stack</section>
+        <snippet>Cron job 8pm, FCM notification, Deep link to module. NOT sent if freeze available (auto-used). User can disable in settings.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <note>Streak alerts depend on Story 6.1 (Streak Tracking). Integration with Story 8.1 (Notifications) if available. FCM setup required.</note>
+      <existing>
+        <file>
+          <path>lib/features/gamification/domain/entities/streak_entity.dart</path>
+          <purpose>Streak data with freeze_used_this_week - used to determine if alert should be sent</purpose>
+        </file>
+        <file>
+          <path>lib/features/gamification/domain/repositories/streak_repository.dart</path>
+          <purpose>Access to streak data for alert eligibility check</purpose>
+        </file>
+      </existing>
+    </code>
+    <dependencies>
+      <flutter>
+        <sdk>3.38+</sdk>
+        <dart>3.10+</dart>
+      </flutter>
+      <packages>
+        <package name="flutter_riverpod" version="^3.0.0" usage="State management for notification state" />
+        <package name="riverpod_annotation" version="^3.0.0" usage="Code generation for providers" />
+        <package name="drift" version="^2.14.0" usage="Local storage for user preferences" />
+        <package name="supabase_flutter" version="^2.0.0" usage="Supabase Edge Functions for cron jobs" />
+        <package name="firebase_core" version="^2.24.0" usage="Firebase initialization" />
+        <package name="firebase_messaging" version="^14.7.0" usage="Firebase Cloud Messaging for push notifications" />
+        <package name="flutter_local_notifications" version="^16.3.0" usage="Local notification display" />
+        <package name="timezone" version="^0.9.0" usage="Timezone handling for 8pm local time" />
+        <package name="freezed" version="^2.4.0" usage="Immutable entity code generation" />
+        <package name="freezed_annotation" version="^2.4.0" usage="Freezed annotations" />
+        <package name="flutter_test" version="sdk" usage="Unit and widget testing framework" />
+        <package name="integration_test" version="sdk" usage="End-to-end testing framework" />
+      </packages>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint id="ARCH-1" type="architectural">
+      <description>Must follow Hybrid Architecture pattern (D1)</description>
+      <details>Extend features/gamification/ or create core/notifications/ for notification logic. Use clean architecture separation.</details>
+    </constraint>
+    <constraint id="ARCH-2" type="architectural">
+      <description>Use Riverpod for state management (D1, D6)</description>
+      <details>Notification state and preferences should be observable. Deep link navigation should trigger state updates.</details>
+    </constraint>
+    <constraint id="DATA-1" type="data">
+      <description>User preferences schema required</description>
+      <details>user_preferences table: user_id (UUID FK), streak_alerts_enabled (BOOLEAN DEFAULT true), notification_sound_enabled (BOOLEAN DEFAULT true), created_at, updated_at.</details>
+    </constraint>
+    <constraint id="SEC-1" type="security">
+      <description>Row Level Security (RLS) policies required</description>
+      <details>Enable RLS on user_preferences table. Policy: CREATE POLICY "Users can only access own preferences" ON user_preferences FOR ALL USING (auth.uid() = user_id);</details>
+    </constraint>
+    <constraint id="SEC-2" type="security">
+      <description>FCM token must be stored securely</description>
+      <details>Store FCM device token in user profile (auth.users metadata or separate tokens table). Never expose in logs. Use RLS for access control.</details>
+    </constraint>
+    <constraint id="BIZ-1" type="business-logic">
+      <description>Alert timing: 8pm local time (not UTC)</description>
+      <details>User receives alert at 8pm in their timezone. Cron job must handle timezone conversion. Store user timezone in profile or detect from device.</details>
+    </constraint>
+    <constraint id="BIZ-2" type="business-logic">
+      <description>No alert if freeze available</description>
+      <details>Before sending alert, check freeze_used_this_week. If false (freeze available), skip alert. Freeze will auto-apply at midnight, protecting streak.</details>
+    </constraint>
+    <constraint id="BIZ-3" type="business-logic">
+      <description>No alert if activity already completed</description>
+      <details>Check if last_activity_date = today. If yes, user already completed activity, no alert needed.</details>
+    </constraint>
+    <constraint id="BIZ-4" type="business-logic">
+      <description>Respect user preference (can disable)</description>
+      <details>Check streak_alerts_enabled preference before sending. If false, skip notification. User control is critical for engagement.</details>
+    </constraint>
+    <constraint id="UX-1" type="ux">
+      <description>Notification message must be encouraging</description>
+      <details>Use motivational language: "Your 15-day streak is about to break. Meditate now!" Avoid guilt: "Don't let yourself down." User should feel supported, not pressured.</details>
+    </constraint>
+    <constraint id="UX-2" type="ux">
+      <description>Deep link must be seamless</description>
+      <details>Tap notification → Open app → Navigate to relevant module (1 tap). No intermediate screens. User completes activity immediately.</details>
+    </constraint>
+    <constraint id="UX-3" type="ux">
+      <description>Notification appearance must be polished</description>
+      <details>LifeOS logo icon, module color (Orange for Fitness, Purple for Mind, Teal for Life Coach). HIGH priority for guaranteed delivery.</details>
+    </constraint>
+    <constraint id="PERF-1" type="performance">
+      <description>Cron job must be efficient</description>
+      <details>8pm alert check should complete in &lt;30 seconds for 10,000 users. Use batch processing, indexed queries. Parallel notification sends.</details>
+    </constraint>
+    <constraint id="PERF-2" type="performance">
+      <description>Notification delivery must be reliable</description>
+      <details>Use FCM HIGH priority. Retry failed notifications (max 3 attempts). Log delivery failures for monitoring.</details>
+    </constraint>
+    <constraint id="PLATFORM-1" type="platform">
+      <description>iOS notification permissions required</description>
+      <details>Request notification permissions on iOS (not auto-granted). Handle permission denied gracefully (show in-app reminder instead).</details>
+    </constraint>
+    <constraint id="PLATFORM-2" type="platform">
+      <description>Android notification channels required</description>
+      <details>Create notification channel "Streak Alerts" on Android 8.0+. User can customize sound, vibration in system settings.</details>
+    </constraint>
+    <constraint id="TEST-1" type="testing">
+      <description>75%+ code coverage required</description>
+      <details>Follow 70/20/10 testing pyramid. Unit tests for alert logic, widget tests for settings UI, integration tests for full notification flow. All AC must have test coverage.</details>
+    </constraint>
+    <constraint id="INTEG-1" type="integration">
+      <description>Must integrate with Story 6.1 streak tracking</description>
+      <details>Access streak data (current_streak, freeze_used_this_week, last_activity_date) for alert eligibility check.</details>
+    </constraint>
+    <constraint id="INTEG-2" type="integration">
+      <description>Optional integration with Story 8.1 notifications</description>
+      <details>If Story 8.1 (Notification infrastructure) exists, reuse NotificationService. Otherwise, implement minimal notification logic here.</details>
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>StreakAlertMessage</name>
+      <kind>domain-entity</kind>
+      <signature>
+        @freezed
+        class StreakAlertMessage with _$StreakAlertMessage {
+          const factory StreakAlertMessage({
+            required String title,
+            required String body,
+            required String deepLink,
+            required StreakType type,
+            required int currentStreak,
+          }) = _StreakAlertMessage;
+
+          // Factory method for generating message
+          factory StreakAlertMessage.fromStreak(StreakEntity streak) {
+            final type = streak.type;
+            final count = streak.currentStreak;
+            final typeText = type == StreakType.workout ? 'workout'
+                           : type == StreakType.meditation ? 'meditation'
+                           : 'check-in';
+            final action = type == StreakType.workout ? 'Log workout now!'
+                         : type == StreakType.meditation ? 'Meditate now!'
+                         : 'Check in now!';
+
+            return StreakAlertMessage(
+              title: '🔥 Streak Alert!',
+              body: 'Your $count-day $typeText streak is about to break. $action',
+              deepLink: 'lifeos://$typeText',
+              type: type,
+              currentStreak: count,
+            );
+          }
+        }
+      </signature>
+      <path>lib/features/gamification/domain/entities/streak_alert_message.dart</path>
+      <notes>Encapsulates notification message generation logic. Use factory method for consistent message formatting.</notes>
+    </interface>
+    <interface>
+      <name>CheckStreakAlertEligibilityUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class CheckStreakAlertEligibilityUseCase {
+          Future&lt;Result&lt;List&lt;StreakEntity&gt;&gt;&gt; call(String userId);
+        }
+      </signature>
+      <path>lib/features/gamification/domain/usecases/check_streak_alert_eligibility_usecase.dart</path>
+      <notes>Returns list of streaks that need alerts. Filters out: activity completed today, freeze available, user disabled alerts. Empty list if no alerts needed.</notes>
+    </interface>
+    <interface>
+      <name>SendStreakAlertUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class SendStreakAlertUseCase {
+          Future&lt;Result&lt;void&gt;&gt; call({
+            required String userId,
+            required StreakAlertMessage message,
+          });
+        }
+      </signature>
+      <path>lib/features/gamification/domain/usecases/send_streak_alert_usecase.dart</path>
+      <notes>Sends push notification via FCM. Returns success or failure. Logs delivery status.</notes>
+    </interface>
+    <interface>
+      <name>HandleDeepLinkUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class HandleDeepLinkUseCase {
+          Future&lt;Result&lt;void&gt;&gt; call(String deepLink);
+        }
+      </signature>
+      <path>lib/core/navigation/usecases/handle_deep_link_usecase.dart</path>
+      <notes>Parses deep link URL and navigates to relevant module. Supports: lifeos://workout, lifeos://meditation, lifeos://checkin. Used when user taps notification.</notes>
+    </interface>
+    <interface>
+      <name>NotificationRepository</name>
+      <kind>repository</kind>
+      <signature>
+        abstract class NotificationRepository {
+          Future&lt;Result&lt;void&gt;&gt; sendPushNotification({
+            required String userId,
+            required String title,
+            required String body,
+            Map&lt;String, String&gt;? data,
+          });
+          Future&lt;Result&lt;String&gt;&gt; getFCMToken();
+          Future&lt;Result&lt;void&gt;&gt; saveFCMToken(String token);
+          Future&lt;Result&lt;bool&gt;&gt; getStreakAlertsEnabled(String userId);
+          Future&lt;Result&lt;void&gt;&gt; setStreakAlertsEnabled(String userId, bool enabled);
+        }
+      </signature>
+      <path>lib/core/notifications/domain/repositories/notification_repository.dart</path>
+      <notes>Implemented by NotificationRepositoryImpl in data layer. Uses FCMDataSource and LocalNotificationDataSource.</notes>
+    </interface>
+    <interface>
+      <name>user_preferences table (Supabase PostgreSQL)</name>
+      <kind>database-table</kind>
+      <signature>
+        CREATE TABLE user_preferences (
+          id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+          user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+          streak_alerts_enabled BOOLEAN NOT NULL DEFAULT true,
+          notification_sound_enabled BOOLEAN NOT NULL DEFAULT true,
+          created_at TIMESTAMPTZ DEFAULT NOW(),
+          updated_at TIMESTAMPTZ DEFAULT NOW(),
+          UNIQUE(user_id)
+        );
+        CREATE INDEX idx_user_preferences_user_id ON user_preferences(user_id);
+      </signature>
+      <path>supabase/migrations/</path>
+      <notes>Migration file will be created in Supabase migrations folder. Include RLS policies in same migration.</notes>
+    </interface>
+    <interface>
+      <name>user_preferences table (Drift SQLite)</name>
+      <kind>database-table</kind>
+      <signature>
+        @DataClassName('UserPreferenceTable')
+        class UserPreferences extends Table {
+          TextColumn get id => text()();
+          TextColumn get userId => text()();
+          BoolColumn get streakAlertsEnabled => boolean().withDefault(const Constant(true))();
+          BoolColumn get notificationSoundEnabled => boolean().withDefault(const Constant(true))();
+          DateTimeColumn get createdAt => dateTime()();
+          DateTimeColumn get updatedAt => dateTime()();
+
+          @override
+          Set&lt;Column&gt; get primaryKey => {id};
+        }
+      </signature>
+      <path>lib/core/database/tables.drift.dart</path>
+      <notes>Drift table definition. Mirror of Supabase schema for offline-first architecture.</notes>
+    </interface>
+    <interface>
+      <name>Supabase Edge Function: send-streak-alerts</name>
+      <kind>edge-function</kind>
+      <signature>
+        // Deno Edge Function
+        Deno.serve(async (req) => {
+          // 1. Current time: 8pm (check user timezone)
+          // 2. Fetch all users with active streaks
+          // 3. For each streak, check alert eligibility
+          //    - Activity not completed today (last_activity_date != today)
+          //    - No freeze available (freeze_used_this_week = true)
+          //    - User has alerts enabled (streak_alerts_enabled = true)
+          // 4. Generate StreakAlertMessage
+          // 5. Send FCM notification
+          // 6. Log results (success count, failure count)
+        })
+      </signature>
+      <path>supabase/functions/send-streak-alerts/index.ts</path>
+      <notes>Triggered by cron job daily at 8pm (multiple timezones). Batches notifications for performance. Retries failed sends.</notes>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Follow 70/20/10 testing pyramid: 70% unit tests (use cases, repositories, entities), 20% widget tests (UI components, state management), 10% integration tests (end-to-end flows). Use flutter_test for unit/widget tests, integration_test for E2E. Mock dependencies with mockito. Target 75%+ code coverage. All acceptance criteria must have test coverage.
+    </standards>
+    <locations>
+      <location>test/features/gamification/domain/usecases/</location>
+      <location>test/core/notifications/domain/usecases/</location>
+      <location>test/core/notifications/data/repositories/</location>
+      <location>test/features/settings/presentation/widgets/</location>
+      <location>integration_test/features/gamification/streak_alert_flow_test.dart</location>
+    </locations>
+    <ideas>
+      <test-idea ac-ref="AC1">
+        <description>Unit test: CheckStreakAlertEligibilityUseCase - alert needed</description>
+        <approach>Given streak with last_activity_date=yesterday, freeze_used_this_week=true, alerts_enabled=true. When check eligibility. Then returns streak (alert needed).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4">
+        <description>Unit test: Alert not needed if freeze available</description>
+        <approach>Given streak with last_activity_date=yesterday, freeze_used_this_week=false. When check eligibility. Then returns empty list (no alert needed - freeze will auto-apply).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1">
+        <description>Unit test: Alert not needed if activity completed today</description>
+        <approach>Given streak with last_activity_date=today. When check eligibility. Then returns empty list (no alert needed - activity already done).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC5">
+        <description>Unit test: Alert not sent if user disabled alerts</description>
+        <approach>Given streak_alerts_enabled=false. When check eligibility. Then returns empty list (respect user preference).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC2">
+        <description>Unit test: StreakAlertMessage generation - workout streak</description>
+        <approach>Given workout streak with current_streak=15. When create message. Then body = "Your 15-day workout streak is about to break. Log workout now!"</approach>
+      </test-idea>
+      <test-idea ac-ref="AC2">
+        <description>Unit test: StreakAlertMessage generation - meditation streak</description>
+        <approach>Given meditation streak with current_streak=30. When create message. Then body = "Your 30-day meditation streak is about to break. Meditate now!"</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3">
+        <description>Unit test: HandleDeepLinkUseCase - workout deep link</description>
+        <approach>Given deep link "lifeos://workout". When handle. Then navigate to workout log screen.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3">
+        <description>Unit test: HandleDeepLinkUseCase - meditation deep link</description>
+        <approach>Given deep link "lifeos://meditation". When handle. Then navigate to meditation player.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC5">
+        <description>Widget test: Settings toggle for streak alerts</description>
+        <approach>Render Settings screen. Find "Streak Alerts" toggle. Tap to disable. Verify streak_alerts_enabled=false saved to database.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1,AC2">
+        <description>Integration test: 8pm alert sent for uncompleted activity</description>
+        <approach>Setup: workout streak, last_activity_date=yesterday, freeze_used_this_week=true. Trigger cron job (8pm). Verify FCM notification sent with correct message. Verify notification appears on device.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3">
+        <description>Integration test: Tap notification navigates to module</description>
+        <approach>Send streak alert notification with deep link "lifeos://meditation". Tap notification. Verify app opens to meditation player. Verify user can complete meditation.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4">
+        <description>Integration test: No alert if freeze available</description>
+        <approach>Setup: workout streak, last_activity_date=yesterday, freeze_available=true. Trigger 8pm cron job. Verify no notification sent. Verify freeze auto-applied at midnight instead.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC5">
+        <description>Integration test: No alert if user disabled in settings</description>
+        <approach>User disables streak alerts in settings. Setup: streak about to break. Trigger 8pm cron job. Verify no notification sent (respect user preference).</approach>
+      </test-idea>
+    </ideas>
+  </tests>
+</story-context>

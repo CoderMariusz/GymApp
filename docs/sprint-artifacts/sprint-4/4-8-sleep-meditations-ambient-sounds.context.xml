@@ -1,0 +1,513 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>4</epicId>
+    <storyId>4.8</storyId>
+    <title>Sleep Meditations & Ambient Sounds</title>
+    <status>ready-for-dev</status>
+    <generatedAt>2025-11-17</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/sprint-4/4-8-sleep-meditations-ambient-sounds.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>user struggling to fall asleep</asA>
+    <iWant>to play sleep meditations and ambient sounds</iWant>
+    <soThat>I can relax and fall asleep more easily</soThat>
+    <tasks>
+      <task id="1" ac-ref="AC1,AC6">
+        <description>Implement sleep meditation content library</description>
+        <subtasks>
+          <subtask>Create 10 sleep meditation scripts (10-30 min duration)</subtask>
+          <subtask>Record or source professional audio for 3 free meditations</subtask>
+          <subtask>Create meditation metadata (title, duration, narrator, premium flag)</subtask>
+          <subtask>Free tier: 3 meditations (Body Scan 15min, Gratitude 10min, Progressive Relaxation 20min)</subtask>
+          <subtask>Premium tier: 7 additional meditations (various themes and durations)</subtask>
+          <subtask>Store audio files in Supabase Storage or CDN</subtask>
+        </subtasks>
+      </task>
+      <task id="2" ac-ref="AC2">
+        <description>Implement 5 ambient sound loops</description>
+        <subtasks>
+          <subtask>Source or create high-quality looping audio: Rain, Ocean Waves, Forest, White Noise, Campfire</subtask>
+          <subtask>Ensure seamless loop (no audible gaps or clicks)</subtask>
+          <subtask>Optimize audio file size (MP3 128kbps or AAC)</subtask>
+          <subtask>Create AmbientSound entity with metadata (name, duration, file path)</subtask>
+          <subtask>All ambient sounds free (no premium restriction)</subtask>
+          <subtask>Store audio files locally in assets/ for offline access</subtask>
+        </subtasks>
+      </task>
+      <task id="3" ac-ref="AC1,AC2,AC3,AC4,AC5">
+        <description>Implement audio playback infrastructure</description>
+        <subtasks>
+          <subtask>Use just_audio package for audio playback</subtask>
+          <subtask>Create AudioPlayerService with play(), pause(), stop(), seek() methods</subtask>
+          <subtask>Implement background audio playback (continues when screen off)</subtask>
+          <subtask>Handle audio session interruptions (phone calls, alarms)</subtask>
+          <subtask>Add playback controls: play/pause, 15s forward/back, playback speed (0.75x, 1x, 1.25x)</subtask>
+          <subtask>Display audio progress bar with time remaining</subtask>
+        </subtasks>
+      </task>
+      <task id="4" ac-ref="AC3">
+        <description>Implement sleep timer functionality</description>
+        <subtasks>
+          <subtask>Create sleep timer options: 10 min, 15 min, 30 min, 45 min, 60 min, End of track</subtask>
+          <subtask>Display timer countdown in UI</subtask>
+          <subtask>Implement 30-second fade-out before timer end</subtask>
+          <subtask>Stop playback and close app after fade-out completes</subtask>
+          <subtask>Store last selected timer duration as user preference</subtask>
+          <subtask>Add "No timer" option for continuous playback</subtask>
+        </subtasks>
+      </task>
+      <task id="5" ac-ref="AC4">
+        <description>Implement 30-second audio fade-out</description>
+        <subtasks>
+          <subtask>Create fade-out animation for volume (1.0 to 0.0 over 30 seconds)</subtask>
+          <subtask>Use AudioPlayer.setVolume() with linear or exponential curve</subtask>
+          <subtask>Apply fade-out when sleep timer expires</subtask>
+          <subtask>Apply fade-out when user taps "Stop" button</subtask>
+          <subtask>Test fade-out smoothness (no abrupt changes)</subtask>
+        </subtasks>
+      </task>
+      <task id="6" ac-ref="AC5">
+        <description>Implement screen dimming during playback</description>
+        <subtasks>
+          <subtask>Reduce screen brightness to 10% during playback</subtask>
+          <subtask>Use Screen.setBrightness(0.1) or platform channel</subtask>
+          <subtask>Display minimal UI: playback controls, timer, album art</subtask>
+          <subtask>Restore original brightness when playback stops</subtask>
+          <subtask>Add red tint overlay to reduce blue light (optional)</subtask>
+          <subtask>Dim screen after 10 seconds of inactivity (tap to restore)</subtask>
+        </subtasks>
+      </task>
+      <task id="7" ac-ref="AC6">
+        <description>Implement premium feature restriction</description>
+        <subtasks>
+          <subtask>Create isPremium user flag (check subscription status)</subtask>
+          <subtask>Lock 7 meditations with premium badge UI</subtask>
+          <subtask>Show paywall when non-premium user taps locked meditation</subtask>
+          <subtask>Display "Upgrade to Premium" CTA with benefits list</subtask>
+          <subtask>Allow premium users full access to all 10 meditations</subtask>
+          <subtask>All ambient sounds remain free for all users</subtask>
+        </subtasks>
+      </task>
+      <task id="8" ac-ref="AC1,AC2">
+        <description>Implement sleep content selection UI</description>
+        <subtasks>
+          <subtask>Create SleepScreen with tabs: "Meditations", "Ambient Sounds"</subtask>
+          <subtask>Display meditation cards (title, duration, narrator, premium badge)</subtask>
+          <subtask>Display ambient sound cards (name, icon, infinite loop indicator)</subtask>
+          <subtask>Add search/filter by duration (10-15 min, 15-30 min)</subtask>
+          <subtask>Show "Recently Played" section</subtask>
+          <subtask>Add favorite/bookmark functionality</subtask>
+        </subtasks>
+      </task>
+      <task id="9" ac-ref="ALL">
+        <description>Implement playback history tracking</description>
+        <subtasks>
+          <subtask>Create sleep_sessions table (content_type, content_id, duration_played, completed, timestamp)</subtask>
+          <subtask>Track when user starts playback</subtask>
+          <subtask>Track completion (played to end or timer expired)</subtask>
+          <subtask>Store in Drift (SQLite) for offline, sync to Supabase</subtask>
+          <subtask>Use for "Recently Played" and analytics</subtask>
+        </subtasks>
+      </task>
+      <task id="10" ac-ref="ALL">
+        <description>Write comprehensive tests</description>
+        <subtasks>
+          <subtask>Unit tests: Sleep timer calculation, fade-out volume curve, premium access logic</subtask>
+          <subtask>Widget tests: Playback controls, timer selection, screen dimming</subtask>
+          <subtask>Integration test: Play meditation, set timer, verify fade-out and stop</subtask>
+          <subtask>Test audio playback with mock just_audio player</subtask>
+          <subtask>Achieve 80%+ code coverage</subtask>
+        </subtasks>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="AC1">
+      <text>10-30 minute sleep meditations with professional narration</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC2">
+      <text>5 ambient sounds: Rain, Ocean Waves, Forest, White Noise, Campfire (looping)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC3">
+      <text>Sleep timer with options: 10/15/30/45/60 min, End of track</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC4">
+      <text>30-second audio fade-out before timer end</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC5">
+      <text>Screen dims to 10% brightness during playback</text>
+      <priority>P1</priority>
+    </criterion>
+    <criterion id="AC6">
+      <text>Premium feature: 3 free meditations, 7 premium meditations (unlock with subscription)</text>
+      <priority>P0</priority>
+    </criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR53: Sleep meditations and ambient sounds</section>
+        <snippet>10-30 min sleep meditations with professional narration. 5 ambient sounds (Rain, Ocean, Forest, White Noise, Campfire). Sleep timer with fade-out. Screen dimming. Premium feature: 3 free, 7 premium meditations.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR54: Premium subscription model</section>
+        <snippet>Freemium model: Free tier includes 3 meditations and all ambient sounds. Premium tier ($4.99/month) unlocks all 10 meditations, advanced AI features, and unlimited journal storage.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>NFR-UX4: Sleep-friendly UI design</section>
+        <snippet>Sleep features must minimize screen brightness (10% during playback), reduce blue light (red tint overlay), use dark theme, and provide 30s audio fade-out for gentle transitions.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/epics.md</path>
+        <title>Epic 4: Mind & Emotion - Story 4.8</title>
+        <section>Story 4.8: Sleep Meditations & Ambient Sounds</section>
+        <snippet>Sleep meditations (10-30 min) and ambient sounds (5 loops) with sleep timer, fade-out, screen dimming, and premium access control. Prerequisites: Epic 1 (auth, subscriptions).</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Audio Playback Architecture</section>
+        <snippet>Use just_audio for audio playback. Store meditation audio in Supabase Storage (premium content). Store ambient sounds locally in assets/ (free content, offline access). Implement background audio playback.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/ux-design-specification.md</path>
+        <title>UX Design Specification</title>
+        <section>Sleep Meditation UX</section>
+        <snippet>Dark theme with dim UI. Album art (meditation theme or ambient sound visual). Large play/pause button. Sleep timer dropdown (top-right). Progress bar with time remaining. Screen dims after 10s inactivity. Red tint overlay to reduce blue light.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <note>Sleep meditations/sounds are new for Epic 4. Create at lib/features/sleep/. Use just_audio package for playback. Store ambient sounds in assets/audio/. Store meditation metadata in Supabase.</note>
+    </code>
+    <dependencies>
+      <flutter>
+        <sdk>3.38+</sdk>
+        <dart>3.10+</dart>
+      </flutter>
+      <packages>
+        <package name="flutter_riverpod" version="^3.0.0" usage="State management for audio playback" />
+        <package name="just_audio" version="^0.9.0" usage="Audio playback with background support" />
+        <package name="audio_session" version="^0.1.0" usage="Handle audio interruptions (calls, alarms)" />
+        <package name="drift" version="^2.14.0" usage="Local SQLite for playback history" />
+        <package name="screen_brightness" version="^0.2.0" usage="Control screen brightness during playback" />
+        <package name="wakelock_plus" version="^1.0.0" usage="Keep screen awake during playback" />
+      </packages>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint id="AUDIO-1" type="audio">
+      <description>High-quality audio files with seamless looping</description>
+      <details>Meditations: MP3 128kbps, mono. Ambient sounds: MP3 128kbps or AAC, stereo, seamless loop (no gaps/clicks). File size target: &lt;10MB per meditation, &lt;2MB per ambient sound.</details>
+    </constraint>
+    <constraint id="AUDIO-2" type="audio">
+      <description>Background audio playback</description>
+      <details>Audio continues when screen off or app backgrounded. Use just_audio with audio_session. Handle interruptions (phone calls, alarms) - pause and resume gracefully.</details>
+    </constraint>
+    <constraint id="AUDIO-3" type="audio">
+      <description>30-second fade-out implementation</description>
+      <details>Linear or exponential volume curve from 1.0 to 0.0 over 30 seconds. Use AudioPlayer.setVolume() with Timer or AnimationController. Smooth transition (no abrupt changes).</details>
+    </constraint>
+    <constraint id="TIMER-1" type="functional">
+      <description>Sleep timer options and countdown</description>
+      <details>Options: 10, 15, 30, 45, 60 min, End of track, No timer. Display countdown in UI (e.g., "18:32 remaining"). Start fade-out 30s before timer expires.</details>
+    </constraint>
+    <constraint id="UX-1" type="ux">
+      <description>Screen dimming to 10% brightness</description>
+      <details>Use screen_brightness package. Set brightness to 0.1 (10%) when playback starts. Restore original brightness when playback stops. Dim after 10s inactivity, tap to restore.</details>
+    </constraint>
+    <constraint id="UX-2" type="ux">
+      <description>Sleep-friendly UI design</description>
+      <details>Dark theme (OLED black). Red tint overlay to reduce blue light. Minimal UI elements. Large play/pause button. No bright colors or animations.</details>
+    </constraint>
+    <constraint id="UX-3" type="ux">
+      <description>Playback controls</description>
+      <details>Play/pause (center), 15s rewind/forward (sides), progress bar with seek, timer dropdown (top-right), playback speed (0.75x, 1x, 1.25x), volume slider.</details>
+    </constraint>
+    <constraint id="PREMIUM-1" type="business">
+      <description>Freemium content access control</description>
+      <details>Free: 3 meditations (Body Scan, Gratitude, Progressive Relaxation) + all 5 ambient sounds. Premium: All 10 meditations + all ambient sounds. Check isPremium flag before playback.</details>
+    </constraint>
+    <constraint id="PREMIUM-2" type="business">
+      <description>Paywall UI for locked content</description>
+      <details>Show premium badge on locked meditations. Display paywall when tapped: "Unlock 7 more meditations with Premium - $4.99/month". CTA: "Start Free Trial" or "Upgrade Now".</details>
+    </constraint>
+    <constraint id="DATA-1" type="data">
+      <description>Meditation metadata table</description>
+      <details>meditations table: id, title, duration_minutes, narrator, description, audio_url (Supabase Storage), is_premium (BOOLEAN), created_at. Store locally cached metadata in Drift.</details>
+    </constraint>
+    <constraint id="DATA-2" type="data">
+      <description>Sleep sessions tracking</description>
+      <details>sleep_sessions table: id, user_id, content_type (ENUM: meditation, ambient_sound), content_id, duration_played_minutes, completed (BOOLEAN), timer_minutes, created_at.</details>
+    </constraint>
+    <constraint id="PERF-1" type="performance">
+      <description>Fast audio load time (&lt;2s)</description>
+      <details>Ambient sounds: Load from local assets (instant). Meditations: Stream from Supabase Storage or use cached file. Display "Loading..." indicator if &gt;1s.</details>
+    </constraint>
+    <constraint id="PERF-2" type="performance">
+      <description>Optimize battery during sleep playback</description>
+      <details>Dim screen to 10%, use efficient audio codec (AAC), minimize UI updates, stop non-essential background tasks. Target: &lt;10% battery drain per hour.</details>
+    </constraint>
+    <constraint id="OFFLINE-1" type="offline">
+      <description>Ambient sounds work offline</description>
+      <details>All ambient sounds stored in assets/ for offline playback. Meditations require online (streamed from Supabase Storage). Show "Download offline" option for meditations (future story).</details>
+    </constraint>
+    <constraint id="TEST-1" type="testing">
+      <description>Test fade-out smoothness</description>
+      <details>Verify volume decreases linearly/exponentially over 30s. Test with real audio playback. Verify no audible pops or clicks. Test timer accuracy (± 1s).</details>
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>MeditationEntity</name>
+      <kind>domain-entity</kind>
+      <signature>
+        class MeditationEntity {
+          final String id;
+          final String title;
+          final int durationMinutes;
+          final String narrator;
+          final String description;
+          final String audioUrl;  // Supabase Storage URL
+          final bool isPremium;
+          final DateTime createdAt;
+        }
+      </signature>
+      <path>lib/features/sleep/domain/entities/meditation_entity.dart</path>
+      <notes>Store metadata in Drift for offline access. Stream audio from audioUrl.</notes>
+    </interface>
+    <interface>
+      <name>AmbientSoundEntity</name>
+      <kind>domain-entity</kind>
+      <signature>
+        class AmbientSoundEntity {
+          final String id;
+          final String name;           // "Rain", "Ocean Waves", etc.
+          final String assetPath;      // "assets/audio/rain.mp3"
+          final String description;
+          final bool isLooping;        // Always true
+        }
+      </signature>
+      <path>lib/features/sleep/domain/entities/ambient_sound_entity.dart</path>
+      <notes>All ambient sounds stored locally in assets/audio/ for offline access.</notes>
+    </interface>
+    <interface>
+      <name>AudioPlayerService</name>
+      <kind>service</kind>
+      <signature>
+        abstract class AudioPlayerService {
+          Future&lt;void&gt; play(String audioUrl, {bool isAsset = false});
+          Future&lt;void&gt; pause();
+          Future&lt;void&gt; resume();
+          Future&lt;void&gt; stop();
+          Future&lt;void&gt; seek(Duration position);
+          Future&lt;void&gt; setVolume(double volume);  // 0.0 - 1.0
+          Future&lt;void&gt; setPlaybackSpeed(double speed);  // 0.5 - 2.0
+          Stream&lt;Duration&gt; get positionStream;
+          Stream&lt;Duration?&gt; get durationStream;
+          Stream&lt;bool&gt; get isPlayingStream;
+        }
+      </signature>
+      <path>lib/features/sleep/domain/services/audio_player_service.dart</path>
+      <notes>Implemented with just_audio. Handle background playback and audio session interruptions.</notes>
+    </interface>
+    <interface>
+      <name>SleepTimerController</name>
+      <kind>controller</kind>
+      <signature>
+        class SleepTimerController {
+          void startTimer(Duration duration);
+          void cancelTimer();
+          Stream&lt;Duration&gt; get remainingTimeStream;
+
+          // Triggers fade-out 30s before timer end
+          Stream&lt;bool&gt; get shouldFadeOutStream;
+        }
+      </signature>
+      <path>lib/features/sleep/presentation/controllers/sleep_timer_controller.dart</path>
+      <notes>Use Timer.periodic for countdown. Emit shouldFadeOut = true when remaining time = 30s.</notes>
+    </interface>
+    <interface>
+      <name>FadeOutController</name>
+      <kind>controller</kind>
+      <signature>
+        class FadeOutController {
+          Future&lt;void&gt; startFadeOut({
+            required AudioPlayerService audioPlayer,
+            Duration duration = const Duration(seconds: 30),
+          });
+        }
+      </signature>
+      <path>lib/features/sleep/presentation/controllers/fade_out_controller.dart</path>
+      <notes>Use AnimationController or Timer to gradually reduce volume from 1.0 to 0.0 over 30s. Stop playback after fade completes.</notes>
+    </interface>
+    <interface>
+      <name>PlaySleepContentUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class PlaySleepContentUseCase {
+          Future&lt;Result&lt;void&gt;&gt; call({
+            required SleepContent content,  // MeditationEntity or AmbientSoundEntity
+            Duration? timerDuration,
+          });
+        }
+      </signature>
+      <path>lib/features/sleep/domain/usecases/play_sleep_content_usecase.dart</path>
+      <notes>Check premium access if meditation. Start audio playback. Start timer if specified. Track session in database.</notes>
+    </interface>
+    <interface>
+      <name>GetSleepContentUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class GetSleepContentUseCase {
+          Future&lt;Result&lt;SleepContentLibrary&gt;&gt; call();
+        }
+
+        class SleepContentLibrary {
+          final List&lt;MeditationEntity&gt; meditations;
+          final List&lt;AmbientSoundEntity&gt; ambientSounds;
+          final List&lt;String&gt; recentlyPlayedIds;
+        }
+      </signature>
+      <path>lib/features/sleep/domain/usecases/get_sleep_content_usecase.dart</path>
+      <notes>Fetch meditations from Supabase (cache in Drift). Load ambient sounds from local assets. Return combined library.</notes>
+    </interface>
+    <interface>
+      <name>meditations table (Supabase PostgreSQL)</name>
+      <kind>database-table</kind>
+      <signature>
+        CREATE TABLE meditations (
+          id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+          title TEXT NOT NULL,
+          duration_minutes INT NOT NULL,
+          narrator TEXT NOT NULL,
+          description TEXT,
+          audio_url TEXT NOT NULL,  -- Supabase Storage URL
+          is_premium BOOLEAN DEFAULT false,
+          created_at TIMESTAMPTZ DEFAULT NOW()
+        );
+        CREATE INDEX idx_meditations_premium ON meditations(is_premium, created_at);
+      </signature>
+      <path>supabase/migrations/</path>
+      <notes>Public read access (no RLS needed). Store audio files in Supabase Storage bucket "meditations".</notes>
+    </interface>
+    <interface>
+      <name>sleep_sessions table (Supabase PostgreSQL)</name>
+      <kind>database-table</kind>
+      <signature>
+        CREATE TABLE sleep_sessions (
+          id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+          user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+          content_type TEXT NOT NULL CHECK (content_type IN ('meditation', 'ambient_sound')),
+          content_id TEXT NOT NULL,
+          duration_played_minutes INT NOT NULL,
+          completed BOOLEAN DEFAULT false,
+          timer_minutes INT,
+          created_at TIMESTAMPTZ DEFAULT NOW()
+        );
+        CREATE INDEX idx_sleep_sessions_user ON sleep_sessions(user_id, created_at DESC);
+      </signature>
+      <path>supabase/migrations/</path>
+      <notes>Track playback history for analytics and "Recently Played". RLS policies for user isolation.</notes>
+    </interface>
+    <interface>
+      <name>Ambient Sound Assets</name>
+      <kind>asset-files</kind>
+      <signature>
+        assets/audio/
+          rain.mp3          (Rain - 2 min seamless loop)
+          ocean_waves.mp3   (Ocean Waves - 2 min seamless loop)
+          forest.mp3        (Forest - 2 min seamless loop)
+          white_noise.mp3   (White Noise - 2 min seamless loop)
+          campfire.mp3      (Campfire - 2 min seamless loop)
+      </signature>
+      <path>assets/audio/</path>
+      <notes>All ambient sounds must loop seamlessly (no audible gaps). Optimize file size (&lt;2MB each). Add to pubspec.yaml assets.</notes>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Follow 70/20/10 testing pyramid. Test audio playback with mock just_audio player. Verify fade-out volume curve accuracy. Test sleep timer countdown and expiration. Test premium access control. Target 80%+ code coverage.
+    </standards>
+    <locations>
+      <location>test/features/sleep/domain/services/</location>
+      <location>test/features/sleep/domain/usecases/</location>
+      <location>test/features/sleep/presentation/controllers/</location>
+      <location>integration_test/features/sleep/sleep_playback_flow_test.dart</location>
+    </locations>
+    <ideas>
+      <test-idea ac-ref="AC3,AC4">
+        <description>Unit test: Sleep timer countdown and fade-out trigger</description>
+        <approach>Start timer with 1 min duration. Fast-forward to 30s remaining. Verify shouldFadeOut = true. Fast-forward to 0s. Verify timer expires and playback stops.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4">
+        <description>Unit test: Fade-out volume curve</description>
+        <approach>Mock AudioPlayerService. Start fade-out (30s). Sample volume at 0s (1.0), 15s (0.5), 30s (0.0). Verify smooth linear/exponential curve. Verify setVolume() called correctly.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1,AC6">
+        <description>Unit test: Premium access control for meditations</description>
+        <approach>Create meditation with isPremium=true. Test with isPremium user: playback allowed. Test with free user: playback blocked, paywall displayed.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC2">
+        <description>Widget test: Ambient sound playback</description>
+        <approach>Select "Rain" ambient sound. Verify play() called with assetPath="assets/audio/rain.mp3". Verify isLooping=true. Test playback controls (pause, resume, stop).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC5">
+        <description>Integration test: Screen dimming during playback</description>
+        <approach>Start playback. Verify screen brightness set to 0.1 (10%). Stop playback. Verify brightness restored to original value. Test dim after 10s inactivity.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3">
+        <description>Widget test: Sleep timer selection</description>
+        <approach>Render sleep timer dropdown. Select "30 min". Verify timer starts with duration=30min. Verify countdown displays "29:59", "29:58", etc. Test "End of track" and "No timer" options.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1">
+        <description>Integration test: Complete meditation playback</description>
+        <approach>Start 10 min meditation. Set timer to 15 min (ends after meditation). Fast-forward to end. Verify completion tracked in database with completed=true. Verify fade-out applied.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6">
+        <description>Widget test: Premium paywall UI</description>
+        <approach>Render meditation list as free user. Verify 3 meditations unlocked, 7 locked with premium badge. Tap locked meditation. Verify paywall displayed with "Upgrade to Premium" CTA.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4">
+        <description>Integration test: Early stop triggers fade-out</description>
+        <approach>Start meditation playback. Tap "Stop" button. Verify fade-out starts (30s). Fast-forward. Verify playback stops after fade completes.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC2">
+        <description>Unit test: Ambient sound seamless looping</description>
+        <approach>Play ambient sound. Verify AudioPlayer configured with setLoopMode(LoopMode.one). Play for 10 min. Verify no gaps or clicks at loop boundary (manual testing required).</approach>
+      </test-idea>
+      <test-idea ac-ref="ALL">
+        <description>Integration test: Background audio playback</description>
+        <approach>Start meditation. Background app (simulate home button). Verify audio continues playing. Foreground app. Verify playback state maintained. Test audio interruption (mock phone call).</approach>
+      </test-idea>
+    </ideas>
+  </tests>
+
+  <devAgentRecord>
+    <recordedAt>2025-11-17</recordedAt>
+    <status>ready-for-dev</status>
+    <agent>BMAD Dev Agent</agent>
+    <notes>Story context prepared and validated for development assignment</notes>
+  </devAgentRecord>
+
+  <created>
+    <author>BMAD Story Context Workflow</author>
+    <timestamp>2025-11-17</timestamp>
+  </created>
+</story-context>

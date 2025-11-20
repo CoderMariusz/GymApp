@@ -1,0 +1,406 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>2</epicId>
+    <storyId>2.1</storyId>
+    <title>Morning Check-in Flow</title>
+    <status>ready-for-dev</status>
+    <generatedAt>2025-11-17</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/sprint-2/2-1-morning-check-in-flow.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>user starting my day</asA>
+    <iWant>to complete a quick morning check-in</iWant>
+    <soThat>the AI can generate a personalized daily plan</soThat>
+    <tasks>
+      <task id="1" ac-ref="AC1,AC2,AC3,AC4,AC5,AC6,AC9">
+        <description>Implement morning check-in modal UI</description>
+        <subtasks>
+          <subtask>Create MorningCheckinModal widget (StatefulWidget)</subtask>
+          <subtask>Implement 3 emoji sliders (mood, energy, sleep_quality) with default value 3</subtask>
+          <subtask>Add optional note field with "Anything on your mind?" placeholder</subtask>
+          <subtask>Implement haptic feedback on emoji selection (HapticFeedback.lightImpact())</subtask>
+          <subtask>Add "Generate My Plan" CTA button</subtask>
+          <subtask>Add "Skip for today" text link at bottom</subtask>
+          <subtask>Configure modal to prevent swipe-down dismissal</subtask>
+        </subtasks>
+      </task>
+      <task id="2" ac-ref="AC7,AC9">
+        <description>Implement check-in data persistence</description>
+        <subtasks>
+          <subtask>Create check_ins table in Drift (local SQLite)</subtask>
+          <subtask>Create check_ins table in Supabase (PostgreSQL) with RLS policies</subtask>
+          <subtask>Implement saveCheckin() use case</subtask>
+          <subtask>Add UNIQUE constraint on (user_id, date) to prevent duplicates</subtask>
+          <subtask>Implement data sync between Drift and Supabase</subtask>
+        </subtasks>
+      </task>
+      <task id="3" ac-ref="AC7,AC1">
+        <description>Implement modal trigger logic</description>
+        <subtasks>
+          <subtask>Check if check-in completed for today on app open</subtask>
+          <subtask>Show modal on first app open if not done</subtask>
+          <subtask>Store check-in completion state in local cache</subtask>
+          <subtask>Handle "Skip for today" action (don't show again today)</subtask>
+        </subtasks>
+      </task>
+      <task id="4" ac-ref="AC7">
+        <description>Integrate with AI daily plan generation</description>
+        <subtasks>
+          <subtask>Call daily plan generation API after check-in submit</subtask>
+          <subtask>Pass mood, energy, sleep_quality to AI generation service</subtask>
+          <subtask>Show loading state: "Generating your perfect day..." with animated sparkle</subtask>
+          <subtask>Handle timeout/error cases gracefully</subtask>
+          <subtask>Navigate to Home tab after plan generation</subtask>
+        </subtasks>
+      </task>
+      <task id="5" ac-ref="AC10">
+        <description>Implement accessibility support</description>
+        <subtasks>
+          <subtask>Add Semantics widgets to emoji sliders</subtask>
+          <subtask>Implement VoiceOver labels: "Mood: Happy, 4 out of 5"</subtask>
+          <subtask>Ensure all interactive elements are keyboard accessible</subtask>
+          <subtask>Test with TalkBack (Android) and VoiceOver (iOS)</subtask>
+        </subtasks>
+      </task>
+      <task id="6" ac-ref="ALL">
+        <description>Write comprehensive tests</description>
+        <subtasks>
+          <subtask>Unit tests: saveCheckin use case, default values, validation</subtask>
+          <subtask>Widget tests: emoji sliders, haptic feedback, modal display, navigation</subtask>
+          <subtask>Integration test: complete end-to-end check-in flow with sync</subtask>
+          <subtask>Achieve 80%+ code coverage</subtask>
+        </subtasks>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="AC1">
+      <text>Morning check-in modal appears on first app open (if not done today)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC2">
+      <text>User rates mood (1-5 emoji slider, default 3)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC3">
+      <text>User rates energy (1-5 emoji slider, default 3)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC4">
+      <text>User rates sleep quality (1-5 emoji slider, default 3)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC5">
+      <text>Optional note field ("Anything on your mind?")</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC6">
+      <text>Haptic feedback on emoji selection</text>
+      <priority>P1</priority>
+    </criterion>
+    <criterion id="AC7">
+      <text>"Generate My Plan" CTA triggers AI daily plan generation</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC8">
+      <text>"Skip for today" option (text link, bottom)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC9">
+      <text>Check-in saves to database (mood, energy, sleep, note, timestamp)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC10">
+      <text>Accessibility: VoiceOver reads "Mood: Happy, 4 out of 5"</text>
+      <priority>P1</priority>
+    </criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR25: Morning check-in with mood, energy, sleep ratings</section>
+        <snippet>Morning check-in must capture mood (1-5 scale), energy level (1-5), and sleep quality (1-5) to feed AI daily plan generation. Target completion time: &lt;60 seconds.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR27: Check-in data used for AI personalization</section>
+        <snippet>AI daily plan generation uses check-in data (mood, energy, sleep) to personalize task suggestions and adapt plan difficulty. Low energy → lighter day, high energy → more tasks.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/epics.md</path>
+        <title>Epic 2: Life Coach MVP - Story 2.1</title>
+        <section>Story 2.1: Morning Check-in Flow</section>
+        <snippet>Complete morning check-in flow with emoji sliders for mood/energy/sleep, optional note, haptic feedback, and AI plan generation trigger. Prerequisites: Epic 1 (auth, data sync).</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Hybrid Architecture (D1)</section>
+        <snippet>Feature-first architecture with clean architecture layers (presentation/domain/data). Life Coach module located at features/life_coach/. Use Riverpod for state management.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Offline-First Sync (D3)</section>
+        <snippet>Hybrid Sync pattern: Write-Through Cache + Sync Queue. Save to Drift (SQLite) first for instant feedback (&lt;100ms), then queue for Supabase sync when online. Offline operations must work seamlessly.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Database Schema - Life Coach Tables</section>
+        <snippet>Life Coach module uses daily_plans table (JSONB tasks), goals table, and check-ins table (to be created). All tables must have RLS policies: USING (auth.uid() = user_id) for user data isolation.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/ux-design-specification.md</path>
+        <title>UX Design Specification</title>
+        <section>Morning Check-in UX</section>
+        <snippet>Modal card (swipe-down disabled - must complete or skip). Emoji sliders: 😢 😞 😐 😊 😄 for mood. Default mid-point (3/5). Loading indicator: "Generating your perfect day..." (animated sparkle). Target: &lt;60 seconds completion.</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/sprint-2/2-1-morning-check-in-flow.md</path>
+        <title>Story 2.1: Morning Check-in Flow</title>
+        <section>Database Schema</section>
+        <snippet>check_ins table with columns: id (UUID), user_id (UUID FK), date (DATE), mood (INT 1-5), energy (INT 1-5), sleep_quality (INT 1-5), note (TEXT nullable), created_at, updated_at. UNIQUE(user_id, date). RLS policies for user isolation.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <!-- No existing code - greenfield project -->
+      <note>This is the first implementation story for the Life Coach module. No existing code to reference. Follow architecture patterns and create base structure at lib/features/life_coach/.</note>
+    </code>
+    <dependencies>
+      <flutter>
+        <sdk>3.38+</sdk>
+        <dart>3.10+</dart>
+      </flutter>
+      <packages>
+        <package name="flutter_riverpod" version="^3.0.0" usage="State management for check-in modal and data flow" />
+        <package name="riverpod_annotation" version="^3.0.0" usage="Code generation for providers" />
+        <package name="drift" version="^2.14.0" usage="Local SQLite database for offline check-in storage" />
+        <package name="drift_flutter" version="^0.1.0" usage="Flutter integration for Drift" />
+        <package name="sqlite3_flutter_libs" version="^0.5.0" usage="SQLite native libraries" />
+        <package name="path_provider" version="^2.1.0" usage="Get app directories for Drift database" />
+        <package name="supabase_flutter" version="^2.0.0" usage="Supabase client for auth and database sync" />
+        <package name="flutter_test" version="sdk" usage="Unit and widget testing framework" />
+        <package name="integration_test" version="sdk" usage="End-to-end testing framework" />
+      </packages>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint id="ARCH-1" type="architectural">
+      <description>Must follow Hybrid Architecture pattern (D1)</description>
+      <details>Create feature structure at lib/features/life_coach/ with presentation/, domain/, and data/ layers. Use clean architecture separation of concerns.</details>
+    </constraint>
+    <constraint id="ARCH-2" type="architectural">
+      <description>Offline-first implementation required (D3)</description>
+      <details>Save check-in to Drift (SQLite) first for instant feedback (&lt;100ms per NFR-P4). Queue for Supabase sync when online. Handle offline mode gracefully.</details>
+    </constraint>
+    <constraint id="ARCH-3" type="architectural">
+      <description>Use Riverpod for state management (D1, D6)</description>
+      <details>Create providers following feature-first structure. Use ConsumerStatefulWidget for check-in modal. Providers should be in life_coach/presentation/providers/.</details>
+    </constraint>
+    <constraint id="DATA-1" type="data">
+      <description>Database schema must match specification</description>
+      <details>check_ins table: id (UUID PK), user_id (UUID FK auth.users), date (DATE), mood (INT 1-5 CHECK), energy (INT 1-5 CHECK), sleep_quality (INT 1-5 CHECK), note (TEXT nullable), created_at, updated_at. UNIQUE(user_id, date).</details>
+    </constraint>
+    <constraint id="SEC-1" type="security">
+      <description>Row Level Security (RLS) policies required</description>
+      <details>Enable RLS on check_ins table. Policy: CREATE POLICY "Users can only access own check-ins" ON check_ins FOR ALL USING (auth.uid() = user_id);</details>
+    </constraint>
+    <constraint id="UX-1" type="ux">
+      <description>60-second completion time target</description>
+      <details>Modal must be quick to complete. Default mid-point (3/5) for all ratings. Minimal friction. Measure 95th percentile completion time.</details>
+    </constraint>
+    <constraint id="UX-2" type="ux">
+      <description>Modal cannot be dismissed by swipe-down</description>
+      <details>User must either complete check-in or tap "Skip for today". Configure modal with barrierDismissible: false and WillPopScope to prevent accidental dismissal.</details>
+    </constraint>
+    <constraint id="UX-3" type="ux">
+      <description>Haptic feedback on emoji selection</description>
+      <details>Use HapticFeedback.lightImpact() on emoji tap, HapticFeedback.selectionClick() on slider drag. Enhances tactile micro-interactions.</details>
+    </constraint>
+    <constraint id="PERF-1" type="performance">
+      <description>Modal render time &lt;100ms</description>
+      <details>Modal must appear instantly on app open. Optimize widget tree, avoid heavy computations in build(). Use const constructors where possible.</details>
+    </constraint>
+    <constraint id="PERF-2" type="performance">
+      <description>AI plan generation &lt;3s</description>
+      <details>Show loading state immediately. Llama target: &lt;2s, Claude: &lt;3s, GPT-4: &lt;4s. Implement timeout at 10s with retry option.</details>
+    </constraint>
+    <constraint id="TEST-1" type="testing">
+      <description>80%+ code coverage required</description>
+      <details>Follow 70/20/10 testing pyramid. Unit tests for use cases, widget tests for UI, integration test for full flow. All AC must have test coverage.</details>
+    </constraint>
+    <constraint id="A11Y-1" type="accessibility">
+      <description>VoiceOver/TalkBack support mandatory</description>
+      <details>Wrap emoji sliders with Semantics widgets. Labels should read "Mood: [emoji name], [value] out of 5". Test with screen readers on both platforms.</details>
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>CheckinEntity</name>
+      <kind>domain-entity</kind>
+      <signature>
+        class CheckinEntity {
+          final String id;
+          final String userId;
+          final DateTime date;
+          final int mood;        // 1-5
+          final int energy;      // 1-5
+          final int sleepQuality; // 1-5
+          final String? note;
+          final DateTime createdAt;
+          final DateTime updatedAt;
+        }
+      </signature>
+      <path>lib/features/life_coach/domain/entities/checkin_entity.dart</path>
+      <notes>Use @freezed annotation for immutability and copyWith. Implement validation in constructor (mood/energy/sleepQuality must be 1-5).</notes>
+    </interface>
+    <interface>
+      <name>SaveCheckinUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class SaveCheckinUseCase {
+          Future&lt;Result&lt;CheckinEntity&gt;&gt; call(CheckinEntity checkin);
+        }
+      </signature>
+      <path>lib/features/life_coach/domain/usecases/save_checkin_usecase.dart</path>
+      <notes>Returns Result&lt;T&gt; pattern (Success/Failure). Save to Drift first, then queue for Supabase sync. Handle network errors gracefully.</notes>
+    </interface>
+    <interface>
+      <name>GenerateDailyPlanUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class GenerateDailyPlanUseCase {
+          Future&lt;Result&lt;DailyPlanEntity&gt;&gt; call({
+            required int mood,
+            required int energy,
+            required int sleepQuality,
+          });
+        }
+      </signature>
+      <path>lib/features/life_coach/domain/usecases/generate_daily_plan_usecase.dart</path>
+      <notes>Calls AI orchestration service (Story 2.2 dependency). For this story, create interface only - implementation in Story 2.2.</notes>
+    </interface>
+    <interface>
+      <name>CheckinRepository</name>
+      <kind>repository</kind>
+      <signature>
+        abstract class CheckinRepository {
+          Future&lt;Result&lt;CheckinEntity&gt;&gt; saveCheckin(CheckinEntity checkin);
+          Future&lt;Result&lt;CheckinEntity?&gt;&gt; getCheckinForDate(String userId, DateTime date);
+          Future&lt;Result&lt;List&lt;CheckinEntity&gt;&gt;&gt; getCheckinsForDateRange(String userId, DateTime start, DateTime end);
+        }
+      </signature>
+      <path>lib/features/life_coach/domain/repositories/checkin_repository.dart</path>
+      <notes>Implemented by CheckinRepositoryImpl in data layer. Uses both DriftDataSource and SupabaseDataSource.</notes>
+    </interface>
+    <interface>
+      <name>check_ins table (Supabase PostgreSQL)</name>
+      <kind>database-table</kind>
+      <signature>
+        CREATE TABLE check_ins (
+          id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+          user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+          date DATE NOT NULL,
+          mood INT NOT NULL CHECK (mood BETWEEN 1 AND 5),
+          energy INT NOT NULL CHECK (energy BETWEEN 1 AND 5),
+          sleep_quality INT NOT NULL CHECK (sleep_quality BETWEEN 1 AND 5),
+          note TEXT,
+          created_at TIMESTAMPTZ DEFAULT NOW(),
+          updated_at TIMESTAMPTZ DEFAULT NOW(),
+          UNIQUE(user_id, date)
+        );
+        CREATE INDEX idx_checkins_user_date ON check_ins(user_id, date DESC);
+      </signature>
+      <path>supabase/migrations/</path>
+      <notes>Migration file will be created in Supabase migrations folder. Include RLS policies in same migration.</notes>
+    </interface>
+    <interface>
+      <name>check_ins table (Drift SQLite)</name>
+      <kind>database-table</kind>
+      <signature>
+        @DataClassName('CheckinTable')
+        class CheckIns extends Table {
+          TextColumn get id => text()();
+          TextColumn get userId => text()();
+          DateTimeColumn get date => dateTime()();
+          IntColumn get mood => integer().check(mood.isBetweenValues(1, 5))();
+          IntColumn get energy => integer().check(energy.isBetweenValues(1, 5))();
+          IntColumn get sleepQuality => integer().check(sleepQuality.isBetweenValues(1, 5))();
+          TextColumn get note => text().nullable()();
+          DateTimeColumn get createdAt => dateTime()();
+          DateTimeColumn get updatedAt => dateTime()();
+
+          @override
+          Set&lt;Column&gt; get primaryKey => {id};
+        }
+      </signature>
+      <path>lib/core/database/tables.drift.dart</path>
+      <notes>Drift table definition. Mirror of Supabase schema for offline-first architecture. Use drift code generation.</notes>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Follow 70/20/10 testing pyramid: 70% unit tests (use cases, repositories, entities), 20% widget tests (UI components, state management), 10% integration tests (end-to-end flows). Use flutter_test for unit/widget tests, integration_test for E2E. Mock dependencies with mockito. Target 80%+ code coverage. All acceptance criteria must have test coverage.
+    </standards>
+    <locations>
+      <location>test/features/life_coach/domain/usecases/</location>
+      <location>test/features/life_coach/domain/entities/</location>
+      <location>test/features/life_coach/data/repositories/</location>
+      <location>test/features/life_coach/presentation/widgets/</location>
+      <location>integration_test/features/life_coach/morning_checkin_flow_test.dart</location>
+    </locations>
+    <ideas>
+      <test-idea ac-ref="AC2,AC3,AC4">
+        <description>Unit test: CheckinEntity validation</description>
+        <approach>Test that mood/energy/sleepQuality throw exception if outside 1-5 range. Test default values (3). Test copyWith immutability.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC9">
+        <description>Unit test: SaveCheckinUseCase success case</description>
+        <approach>Mock CheckinRepository. Verify saveCheckin() called with correct entity. Assert Success result returned.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC9">
+        <description>Unit test: SaveCheckinUseCase handles network failure</description>
+        <approach>Mock repository to throw NetworkException. Assert Failure result returned with error message.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC2,AC3,AC4,AC6">
+        <description>Widget test: EmojiSlider displays and responds to taps</description>
+        <approach>Render EmojiSlider widget. Tap emoji at index 4. Verify onChanged callback called with value 5. Verify haptic feedback triggered (mock HapticFeedback).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1,AC8">
+        <description>Widget test: Modal shows and handles skip action</description>
+        <approach>Render MorningCheckinModal. Verify modal displayed. Tap "Skip for today". Verify modal dismissed and no data saved.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC7">
+        <description>Widget test: Generate Plan button triggers loading state</description>
+        <approach>Render modal. Tap "Generate My Plan". Verify loading indicator appears with "Generating your perfect day..." text. Mock AI service delay.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC10">
+        <description>Widget test: Accessibility labels correct</description>
+        <approach>Find Semantics widgets on emoji sliders. Verify label reads "Mood: Happy, 4 out of 5" when value is 4 and mood emoji selected.</approach>
+      </test-idea>
+      <test-idea ac-ref="ALL">
+        <description>Integration test: Complete morning check-in flow</description>
+        <approach>Launch app. Verify modal appears. Set mood=4, energy=5, sleep=3, note="Feeling good". Tap Generate Plan. Verify check-in saved to database. Verify sync to Supabase. Verify modal dismissed and daily plan generated.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC9">
+        <description>Integration test: Check-in syncs across devices</description>
+        <approach>Save check-in on Device A. Mock Supabase realtime sync. Verify check-in appears on Device B. Test offline save → online sync flow.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1">
+        <description>Unit test: Modal trigger logic - show only once per day</description>
+        <approach>Mock local cache with today's check-in. Verify modal does not appear on app open. Clear cache, verify modal appears.</approach>
+      </test-idea>
+    </ideas>
+  </tests>
+</story-context>

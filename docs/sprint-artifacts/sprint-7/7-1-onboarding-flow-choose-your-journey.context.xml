@@ -1,0 +1,351 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>7</epicId>
+    <storyId>7.1</storyId>
+    <title>Onboarding Flow - Choose Your Journey</title>
+    <status>ready-for-dev</status>
+    <generatedAt>2025-11-17</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/sprint-7/7-1-onboarding-flow-choose-your-journey.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>new user who just created an account</asA>
+    <iWant>to choose my journey focus area during onboarding</iWant>
+    <soThat>the app can personalize my experience based on my primary goals</soThat>
+    <tasks>
+      <task id="1" ac-ref="AC1,AC2,AC3">
+        <description>Implement onboarding screens UI</description>
+        <subtasks>
+          <subtask>Create OnboardingWelcomeScreen with "Welcome to LifeOS 🌟" title</subtask>
+          <subtask>Create OnboardingJourneyScreen with 4 journey options</subtask>
+          <subtask>Design journey cards: 💪 Fitness, 🧠 Stress/Mind, ☀️ Life Coach, 🌟 All Modules</subtask>
+          <subtask>Implement progress dots indicator (●○○○○) at top of screen</subtask>
+          <subtask>Add "Skip" option as text link at bottom</subtask>
+          <subtask>Implement smooth page transitions with PageView</subtask>
+        </subtasks>
+      </task>
+      <task id="2" ac-ref="AC4">
+        <description>Implement journey selection logic and flow adaptation</description>
+        <subtasks>
+          <subtask>Create OnboardingProvider to manage state (Riverpod)</subtask>
+          <subtask>Handle journey selection and store choice</subtask>
+          <subtask>Implement flow routing based on selection (Fitness → workout tutorial, Mind → meditation tutorial, Life → check-in tutorial)</subtask>
+          <subtask>Pass journey choice to subsequent onboarding screens</subtask>
+        </subtasks>
+      </task>
+      <task id="3" ac-ref="AC5,AC6">
+        <description>Implement onboarding state persistence</description>
+        <subtasks>
+          <subtask>Create onboarding_state table in Drift (local SQLite)</subtask>
+          <subtask>Create onboarding_state table in Supabase with RLS policies</subtask>
+          <subtask>Implement saveOnboardingChoice() use case</subtask>
+          <subtask>Store journey_choice, completed flag, completion timestamp</subtask>
+          <subtask>Implement data sync between Drift and Supabase</subtask>
+        </subtasks>
+      </task>
+      <task id="4" ac-ref="AC6">
+        <description>Implement skip functionality</description>
+        <subtasks>
+          <subtask>Handle skip action (saves onboarding as skipped, not completed)</subtask>
+          <subtask>Default journey to "all" when skipped</subtask>
+          <subtask>Navigate to home screen after skip</subtask>
+          <subtask>Allow user to revisit onboarding from settings</subtask>
+        </subtasks>
+      </task>
+      <task id="5" ac-ref="AC1">
+        <description>Implement onboarding trigger on first launch</description>
+        <subtasks>
+          <subtask>Check onboarding completion status on app launch</subtask>
+          <subtask>Trigger onboarding flow after account creation (Epic 1.1)</subtask>
+          <subtask>Skip onboarding if already completed</subtask>
+          <subtask>Store first launch flag in local cache</subtask>
+        </subtasks>
+      </task>
+      <task id="6" ac-ref="ALL">
+        <description>Write comprehensive tests</description>
+        <subtasks>
+          <subtask>Unit tests: OnboardingProvider state management, journey selection logic</subtask>
+          <subtask>Widget tests: screen rendering, journey card selection, skip button, progress dots</subtask>
+          <subtask>Integration test: complete onboarding flow with journey selection and persistence</subtask>
+          <subtask>Achieve 80%+ code coverage</subtask>
+        </subtasks>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="AC1">
+      <text>Onboarding starts after account creation</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC2">
+      <text>Screen 1 displays "Welcome to LifeOS 🌟" with welcome message</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC3">
+      <text>Screen 2 shows 4 journey options: 💪 Fitness, 🧠 Stress/Mind, ☀️ Life Coach, 🌟 All Modules</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC4">
+      <text>Flow adapts based on selection (Fitness → workout tutorial, Mind → meditation, Life → check-in, All → combined)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC5">
+      <text>Progress dots show current step (●○○○○) and update as user progresses</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC6">
+      <text>"Skip" option available at bottom, defaults to all modules</text>
+      <priority>P0</priority>
+    </criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR40: Onboarding flow with journey selection</section>
+        <snippet>First-time users must complete onboarding to choose primary focus area. Onboarding includes welcome screen, journey selection (Fitness/Mind/Life Coach/All), and personalized tutorial. Target completion time: &lt;3 minutes.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/epics.md</path>
+        <title>Epic 7: Onboarding &amp; Subscriptions</title>
+        <section>Story 7.1: Onboarding Flow - Choose Your Journey</section>
+        <snippet>Welcome screen and journey selection to personalize user experience. Flow adapts based on choice to show relevant tutorials. Foundation for Epic 7 onboarding sequence.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Hybrid Architecture (D1)</section>
+        <snippet>Feature-first architecture with clean architecture layers. Onboarding feature located at features/onboarding/. Use Riverpod for state management across onboarding flow.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/ux-design-specification.md</path>
+        <title>UX Design Specification</title>
+        <section>Onboarding Journey Selection</section>
+        <snippet>Journey cards with emoji icons, clear descriptions. Progress indicator (dots) at top. Skip option subtle but accessible. Smooth transitions between screens. Target: &lt;3 minutes to complete entire onboarding.</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/sprint-7/7-1-onboarding-flow-choose-your-journey.md</path>
+        <title>Story 7.1: Onboarding Flow - Choose Your Journey</title>
+        <section>Database Schema</section>
+        <snippet>onboarding_state table with columns: user_id (UUID FK), journey_choice (TEXT), completed (BOOLEAN), completed_at (TIMESTAMPTZ), skipped (BOOLEAN). Unique per user.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <note>Onboarding feature is new for Epic 7. Create base structure at lib/features/onboarding/. Follow clean architecture pattern with presentation/domain/data layers. Integrate with Epic 1 auth flow.</note>
+    </code>
+    <dependencies>
+      <flutter>
+        <sdk>3.38+</sdk>
+        <dart>3.10+</dart>
+      </flutter>
+      <packages>
+        <package name="flutter_riverpod" version="^3.0.0" usage="State management for onboarding flow" />
+        <package name="riverpod_annotation" version="^3.0.0" usage="Code generation for providers" />
+        <package name="drift" version="^2.14.0" usage="Local SQLite for onboarding state" />
+        <package name="supabase_flutter" version="^2.0.0" usage="Backend persistence and sync" />
+        <package name="go_router" version="^13.0.0" usage="Navigation routing for onboarding flow" />
+        <package name="flutter_test" version="sdk" usage="Unit and widget testing" />
+        <package name="integration_test" version="sdk" usage="End-to-end testing" />
+      </packages>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint id="ARCH-1" type="architectural">
+      <description>Must follow feature-first clean architecture</description>
+      <details>Create at lib/features/onboarding/ with presentation/, domain/, and data/ layers. Separate concerns: UI components, business logic, data persistence.</details>
+    </constraint>
+    <constraint id="ARCH-2" type="architectural">
+      <description>Offline-first implementation required</description>
+      <details>Save onboarding state to Drift first for instant feedback, then sync to Supabase. Handle offline completion gracefully.</details>
+    </constraint>
+    <constraint id="ARCH-3" type="architectural">
+      <description>Use Riverpod for state management</description>
+      <details>Create OnboardingProvider to manage flow state, journey selection, and navigation. Use StateNotifier pattern for step progression.</details>
+    </constraint>
+    <constraint id="DATA-1" type="data">
+      <description>Database schema must support onboarding state</description>
+      <details>onboarding_state table: user_id (UUID FK auth.users), journey_choice (TEXT: 'fitness'|'mind'|'life_coach'|'all'), completed (BOOLEAN), skipped (BOOLEAN), completed_at (TIMESTAMPTZ). Unique per user.</details>
+    </constraint>
+    <constraint id="SEC-1" type="security">
+      <description>Row Level Security required</description>
+      <details>Enable RLS on onboarding_state table. Policy: Users can only access their own onboarding state. USING (auth.uid() = user_id).</details>
+    </constraint>
+    <constraint id="UX-1" type="ux">
+      <description>3-minute completion time target</description>
+      <details>Entire onboarding flow (all screens) should be completable in &lt;3 minutes. Keep copy concise, minimize required interactions.</details>
+    </constraint>
+    <constraint id="UX-2" type="ux">
+      <description>Clear journey differentiation</description>
+      <details>Each journey option must have distinct emoji, title, and 1-sentence description. Make value proposition immediately clear.</details>
+    </constraint>
+    <constraint id="UX-3" type="ux">
+      <description>Progress indication required</description>
+      <details>Show progress dots at top of screen. Update in real-time as user advances. Provide clear sense of completion progress.</details>
+    </constraint>
+    <constraint id="NAV-1" type="navigation">
+      <description>Flow routing based on journey selection</description>
+      <details>After journey selection, route to appropriate tutorial: Fitness → Story 7.3 workout tutorial, Mind → meditation tutorial, Life Coach → check-in tutorial, All → combined tutorial.</details>
+    </constraint>
+    <constraint id="TEST-1" type="testing">
+      <description>80%+ code coverage required</description>
+      <details>Follow 70/20/10 testing pyramid. Unit tests for providers, widget tests for UI, integration test for full flow.</details>
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>OnboardingStateEntity</name>
+      <kind>domain-entity</kind>
+      <signature>
+        class OnboardingStateEntity {
+          final String userId;
+          final String journeyChoice; // 'fitness' | 'mind' | 'life_coach' | 'all'
+          final bool completed;
+          final bool skipped;
+          final DateTime? completedAt;
+        }
+      </signature>
+      <path>lib/features/onboarding/domain/entities/onboarding_state_entity.dart</path>
+      <notes>Use @freezed for immutability. Validate journeyChoice is one of allowed values.</notes>
+    </interface>
+    <interface>
+      <name>SaveOnboardingStateUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class SaveOnboardingStateUseCase {
+          Future&lt;Result&lt;OnboardingStateEntity&gt;&gt; call({
+            required String journeyChoice,
+            required bool completed,
+            required bool skipped,
+          });
+        }
+      </signature>
+      <path>lib/features/onboarding/domain/usecases/save_onboarding_state_usecase.dart</path>
+      <notes>Returns Result pattern. Saves to Drift first, queues for Supabase sync.</notes>
+    </interface>
+    <interface>
+      <name>GetOnboardingStateUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class GetOnboardingStateUseCase {
+          Future&lt;Result&lt;OnboardingStateEntity?&gt;&gt; call(String userId);
+        }
+      </signature>
+      <path>lib/features/onboarding/domain/usecases/get_onboarding_state_usecase.dart</path>
+      <notes>Checks if user has completed onboarding. Returns null if not found.</notes>
+    </interface>
+    <interface>
+      <name>OnboardingRepository</name>
+      <kind>repository</kind>
+      <signature>
+        abstract class OnboardingRepository {
+          Future&lt;Result&lt;OnboardingStateEntity&gt;&gt; saveOnboardingState(OnboardingStateEntity state);
+          Future&lt;Result&lt;OnboardingStateEntity?&gt;&gt; getOnboardingState(String userId);
+        }
+      </signature>
+      <path>lib/features/onboarding/domain/repositories/onboarding_repository.dart</path>
+      <notes>Implemented by OnboardingRepositoryImpl in data layer.</notes>
+    </interface>
+    <interface>
+      <name>onboarding_state table (Supabase)</name>
+      <kind>database-table</kind>
+      <signature>
+        CREATE TABLE onboarding_state (
+          id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+          user_id UUID NOT NULL UNIQUE REFERENCES auth.users(id) ON DELETE CASCADE,
+          journey_choice TEXT NOT NULL CHECK (journey_choice IN ('fitness', 'mind', 'life_coach', 'all')),
+          completed BOOLEAN NOT NULL DEFAULT false,
+          skipped BOOLEAN NOT NULL DEFAULT false,
+          completed_at TIMESTAMPTZ,
+          created_at TIMESTAMPTZ DEFAULT NOW(),
+          updated_at TIMESTAMPTZ DEFAULT NOW()
+        );
+        CREATE INDEX idx_onboarding_user ON onboarding_state(user_id);
+      </signature>
+      <path>supabase/migrations/</path>
+      <notes>Include RLS policies: USING (auth.uid() = user_id).</notes>
+    </interface>
+    <interface>
+      <name>onboarding_state table (Drift)</name>
+      <kind>database-table</kind>
+      <signature>
+        @DataClassName('OnboardingStateTable')
+        class OnboardingStates extends Table {
+          TextColumn get id => text()();
+          TextColumn get userId => text()();
+          TextColumn get journeyChoice => text()();
+          BoolColumn get completed => boolean()();
+          BoolColumn get skipped => boolean()();
+          DateTimeColumn get completedAt => dateTime().nullable()();
+          DateTimeColumn get createdAt => dateTime()();
+          DateTimeColumn get updatedAt => dateTime()();
+
+          @override
+          Set&lt;Column&gt; get primaryKey => {id};
+        }
+      </signature>
+      <path>lib/core/database/tables.drift.dart</path>
+      <notes>Mirror of Supabase schema for offline-first architecture.</notes>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Follow 70/20/10 testing pyramid: 70% unit tests (use cases, repositories, providers), 20% widget tests (UI components, navigation), 10% integration tests (end-to-end onboarding flow). Target 80%+ code coverage.
+    </standards>
+    <locations>
+      <location>test/features/onboarding/domain/usecases/</location>
+      <location>test/features/onboarding/data/repositories/</location>
+      <location>test/features/onboarding/presentation/providers/</location>
+      <location>test/features/onboarding/presentation/screens/</location>
+      <location>integration_test/features/onboarding/onboarding_flow_test.dart</location>
+    </locations>
+    <ideas>
+      <test-idea ac-ref="AC3">
+        <description>Unit test: OnboardingStateEntity validation</description>
+        <approach>Test that journeyChoice must be one of allowed values. Test completed/skipped mutual exclusivity logic.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1,AC6">
+        <description>Unit test: SaveOnboardingStateUseCase</description>
+        <approach>Mock repository. Verify journey choice saved correctly. Test skip functionality sets skipped=true, completed=false.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC2">
+        <description>Widget test: OnboardingWelcomeScreen renders correctly</description>
+        <approach>Verify "Welcome to LifeOS 🌟" title displayed. Check welcome message present. Test "Next" button navigation.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3">
+        <description>Widget test: Journey selection cards display</description>
+        <approach>Verify all 4 journey options visible (Fitness, Mind, Life Coach, All). Test card selection updates state. Verify emoji icons present.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC5">
+        <description>Widget test: Progress dots update correctly</description>
+        <approach>Verify dots show ●○○○○ on screen 1. Check dots update to ○●○○○ on screen 2. Test final screen shows all filled.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6">
+        <description>Widget test: Skip functionality</description>
+        <approach>Find "Skip" button. Tap and verify navigation to home. Confirm onboarding marked as skipped. Verify default journey set to "all".</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4">
+        <description>Unit test: Flow routing based on journey</description>
+        <approach>Test Fitness selection routes to workout tutorial. Test Mind → meditation tutorial. Test Life Coach → check-in tutorial. Test All → combined tutorial.</approach>
+      </test-idea>
+      <test-idea ac-ref="ALL">
+        <description>Integration test: Complete onboarding flow</description>
+        <approach>Launch app as new user. Complete welcome screen. Select Fitness journey. Verify routing to workout tutorial. Confirm state saved to database. Verify sync to Supabase.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1">
+        <description>Integration test: Onboarding trigger on first launch</description>
+        <approach>Simulate first app launch after account creation. Verify onboarding starts automatically. Complete flow. Relaunch app, verify onboarding doesn't show again.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6">
+        <description>Integration test: Skip and revisit onboarding</description>
+        <approach>Skip onboarding. Navigate to settings. Find "Revisit Onboarding" option. Complete onboarding second time. Verify state updated from skipped to completed.</approach>
+      </test-idea>
+    </ideas>
+  </tests>
+</story-context>

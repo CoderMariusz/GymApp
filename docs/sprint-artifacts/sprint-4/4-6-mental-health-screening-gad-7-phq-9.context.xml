@@ -1,0 +1,484 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>4</epicId>
+    <storyId>4.6</storyId>
+    <title>Mental Health Screening (GAD-7, PHQ-9)</title>
+    <status>ready-for-dev</status>
+    <generatedAt>2025-11-17</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/sprint-4/4-6-mental-health-screening-gad-7-phq-9.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>user concerned about my mental health</asA>
+    <iWant>to complete validated anxiety and depression screenings</iWant>
+    <soThat>I can assess my symptoms and seek help if needed</soThat>
+    <tasks>
+      <task id="1" ac-ref="AC1,AC2,AC3">
+        <description>Implement GAD-7 anxiety screening</description>
+        <subtasks>
+          <subtask>Create GAD7ScreeningEntity with 7 standardized questions</subtask>
+          <subtask>Implement 4-point Likert scale (0=Not at all, 1=Several days, 2=More than half the days, 3=Nearly every day)</subtask>
+          <subtask>Create GAD7ScreeningScreen with one question per screen (7 screens total)</subtask>
+          <subtask>Implement swipe navigation between questions</subtask>
+          <subtask>Add progress indicator (Question 1/7)</subtask>
+          <subtask>Calculate total score (sum of 7 responses, 0-21 range)</subtask>
+          <subtask>Store raw responses and total score</subtask>
+        </subtasks>
+      </task>
+      <task id="2" ac-ref="AC1,AC2,AC4">
+        <description>Implement PHQ-9 depression screening</description>
+        <subtasks>
+          <subtask>Create PHQ9ScreeningEntity with 9 standardized questions</subtask>
+          <subtask>Implement 4-point Likert scale (same as GAD-7)</subtask>
+          <subtask>Create PHQ9ScreeningScreen with one question per screen (9 screens total)</subtask>
+          <subtask>Implement swipe navigation between questions</subtask>
+          <subtask>Add progress indicator (Question 1/9)</subtask>
+          <subtask>Calculate total score (sum of 9 responses, 0-27 range)</subtask>
+          <subtask>Store raw responses and total score</subtask>
+        </subtasks>
+      </task>
+      <task id="3" ac-ref="AC4">
+        <description>Implement score categorization and results screen</description>
+        <subtasks>
+          <subtask>GAD-7 categorization: Minimal (0-4), Mild (5-9), Moderate (10-14), Severe (15-21)</subtask>
+          <subtask>PHQ-9 categorization: Minimal (0-4), Mild (5-9), Moderate (10-14), Moderately Severe (15-19), Severe (20-27)</subtask>
+          <subtask>Create ResultsScreen showing score, category, and interpretation</subtask>
+          <subtask>Display color-coded severity indicator (green/yellow/orange/red)</subtask>
+          <subtask>Add educational content for each severity level</subtask>
+          <subtask>Implement "What does this mean?" expandable section</subtask>
+        </subtasks>
+      </task>
+      <task id="4" ac-ref="AC5">
+        <description>Implement crisis resources for high scores</description>
+        <subtasks>
+          <subtask>Define crisis threshold: GAD-7 &gt;= 15 OR PHQ-9 &gt;= 15</subtask>
+          <subtask>Create CrisisResourcesCard displayed on results screen when threshold met</subtask>
+          <subtask>Add National Suicide Prevention Lifeline: 988 (US)</subtask>
+          <subtask>Add Crisis Text Line: Text HOME to 741741 (US)</subtask>
+          <subtask>Add International Association for Suicide Prevention resources</subtask>
+          <subtask>Implement tap-to-call functionality for hotlines</subtask>
+          <subtask>Add "Talk to Someone Now" prominent CTA button</subtask>
+        </subtasks>
+      </task>
+      <task id="5" ac-ref="AC6">
+        <description>Implement screening history tracking</description>
+        <subtasks>
+          <subtask>Create screening_history table (screening_type, score, category, timestamp)</subtask>
+          <subtask>Store screening results in database (encrypted)</subtask>
+          <subtask>Create ScreeningHistoryScreen with chronological list</subtask>
+          <subtask>Display trend chart showing score changes over time</subtask>
+          <subtask>Add ability to view past screening details</subtask>
+          <subtask>Implement data export (CSV format)</subtask>
+        </subtasks>
+      </task>
+      <task id="6" ac-ref="AC7">
+        <description>Implement medical disclaimer</description>
+        <subtasks>
+          <subtask>Create DisclaimerScreen shown before first screening</subtask>
+          <subtask>Disclaimer text: "This screening is not a diagnosis. Consult a licensed mental health professional for evaluation."</subtask>
+          <subtask>Add checkbox: "I understand this is not a medical diagnosis"</subtask>
+          <subtask>Require acceptance before allowing screening</subtask>
+          <subtask>Store disclaimer acceptance timestamp</subtask>
+          <subtask>Display disclaimer footer on results screen</subtask>
+        </subtasks>
+      </task>
+      <task id="7" ac-ref="AC1,AC2">
+        <description>Implement screening UI/UX</description>
+        <subtasks>
+          <subtask>Design calm, supportive UI with soothing colors</subtask>
+          <subtask>Add large, tappable response buttons (4 options per question)</subtask>
+          <subtask>Implement haptic feedback on response selection</subtask>
+          <subtask>Add "Back" button to review previous answers</subtask>
+          <subtask>Auto-advance to next question after response (with 500ms delay)</subtask>
+          <subtask>Show "Complete Screening" button on final question</subtask>
+        </subtasks>
+      </task>
+      <task id="8" ac-ref="ALL">
+        <description>Implement data persistence and privacy</description>
+        <subtasks>
+          <subtask>Encrypt screening responses (E2E encryption like journal)</subtask>
+          <subtask>Save to Drift (SQLite) for offline access</subtask>
+          <subtask>Sync to Supabase when online</subtask>
+          <subtask>Add RLS policies (users can only access own screenings)</subtask>
+          <subtask>Implement GDPR-compliant deletion</subtask>
+        </subtasks>
+      </task>
+      <task id="9" ac-ref="ALL">
+        <description>Write comprehensive tests</description>
+        <subtasks>
+          <subtask>Unit tests: Score calculation (GAD-7: 0-21, PHQ-9: 0-27), categorization logic</subtask>
+          <subtask>Widget tests: Question navigation, response selection, progress indicator</subtask>
+          <subtask>Integration test: Complete screening flow, crisis resources display</subtask>
+          <subtask>Test crisis threshold logic (GAD-7 &gt;= 15, PHQ-9 &gt;= 15)</subtask>
+          <subtask>Achieve 80%+ code coverage</subtask>
+        </subtasks>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="AC1">
+      <text>GAD-7 screening with 7 questions (0-3 scale, total score 0-21)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC2">
+      <text>PHQ-9 screening with 9 questions (0-3 scale, total score 0-27)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC3">
+      <text>One question displayed per screen with swipe navigation</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC4">
+      <text>Score categorization: Minimal/Mild/Moderate/Severe with interpretation</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC5">
+      <text>Crisis resources (hotlines) displayed if score &gt;= 15</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC6">
+      <text>Screening history with trend chart showing score changes over time</text>
+      <priority>P1</priority>
+    </criterion>
+    <criterion id="AC7">
+      <text>Medical disclaimer: "This is not a diagnosis. Consult a professional."</text>
+      <priority>P0</priority>
+    </criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR51: Mental health screening (GAD-7, PHQ-9)</section>
+        <snippet>Implement validated mental health screenings: GAD-7 (anxiety, 7 questions), PHQ-9 (depression, 9 questions). Display crisis resources if score &gt;= 15. Store screening history. Require medical disclaimer acceptance.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>NFR-S3: Crisis intervention protocols</section>
+        <snippet>If mental health screening indicates severe symptoms (GAD-7 or PHQ-9 &gt;= 15), display crisis resources prominently: 988 Suicide Prevention Lifeline, Crisis Text Line (741741), tap-to-call functionality.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/epics.md</path>
+        <title>Epic 4: Mind & Emotion - Story 4.6</title>
+        <section>Story 4.6: Mental Health Screening (GAD-7, PHQ-9)</section>
+        <snippet>Validated anxiety/depression screenings with score categorization, crisis resources, and screening history tracking. Prerequisites: Epic 1 (auth), Story 4.5 (encryption).</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Mental Health Data Privacy</section>
+        <snippet>Mental health screening data is highly sensitive. Encrypt responses E2E (like journal). Store encrypted in database. Implement RLS policies. Support GDPR deletion.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/ux-design-specification.md</path>
+        <title>UX Design Specification</title>
+        <section>Mental Health Screening UX</section>
+        <snippet>One question per screen (reduce cognitive load). Large tappable buttons (4 options). Auto-advance after selection. Calm colors (blues/purples). Crisis resources in red alert card if score high.</snippet>
+      </doc>
+      <doc>
+        <path>external</path>
+        <title>GAD-7 Standardized Questions</title>
+        <section>Validated GAD-7 Questions</section>
+        <snippet>1. Feeling nervous, anxious, or on edge; 2. Not being able to stop or control worrying; 3. Worrying too much about different things; 4. Trouble relaxing; 5. Being so restless that it's hard to sit still; 6. Becoming easily annoyed or irritable; 7. Feeling afraid as if something awful might happen. Scale: 0=Not at all, 1=Several days, 2=More than half the days, 3=Nearly every day (over the last 2 weeks).</snippet>
+      </doc>
+      <doc>
+        <path>external</path>
+        <title>PHQ-9 Standardized Questions</title>
+        <section>Validated PHQ-9 Questions</section>
+        <snippet>1. Little interest or pleasure in doing things; 2. Feeling down, depressed, or hopeless; 3. Trouble falling/staying asleep or sleeping too much; 4. Feeling tired or having little energy; 5. Poor appetite or overeating; 6. Feeling bad about yourself or that you're a failure; 7. Trouble concentrating on things; 8. Moving or speaking slowly or being fidgety/restless; 9. Thoughts that you would be better off dead or hurting yourself. Same scale as GAD-7 (over the last 2 weeks).</snippet>
+      </doc>
+    </docs>
+    <code>
+      <note>Mental health screening is new for Epic 4. Create at lib/features/mental_health/. Reuse EncryptionService from Story 4.5 (journal).</note>
+    </code>
+    <dependencies>
+      <flutter>
+        <sdk>3.38+</sdk>
+        <dart>3.10+</dart>
+      </flutter>
+      <packages>
+        <package name="flutter_riverpod" version="^3.0.0" usage="State management for screening flow" />
+        <package name="flutter_secure_storage" version="^9.0.0" usage="Secure storage for screening encryption keys" />
+        <package name="encrypt" version="^5.0.0" usage="E2E encryption for screening responses" />
+        <package name="drift" version="^2.14.0" usage="Local SQLite for offline screening storage" />
+        <package name="fl_chart" version="^0.66.0" usage="Trend chart for screening history" />
+        <package name="url_launcher" version="^6.2.0" usage="Tap-to-call for crisis hotlines" />
+        <package name="intl" version="^0.19.0" usage="Date formatting for screening history" />
+      </packages>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint id="CLINICAL-1" type="clinical">
+      <description>Use validated GAD-7 and PHQ-9 questions verbatim</description>
+      <details>GAD-7 and PHQ-9 are clinically validated instruments. Questions must match published versions exactly. Do not modify wording. Use standardized 4-point Likert scale (0-3).</details>
+    </constraint>
+    <constraint id="CLINICAL-2" type="clinical">
+      <description>Accurate score calculation and categorization</description>
+      <details>GAD-7: Sum 7 responses (0-21). Categories: 0-4 Minimal, 5-9 Mild, 10-14 Moderate, 15-21 Severe. PHQ-9: Sum 9 responses (0-27). Categories: 0-4 Minimal, 5-9 Mild, 10-14 Moderate, 15-19 Moderately Severe, 20-27 Severe.</details>
+    </constraint>
+    <constraint id="SAFETY-1" type="safety">
+      <description>Display crisis resources for high scores</description>
+      <details>If GAD-7 &gt;= 15 OR PHQ-9 &gt;= 15, show crisis resources prominently. Include: 988 Lifeline, Crisis Text Line (741741), tap-to-call. Red alert card. "Talk to Someone Now" CTA.</details>
+    </constraint>
+    <constraint id="SAFETY-2" type="safety">
+      <description>Medical disclaimer required</description>
+      <details>Show disclaimer before first screening: "This screening is not a diagnosis. Results do not replace professional evaluation. Consult a licensed mental health professional." Require checkbox acceptance.</details>
+    </constraint>
+    <constraint id="SEC-1" type="security">
+      <description>Encrypt screening responses E2E</description>
+      <details>Use same encryption as journal (AES-256-GCM). Screening responses are highly sensitive. Server stores encrypted data (zero-knowledge).</details>
+    </constraint>
+    <constraint id="UX-1" type="ux">
+      <description>One question per screen (reduce cognitive load)</description>
+      <details>Display single question with 4 response options. Large tappable buttons. Auto-advance after selection (500ms delay). Progress indicator (Question X/Y). Back button to review.</details>
+    </constraint>
+    <constraint id="UX-2" type="ux">
+      <description>Calm, supportive UI design</description>
+      <details>Use calming colors (soft blues/purples). Avoid harsh reds except for crisis alert. Supportive language. "You're doing great" encouragement messages. Non-judgmental tone.</details>
+    </constraint>
+    <constraint id="DATA-1" type="data">
+      <description>Screening history table schema</description>
+      <details>screening_history table: id (UUID), user_id (UUID FK), screening_type (ENUM: 'GAD7', 'PHQ9'), encrypted_responses (TEXT), total_score (INT), category (TEXT), created_at. RLS policies for user isolation.</details>
+    </constraint>
+    <constraint id="PERF-1" type="performance">
+      <description>Fast response recording (&lt;100ms)</description>
+      <details>Save response selection immediately to local state. Auto-advance after 500ms. No loading spinners between questions. Smooth navigation.</details>
+    </constraint>
+    <constraint id="A11Y-1" type="accessibility">
+      <description>Screen reader support for sensitive content</description>
+      <details>Add semantic labels for all questions and responses. Ensure crisis hotline numbers are readable by screen readers. Test with VoiceOver/TalkBack.</details>
+    </constraint>
+    <constraint id="TEST-1" type="testing">
+      <description>Validate score calculation with known test cases</description>
+      <details>Test all boundary cases: minimum score (all 0s), maximum score (all 3s), category thresholds. Verify crisis resources trigger at score 15.</details>
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>GAD7ScreeningEntity</name>
+      <kind>domain-entity</kind>
+      <signature>
+        class GAD7ScreeningEntity {
+          final String id;
+          final String userId;
+          final List&lt;int&gt; responses;  // 7 integers (0-3)
+          final int totalScore;       // Sum of responses (0-21)
+          final String category;      // Minimal/Mild/Moderate/Severe
+          final DateTime createdAt;
+        }
+      </signature>
+      <path>lib/features/mental_health/domain/entities/gad7_screening_entity.dart</path>
+      <notes>Validate responses (each 0-3). Calculate totalScore in constructor. Determine category from totalScore.</notes>
+    </interface>
+    <interface>
+      <name>PHQ9ScreeningEntity</name>
+      <kind>domain-entity</kind>
+      <signature>
+        class PHQ9ScreeningEntity {
+          final String id;
+          final String userId;
+          final List&lt;int&gt; responses;  // 9 integers (0-3)
+          final int totalScore;       // Sum of responses (0-27)
+          final String category;      // Minimal/Mild/Moderate/Moderately Severe/Severe
+          final DateTime createdAt;
+        }
+      </signature>
+      <path>lib/features/mental_health/domain/entities/phq9_screening_entity.dart</path>
+      <notes>Validate responses (each 0-3). Calculate totalScore in constructor. Determine category from totalScore.</notes>
+    </interface>
+    <interface>
+      <name>CompleteScreeningUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class CompleteScreeningUseCase {
+          Future&lt;Result&lt;ScreeningEntity&gt;&gt; call({
+            required ScreeningType type,  // GAD7 or PHQ9
+            required List&lt;int&gt; responses,
+          });
+        }
+      </signature>
+      <path>lib/features/mental_health/domain/usecases/complete_screening_usecase.dart</path>
+      <notes>Validate responses, calculate score, determine category, encrypt responses, save to database. Return screening entity.</notes>
+    </interface>
+    <interface>
+      <name>GetScreeningHistoryUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class GetScreeningHistoryUseCase {
+          Future&lt;Result&lt;List&lt;ScreeningEntity&gt;&gt;&gt; call({
+            ScreeningType? type,  // Optional filter
+            DateTime? startDate,
+            DateTime? endDate,
+          });
+        }
+      </signature>
+      <path>lib/features/mental_health/domain/usecases/get_screening_history_usecase.dart</path>
+      <notes>Retrieve encrypted screening history, decrypt, return sorted by date. Support filtering by type and date range.</notes>
+    </interface>
+    <interface>
+      <name>screening_history table (Supabase PostgreSQL)</name>
+      <kind>database-table</kind>
+      <signature>
+        CREATE TABLE screening_history (
+          id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+          user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+          screening_type TEXT NOT NULL CHECK (screening_type IN ('GAD7', 'PHQ9')),
+          encrypted_responses TEXT NOT NULL,  -- E2E encrypted
+          encryption_metadata JSONB NOT NULL,
+          total_score INT NOT NULL,
+          category TEXT NOT NULL,
+          created_at TIMESTAMPTZ DEFAULT NOW()
+        );
+        CREATE INDEX idx_screening_history_user ON screening_history(user_id, created_at DESC);
+      </signature>
+      <path>supabase/migrations/</path>
+      <notes>Store encrypted responses (zero-knowledge). RLS policies for user isolation. Index for fast history queries.</notes>
+    </interface>
+    <interface>
+      <name>GAD-7 Questions (Hardcoded)</name>
+      <kind>data-library</kind>
+      <signature>
+        List&lt;String&gt; gad7Questions = [
+          "Feeling nervous, anxious, or on edge",
+          "Not being able to stop or control worrying",
+          "Worrying too much about different things",
+          "Trouble relaxing",
+          "Being so restless that it's hard to sit still",
+          "Becoming easily annoyed or irritable",
+          "Feeling afraid as if something awful might happen",
+        ];
+
+        List&lt;String&gt; likertScale = [
+          "Not at all",      // 0
+          "Several days",    // 1
+          "More than half the days",  // 2
+          "Nearly every day",         // 3
+        ];
+      </signature>
+      <path>lib/features/mental_health/data/gad7_questions.dart</path>
+      <notes>Use validated GAD-7 questions verbatim. Do not modify wording.</notes>
+    </interface>
+    <interface>
+      <name>PHQ-9 Questions (Hardcoded)</name>
+      <kind>data-library</kind>
+      <signature>
+        List&lt;String&gt; phq9Questions = [
+          "Little interest or pleasure in doing things",
+          "Feeling down, depressed, or hopeless",
+          "Trouble falling or staying asleep, or sleeping too much",
+          "Feeling tired or having little energy",
+          "Poor appetite or overeating",
+          "Feeling bad about yourself or that you are a failure or have let yourself or your family down",
+          "Trouble concentrating on things, such as reading the newspaper or watching television",
+          "Moving or speaking so slowly that other people could have noticed. Or the opposite — being so fidgety or restless that you have been moving around a lot more than usual",
+          "Thoughts that you would be better off dead, or of hurting yourself",
+        ];
+      </signature>
+      <path>lib/features/mental_health/data/phq9_questions.dart</path>
+      <notes>Use validated PHQ-9 questions verbatim. Do not modify wording. Question 9 is sensitive (self-harm).</notes>
+    </interface>
+    <interface>
+      <name>Crisis Resources (Hardcoded)</name>
+      <kind>data-library</kind>
+      <signature>
+        class CrisisResource {
+          final String name;
+          final String phoneNumber;
+          final String? textNumber;
+          final String? website;
+        }
+
+        List&lt;CrisisResource&gt; crisisResources = [
+          CrisisResource(
+            name: "988 Suicide & Crisis Lifeline",
+            phoneNumber: "988",
+            website: "988lifeline.org",
+          ),
+          CrisisResource(
+            name: "Crisis Text Line",
+            textNumber: "Text HOME to 741741",
+          ),
+          CrisisResource(
+            name: "International Association for Suicide Prevention",
+            website: "iasp.info/resources/Crisis_Centres/",
+          ),
+        ];
+      </signature>
+      <path>lib/features/mental_health/data/crisis_resources.dart</path>
+      <notes>Hardcoded crisis resources. Displayed when GAD-7 or PHQ-9 score &gt;= 15. Implement tap-to-call with url_launcher.</notes>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Follow 70/20/10 testing pyramid. Emphasize clinical validation: score calculation accuracy, category assignment, crisis threshold triggering. Test with validated test cases (known scores). Use flutter_test for unit/widget tests. Target 80%+ code coverage.
+    </standards>
+    <locations>
+      <location>test/features/mental_health/domain/entities/</location>
+      <location>test/features/mental_health/domain/usecases/</location>
+      <location>test/features/mental_health/presentation/screens/</location>
+      <location>integration_test/features/mental_health/screening_flow_test.dart</location>
+    </locations>
+    <ideas>
+      <test-idea ac-ref="AC1,AC4">
+        <description>Unit test: GAD-7 score calculation and categorization</description>
+        <approach>Test all 0s = 0 (Minimal). Test all 3s = 21 (Severe). Test boundary: [1,1,1,1,1,0,0] = 5 (Mild). Test [2,2,2,2,2,0,0] = 10 (Moderate). Test [3,3,3,3,3,0,0] = 15 (Severe).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC2,AC4">
+        <description>Unit test: PHQ-9 score calculation and categorization</description>
+        <approach>Test all 0s = 0 (Minimal). Test all 3s = 27 (Severe). Test boundary: [1,1,1,1,1,0,0,0,0] = 5 (Mild). Test [2,2,2,2,2,2,0,0,0] = 12 (Moderate). Test [3,3,3,3,3,0,0,0,0] = 15 (Moderately Severe). Test [3,3,3,3,3,3,2,0,0] = 20 (Severe).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC5">
+        <description>Unit test: Crisis resources trigger at score 15</description>
+        <approach>Test GAD-7 score 14 = no crisis. Test GAD-7 score 15 = crisis. Test PHQ-9 score 14 = no crisis. Test PHQ-9 score 15 = crisis. Verify shouldShowCrisisResources() logic.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3">
+        <description>Widget test: Question navigation and progress</description>
+        <approach>Render GAD7ScreeningScreen. Verify Question 1/7 displayed. Tap response option. Verify auto-advance to Question 2/7. Tap Back button. Verify returns to Question 1/7.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC5">
+        <description>Widget test: Crisis resources card displays</description>
+        <approach>Render ResultsScreen with score 15. Verify CrisisResourcesCard displayed. Verify "Talk to Someone Now" button present. Verify 988 hotline displayed. Test tap-to-call functionality (mock url_launcher).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC7">
+        <description>Widget test: Disclaimer acceptance required</description>
+        <approach>Render DisclaimerScreen. Verify "Start Screening" button disabled. Tap checkbox. Verify button enabled. Tap "Start Screening". Verify navigation to screening.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6">
+        <description>Widget test: Screening history with trend chart</description>
+        <approach>Create 5 screening records with varying scores. Render ScreeningHistoryScreen. Verify 5 entries displayed. Verify trend chart shows score progression. Test chart interactions.</approach>
+      </test-idea>
+      <test-idea ac-ref="ALL">
+        <description>Integration test: Complete GAD-7 screening flow</description>
+        <approach>Accept disclaimer. Answer all 7 questions (responses: [3,3,2,2,1,1,0] = 12 Moderate). Verify results screen shows score 12, Moderate category. Verify no crisis resources (score &lt; 15). Verify saved to database.</approach>
+      </test-idea>
+      <test-idea ac-ref="ALL">
+        <description>Integration test: Complete PHQ-9 screening with crisis trigger</description>
+        <approach>Accept disclaimer. Answer all 9 questions (responses: [3,3,3,3,3,0,0,0,0] = 15 Moderately Severe). Verify results screen shows score 15. Verify crisis resources card displayed. Verify hotline tap-to-call works.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1,AC2">
+        <description>Unit test: Validate screening response constraints</description>
+        <approach>Test GAD7ScreeningEntity with invalid response (4). Verify throws exception. Test PHQ9ScreeningEntity with 8 responses instead of 9. Verify throws exception.</approach>
+      </test-idea>
+    </ideas>
+  </tests>
+
+  <devAgentRecord>
+    <recordedAt>2025-11-17</recordedAt>
+    <status>ready-for-dev</status>
+    <agent>BMAD Dev Agent</agent>
+    <notes>Story context prepared and validated for development assignment</notes>
+  </devAgentRecord>
+
+  <created>
+    <author>BMAD Story Context Workflow</author>
+    <timestamp>2025-11-17</timestamp>
+  </created>
+</story-context>

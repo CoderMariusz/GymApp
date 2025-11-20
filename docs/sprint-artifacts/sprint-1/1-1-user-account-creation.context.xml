@@ -1,0 +1,495 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>1</epicId>
+    <storyId>1.1</storyId>
+    <title>User Account Creation</title>
+    <status>ready-for-dev</status>
+    <generatedAt>2025-11-17</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/sprint-1/1-1-user-account-creation.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>new user</asA>
+    <iWant>to create an account using email or social authentication</iWant>
+    <soThat>I can start using LifeOS and have my data synced across devices</soThat>
+    <tasks>
+      <task id="1" ac-ref="AC1,AC2,AC3,AC7,AC8">
+        <description>Implement authentication UI components</description>
+        <subtasks>
+          <subtask>Create RegisterPage widget with LifeOS Deep Blue theme</subtask>
+          <subtask>Implement email/password registration form with validation (min 8 chars, 1 uppercase, 1 number, 1 special char)</subtask>
+          <subtask>Add Google OAuth button (white background, follows Android + iOS guidelines)</subtask>
+          <subtask>Add Apple Sign-In button (black background, iOS only)</subtask>
+          <subtask>Implement "Sign up with email" option below social buttons</subtask>
+          <subtask>Add privacy policy link visible before registration</subtask>
+          <subtask>Implement real-time form validation with inline error messages</subtask>
+          <subtask>Add error handling UI for: email exists, invalid email format, weak password, network errors</subtask>
+        </subtasks>
+      </task>
+      <task id="2" ac-ref="AC1,AC2,AC3,AC8">
+        <description>Integrate Supabase Auth for registration</description>
+        <subtasks>
+          <subtask>Configure Supabase Auth with email provider (enable email verification)</subtask>
+          <subtask>Configure Google OAuth 2.0 provider (Android + iOS credentials)</subtask>
+          <subtask>Configure Apple Sign-In provider (iOS only, Apple Developer account)</subtask>
+          <subtask>Implement AuthRepository with registerWithEmail() method</subtask>
+          <subtask>Implement AuthRepository with registerWithGoogle() method</subtask>
+          <subtask>Implement AuthRepository with registerWithApple() method</subtask>
+          <subtask>Handle OAuth redirect flows (deep links) for both platforms</subtask>
+          <subtask>Implement session management (JWT token storage in flutter_secure_storage)</subtask>
+        </subtasks>
+      </task>
+      <task id="3" ac-ref="AC4">
+        <description>Implement email verification flow</description>
+        <subtasks>
+          <subtask>Customize Supabase email verification template with LifeOS branding</subtask>
+          <subtask>Configure verification link expiration (24 hours)</subtask>
+          <subtask>Implement deep link handler: lifeos://verify?token={token}</subtask>
+          <subtask>Create email verification pending screen with "Resend Email" button</subtask>
+          <subtask>Handle verification success/failure states</subtask>
+          <subtask>Show verification status in app (email verified badge)</subtask>
+        </subtasks>
+      </task>
+      <task id="4" ac-ref="AC5">
+        <description>Create user profile with default settings</description>
+        <subtasks>
+          <subtask>Create user_profiles table in Supabase PostgreSQL with RLS policies</subtask>
+          <subtask>Implement database trigger to auto-create profile on auth.users insert</subtask>
+          <subtask>Populate default profile fields: name (from email or OAuth), email, avatar_url (placeholder)</subtask>
+          <subtask>Mirror user_profiles table in Drift (local SQLite) for offline access</subtask>
+          <subtask>Implement profile sync to local database on successful registration</subtask>
+        </subtasks>
+      </task>
+      <task id="5" ac-ref="AC6">
+        <description>Implement post-registration navigation</description>
+        <subtasks>
+          <subtask>Configure go_router routes for onboarding flow</subtask>
+          <subtask>Redirect to onboarding flow after successful registration (email + social auth)</subtask>
+          <subtask>Pass user context to onboarding (first name, registration method)</subtask>
+          <subtask>Handle navigation edge cases (user presses back, app restart during onboarding)</subtask>
+        </subtasks>
+      </task>
+      <task id="6" ac-ref="AC7">
+        <description>Implement comprehensive error handling</description>
+        <subtasks>
+          <subtask>Handle "Email already exists" error → show "Try logging in?" link</subtask>
+          <subtask>Handle "Weak password" error → highlight password requirements</subtask>
+          <subtask>Handle "Invalid email format" error → show inline error</subtask>
+          <subtask>Handle network errors → show "Connection failed. Please try again." with retry button</subtask>
+          <subtask>Handle OAuth errors (user cancels, permissions denied)</subtask>
+          <subtask>Implement exponential backoff retry logic for network failures</subtask>
+          <subtask>Log errors to Posthog for debugging (no PII)</subtask>
+        </subtasks>
+      </task>
+      <task id="7" ac-ref="AC8">
+        <description>Implement state management with Riverpod</description>
+        <subtasks>
+          <subtask>Create authStateProvider (StateNotifierProvider)</subtask>
+          <subtask>Implement AuthNotifier with states: idle, loading, authenticated, error</subtask>
+          <subtask>Create authRepositoryProvider</subtask>
+          <subtask>Implement optimistic UI updates (show loading immediately on submit)</subtask>
+          <subtask>Handle state persistence across app restarts</subtask>
+        </subtasks>
+      </task>
+      <task id="8" ac-ref="ALL">
+        <description>Write comprehensive tests</description>
+        <subtasks>
+          <subtask>Unit tests: RegisterUserUseCase with valid/invalid inputs</subtask>
+          <subtask>Unit tests: AuthRepository methods (mock Supabase client)</subtask>
+          <subtask>Unit tests: Password validation logic</subtask>
+          <subtask>Widget tests: RegisterPage UI components and validation</subtask>
+          <subtask>Widget tests: Error message display for all error cases</subtask>
+          <subtask>Widget tests: Navigation to onboarding on success</subtask>
+          <subtask>Integration test: Complete email registration flow</subtask>
+          <subtask>Integration test: Complete Google OAuth registration flow</subtask>
+          <subtask>Achieve 80%+ code coverage</subtask>
+        </subtasks>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="AC1">
+      <text>User can register with email + password (min 8 chars, 1 uppercase, 1 number, 1 special char)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC2">
+      <text>User can register with Google OAuth 2.0 (Android + iOS)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC3">
+      <text>User can register with Apple Sign-In (iOS)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC4">
+      <text>Email verification sent after registration (link expires in 24h)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC5">
+      <text>User profile created with default settings (name, email, avatar placeholder)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC6">
+      <text>User redirected to onboarding flow after successful registration</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC7">
+      <text>Error handling: Email already exists, invalid email format, weak password</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC8">
+      <text>Supabase Auth integration working (session management)</text>
+      <priority>P0</priority>
+    </criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR1: User registration with email/password and social auth</section>
+        <snippet>FR1: Users can create accounts using email or social authentication (Google, Apple). This is the foundation for all LifeOS features - without authentication, users cannot sync data across devices or access personalized AI coaching.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/epics.md</path>
+        <title>Epic 1: Core Platform Foundation - Story 1.1</title>
+        <section>Story 1.1: User Account Creation</section>
+        <snippet>As a new user I want to create an account using email or social authentication so that I can start using LifeOS and have my data synced across devices. Prerequisites: None (first story). UX: Supabase Auth UI library styled with LifeOS Deep Blue theme.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Authentication & Authorization (D1, Supabase Auth + RLS)</section>
+        <snippet>Supabase Auth provides built-in email, Google, and Apple authentication with JWT session management. All user data is protected by Row Level Security (RLS) policies ensuring auth.uid() = user_id. Sessions stored securely in flutter_secure_storage (iOS Keychain, Android KeyStore).</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Database Schema - user_profiles table</section>
+        <snippet>user_profiles table created on registration with fields: id (UUID references auth.users), name, email (unique), avatar_url (nullable), created_at, updated_at. RLS policies enforce users can only view/update their own profile (auth.uid() = id).</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Clean Architecture Pattern (D1)</section>
+        <snippet>Feature-first architecture with clean architecture layers (presentation/domain/data). Auth module located at lib/core/auth/ with shared providers. Use Riverpod for state management with authStateProvider and authRepositoryProvider.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Security (NFR-S2: GDPR Compliance)</section>
+        <snippet>Privacy policy link must be visible before registration. User consent tracked in user_profiles.privacy_consent_at. OAuth tokens stored securely (never in plaintext). No plaintext passwords (Supabase Auth handles bcrypt hashing server-side).</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/sprint-1/1-1-user-account-creation.md</path>
+        <title>Story 1.1: User Account Creation</title>
+        <section>Technical Implementation - Frontend (Flutter)</section>
+        <snippet>RegisterPage (ConsumerWidget) with email/password form, Google OAuth button, Apple Sign-In button. State management: authStateProvider (StateNotifierProvider). Packages: supabase_flutter, flutter_riverpod, go_router. Form validation with error handling for all edge cases.</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/sprint-1/1-1-user-account-creation.md</path>
+        <title>Story 1.1: User Account Creation</title>
+        <section>Technical Implementation - Backend (Supabase)</section>
+        <snippet>user_profiles table with RLS policies: "Users can view own profile" (FOR SELECT USING auth.uid() = id), "Users can update own profile" (FOR UPDATE USING auth.uid() = id). Email verification template customized with LifeOS branding and deep link lifeos://verify?token={token}.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <!-- No existing code - greenfield project -->
+      <note>This is the first implementation story for Epic 1 (Core Platform Foundation). No existing code to reference. Follow architecture patterns from architecture.md and create base auth structure at lib/core/auth/.</note>
+    </code>
+    <dependencies>
+      <flutter>
+        <sdk>3.38+</sdk>
+        <dart>3.10+</dart>
+      </flutter>
+      <packages>
+        <package name="supabase_flutter" version="^2.0.0" usage="Supabase client for auth, database, and realtime sync" />
+        <package name="flutter_riverpod" version="^3.0.0" usage="State management for auth state and data flow" />
+        <package name="riverpod_annotation" version="^3.0.0" usage="Code generation for providers" />
+        <package name="go_router" version="^13.0.0" usage="Declarative routing and navigation to onboarding flow" />
+        <package name="flutter_secure_storage" version="^9.0.0" usage="Secure storage for JWT tokens (iOS Keychain, Android KeyStore)" />
+        <package name="freezed_annotation" version="^2.4.0" usage="Immutable user models" />
+        <package name="json_annotation" version="^4.8.0" usage="JSON serialization for user data" />
+        <package name="drift" version="^2.14.0" usage="Local SQLite database for offline user profile storage" />
+        <package name="drift_flutter" version="^0.1.0" usage="Flutter integration for Drift" />
+        <package name="flutter_test" version="sdk" usage="Unit and widget testing framework" />
+        <package name="mockito" version="^5.4.0" usage="Mocking for unit tests (mock AuthRepository, Supabase)" />
+        <package name="integration_test" version="sdk" usage="End-to-end testing framework" />
+      </packages>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint id="ARCH-1" type="architectural">
+      <description>Must follow Clean Architecture pattern (D1)</description>
+      <details>Create auth structure at lib/core/auth/ with presentation/ (pages, widgets, providers), domain/ (entities, use cases, repositories), and data/ (data sources, DTOs) layers. Maintain clear separation of concerns.</details>
+    </constraint>
+    <constraint id="ARCH-2" type="architectural">
+      <description>Use Riverpod for state management (D1, D6)</description>
+      <details>Create authStateProvider (StateNotifierProvider) and authRepositoryProvider. Use ConsumerWidget for RegisterPage. Providers should be in lib/core/auth/presentation/providers/.</details>
+    </constraint>
+    <constraint id="ARCH-3" type="architectural">
+      <description>Offline-first architecture for user profiles (D3)</description>
+      <details>Mirror user_profiles table in Drift (local SQLite). Save profile locally on registration for instant offline access. Sync to Supabase automatically when online.</details>
+    </constraint>
+    <constraint id="AUTH-1" type="authentication">
+      <description>Supabase Auth integration required</description>
+      <details>Use Supabase Auth for all authentication operations. Configure email provider (enable email verification), Google OAuth 2.0 (Android + iOS credentials), and Apple Sign-In (iOS only). Session tokens stored in flutter_secure_storage.</details>
+    </constraint>
+    <constraint id="AUTH-2" type="authentication">
+      <description>Password validation must be enforced</description>
+      <details>Client-side validation: min 8 chars, 1 uppercase, 1 number, 1 special char. Server-side validation: Supabase Auth enforces password strength. No plaintext passwords stored - Supabase uses bcrypt hashing.</details>
+    </constraint>
+    <constraint id="SEC-1" type="security">
+      <description>Row Level Security (RLS) policies required</description>
+      <details>Enable RLS on user_profiles table. Policies: CREATE POLICY "Users can view own profile" ON user_profiles FOR SELECT USING (auth.uid() = id); CREATE POLICY "Users can update own profile" ON user_profiles FOR UPDATE USING (auth.uid() = id);</details>
+    </constraint>
+    <constraint id="SEC-2" type="security">
+      <description>OAuth tokens must be stored securely</description>
+      <details>Use flutter_secure_storage for JWT tokens and OAuth refresh tokens. iOS: stored in Keychain with kSecAttrAccessibleAfterFirstUnlock. Android: stored in EncryptedSharedPreferences backed by KeyStore. Never log tokens.</details>
+    </constraint>
+    <constraint id="GDPR-1" type="compliance">
+      <description>GDPR compliance for user registration</description>
+      <details>Privacy policy link must be visible and clickable before registration. Track user consent in user_profiles.privacy_consent_at timestamp. User can delete account later (Story 1.6). Email must be verified before full access.</details>
+    </constraint>
+    <constraint id="UX-1" type="ux">
+      <description>Registration should complete in &lt;2s (excluding email send)</description>
+      <details>Optimize registration flow for speed. Use Supabase Auth for fast account creation (&lt;500ms). Show loading state immediately on submit. Email verification sent asynchronously (user can continue to onboarding).</details>
+    </constraint>
+    <constraint id="UX-2" type="ux">
+      <description>OAuth redirect should be &lt;1s</description>
+      <details>Configure OAuth deep links (lifeos://) for fast redirect. Use Supabase Auth built-in OAuth flow (no custom backend needed). Handle iOS Universal Links and Android App Links for seamless UX.</details>
+    </constraint>
+    <constraint id="UX-3" type="ux">
+      <description>Error messages must be user-friendly</description>
+      <details>Replace technical errors with clear messages: "weak-password" → "Password must be 8+ chars with uppercase, number, special char", "email-already-in-use" → "This email is already registered. Try logging in?", "network-request-failed" → "Connection failed. Please try again."</details>
+    </constraint>
+    <constraint id="TEST-1" type="testing">
+      <description>80%+ code coverage required</description>
+      <details>Follow 70/20/10 testing pyramid. Unit tests for use cases and repositories. Widget tests for RegisterPage UI and validation. Integration test for complete registration flow. All AC must have test coverage.</details>
+    </constraint>
+    <constraint id="PERF-1" type="performance">
+      <description>Registration form render time &lt;100ms</description>
+      <details>Optimize RegisterPage widget tree. Use const constructors where possible. Avoid heavy computations in build(). Lazy load OAuth providers (only initialize when user taps button).</details>
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>UserEntity</name>
+      <kind>domain-entity</kind>
+      <signature>
+        class UserEntity {
+          final String id;
+          final String email;
+          final String? name;
+          final String? avatarUrl;
+          final bool emailVerified;
+          final DateTime createdAt;
+          final DateTime updatedAt;
+        }
+      </signature>
+      <path>lib/core/auth/domain/entities/user_entity.dart</path>
+      <notes>Use @freezed annotation for immutability and copyWith. Map from Supabase auth.users and user_profiles tables. emailVerified comes from auth.users.email_confirmed_at.</notes>
+    </interface>
+    <interface>
+      <name>RegisterUserUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class RegisterUserUseCase {
+          Future&lt;Result&lt;UserEntity&gt;&gt; callWithEmail({
+            required String email,
+            required String password,
+            String? name,
+          });
+          Future&lt;Result&lt;UserEntity&gt;&gt; callWithGoogle();
+          Future&lt;Result&lt;UserEntity&gt;&gt; callWithApple();
+        }
+      </signature>
+      <path>lib/core/auth/domain/usecases/register_user_usecase.dart</path>
+      <notes>Returns Result&lt;T&gt; pattern (Success/Failure). Validates password strength client-side before calling repository. Handles email verification flow. Creates user profile after successful auth registration.</notes>
+    </interface>
+    <interface>
+      <name>AuthRepository</name>
+      <kind>repository</kind>
+      <signature>
+        abstract class AuthRepository {
+          Future&lt;Result&lt;UserEntity&gt;&gt; registerWithEmail({
+            required String email,
+            required String password,
+          });
+          Future&lt;Result&lt;UserEntity&gt;&gt; registerWithGoogle();
+          Future&lt;Result&lt;UserEntity&gt;&gt; registerWithApple();
+          Future&lt;Result&lt;void&gt;&gt; sendEmailVerification(String email);
+          Future&lt;Result&lt;UserEntity?&gt;&gt; getCurrentUser();
+          Future&lt;Result&lt;void&gt;&gt; signOut();
+        }
+      </signature>
+      <path>lib/core/auth/domain/repositories/auth_repository.dart</path>
+      <notes>Implemented by AuthRepositoryImpl in data layer. Uses SupabaseAuthDataSource for remote operations and DriftAuthDataSource for local user profile cache.</notes>
+    </interface>
+    <interface>
+      <name>user_profiles table (Supabase PostgreSQL)</name>
+      <kind>database-table</kind>
+      <signature>
+        CREATE TABLE user_profiles (
+          id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+          name TEXT NOT NULL,
+          email TEXT NOT NULL UNIQUE,
+          avatar_url TEXT,
+          privacy_consent_at TIMESTAMPTZ,
+          created_at TIMESTAMPTZ DEFAULT NOW(),
+          updated_at TIMESTAMPTZ DEFAULT NOW()
+        );
+        CREATE INDEX idx_user_profiles_email ON user_profiles(email);
+
+        -- RLS Policies
+        ALTER TABLE user_profiles ENABLE ROW LEVEL SECURITY;
+
+        CREATE POLICY "Users can view own profile"
+          ON user_profiles FOR SELECT
+          USING (auth.uid() = id);
+
+        CREATE POLICY "Users can update own profile"
+          ON user_profiles FOR UPDATE
+          USING (auth.uid() = id);
+
+        -- Trigger to auto-create profile on user registration
+        CREATE OR REPLACE FUNCTION create_user_profile()
+        RETURNS TRIGGER AS $$
+        BEGIN
+          INSERT INTO user_profiles (id, email, name, privacy_consent_at)
+          VALUES (
+            NEW.id,
+            NEW.email,
+            COALESCE(NEW.raw_user_meta_data->>'name', split_part(NEW.email, '@', 1)),
+            NOW()
+          );
+          RETURN NEW;
+        END;
+        $$ LANGUAGE plpgsql SECURITY DEFINER;
+
+        CREATE TRIGGER on_auth_user_created
+          AFTER INSERT ON auth.users
+          FOR EACH ROW EXECUTE FUNCTION create_user_profile();
+      </signature>
+      <path>supabase/migrations/</path>
+      <notes>Migration file will be created in Supabase migrations folder. Trigger automatically creates user profile when user registers. RLS policies ensure data isolation between users.</notes>
+    </interface>
+    <interface>
+      <name>user_profiles table (Drift SQLite)</name>
+      <kind>database-table</kind>
+      <signature>
+        @DataClassName('UserProfileTable')
+        class UserProfiles extends Table {
+          TextColumn get id => text()();
+          TextColumn get name => text()();
+          TextColumn get email => text().unique()();
+          TextColumn get avatarUrl => text().nullable()();
+          DateTimeColumn get privacyConsentAt => dateTime().nullable()();
+          DateTimeColumn get createdAt => dateTime()();
+          DateTimeColumn get updatedAt => dateTime()();
+
+          @override
+          Set&lt;Column&gt; get primaryKey => {id};
+        }
+      </signature>
+      <path>lib/core/database/tables.drift.dart</path>
+      <notes>Drift table definition. Mirror of Supabase user_profiles schema for offline-first architecture. Use drift code generation. Sync to Supabase on registration.</notes>
+    </interface>
+    <interface>
+      <name>AuthState</name>
+      <kind>state-model</kind>
+      <signature>
+        @freezed
+        class AuthState with _$AuthState {
+          const factory AuthState.initial() = _Initial;
+          const factory AuthState.loading() = _Loading;
+          const factory AuthState.authenticated(UserEntity user) = _Authenticated;
+          const factory AuthState.unauthenticated() = _Unauthenticated;
+          const factory AuthState.error(String message) = _Error;
+        }
+      </signature>
+      <path>lib/core/auth/presentation/providers/auth_state.dart</path>
+      <notes>Freezed union type for auth state. Used by authStateProvider (StateNotifierProvider). UI reacts to state changes for loading indicators, navigation, and error messages.</notes>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Follow 70/20/10 testing pyramid: 70% unit tests (use cases, repositories, entities, validation logic), 20% widget tests (UI components, state management, form validation), 10% integration tests (end-to-end registration flows). Use flutter_test for unit/widget tests, integration_test for E2E, mockito for mocking dependencies. Target 80%+ code coverage. All acceptance criteria must have test coverage.
+    </standards>
+    <locations>
+      <location>test/core/auth/domain/usecases/</location>
+      <location>test/core/auth/domain/entities/</location>
+      <location>test/core/auth/data/repositories/</location>
+      <location>test/core/auth/presentation/pages/</location>
+      <location>test/core/auth/presentation/widgets/</location>
+      <location>integration_test/auth/register_flow_test.dart</location>
+    </locations>
+    <ideas>
+      <test-idea ac-ref="AC1">
+        <description>Unit test: Password validation logic</description>
+        <approach>Test password validator function with various inputs: valid password (8 chars, 1 uppercase, 1 number, 1 special), too short (&lt;8 chars), missing uppercase, missing number, missing special char. Assert correct validation messages returned.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1">
+        <description>Unit test: RegisterUserUseCase with valid email/password</description>
+        <approach>Mock AuthRepository. Call useCase.callWithEmail() with valid credentials. Verify repository.registerWithEmail() called with correct params. Assert Success result with UserEntity returned.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1,AC7">
+        <description>Unit test: RegisterUserUseCase with weak password</description>
+        <approach>Mock AuthRepository. Call useCase.callWithEmail() with weak password. Assert Failure result returned with WeakPasswordException. Verify repository NOT called (validation fails early).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC7">
+        <description>Unit test: AuthRepository handles "email already exists" error</description>
+        <approach>Mock Supabase client to throw AuthException with code "email-already-in-use". Call repository.registerWithEmail(). Assert Failure result with EmailAlreadyExistsException and user-friendly message.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC2">
+        <description>Unit test: RegisterUserUseCase with Google OAuth</description>
+        <approach>Mock AuthRepository. Call useCase.callWithGoogle(). Verify repository.registerWithGoogle() called. Assert Success result with UserEntity (name and email from Google profile).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3">
+        <description>Unit test: RegisterUserUseCase with Apple Sign-In</description>
+        <approach>Mock AuthRepository. Call useCase.callWithApple(). Verify repository.registerWithApple() called. Assert Success result with UserEntity (email from Apple, name optional based on privacy settings).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1,AC7">
+        <description>Widget test: RegisterPage displays form and validates input</description>
+        <approach>Render RegisterPage. Find email and password TextFields. Enter invalid email → verify inline error shown. Enter weak password → verify password requirements highlighted. Enter valid credentials → verify no errors.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC2,AC3">
+        <description>Widget test: RegisterPage displays social auth buttons</description>
+        <approach>Render RegisterPage. Verify Google OAuth button displayed (white background). On iOS: verify Apple Sign-In button displayed (black background). On Android: verify Apple button NOT displayed. Tap buttons → verify callbacks triggered.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC8">
+        <description>Widget test: RegisterPage shows loading state on submit</description>
+        <approach>Mock authStateProvider to emit loading state. Render RegisterPage. Tap register button. Verify CircularProgressIndicator displayed. Verify form fields disabled during loading.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC7">
+        <description>Widget test: RegisterPage displays error messages</description>
+        <approach>Mock authStateProvider to emit error state with "Email already exists" message. Render RegisterPage. Verify error SnackBar or AlertDialog displayed with user-friendly message and "Try logging in?" link.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6">
+        <description>Widget test: Navigation to onboarding on success</description>
+        <approach>Mock authStateProvider to emit authenticated state. Mock GoRouter. Render RegisterPage. Verify navigation to /onboarding route. Verify user context passed (name, email).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1,AC4,AC5,AC6">
+        <description>Integration test: Complete email registration flow</description>
+        <approach>Launch app. Navigate to RegisterPage. Enter valid email and password. Tap register button. Verify user created in Supabase auth.users table. Verify user_profiles row created with default settings. Verify email verification sent. Verify navigation to onboarding flow. Verify user profile synced to local Drift database.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC2,AC5,AC6">
+        <description>Integration test: Complete Google OAuth registration flow</description>
+        <approach>Launch app. Navigate to RegisterPage. Tap Google OAuth button. Mock Google sign-in flow (or use test account). Verify user created in Supabase with OAuth provider. Verify user_profiles row created with name and email from Google. Verify navigation to onboarding. Verify no email verification needed (Google email pre-verified).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3,AC5,AC6">
+        <description>Integration test: Complete Apple Sign-In registration flow (iOS only)</description>
+        <approach>Launch app on iOS simulator/device. Navigate to RegisterPage. Tap Apple Sign-In button. Complete Apple authentication. Verify user created in Supabase with Apple provider. Verify user_profiles row created. Verify navigation to onboarding. Handle Apple's privacy options (hide email creates relay email).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC7">
+        <description>Integration test: Handle network failure during registration</description>
+        <approach>Disable network connection. Launch app. Navigate to RegisterPage. Enter valid credentials. Tap register button. Verify error message "Connection failed. Please try again." displayed. Verify retry button shown. Enable network → tap retry → verify registration succeeds.</approach>
+      </test-idea>
+    </ideas>
+  </tests>
+</story-context>

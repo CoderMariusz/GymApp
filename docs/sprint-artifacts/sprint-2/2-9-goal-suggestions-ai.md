@@ -1,7 +1,7 @@
 # Story 2.9: Goal Suggestions (AI)
 
 **Epic:** Epic 2 - Life Coach MVP
-**Priority:** P2 | **Status:** drafted | **Effort:** 2 SP
+**Priority:** P2 | **Status:** ready-for-dev | **Effort:** 2 SP
 
 ---
 
@@ -61,6 +61,11 @@ CREATE TABLE goal_suggestions (
 **Prerequisites:** Story 2.3 (Goals must exist)
 
 **Coverage Target:** 75%+
+
+---
+
+## Dev Agent Record
+**Context File:** 2-9-goal-suggestions-ai.context.xml
 
 ---
 

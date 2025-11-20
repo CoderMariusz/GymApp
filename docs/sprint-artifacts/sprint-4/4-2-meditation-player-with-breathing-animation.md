@@ -1,5 +1,5 @@
 # Story 4.2: Meditation Player with Breathing Animation
-**Epic:** 4 - Mind & Emotion | **P0** | **3 SP** | **drafted**
+**Epic:** 4 - Mind & Emotion | **P0** | **3 SP** | **ready-for-dev**
 
 ## User Story
 **As a** user during meditation, **I want** a calming player with visual breathing guide, **So that** I stay focused and relaxed.
@@ -23,3 +23,9 @@
 // wakelock package to prevent screen lock
 ```
 **Dependencies:** 4.1 | **Coverage:** 80%+
+
+## Dev Agent Record
+
+- **Status Updated to ready-for-dev:** 2025-11-17
+- **Dev Agent:** Claude Haiku 4.5
+- **Purpose:** Ready for development phase

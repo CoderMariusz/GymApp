@@ -1,0 +1,404 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/4.9" v="1.0">
+  <metadata>
+    <epicId>4</epicId>
+    <storyId>4.9</storyId>
+    <title>Gratitude Exercises ("3 Good Things")</title>
+    <status>ready-for-dev</status>
+    <generatedAt>2025-11-17</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/sprint-4/4-9-gratitude-exercises-3-good-things.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>user practicing gratitude</asA>
+    <iWant>daily gratitude prompts</iWant>
+    <soThat>I can cultivate positive mindset</soThat>
+    <tasks>
+      <task id="1" ac-ref="AC1,AC2,AC7">
+        <description>Implement "3 Good Things" daily prompt UI</description>
+        <subtasks>
+          <subtask>Create GratitudePromptWidget (StatefulWidget)</subtask>
+          <subtask>Implement 3 text input fields with placeholder text</subtask>
+          <subtask>Add suggestion prompts ("What made you smile?", "What are you proud of?", "Who helped you today?")</subtask>
+          <subtask>Implement Save button with validation (at least 1 field required)</subtask>
+          <subtask>Add haptic feedback on entry save (HapticFeedback.mediumImpact())</subtask>
+          <subtask>Show completion animation (animated checkmark)</subtask>
+        </subtasks>
+      </task>
+      <task id="2" ac-ref="AC2,AC4">
+        <description>Implement gratitude entries persistence</description>
+        <subtasks>
+          <subtask>Create gratitude_entries table in Drift (local SQLite)</subtask>
+          <subtask>Create gratitude_entries table in Supabase with RLS policies</subtask>
+          <subtask>Implement saveGratitudeEntry() use case</subtask>
+          <subtask>Store date, thing_1, thing_2, thing_3 fields (thing_2 and thing_3 nullable)</subtask>
+          <subtask>Add UNIQUE constraint on (user_id, date) to prevent duplicates</subtask>
+          <subtask>Implement offline-first sync with Drift-Supabase synchronization</subtask>
+        </subtasks>
+      </task>
+      <task id="3" ac-ref="AC3,AC4">
+        <description>Implement gratitude history view with calendar</description>
+        <subtasks>
+          <subtask>Create GratitudeHistoryScreen with calendar month view</subtask>
+          <subtask>Highlight dates with entries (green dot indicator)</subtask>
+          <subtask>Implement tap-to-view entry details modal</subtask>
+          <subtask>Show all 3 things with formatted date display</subtask>
+          <subtask>Add edit capability for past entries (last 7 days only)</subtask>
+          <subtask>Implement pull-to-refresh for sync</subtask>
+        </subtasks>
+      </task>
+      <task id="4" ac-ref="AC4">
+        <description>Implement streak tracking</description>
+        <subtasks>
+          <subtask>Create streak calculation logic (consecutive days with entries)</subtask>
+          <subtask>Store current_streak and longest_streak in user_stats table</subtask>
+          <subtask>Update streak on each new entry save</subtask>
+          <subtask>Display current streak badge in UI ("🔥 7 Day Streak!")</subtask>
+          <subtask>Show streak milestone celebrations (7, 30, 100, 365 days)</subtask>
+          <subtask>Implement streak recovery grace period (1 missed day)</subtask>
+        </subtasks>
+      </task>
+      <task id="5" ac-ref="AC5">
+        <description>Integrate with journal module</description>
+        <subtasks>
+          <subtask>Create shared gratitude_journal_entries view in Supabase</subtask>
+          <subtask>Implement "Add to Journal" button in gratitude history</subtask>
+          <subtask>Format gratitude entry as journal entry (title: "Gratitude - [date]")</subtask>
+          <subtask>Link gratitude entry ID to journal entry metadata</subtask>
+          <subtask>Add journal entry tag: "gratitude"</subtask>
+        </subtasks>
+      </task>
+      <task id="6" ac-ref="AC6">
+        <description>Implement gratitude log export</description>
+        <subtasks>
+          <subtask>Add "Export" button in history view</subtask>
+          <subtask>Generate CSV format: date, thing_1, thing_2, thing_3</subtask>
+          <subtask>Generate Markdown format with date headers and bullet points</subtask>
+          <subtask>Implement share sheet for export (email, Drive, Dropbox)</subtask>
+          <subtask>Add date range filter (Last 30 days, Last year, All time)</subtask>
+        </subtasks>
+      </task>
+      <task id="7" ac-ref="ALL">
+        <description>Write comprehensive tests</description>
+        <subtasks>
+          <subtask>Unit tests: saveGratitudeEntry use case, streak calculation, validation</subtask>
+          <subtask>Widget tests: 3 Good Things input form, calendar view, streak badge</subtask>
+          <subtask>Integration test: complete gratitude flow from prompt to history view</subtask>
+          <subtask>Integration test: streak calculation across multiple days</subtask>
+          <subtask>Achieve 80%+ code coverage</subtask>
+        </subtasks>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="AC1">
+      <text>"3 Good Things" daily prompt appears in Mind & Emotion section</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC2">
+      <text>User enters up to 3 gratitude items (minimum 1 required)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC3">
+      <text>History view shows calendar with past entries (green dot indicators)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC4">
+      <text>Streak tracking displays consecutive days ("🔥 7 Day Streak!")</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC5">
+      <text>Prompt suggestions provided ("What made you smile?", "What are you proud of?", "Who helped you today?")</text>
+      <priority>P1</priority>
+    </criterion>
+    <criterion id="AC6">
+      <text>Gratitude entries shared with journal module (tagged as "gratitude")</text>
+      <priority>P1</priority>
+    </criterion>
+    <criterion id="AC7">
+      <text>Export gratitude log to CSV or Markdown</text>
+      <priority>P2</priority>
+    </criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR48: Gratitude journaling with "3 Good Things"</section>
+        <snippet>Mind & Emotion module must support "3 Good Things" gratitude exercise with daily prompt, history tracking, and streak gamification. Research shows gratitude practice improves mood by 25% when practiced for 2+ weeks.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/epics.md</path>
+        <title>Epic 4: Mind & Emotion MVP - Story 4.9</title>
+        <section>Story 4.9: Gratitude Exercises ("3 Good Things")</section>
+        <snippet>Implement daily "3 Good Things" gratitude exercise with prompt suggestions, history calendar view, streak tracking, and journal integration. Prerequisites: Epic 4 stories 4.1-4.8 (mood/stress tracking, meditation).</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Cross-Module Data Sharing</section>
+        <snippet>Journal module integration uses shared views pattern. Gratitude entries can be converted to journal entries via shared gratitude_journal_entries view. Use RLS policies for data isolation.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/ux-design-specification.md</path>
+        <title>UX Design Specification</title>
+        <section>Gratitude Exercise UX</section>
+        <snippet>Gratitude prompt card with 3 stacked text fields. Placeholder suggestions rotate daily. Streak badge animated on milestone (confetti for 7, 30, 100 days). Calendar view uses table_calendar package with green dot indicators.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <reference>
+        <path>lib/features/mind_emotion/</path>
+        <description>Mind & Emotion module base structure (from stories 4.1-4.8)</description>
+        <notes>Gratitude feature adds to existing mind_emotion module. Reuse mood tracking patterns and database sync infrastructure.</notes>
+      </reference>
+    </code>
+    <dependencies>
+      <flutter>
+        <sdk>3.38+</sdk>
+        <dart>3.10+</dart>
+      </flutter>
+      <packages>
+        <package name="flutter_riverpod" version="^3.0.0" usage="State management for gratitude entries and streak tracking" />
+        <package name="drift" version="^2.14.0" usage="Local SQLite database for offline gratitude storage" />
+        <package name="supabase_flutter" version="^2.0.0" usage="Supabase sync and RLS policies" />
+        <package name="table_calendar" version="^3.0.9" usage="Calendar widget for history view" />
+        <package name="csv" version="^6.0.0" usage="CSV export functionality" />
+        <package name="share_plus" version="^7.2.0" usage="Share sheet for export" />
+        <package name="path_provider" version="^2.1.0" usage="Get temp directory for export files" />
+        <package name="intl" version="^0.18.0" usage="Date formatting for entries" />
+      </packages>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint id="ARCH-1" type="architectural">
+      <description>Must follow feature-first architecture pattern</description>
+      <details>Add gratitude feature at lib/features/mind_emotion/gratitude/ with presentation/, domain/, and data/ layers. Reuse existing MindEmotion repository patterns.</details>
+    </constraint>
+    <constraint id="ARCH-2" type="architectural">
+      <description>Offline-first implementation required</description>
+      <details>Save gratitude entries to Drift first for instant feedback (&lt;100ms). Queue for Supabase sync when online. Support offline entry creation and viewing.</details>
+    </constraint>
+    <constraint id="DATA-1" type="data">
+      <description>Database schema for gratitude entries</description>
+      <details>gratitude_entries table: id (UUID PK), user_id (UUID FK), date (DATE UNIQUE), thing_1 (TEXT NOT NULL), thing_2 (TEXT nullable), thing_3 (TEXT nullable), created_at, updated_at. UNIQUE(user_id, date).</details>
+    </constraint>
+    <constraint id="DATA-2" type="data">
+      <description>Streak calculation algorithm</description>
+      <details>Consecutive days with entries. Grace period: 1 missed day doesn't break streak. Calculate on each new entry. Store current_streak and longest_streak in user_stats table.</details>
+    </constraint>
+    <constraint id="SEC-1" type="security">
+      <description>Row Level Security (RLS) policies required</description>
+      <details>Enable RLS on gratitude_entries table. Policy: CREATE POLICY "Users can only access own gratitude entries" ON gratitude_entries FOR ALL USING (auth.uid() = user_id);</details>
+    </constraint>
+    <constraint id="UX-1" type="ux">
+      <description>Prompt completion time &lt;2 minutes</description>
+      <details>Keep input fields simple. Rotate prompt suggestions daily to prevent monotony. Show character count (max 280 chars per field).</details>
+    </constraint>
+    <constraint id="UX-2" type="ux">
+      <description>Streak milestone celebrations</description>
+      <details>Show animated celebration for milestones: 7 days (🎉), 30 days (🏆), 100 days (💎), 365 days (👑). Use confetti animation package.</details>
+    </constraint>
+    <constraint id="INTEG-1" type="integration">
+      <description>Journal module integration pattern</description>
+      <details>Use shared view pattern: gratitude_journal_entries view joins gratitude_entries and journal_entries. Journal entry metadata stores gratitude_entry_id reference. Tag all entries with "gratitude".</details>
+    </constraint>
+    <constraint id="TEST-1" type="testing">
+      <description>80%+ code coverage required</description>
+      <details>Test streak calculation edge cases (grace period, multiple missed days). Test export formats (CSV, Markdown). Test calendar view date highlighting.</details>
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>GratitudeEntryEntity</name>
+      <kind>domain-entity</kind>
+      <signature>
+        class GratitudeEntryEntity {
+          final String id;
+          final String userId;
+          final DateTime date;
+          final String thing1;
+          final String? thing2;
+          final String? thing3;
+          final DateTime createdAt;
+          final DateTime updatedAt;
+        }
+      </signature>
+      <path>lib/features/mind_emotion/gratitude/domain/entities/gratitude_entry_entity.dart</path>
+      <notes>Use @freezed annotation. Validate thing1 is not empty, thing2/thing3 nullable. Max 280 chars per field.</notes>
+    </interface>
+    <interface>
+      <name>GratitudeStreakEntity</name>
+      <kind>domain-entity</kind>
+      <signature>
+        class GratitudeStreakEntity {
+          final int currentStreak;
+          final int longestStreak;
+          final DateTime? lastEntryDate;
+          final bool isActive;
+        }
+      </signature>
+      <path>lib/features/mind_emotion/gratitude/domain/entities/gratitude_streak_entity.dart</path>
+      <notes>isActive = true if lastEntryDate is within grace period (yesterday or today). Calculate streak on each entry save.</notes>
+    </interface>
+    <interface>
+      <name>SaveGratitudeEntryUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class SaveGratitudeEntryUseCase {
+          Future&lt;Result&lt;GratitudeEntryEntity&gt;&gt; call({
+            required DateTime date,
+            required String thing1,
+            String? thing2,
+            String? thing3,
+          });
+        }
+      </signature>
+      <path>lib/features/mind_emotion/gratitude/domain/usecases/save_gratitude_entry_usecase.dart</path>
+      <notes>Save to Drift first, queue for Supabase sync. Update streak on successful save. Return Result pattern (Success/Failure).</notes>
+    </interface>
+    <interface>
+      <name>GetGratitudeStreakUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class GetGratitudeStreakUseCase {
+          Future&lt;Result&lt;GratitudeStreakEntity&gt;&gt; call(String userId);
+        }
+      </signature>
+      <path>lib/features/mind_emotion/gratitude/domain/usecases/get_gratitude_streak_usecase.dart</path>
+      <notes>Calculate current streak from entries. Check grace period for missed days. Cache result for 1 hour.</notes>
+    </interface>
+    <interface>
+      <name>ExportGratitudeLogUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class ExportGratitudeLogUseCase {
+          Future&lt;Result&lt;String&gt;&gt; call({
+            required String userId,
+            required ExportFormat format, // CSV | MARKDOWN
+            required DateRange dateRange,
+          });
+        }
+      </signature>
+      <path>lib/features/mind_emotion/gratitude/domain/usecases/export_gratitude_log_usecase.dart</path>
+      <notes>Generate file in temp directory. Return file path for share sheet. CSV format: date,thing_1,thing_2,thing_3. Markdown format: ## [date]\n- thing_1\n- thing_2\n- thing_3.</notes>
+    </interface>
+    <interface>
+      <name>GratitudeRepository</name>
+      <kind>repository</kind>
+      <signature>
+        abstract class GratitudeRepository {
+          Future&lt;Result&lt;GratitudeEntryEntity&gt;&gt; saveEntry(GratitudeEntryEntity entry);
+          Future&lt;Result&lt;GratitudeEntryEntity?&gt;&gt; getEntryForDate(String userId, DateTime date);
+          Future&lt;Result&lt;List&lt;GratitudeEntryEntity&gt;&gt;&gt; getEntriesForDateRange(String userId, DateTime start, DateTime end);
+          Future&lt;Result&lt;List&lt;DateTime&gt;&gt;&gt; getDatesWithEntries(String userId, DateTime monthStart, DateTime monthEnd);
+        }
+      </signature>
+      <path>lib/features/mind_emotion/gratitude/domain/repositories/gratitude_repository.dart</path>
+      <notes>Implemented by GratitudeRepositoryImpl. Uses DriftDataSource and SupabaseDataSource. getDatesWithEntries for calendar highlighting.</notes>
+    </interface>
+    <interface>
+      <name>gratitude_entries table (Supabase PostgreSQL)</name>
+      <kind>database-table</kind>
+      <signature>
+        CREATE TABLE gratitude_entries (
+          id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+          user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+          date DATE NOT NULL,
+          thing_1 TEXT NOT NULL CHECK (char_length(thing_1) &lt;= 280),
+          thing_2 TEXT CHECK (char_length(thing_2) &lt;= 280),
+          thing_3 TEXT CHECK (char_length(thing_3) &lt;= 280),
+          created_at TIMESTAMPTZ DEFAULT NOW(),
+          updated_at TIMESTAMPTZ DEFAULT NOW(),
+          UNIQUE(user_id, date)
+        );
+        CREATE INDEX idx_gratitude_user_date ON gratitude_entries(user_id, date DESC);
+      </signature>
+      <path>supabase/migrations/</path>
+      <notes>Include RLS policies: USING (auth.uid() = user_id). Add trigger for updated_at timestamp.</notes>
+    </interface>
+    <interface>
+      <name>user_stats table extension</name>
+      <kind>database-table</kind>
+      <signature>
+        ALTER TABLE user_stats ADD COLUMN IF NOT EXISTS gratitude_current_streak INT DEFAULT 0;
+        ALTER TABLE user_stats ADD COLUMN IF NOT EXISTS gratitude_longest_streak INT DEFAULT 0;
+        ALTER TABLE user_stats ADD COLUMN IF NOT EXISTS gratitude_last_entry_date DATE;
+      </signature>
+      <path>supabase/migrations/</path>
+      <notes>Extend existing user_stats table with gratitude streak columns. Update via database trigger on gratitude_entries insert.</notes>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Follow 70/20/10 testing pyramid: 70% unit tests (use cases, repositories, entities, streak calculation), 20% widget tests (UI components, calendar view, streak badge), 10% integration tests (end-to-end flows). Use flutter_test for unit/widget tests, integration_test for E2E. Mock dependencies with mockito. Target 80%+ code coverage. All acceptance criteria must have test coverage.
+    </standards>
+    <locations>
+      <location>test/features/mind_emotion/gratitude/domain/usecases/</location>
+      <location>test/features/mind_emotion/gratitude/domain/entities/</location>
+      <location>test/features/mind_emotion/gratitude/data/repositories/</location>
+      <location>test/features/mind_emotion/gratitude/presentation/widgets/</location>
+      <location>integration_test/features/mind_emotion/gratitude_flow_test.dart</location>
+    </locations>
+    <ideas>
+      <test-idea ac-ref="AC2">
+        <description>Unit test: GratitudeEntryEntity validation</description>
+        <approach>Test thing1 cannot be empty. Test thing2/thing3 nullable. Test max 280 chars per field. Test immutability with copyWith.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4">
+        <description>Unit test: Streak calculation - consecutive days</description>
+        <approach>Mock entries for 7 consecutive days. Calculate streak. Assert currentStreak = 7. Test longest_streak updates correctly.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4">
+        <description>Unit test: Streak calculation - grace period</description>
+        <approach>Mock entries: Day 1, Day 2, Day 4 (missed Day 3). Assert streak = 3 (grace period covers 1 missed day). Mock Day 1, Day 2, Day 5 (missed 2 days). Assert streak = 1 (reset).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC2">
+        <description>Widget test: 3 Good Things input form</description>
+        <approach>Render GratitudePromptWidget. Enter text in thing_1 field. Verify Save button enabled. Leave thing_1 empty. Verify Save button disabled.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3">
+        <description>Widget test: Calendar view highlights dates with entries</description>
+        <approach>Mock GratitudeRepository with entries for 3 dates. Render calendar. Verify green dot indicators on those 3 dates. Tap date. Verify entry details modal appears.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4">
+        <description>Widget test: Streak badge displays correctly</description>
+        <approach>Mock streak = 7 days. Render streak badge. Verify text "🔥 7 Day Streak!" displayed. Mock milestone (7 days). Verify celebration animation triggered.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC7">
+        <description>Unit test: CSV export format</description>
+        <approach>Mock 3 gratitude entries. Call ExportGratitudeLogUseCase with CSV format. Verify CSV content: header row + 3 data rows. Verify correct formatting.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC7">
+        <description>Unit test: Markdown export format</description>
+        <approach>Mock 3 gratitude entries. Call ExportGratitudeLogUseCase with Markdown format. Verify markdown: ## [date]\n- thing_1\n- thing_2\n- thing_3 for each entry.</approach>
+      </test-idea>
+      <test-idea ac-ref="ALL">
+        <description>Integration test: Complete gratitude flow</description>
+        <approach>Launch app. Navigate to Mind & Emotion. Tap "3 Good Things" prompt. Enter 3 things. Tap Save. Verify entry saved to database. Navigate to history. Verify calendar shows today with green dot. Tap today. Verify entry details displayed.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4">
+        <description>Integration test: Streak builds over multiple days</description>
+        <approach>Mock Day 1: save entry, verify streak = 1. Mock Day 2: save entry, verify streak = 2. Mock Day 3: save entry, verify streak = 3. Mock Day 5 (skip Day 4): verify streak = 4 (grace period). Mock Day 7 (skip Days 5-6): verify streak = 1 (reset).</approach>
+      </test-idea>
+    </ideas>
+  </tests>
+
+  <devAgentRecord>
+    <recordedAt>2025-11-17</recordedAt>
+    <status>ready-for-dev</status>
+    <agent>BMAD Dev Agent</agent>
+    <notes>Story context prepared and validated for development assignment</notes>
+  </devAgentRecord>
+
+  <created>
+    <author>BMAD Story Context Workflow</author>
+    <timestamp>2025-11-17</timestamp>
+  </created>
+</story-context>

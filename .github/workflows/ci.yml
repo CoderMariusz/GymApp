@@ -1,0 +1,379 @@
+name: CI/CD Pipeline
+
+# ============================================================================
+# LifeOS - Continuous Integration & Deployment
+# ============================================================================
+#
+# This workflow runs on every push and pull request
+# Performs: Linting, Testing, Building, Coverage Reporting
+#
+# Target Coverage: 75-85% (70% unit, 20% widget, 10% integration)
+# ============================================================================
+
+on:
+  push:
+    branches: [ main, develop, 'claude/**' ]
+  pull_request:
+    branches: [ main, develop ]
+
+env:
+  FLUTTER_VERSION: '3.38.0'
+  JAVA_VERSION: '17'
+
+jobs:
+  # ==========================================================================
+  # JOB 1: Code Quality & Analysis
+  # ==========================================================================
+  analyze:
+    name: Code Analysis
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: 'stable'
+          cache: true
+
+      - name: Get dependencies
+        run: flutter pub get
+
+      - name: Run code generation
+        run: flutter pub run build_runner build --delete-conflicting-outputs
+
+      - name: Verify formatting
+        run: dart format --set-exit-if-changed .
+
+      - name: Analyze code
+        run: flutter analyze
+
+      - name: Check for outdated dependencies
+        run: flutter pub outdated
+
+  # ==========================================================================
+  # JOB 2: Unit & Widget Tests
+  # ==========================================================================
+  test:
+    name: Unit & Widget Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: 'stable'
+          cache: true
+
+      - name: Get dependencies
+        run: flutter pub get
+
+      - name: Run code generation
+        run: flutter pub run build_runner build --delete-conflicting-outputs
+
+      - name: Run unit & widget tests with coverage
+        run: flutter test --coverage --reporter expanded
+
+      - name: Check coverage threshold (75% minimum)
+        run: |
+          COVERAGE=$(lcov --summary coverage/lcov.info | grep "lines" | awk '{print $2}' | sed 's/%//')
+          echo "Coverage: $COVERAGE%"
+          if (( $(echo "$COVERAGE < 75" | bc -l) )); then
+            echo "❌ Coverage is below 75% threshold"
+            exit 1
+          else
+            echo "✅ Coverage meets 75% threshold"
+          fi
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          files: coverage/lcov.info
+          flags: unittests
+          name: lifeos-coverage
+          fail_ci_if_error: false
+
+      - name: Generate HTML coverage report
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y lcov
+          genhtml coverage/lcov.info -o coverage/html
+
+      - name: Upload coverage HTML
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-report
+          path: coverage/html
+          retention-days: 7
+
+  # ==========================================================================
+  # JOB 3: Integration Tests
+  # ==========================================================================
+  integration-test:
+    name: Integration Tests
+    runs-on: macos-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: 'stable'
+          cache: true
+
+      - name: Get dependencies
+        run: flutter pub get
+
+      - name: Run code generation
+        run: flutter pub run build_runner build --delete-conflicting-outputs
+
+      - name: Start iOS Simulator
+        run: |
+          xcrun simctl boot "iPhone 15 Pro" || true
+          xcrun simctl list
+
+      - name: Run integration tests
+        run: flutter test integration_test/ --coverage
+
+      - name: Upload integration test results
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: integration-test-results
+          path: integration_test/screenshots
+          retention-days: 7
+
+  # ==========================================================================
+  # JOB 4: Build Android APK
+  # ==========================================================================
+  build-android:
+    name: Build Android APK
+    runs-on: ubuntu-latest
+    needs: [analyze, test]
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: ${{ env.JAVA_VERSION }}
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: 'stable'
+          cache: true
+
+      - name: Get dependencies
+        run: flutter pub get
+
+      - name: Run code generation
+        run: flutter pub run build_runner build --delete-conflicting-outputs
+
+      - name: Build APK (Debug)
+        if: github.event_name == 'pull_request'
+        run: flutter build apk --debug
+
+      - name: Build APK (Release)
+        if: github.ref == 'refs/heads/main'
+        run: flutter build apk --release
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: android-apk
+          path: build/app/outputs/flutter-apk/*.apk
+          retention-days: 14
+
+  # ==========================================================================
+  # JOB 5: Build iOS App
+  # ==========================================================================
+  build-ios:
+    name: Build iOS App
+    runs-on: macos-latest
+    needs: [analyze, test]
+    timeout-minutes: 40
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: 'stable'
+          cache: true
+
+      - name: Get dependencies
+        run: flutter pub get
+
+      - name: Run code generation
+        run: flutter pub run build_runner build --delete-conflicting-outputs
+
+      - name: Build iOS (No Codesign)
+        run: flutter build ios --release --no-codesign
+
+      - name: Upload iOS build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: ios-build
+          path: build/ios/Release-iphoneos
+          retention-days: 14
+
+  # ==========================================================================
+  # JOB 6: Security Scan
+  # ==========================================================================
+  security-scan:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+
+      - name: Upload Trivy results to GitHub Security
+        uses: github/codeql-action/upload-sarif@v2
+        if: always()
+        with:
+          sarif_file: 'trivy-results.sarif'
+
+  # ==========================================================================
+  # JOB 7: Dependency Check
+  # ==========================================================================
+  dependency-check:
+    name: Dependency Security Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: 'stable'
+          cache: true
+
+      - name: Get dependencies
+        run: flutter pub get
+
+      - name: Check for known vulnerabilities
+        run: |
+          flutter pub outdated --mode=null-safety
+          dart pub global activate pana
+          pana --no-warning
+
+  # ==========================================================================
+  # JOB 8: Performance Metrics
+  # ==========================================================================
+  performance:
+    name: Performance Metrics
+    runs-on: ubuntu-latest
+    needs: [build-android]
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: 'stable'
+          cache: true
+
+      - name: Get dependencies
+        run: flutter pub get
+
+      - name: Analyze app size
+        run: |
+          flutter build apk --analyze-size --target-platform android-arm64
+          flutter build apk --analyze-size --target-platform android-arm64 > size-report.txt
+
+      - name: Upload size report
+        uses: actions/upload-artifact@v3
+        with:
+          name: app-size-report
+          path: size-report.txt
+          retention-days: 30
+
+  # ==========================================================================
+  # JOB 9: Notification (on failure)
+  # ==========================================================================
+  notify-failure:
+    name: Notify on Failure
+    runs-on: ubuntu-latest
+    needs: [analyze, test, integration-test, build-android, build-ios]
+    if: failure()
+
+    steps:
+      - name: Send notification
+        run: |
+          echo "CI Pipeline failed! Check the logs for details."
+          # Add Slack/Discord webhook notification here if needed
+
+  # ==========================================================================
+  # JOB 10: Success Summary
+  # ==========================================================================
+  success-summary:
+    name: CI Success Summary
+    runs-on: ubuntu-latest
+    needs: [analyze, test, integration-test, build-android, build-ios, security-scan]
+    if: success()
+
+    steps:
+      - name: Generate summary
+        run: |
+          echo "✅ All CI checks passed!"
+          echo "- Code analysis: Passed"
+          echo "- Unit & Widget tests: Passed (75%+ coverage)"
+          echo "- Integration tests: Passed"
+          echo "- Android build: Success"
+          echo "- iOS build: Success"
+          echo "- Security scan: Passed"
+          echo ""
+          echo "Ready for code review and merge!"
+
+# ============================================================================
+# BRANCH PROTECTION RULES (Configure in GitHub Settings)
+# ============================================================================
+#
+# Recommended settings for 'main' branch:
+# ✅ Require pull request reviews before merging (1 reviewer)
+# ✅ Require status checks to pass: analyze, test, build-android, build-ios
+# ✅ Require branches to be up to date before merging
+# ✅ Include administrators (enforce rules for everyone)
+# ✅ Restrict who can push to matching branches
+#
+# ============================================================================

@@ -1,17 +1,246 @@
-# Dependencies
-/node_modules
+# ============================================================================
+# LifeOS - Git Ignore
+# ============================================================================
+#
+# This file specifies intentionally untracked files that Git should ignore
+# Generated: 2025-11-17
+# ============================================================================
 
-# Environment variables (contain secrets)
+# ============================================================================
+# ENVIRONMENT & SECRETS
+# ============================================================================
+
+# Environment variables (contains secrets)
 .env
 .env.local
 .env.*.local
 
-# IDE
+# Firebase configuration (contains secrets)
+google-services.json
+GoogleService-Info.plist
+firebase_options.dart
+
+# API keys and secrets
+**/secrets/
+**/*secret*.json
+**/*key*.pem
+**/*credential*.json
+
+# ============================================================================
+# FLUTTER & DART
+# ============================================================================
+
+# Flutter build outputs
+/build/
+*.apk
+*.aab
+*.ipa
+*.app
+*.dSYM
+
+# Flutter/Dart tooling
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+/build/
+
+# Generated files
+*.g.dart
+*.freezed.dart
+*.mocks.dart
+*.config.dart
+*.gr.dart
+
+# Build runner outputs
+**/*.g.dart
+**/*.freezed.dart
+
+# ============================================================================
+# IDE & EDITORS
+# ============================================================================
+
+# Android Studio / IntelliJ IDEA
 .idea/
+*.iml
+*.iws
+*.ipr
+.gradle/
+local.properties
+
+# VS Code
 .vscode/
+!.vscode/extensions.json
+!.vscode/launch.json
+!.vscode/settings.json
+
+# Visual Studio
+.vs/
+
+# Xcode
+*.xcworkspace
+!default.xcworkspace
+xcuserdata/
+*.xcscmblueprint
+*.xccheckout
+DerivedData/
+*.moved-aside
+*.pbxuser
+!default.pbxuser
+*.mode1v3
+!default.mode1v3
+*.mode2v3
+!default.mode2v3
+*.perspectivev3
+!default.perspectivev3
+
+# ============================================================================
+# DEPENDENCIES
+# ============================================================================
+
+# Node modules (if using for Supabase Edge Functions)
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# iOS Pods
+ios/Pods/
+ios/.symlinks/
+ios/Flutter/Flutter.framework
+ios/Flutter/Flutter.podspec
+ios/Flutter/App.framework
+ios/Flutter/Generated.xcconfig
+ios/Runner/GeneratedPluginRegistrant.*
+
+# Android
+android/.gradle/
+android/captures/
+android/.externalNativeBuild/
+android/app/debug/
+android/app/profile/
+android/app/release/
+android/gradle-wrapper.jar
+android/gradlew
+android/gradlew.bat
+
+# ============================================================================
+# TESTING
+# ============================================================================
+
+# Test coverage
+coverage/
+test/.test_coverage.dart
+*.coverage
+*.lcov
+
+# Test artifacts
+test/screenshots/
+integration_test/screenshots/
+
+# ============================================================================
+# LOGS & TEMPORARY FILES
+# ============================================================================
+
+# Logs
+*.log
+logs/
 *.swp
 *.swo
+*~
 
-# OS
+# Temporary files
+*.tmp
+*.temp
 .DS_Store
 Thumbs.db
+
+# ============================================================================
+# DATABASE & DATA
+# ============================================================================
+
+# SQLite databases (local dev)
+*.db
+*.sqlite
+*.sqlite3
+
+# Data exports
+exports/
+backups/
+
+# ============================================================================
+# GENERATED DOCUMENTATION
+# ============================================================================
+
+# Generated API docs
+doc/api/
+
+# ============================================================================
+# PLATFORM-SPECIFIC
+# ============================================================================
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+*~
+.directory
+.Trash-*
+
+# ============================================================================
+# SUPABASE
+# ============================================================================
+
+# Supabase local development
+.supabase/
+supabase/.branches/
+supabase/.temp/
+
+# ============================================================================
+# ASSETS & MEDIA (Large files)
+# ============================================================================
+
+# Uncomment if you don't want to track large media files
+# *.mp3
+# *.mp4
+# *.mov
+# *.avi
+# *.wav
+
+# ============================================================================
+# MISCELLANEOUS
+# ============================================================================
+
+# Fastlane (for iOS/Android deployment)
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots/
+fastlane/test_output/
+
+# App signing keys (NEVER commit these!)
+*.keystore
+*.jks
+*.p12
+*.mobileprovision
+*.certSigningRequest
+
+# ============================================================================
+# EXCEPTIONS (Files to INCLUDE in git)
+# ============================================================================
+
+# Include example/template files
+!.env.example
+!google-services.example.json
+!.gitkeep
+
+# ============================================================================

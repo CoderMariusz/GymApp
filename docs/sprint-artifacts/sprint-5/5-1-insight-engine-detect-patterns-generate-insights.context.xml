@@ -1,0 +1,468 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/epic-5-story-1" v="1.0">
+  <metadata>
+    <epicId>5</epicId>
+    <storyId>5.1</storyId>
+    <title>Insight Engine - Detect Patterns & Generate Insights</title>
+    <status>ready-for-dev</status>
+    <generatedAt>2025-11-17</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/sprint-5/5-1-insight-engine-detect-patterns-generate-insights.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>the system</asA>
+    <iWant>to detect patterns across modules</iWant>
+    <soThat>I generate actionable cross-module insights</soThat>
+    <tasks>
+      <task id="1" ac-ref="AC1,AC2">
+        <description>Implement daily metrics aggregation service</description>
+        <subtasks>
+          <subtask>Create MetricsAggregationService (Supabase Edge Function, Deno)</subtask>
+          <subtask>Implement aggregation logic for Fitness metrics (workout_completed, workout_duration, calories_burned, sets_completed)</subtask>
+          <subtask>Implement aggregation logic for Mind metrics (meditation_completed, meditation_duration, mood_score, stress_level)</subtask>
+          <subtask>Implement aggregation logic for Life Coach metrics (sleep_quality, energy_level, tasks_completed, completion_rate)</subtask>
+          <subtask>Write aggregated metrics to user_daily_metrics table (upsert by user_id, date)</subtask>
+          <subtask>Implement debouncing (5 min) to prevent excessive writes</subtask>
+          <subtask>Create database trigger on workouts, meditations, check_ins tables to trigger aggregation</subtask>
+        </subtasks>
+      </task>
+      <task id="2" ac-ref="AC3,AC4">
+        <description>Implement pattern detection engine</description>
+        <subtasks>
+          <subtask>Create PatternDetectionService (Supabase Edge Function, cron daily 6am)</subtask>
+          <subtask>Fetch last 30 days of user_daily_metrics for each active user</subtask>
+          <subtask>Calculate Pearson correlation coefficient for metric pairs: (stress_level, workout_volume), (sleep_quality, workout_performance), (meditation_completed, stress_level), (workout_completed, mood_score)</subtask>
+          <subtask>Filter significant correlations: |r| > 0.5 AND p-value < 0.05 (statistical significance)</subtask>
+          <subtask>Detect specific patterns: High stress + heavy workout (stress ≥4, volume >80% max), Poor sleep + morning workout (sleep <3, time <12pm), High volume + elevated stress, Meditation streak + improving mood, 8+ hours sleep → better performance</subtask>
+          <subtask>Prioritize patterns by confidence score and impact (critical vs normal)</subtask>
+          <subtask>Generate max 1 high-priority insight per user per day</subtask>
+        </subtasks>
+      </task>
+      <task id="3" ac-ref="AC4,AC5">
+        <description>Implement AI insight generation</description>
+        <subtasks>
+          <subtask>Create AIInsightService using Claude/GPT-4 API</subtask>
+          <subtask>Build AI prompt with context: pattern type, correlation coefficient, 30-day data summary, user context</subtask>
+          <subtask>Generate insight title (concise, actionable)</subtask>
+          <subtask>Generate insight description (clear explanation of pattern)</subtask>
+          <subtask>Generate recommendation with specific action CTA</subtask>
+          <subtask>Parse AI response JSON: {type, title, description, cta, priority}</subtask>
+          <subtask>Implement fallback for AI failures (pre-defined templates)</subtask>
+        </subtasks>
+      </task>
+      <task id="4" ac-ref="AC5">
+        <description>Implement insights database persistence</description>
+        <subtasks>
+          <subtask>Create insights table in Supabase (id, user_id, type, title, description, cta, priority, dismissed, created_at)</subtask>
+          <subtask>Create insights table in Drift (local SQLite mirror)</subtask>
+          <subtask>Add RLS policies: Users can only access own insights</subtask>
+          <subtask>Implement saveInsight() method in InsightRepository</subtask>
+          <subtask>Create unique constraint on (user_id, date) to enforce max 1 insight/day</subtask>
+          <subtask>Add index on (user_id, created_at DESC) for fast queries</subtask>
+        </subtasks>
+      </task>
+      <task id="5" ac-ref="AC6">
+        <description>Implement push notification for critical insights</description>
+        <subtasks>
+          <subtask>Integrate Firebase Cloud Messaging (FCM)</subtask>
+          <subtask>Create NotificationService to send push notifications</subtask>
+          <subtask>Trigger notification only if insight.priority === 'critical' (e.g., overtraining risk)</subtask>
+          <subtask>Set notification title: "Health Alert 🧠" or "Pattern Detected 💡"</subtask>
+          <subtask>Set notification body: insight.title</subtask>
+          <subtask>Add deep link to /cmi-dashboard or relevant module</subtask>
+          <subtask>Handle notification permissions and user preferences</subtask>
+        </subtasks>
+      </task>
+      <task id="6" ac-ref="ALL">
+        <description>Implement cron job scheduler</description>
+        <subtasks>
+          <subtask>Create Supabase Edge Function with cron trigger (daily 6am UTC)</subtask>
+          <subtask>Implement getAllActiveUsers() query (users with activity in last 7 days)</subtask>
+          <subtask>Loop through users and run pattern detection for each</subtask>
+          <subtask>Implement error handling and logging (Supabase logs)</subtask>
+          <subtask>Add timeout protection (max 5 min per user)</subtask>
+          <subtask>Monitor performance: processing time, API costs, error rate</subtask>
+        </subtasks>
+      </task>
+      <task id="7" ac-ref="ALL">
+        <description>Write comprehensive tests</description>
+        <subtasks>
+          <subtask>Unit tests: Pearson correlation calculation, pattern detection logic, confidence scoring</subtask>
+          <subtask>Unit tests: AI prompt generation, response parsing, fallback templates</subtask>
+          <subtask>Integration test: Full pipeline (metrics aggregation → pattern detection → AI insight → save to DB)</subtask>
+          <subtask>Integration test: Cron job execution with 100-user golden dataset</subtask>
+          <subtask>E2E test: Simulate 30 days of user data → verify correct insight generated</subtask>
+          <subtask>Achieve 75%+ code coverage</subtask>
+        </subtasks>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="AC1">
+      <text>Cron job runs daily at 6am UTC</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC2">
+      <text>System analyzes Mood/stress (Mind), Workout volume/frequency (Fitness), Sleep quality/energy (Life Coach)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC3">
+      <text>Detects patterns: High stress + heavy workout, Poor sleep + morning workout, High volume + elevated stress, Meditation streak + improving mood, 8+ hours sleep → better performance</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC4">
+      <text>Generates max 1 high-priority insight per day per user</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC5">
+      <text>Insight stored in insights table (type, title, description, action_cta, priority)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC6">
+      <text>Push notification sent if critical (overtraining risk, health alert)</text>
+      <priority>P0</priority>
+    </criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR77-FR81: Cross-Module Intelligence</section>
+        <snippet>FR77: System detects high stress + heavy workout → suggests light session. FR78: Poor sleep + morning workout → suggests afternoon. FR79: High volume + elevated stress → rest day. FR80: Correlates sleep quality with workout performance. FR81: Suggests meditation when stress spikes.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/epics.md</path>
+        <title>Epic 5: Cross-Module Intelligence - Story 5.1</title>
+        <section>Story 5.1: Insight Engine - Detect Patterns & Generate Insights</section>
+        <snippet>Cron job runs daily (6am), analyzes data from all 3 modules, detects patterns using Pearson correlation, generates AI-powered insights, max 1 insight/day, push notification for critical insights. Dependencies: Epic 2, 3, 4 (ALL modules must be complete).</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Cross-Module Intelligence Pattern (D2, D7)</section>
+        <snippet>Shared core table: user_daily_metrics aggregates data from all modules. Pattern detection pipeline: Data Aggregation → Pattern Detection (Pearson correlation) → AI Insight Generation (Claude/GPT-4) → Notification (FCM). Runs weekly, processes 30-day windows, filters |r| > 0.5, p < 0.05.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Database Schema - user_daily_metrics</section>
+        <snippet>Shared table for CMI: id (UUID), user_id (FK), date (DATE), workout_completed (BOOL), workout_duration_minutes (INT), meditation_completed (BOOL), meditation_duration_minutes (INT), mood_score (INT 1-10), stress_level (INT 1-10), sleep_quality (INT 1-5), energy_level (INT 1-5), tasks_completed (INT), completion_rate (DECIMAL), UNIQUE(user_id, date).</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Database Schema - detected_patterns</section>
+        <snippet>Table for storing patterns: id (UUID), user_id (FK), pattern_type (TEXT: correlation/trend/anomaly), metric_a (TEXT), metric_b (TEXT), correlation_coefficient (DECIMAL -1.0 to 1.0), confidence_score (DECIMAL 0.0-1.0), insight_text (TEXT), recommendation (TEXT), created_at (TIMESTAMPTZ).</snippet>
+      </doc>
+    </docs>
+    <code>
+      <note>This is the first implementation story for Cross-Module Intelligence. No existing code to reference. Follow architecture patterns and create base structure at lib/features/cross_module_intelligence/ and supabase/functions/.</note>
+    </code>
+    <dependencies>
+      <flutter>
+        <sdk>3.38+</sdk>
+        <dart>3.10+</dart>
+      </flutter>
+      <packages>
+        <package name="supabase_flutter" version="^2.0.0" usage="Supabase client for database access and realtime" />
+        <package name="drift" version="^2.14.0" usage="Local SQLite database for offline insights storage" />
+        <package name="http" version="^1.1.0" usage="HTTP client for AI API calls" />
+        <package name="flutter_riverpod" version="^3.0.0" usage="State management for insights" />
+      </packages>
+      <backend>
+        <package name="@supabase/supabase-js" version="^2.38.0" usage="Supabase client in Edge Functions" />
+        <package name="openai" version="^4.20.0" usage="OpenAI GPT-4 API client" />
+        <package name="anthropic-sdk" version="^0.9.0" usage="Anthropic Claude API client" />
+      </backend>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint id="ARCH-1" type="architectural">
+      <description>Must use Supabase Edge Functions for backend processing</description>
+      <details>Pattern detection and AI insight generation must run server-side in Deno-based Edge Functions. No sensitive pattern detection logic in client app. Cron trigger for daily execution at 6am UTC.</details>
+    </constraint>
+    <constraint id="ARCH-2" type="architectural">
+      <description>Offline-first storage for insights</description>
+      <details>Generated insights must sync to Drift (local SQLite) for offline access. User can view insights without internet connection. Implement sync queue for dismissed/saved actions.</details>
+    </constraint>
+    <constraint id="DATA-1" type="data">
+      <description>user_daily_metrics table aggregates all module data</description>
+      <details>Single source of truth for daily metrics. Event-driven aggregation (triggered by module updates). Debounce 5 min to batch writes. UNIQUE(user_id, date) constraint.</details>
+    </constraint>
+    <constraint id="DATA-2" type="data">
+      <description>insights table schema must match specification</description>
+      <details>Columns: id (UUID PK), user_id (UUID FK), type (TEXT), title (TEXT), description (TEXT), cta (TEXT), priority (TEXT CHECK IN ('normal', 'critical')), dismissed (BOOLEAN DEFAULT FALSE), created_at (TIMESTAMPTZ). UNIQUE(user_id, DATE(created_at)) for max 1 insight/day.</details>
+    </constraint>
+    <constraint id="DATA-3" type="data">
+      <description>Pearson correlation threshold for significance</description>
+      <details>Only surface patterns with |correlation_coefficient| > 0.5 AND p-value < 0.05 (95% confidence). Minimum 14 days of data required for correlation analysis (30 days preferred).</details>
+    </constraint>
+    <constraint id="SEC-1" type="security">
+      <description>Row Level Security (RLS) on insights table</description>
+      <details>Enable RLS. Policy: Users can only access own insights (auth.uid() = user_id). Pattern detection runs as service_role (bypasses RLS for read-only analytics).</details>
+    </constraint>
+    <constraint id="SEC-2" type="security">
+      <description>AI API key security</description>
+      <details>Store OpenAI/Anthropic API keys in Supabase secrets (never in client code). Use environment variables in Edge Functions. Implement rate limiting: max 1 AI call per user per day.</details>
+    </constraint>
+    <constraint id="PERF-1" type="performance">
+      <description>Pattern detection processing time limits</description>
+      <details>Max 30s per user for pattern detection pipeline. Timeout protection at 5 min total. Batch users in chunks of 100 to prevent Edge Function timeouts (max 300s runtime).</details>
+    </constraint>
+    <constraint id="PERF-2" type="performance">
+      <description>AI API call optimization</description>
+      <details>Max 1 AI call per user per day (cost control). Use template-based insights for common patterns (no AI call). Claude: 200 tokens avg, <2s response time. Implement exponential backoff for API failures.</details>
+    </constraint>
+    <constraint id="COST-1" type="cost">
+      <description>AI API budget constraints</description>
+      <details>Target: <$360/month for 10k users (120k AI calls). Claude: $0.003 per call. Prioritize critical insights for AI generation, use templates for normal priority. Monitor daily spend via Supabase logs.</details>
+    </constraint>
+    <constraint id="BUS-1" type="business">
+      <description>Max 1 high-priority insight per user per day</description>
+      <details>Prevents notification fatigue. Prioritize by: 1) Critical health alerts (overtraining), 2) High-confidence correlations (r > 0.7), 3) Actionable recommendations. Lower priority insights queued for future days.</details>
+    </constraint>
+    <constraint id="TEST-1" type="testing">
+      <description>75%+ code coverage required</description>
+      <details>Unit tests for correlation math, pattern detection logic, AI prompt generation. Integration tests for full pipeline. E2E test with 100-user golden dataset (known patterns). Validate against test-design-system.md CMI tests.</details>
+    </constraint>
+    <constraint id="TEST-2" type="testing">
+      <description>Golden dataset validation</description>
+      <details>100 synthetic user scenarios with known patterns. Test data includes: High stress + heavy workout (15 users), Poor sleep + morning workout (12 users), Sleep-performance correlation (20 users), False positive scenarios (10 users). Validate 95%+ accuracy.</details>
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>InsightEntity</name>
+      <kind>domain-entity</kind>
+      <signature>
+        class InsightEntity {
+          final String id;
+          final String userId;
+          final String type;        // 'stress-workout', 'sleep-workout', 'correlation'
+          final String title;       // "High Stress Alert"
+          final String description; // "Your stress is high (4/5)..."
+          final String cta;         // "Adjust Workout"
+          final String priority;    // 'normal' | 'critical'
+          final bool dismissed;
+          final DateTime createdAt;
+        }
+      </signature>
+      <path>lib/features/cross_module_intelligence/domain/entities/insight_entity.dart</path>
+      <notes>Use @freezed annotation for immutability. Implement validation: priority must be 'normal' or 'critical'.</notes>
+    </interface>
+    <interface>
+      <name>PatternEntity</name>
+      <kind>domain-entity</kind>
+      <signature>
+        class PatternEntity {
+          final String id;
+          final String userId;
+          final String patternType;           // 'correlation', 'trend', 'anomaly'
+          final String metricA;               // 'workout_completed'
+          final String metricB;               // 'stress_level'
+          final double correlationCoefficient; // -1.0 to 1.0
+          final double confidenceScore;        // 0.0 to 1.0
+          final String insightText;
+          final String recommendation;
+          final DateTime createdAt;
+        }
+      </signature>
+      <path>lib/features/cross_module_intelligence/domain/entities/pattern_entity.dart</path>
+      <notes>correlationCoefficient range: -1.0 to 1.0 (Pearson r). confidenceScore: statistical significance (1 - p-value).</notes>
+    </interface>
+    <interface>
+      <name>DetectPatternsUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class DetectPatternsUseCase {
+          Future&lt;Result&lt;List&lt;PatternEntity&gt;&gt;&gt; call(String userId, {int days = 30});
+        }
+      </signature>
+      <path>lib/features/cross_module_intelligence/domain/usecases/detect_patterns_usecase.dart</path>
+      <notes>Server-side implementation in Supabase Edge Function. Client-side stub for testing. Fetches user_daily_metrics for last N days, calculates correlations, filters by significance.</notes>
+    </interface>
+    <interface>
+      <name>GenerateInsightUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class GenerateInsightUseCase {
+          Future&lt;Result&lt;InsightEntity&gt;&gt; call(PatternEntity pattern);
+        }
+      </signature>
+      <path>lib/features/cross_module_intelligence/domain/usecases/generate_insight_usecase.dart</path>
+      <notes>Calls AI API (Claude/GPT-4) with pattern context. Falls back to template-based insights if API fails. Implements rate limiting (1 call/user/day).</notes>
+    </interface>
+    <interface>
+      <name>InsightRepository</name>
+      <kind>repository</kind>
+      <signature>
+        abstract class InsightRepository {
+          Future&lt;Result&lt;InsightEntity&gt;&gt; saveInsight(InsightEntity insight);
+          Future&lt;Result&lt;InsightEntity?&gt;&gt; getTodayInsight(String userId);
+          Future&lt;Result&lt;List&lt;InsightEntity&gt;&gt;&gt; getInsightHistory(String userId, {int limit = 30});
+          Future&lt;Result&lt;void&gt;&gt; dismissInsight(String insightId);
+        }
+      </signature>
+      <path>lib/features/cross_module_intelligence/domain/repositories/insight_repository.dart</path>
+      <notes>Implemented by InsightRepositoryImpl using Drift + Supabase. Offline-first: save locally, queue for sync.</notes>
+    </interface>
+    <interface>
+      <name>user_daily_metrics table (Supabase PostgreSQL)</name>
+      <kind>database-table</kind>
+      <signature>
+        CREATE TABLE user_daily_metrics (
+          id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+          user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+          date DATE NOT NULL,
+          -- Fitness metrics
+          workout_completed BOOLEAN DEFAULT FALSE,
+          workout_duration_minutes INTEGER DEFAULT 0,
+          calories_burned INTEGER DEFAULT 0,
+          sets_completed INTEGER DEFAULT 0,
+          -- Mind metrics
+          meditation_completed BOOLEAN DEFAULT FALSE,
+          meditation_duration_minutes INTEGER DEFAULT 0,
+          mood_score INTEGER CHECK (mood_score BETWEEN 1 AND 10),
+          stress_level INTEGER CHECK (stress_level BETWEEN 1 AND 10),
+          -- Life Coach metrics
+          sleep_quality INTEGER CHECK (sleep_quality BETWEEN 1 AND 5),
+          energy_level INTEGER CHECK (energy_level BETWEEN 1 AND 5),
+          tasks_completed INTEGER DEFAULT 0,
+          completion_rate DECIMAL(3,2) CHECK (completion_rate BETWEEN 0 AND 1),
+          aggregated_at TIMESTAMPTZ DEFAULT NOW(),
+          created_at TIMESTAMPTZ DEFAULT NOW(),
+          UNIQUE(user_id, date)
+        );
+        CREATE INDEX idx_user_daily_metrics_user_date ON user_daily_metrics(user_id, date DESC);
+      </signature>
+      <path>supabase/migrations/20250117000000_add_cross_module_metrics.sql</path>
+      <notes>Shared table for all modules. Aggregated via triggers on workouts, meditations, check_ins tables. Debounced updates (5 min).</notes>
+    </interface>
+    <interface>
+      <name>insights table (Supabase PostgreSQL)</name>
+      <kind>database-table</kind>
+      <signature>
+        CREATE TABLE insights (
+          id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+          user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+          type TEXT NOT NULL,
+          title TEXT NOT NULL,
+          description TEXT NOT NULL,
+          cta TEXT NOT NULL,
+          priority TEXT NOT NULL CHECK (priority IN ('normal', 'critical')),
+          dismissed BOOLEAN DEFAULT FALSE,
+          created_at TIMESTAMPTZ DEFAULT NOW()
+        );
+        CREATE INDEX idx_insights_user_date ON insights(user_id, created_at DESC);
+        CREATE UNIQUE INDEX idx_insights_one_per_day ON insights(user_id, DATE(created_at));
+      </signature>
+      <path>supabase/migrations/20250118000000_add_insights_table.sql</path>
+      <notes>Unique index enforces max 1 insight per user per day. RLS policies for user isolation.</notes>
+    </interface>
+    <interface>
+      <name>detected_patterns table (Supabase PostgreSQL)</name>
+      <kind>database-table</kind>
+      <signature>
+        CREATE TABLE detected_patterns (
+          id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+          user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+          pattern_type TEXT NOT NULL CHECK (pattern_type IN ('correlation', 'trend', 'anomaly')),
+          metric_a TEXT NOT NULL,
+          metric_b TEXT NOT NULL,
+          correlation_coefficient DECIMAL(4,3) CHECK (correlation_coefficient BETWEEN -1 AND 1),
+          confidence_score DECIMAL(3,2) CHECK (confidence_score BETWEEN 0 AND 1),
+          insight_text TEXT,
+          recommendation TEXT,
+          created_at TIMESTAMPTZ DEFAULT NOW()
+        );
+        CREATE INDEX idx_detected_patterns_user ON detected_patterns(user_id, created_at DESC);
+      </signature>
+      <path>supabase/migrations/20250118000000_add_detected_patterns_table.sql</path>
+      <notes>Stores raw pattern detection results. Used for analytics and insight generation history.</notes>
+    </interface>
+    <interface>
+      <name>PatternDetectionEdgeFunction</name>
+      <kind>edge-function</kind>
+      <signature>
+        Deno.serve(async (req) => {
+          // Cron trigger: daily 6am UTC
+          const users = await getAllActiveUsers();
+          for (const user of users) {
+            const metrics = await fetchUserDailyMetrics(user.id, 30);
+            const patterns = await detectPatterns(metrics);
+            if (patterns.length > 0) {
+              const topPattern = patterns[0]; // Highest confidence
+              const insight = await generateAIInsight(topPattern);
+              await saveInsight(insight);
+              if (insight.priority === 'critical') {
+                await sendPushNotification(user.id, insight);
+              }
+            }
+          }
+          return new Response(JSON.stringify({ success: true }));
+        });
+      </signature>
+      <path>supabase/functions/pattern-detection/index.ts</path>
+      <notes>Scheduled via Supabase cron (pg_cron extension). Processes all active users daily. Timeout: 300s max.</notes>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Follow 70/20/10 testing pyramid: 70% unit tests (correlation math, pattern detection, AI prompt logic), 20% integration tests (full pipeline, database operations), 10% E2E tests (golden dataset validation). Use Deno test framework for Edge Functions, flutter_test for client code. Target 75%+ code coverage. Validate against test-design-system.md Epic 5 test scenarios.
+    </standards>
+    <locations>
+      <location>test/features/cross_module_intelligence/domain/usecases/</location>
+      <location>test/features/cross_module_intelligence/data/repositories/</location>
+      <location>supabase/functions/pattern-detection/tests/</location>
+      <location>integration_test/features/cross_module_intelligence/pattern_detection_flow_test.dart</location>
+    </locations>
+    <ideas>
+      <test-idea ac-ref="AC3">
+        <description>Unit test: Pearson correlation calculation accuracy</description>
+        <approach>Test with known dataset: workout_completed=[1,1,0,1,0], stress_level=[8,7,3,9,2]. Expected r ≈ 0.92 (strong positive correlation). Verify p-value < 0.05. Test edge cases: all zeros, single data point, identical values.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3">
+        <description>Unit test: Pattern detection - High stress + heavy workout</description>
+        <approach>Mock user_daily_metrics with stress_level=4, workout_volume=85% max. Verify pattern detected with type='stress-workout'. Test boundary conditions: stress=3.9 (should NOT trigger), volume=79% (should NOT trigger).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3">
+        <description>Unit test: Pattern detection - Poor sleep + morning workout</description>
+        <approach>Mock data: sleep_quality=2, workout_time=9am. Verify pattern='sleep-workout' detected. Test boundaries: sleep=3 (should NOT trigger), time=12:01pm (should NOT trigger).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4">
+        <description>Unit test: Max 1 insight per day enforcement</description>
+        <approach>Generate 3 high-priority patterns for same user. Verify only 1 insight saved (highest confidence). Attempt to save 2nd insight same day → expect unique constraint error.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC5">
+        <description>Integration test: AI insight generation with Claude</description>
+        <approach>Mock Claude API with sample pattern (stress-workout correlation). Verify prompt includes: pattern type, correlation coefficient, 30-day summary. Assert response parsed correctly: title, description, cta, priority. Test API failure fallback to template.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6">
+        <description>Integration test: Push notification for critical insight</description>
+        <approach>Generate critical insight (priority='critical', type='overtraining'). Verify FCM notification sent with title="Health Alert 🧠", body=insight.title, deep link=/cmi-dashboard. Mock FCM client to verify payload.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1,AC2">
+        <description>Integration test: Full pipeline - Metrics aggregation to insight</description>
+        <approach>Simulate user completing: 1) Heavy workout (80% volume), 2) Meditation (stress=8), 3) Poor sleep (quality=2). Trigger aggregation service → verify user_daily_metrics updated. Run pattern detection → verify pattern found. Generate insight → verify saved to DB.</approach>
+      </test-idea>
+      <test-idea ac-ref="ALL">
+        <description>E2E test: Golden dataset validation (100 users)</description>
+        <approach>Load 100 synthetic users with known patterns: 15 stress-workout, 12 sleep-workout, 20 sleep-performance correlations, 10 false positives. Run pattern detection cron job. Verify 95%+ accuracy: true positives detected, false positives rejected, correct priorities assigned.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1">
+        <description>Integration test: Cron job execution and error handling</description>
+        <approach>Mock getAllActiveUsers() returning 250 users. Run cron job. Verify batch processing (chunks of 100). Simulate timeout for user #150 → verify graceful skip and continue. Verify Supabase logs contain execution metrics: users processed, insights generated, errors.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC2">
+        <description>Unit test: Metrics aggregation - debouncing logic</description>
+        <approach>Trigger 5 workout_completed events within 3 minutes. Verify aggregation service called only once (after 5 min debounce). Mock user_daily_metrics.workout_completed updated to true. Verify no duplicate rows created.</approach>
+      </test-idea>
+    </ideas>
+  </tests>
+</story-context>

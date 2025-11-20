@@ -1,0 +1,422 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>8</epicId>
+    <storyId>8.4</storyId>
+    <title>Cross-Module Insight Notifications (Max 1/day)</title>
+    <status>ready-for-dev</status>
+    <generatedAt>2025-11-17</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/sprint-8/8-4-cross-module-insight-notifications.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>paid user</asA>
+    <iWant>to receive push notifications for high-priority cross-module insights</iWant>
+    <soThat>I can act on important patterns without checking the app constantly</soThat>
+    <tasks>
+      <task id="1" ac-ref="AC1,AC2">
+        <description>Implement insight notification trigger with 1/day limit</description>
+        <subtasks>
+          <subtask>Create SendInsightNotificationUseCase</subtask>
+          <subtask>Query user_settings for last_insight_notification_sent timestamp</subtask>
+          <subtask>Check if notification already sent today (max 1/day enforcement)</subtask>
+          <subtask>If already sent today, skip notification and log</subtask>
+          <subtask>If not sent, proceed with notification flow</subtask>
+          <subtask>Update last_insight_notification_sent timestamp after sending</subtask>
+        </subtasks>
+      </task>
+      <task id="2" ac-ref="AC1,AC3">
+        <description>Integrate with Epic 5 insight detection</description>
+        <subtasks>
+          <subtask>Hook into detect-patterns Edge Function from Story 5.1</subtask>
+          <subtask>Filter insights by confidence score (>0.7 threshold)</subtask>
+          <subtask>Pass high-confidence insights to SendInsightNotificationUseCase</subtask>
+          <subtask>Extract insight summary text from AI-generated insight</subtask>
+          <subtask>Generate notification message: "💡 Pattern Detected: [insight summary]"</subtask>
+        </subtasks>
+      </task>
+      <task id="3" ac-ref="AC4,AC5">
+        <description>Implement deep linking to Insight Card</description>
+        <subtasks>
+          <subtask>Create deep link: lifeos://home/insights/{insightId}</subtask>
+          <subtask>Register route in DeepLinkService</subtask>
+          <subtask>Navigate to Home tab, scroll to Insights section</subtask>
+          <subtask>Display InsightCard with full details (from Story 5.2)</subtask>
+          <subtask>Show insight summary, chart, and CTA actions</subtask>
+          <subtask>Handle deep link from all app states (foreground, background, terminated)</subtask>
+        </subtasks>
+      </task>
+      <task id="4" ac-ref="AC6,AC7">
+        <description>Implement notification settings for insights</description>
+        <subtasks>
+          <subtask>Add "Insight Notifications" toggle to NotificationSettingsScreen</subtask>
+          <subtask>Store setting in notification_settings table (category: 'insights')</subtask>
+          <subtask>Check insight_notifications_enabled before sending notification</subtask>
+          <subtask>Respect quiet hours setting (from Story 8.5)</subtask>
+          <subtask>Sync settings to Supabase on toggle</subtask>
+        </subtasks>
+      </task>
+      <task id="5" ac-ref="AC7">
+        <description>Integrate quiet hours with insight notifications</description>
+        <subtasks>
+          <subtask>Query quiet_hours_enabled, quiet_hours_start, quiet_hours_end from notification_settings</subtask>
+          <subtask>Check if current time is within quiet hours before sending notification</subtask>
+          <subtask>If in quiet hours, skip notification and log</subtask>
+          <subtask>Optional: Batch notification for delivery after quiet hours end (P1)</subtask>
+        </subtasks>
+      </task>
+      <task id="6" ac-ref="AC1,AC2">
+        <description>Update detect-patterns Edge Function to trigger notifications</description>
+        <subtasks>
+          <subtask>Modify detect-patterns Edge Function (Story 5.1) to check confidence score</subtask>
+          <subtask>If pattern.confidenceScore > 0.7, call sendInsightNotification()</subtask>
+          <subtask>Implement sendInsightNotification() function in Edge Function</subtask>
+          <subtask>Check last_insight_notification_sent (max 1/day)</subtask>
+          <subtask>Check insight_notifications_enabled and quiet_hours</subtask>
+          <subtask>Call send-notification Edge Function if all checks pass</subtask>
+          <subtask>Update last_insight_notification_sent timestamp</subtask>
+        </subtasks>
+      </task>
+      <task id="7" ac-ref="ALL">
+        <description>Write comprehensive tests</description>
+        <subtasks>
+          <subtask>Unit tests: SendInsightNotificationUseCase, 1/day limit enforcement, confidence score filtering</subtask>
+          <subtask>Widget tests: Insight notification settings toggle</subtask>
+          <subtask>Integration test: High-confidence insight detected → notification sent → tap → InsightCard opens</subtask>
+          <subtask>Integration test: 2 insights on same day → only 1 notification sent (1/day limit)</subtask>
+          <subtask>Integration test: User disables insight notifications → no notifications sent</subtask>
+          <subtask>Integration test: Quiet hours active → notification skipped</subtask>
+          <subtask>Achieve 80%+ code coverage</subtask>
+        </subtasks>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="AC1">
+      <text>Push notification sent when high-confidence insight detected (confidence >0.7)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC2">
+      <text>Max 1 insight notification per day (prevents notification fatigue)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC3">
+      <text>Notification includes insight summary (e.g., "Your stress drops 40% on days you work out")</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC4">
+      <text>Tapping notification opens Insight Card with full details and CTAs</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC5">
+      <text>Deep link navigation: lifeos://home/insights/{insightId}</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC6">
+      <text>User can disable insight notifications in Settings</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC7">
+      <text>Quiet hours respected (no notifications during 10pm-7am by default)</text>
+      <priority>P0</priority>
+    </criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR107: Cross-module insight notifications</section>
+        <snippet>System sends insight notifications (max 1/day) when high-confidence patterns detected (confidence >0.7). Message: "💡 Pattern Detected: Your stress drops 40% on days you work out". Tap opens InsightCard with full details. User can disable in settings. Quiet hours respected.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/epics.md</path>
+        <title>Epic 8: Notifications & Engagement - Story 8.4</title>
+        <section>Story 8.4: Cross-Module Insight Notifications</section>
+        <snippet>Implement insight notifications (max 1/day). Triggered by high-confidence patterns (>0.7). Message includes insight summary. Deep link to InsightCard. User can disable in settings. Quiet hours respected.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/epics.md</path>
+        <title>Epic 5: Cross-Module Intelligence - Story 5.1</title>
+        <section>Story 5.1: Pattern Detection Engine</section>
+        <snippet>detect-patterns Edge Function analyzes correlations between modules (fitness, mind, life). Generates AI insights with confidence scores (0.0-1.0). High-confidence insights (>0.7) trigger notifications.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/epics.md</path>
+        <title>Epic 5: Cross-Module Intelligence - Story 5.2</title>
+        <section>Story 5.2: Insight Card UI</section>
+        <snippet>InsightCard displays AI-generated insights with chart, summary, and CTA actions. Examples: "Your stress drops 40% on days you work out" → CTA: "Adjust Workout Schedule". Swipe left to dismiss, swipe right to save.</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/sprint-8/8-4-cross-module-insight-notifications.md</path>
+        <title>Story 8.4: Cross-Module Insight Notifications</title>
+        <section>Technical Implementation</section>
+        <snippet>SendInsightNotificationUseCase checks last_insight_notification_sent (max 1/day). Integrates with detect-patterns Edge Function. Checks user settings (enabled/disabled) and quiet hours. Deep link: lifeos://home/insights/{id}. Notification logs stored in notification_logs table.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <reference>
+        <path>lib/core/notifications/services/fcm_service.dart</path>
+        <description>FCM service from Story 8.1. Use for sending insight notifications.</description>
+      </reference>
+      <reference>
+        <path>lib/core/notifications/services/deep_link_service.dart</path>
+        <description>Deep link service from Story 8.1. Register insight deep link route: lifeos://home/insights/{id}.</description>
+      </reference>
+      <reference>
+        <path>lib/features/home/presentation/widgets/insight_card.dart</path>
+        <description>InsightCard widget from Story 5.2. Displays insight summary, chart, and CTA actions.</description>
+      </reference>
+      <reference>
+        <path>supabase/functions/detect-patterns/index.ts</path>
+        <description>Pattern detection Edge Function from Story 5.1. Generates insights with confidence scores. Trigger notification for high-confidence insights (>0.7).</description>
+      </reference>
+      <reference>
+        <path>lib/core/notifications/domain/usecases/check_quiet_hours_usecase.dart</path>
+        <description>Quiet hours logic from Story 8.5. Use to check if notification should be sent.</description>
+      </reference>
+    </code>
+    <dependencies>
+      <flutter>
+        <sdk>3.38+</sdk>
+        <dart>3.10+</dart>
+      </flutter>
+      <packages>
+        <package name="firebase_messaging" version="^14.7.0" usage="Send insight notifications via FCM" />
+        <package name="flutter_local_notifications" version="^16.3.0" usage="Display insight notifications" />
+        <package name="flutter_riverpod" version="^3.0.0" usage="State management for insight notification settings" />
+        <package name="drift" version="^2.14.0" usage="Local SQLite database for notification settings (offline-first)" />
+        <package name="supabase_flutter" version="^2.0.0" usage="Supabase client for sync and Edge Functions" />
+        <package name="flutter_test" version="sdk" usage="Unit and widget testing framework" />
+        <package name="integration_test" version="sdk" usage="End-to-end testing framework" />
+      </packages>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint id="ARCH-1" type="architectural">
+      <description>Must follow Hybrid Architecture pattern</description>
+      <details>Create insight notification logic at lib/core/notifications/domain/usecases/. Integrate with existing FCMService, DeepLinkService, and InsightCard from previous stories. Follow clean architecture separation.</details>
+    </constraint>
+    <constraint id="ARCH-2" type="architectural">
+      <description>Offline-first implementation required</description>
+      <details>Insight notification settings stored in Drift (SQLite) first for instant feedback. Sync to Supabase when online. Notifications sent via Supabase Edge Functions (server-side triggered by pattern detection).</details>
+    </constraint>
+    <constraint id="DATA-1" type="data">
+      <description>Database schema must track notification history</description>
+      <details>Add last_insight_notification_sent (DATE) column to user_settings table. Update after sending notification. Use for 1/day limit enforcement. notification_logs table stores all sent notifications (user_id, type, title, body, sent_at).</details>
+    </constraint>
+    <constraint id="SEC-1" type="security">
+      <description>Row Level Security (RLS) policies required</description>
+      <details>Use existing RLS policies on user_settings and notification_settings tables. notification_logs table must have RLS: USING (auth.uid() = user_id).</details>
+    </constraint>
+    <constraint id="LOGIC-1" type="business-logic">
+      <description>Max 1 insight notification per day</description>
+      <details>Before sending notification, check last_insight_notification_sent. If date equals today, skip notification. If null or past date, send notification and update timestamp. Use DATE comparison (not TIMESTAMP) to enforce daily limit.</details>
+    </constraint>
+    <constraint id="LOGIC-2" type="business-logic">
+      <description>Only send high-confidence insights</description>
+      <details>Filter insights by confidence score > 0.7 (70% confidence). Lower confidence insights displayed in app but don't trigger notifications. Balance between valuable insights and notification fatigue.</details>
+    </constraint>
+    <constraint id="UX-1" type="ux">
+      <description>Notification message must be actionable</description>
+      <details>Use 💡 emoji. Include insight summary in notification body. Keep message concise (&lt;100 chars). Example: "💡 Pattern Detected: Your stress drops 40% on days you work out". Clear CTA implied: tap to learn more.</details>
+    </constraint>
+    <constraint id="UX-2" type="ux">
+      <description>Deep link must show full insight immediately</description>
+      <details>Navigate to Home tab, scroll to Insights section, expand InsightCard with tapped insight. Show full chart, summary, and CTA buttons. User can swipe left to dismiss, swipe right to save, or tap CTA to take action.</details>
+    </constraint>
+    <constraint id="INT-1" type="integration">
+      <description>Must respect quiet hours from Story 8.5</description>
+      <details>Before sending notification, check quiet_hours_enabled and current time. If in quiet hours (default 10pm-7am), skip notification. Optional: batch for delivery after quiet hours end (P1 feature).</details>
+    </constraint>
+    <constraint id="TEST-1" type="testing">
+      <description>80%+ code coverage required</description>
+      <details>Follow 70/20/10 testing pyramid. Unit tests for 1/day limit logic, widget tests for settings UI, integration test for full notification flow (detect → send → tap → navigate → InsightCard).</details>
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>SendInsightNotificationUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class SendInsightNotificationUseCase {
+          Future&lt;Result&lt;void&gt;&gt; call({
+            required String userId,
+            required String insightId,
+            required String insightText,
+            required double confidenceScore,
+          });
+        }
+      </signature>
+      <path>lib/core/notifications/domain/usecases/send_insight_notification_usecase.dart</path>
+      <notes>Checks last_insight_notification_sent (max 1/day). Checks insight_notifications_enabled. Checks quiet hours. Sends notification via send-notification Edge Function. Updates last_insight_notification_sent timestamp. Logs to notification_logs.</notes>
+    </interface>
+    <interface>
+      <name>CheckInsightNotificationEligibilityUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class CheckInsightNotificationEligibilityUseCase {
+          Future&lt;Result&lt;bool&gt;&gt; call({
+            required String userId,
+            required double confidenceScore,
+          });
+        }
+      </signature>
+      <path>lib/core/notifications/domain/usecases/check_insight_notification_eligibility_usecase.dart</path>
+      <notes>Checks if insight notification can be sent. Returns false if: confidence &lt;=0.7, already sent today, insight notifications disabled, or in quiet hours. Returns true if eligible.</notes>
+    </interface>
+    <interface>
+      <name>InsightNotificationEntity</name>
+      <kind>domain-entity</kind>
+      <signature>
+        class InsightNotificationEntity {
+          final String id;
+          final String userId;
+          final String insightId;
+          final String title;
+          final String body;
+          final String deepLink;
+          final DateTime sentAt;
+        }
+      </signature>
+      <path>lib/core/notifications/domain/entities/insight_notification_entity.dart</path>
+      <notes>Use @freezed annotation for immutability. Represents insight notification data. Stored in notification_logs table.</notes>
+    </interface>
+    <interface>
+      <name>InsightNotificationMessageBuilder</name>
+      <kind>service</kind>
+      <signature>
+        abstract class InsightNotificationMessageBuilder {
+          String buildTitle();
+          String buildBody(String insightText);
+          String buildDeepLink(String insightId);
+        }
+      </signature>
+      <path>lib/core/notifications/services/insight_notification_message_builder.dart</path>
+      <notes>Builds insight notification messages. Title: "💡 Pattern Detected". Body: insightText (max 100 chars). Deep link: lifeos://home/insights/{insightId}.</notes>
+    </interface>
+    <interface>
+      <name>user_settings table update (Supabase PostgreSQL)</name>
+      <kind>database-table</kind>
+      <signature>
+        ALTER TABLE user_settings ADD COLUMN IF NOT EXISTS
+          last_insight_notification_sent DATE;
+      </signature>
+      <path>supabase/migrations/</path>
+      <notes>Add column to track last insight notification sent date. Used for 1/day limit enforcement. DATE type (not TIMESTAMP) for daily comparison.</notes>
+    </interface>
+    <interface>
+      <name>notification_logs table (Supabase PostgreSQL)</name>
+      <kind>database-table</kind>
+      <signature>
+        CREATE TABLE notification_logs (
+          id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+          user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+          notification_type TEXT NOT NULL CHECK (notification_type IN ('reminder', 'streak', 'insight', 'report')),
+          title TEXT NOT NULL,
+          body TEXT NOT NULL,
+          deep_link TEXT,
+          sent_at TIMESTAMPTZ DEFAULT NOW()
+        );
+        CREATE INDEX idx_notification_logs_user_id ON notification_logs(user_id);
+        CREATE INDEX idx_notification_logs_sent_at ON notification_logs(sent_at DESC);
+      </signature>
+      <path>supabase/migrations/</path>
+      <notes>Logs all sent notifications. Used for debugging, analytics, and preventing duplicate notifications. RLS policy: USING (auth.uid() = user_id).</notes>
+    </interface>
+    <interface>
+      <name>detect-patterns Edge Function update</name>
+      <kind>edge-function</kind>
+      <signature>
+        // After generating insight (Story 5.1)
+        if (pattern.confidenceScore > 0.7) {
+          await sendInsightNotification(supabase, userId, aiInsight.insight, pattern.id)
+        }
+
+        async function sendInsightNotification(
+          supabase: any,
+          userId: string,
+          insightText: string,
+          insightId: string
+        ) {
+          // Check last sent (max 1/day)
+          const { data: settings } = await supabase
+            .from('user_settings')
+            .select('last_insight_notification_sent')
+            .eq('user_id', userId)
+            .single()
+
+          const today = new Date().toISOString().split('T')[0]
+          if (settings?.last_insight_notification_sent === today) {
+            console.log(`User ${userId}: Already sent insight notification today`)
+            return
+          }
+
+          // Check settings and quiet hours
+          // Send notification via send-notification Edge Function
+          // Update last_insight_notification_sent
+        }
+      </signature>
+      <path>supabase/functions/detect-patterns/index.ts</path>
+      <notes>Modify existing detect-patterns Edge Function (Story 5.1) to trigger insight notifications. Add sendInsightNotification() function. Check eligibility before sending.</notes>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Follow 70/20/10 testing pyramid: 70% unit tests (use cases, services, entities), 20% widget tests (UI components, state management), 10% integration tests (end-to-end flows). Use flutter_test for unit/widget tests, integration_test for E2E. Mock dependencies with mockito. Target 80%+ code coverage. All acceptance criteria must have test coverage.
+    </standards>
+    <locations>
+      <location>test/core/notifications/domain/usecases/</location>
+      <location>test/core/notifications/services/</location>
+      <location>test/features/settings/presentation/screens/</location>
+      <location>integration_test/notifications/insight_notifications_flow_test.dart</location>
+    </locations>
+    <ideas>
+      <test-idea ac-ref="AC1,AC2">
+        <description>Unit test: SendInsightNotificationUseCase - 1/day limit enforcement</description>
+        <approach>Mock UserSettingsRepository. Set last_insight_notification_sent to today. Call sendInsightNotification(). Verify notification NOT sent (already sent today). Set last_insight_notification_sent to yesterday. Call again. Verify notification sent and timestamp updated to today.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1">
+        <description>Unit test: CheckInsightNotificationEligibilityUseCase - confidence score filter</description>
+        <approach>Call checkEligibility() with confidence=0.6. Verify returns false (below threshold). Call with confidence=0.8. Verify returns true (above threshold). Verify 0.7 threshold enforced.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3">
+        <description>Unit test: InsightNotificationMessageBuilder</description>
+        <approach>Call buildTitle(). Verify returns "💡 Pattern Detected". Call buildBody("Your stress drops 40% on days you work out"). Verify message formatted correctly. Call buildDeepLink("insight-123"). Verify returns "lifeos://home/insights/insight-123".</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6">
+        <description>Widget test: Insight notification settings toggle</description>
+        <approach>Render NotificationSettingsScreen with insight toggle. Tap to disable. Verify updateNotificationSettings() called with category='insights', enabled=false. Verify UI updates.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC7">
+        <description>Unit test: Quiet hours check for insight notifications</description>
+        <approach>Mock CheckQuietHoursUseCase. Set quiet hours: 22:00-07:00. Mock current time: 23:00. Call sendInsightNotification(). Verify notification NOT sent (in quiet hours). Mock time: 08:00. Call again. Verify notification sent (outside quiet hours).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1,AC4,AC5">
+        <description>Integration test: High-confidence insight → notification → InsightCard</description>
+        <approach>Trigger detect-patterns Edge Function with high-confidence pattern (confidence=0.85). Verify insight notification sent. Tap notification. Verify deep link navigation to lifeos://home/insights/{id}. Verify InsightCard displayed with correct insight data (summary, chart, CTAs).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC2">
+        <description>Integration test: Max 1 notification per day</description>
+        <approach>Morning: Trigger detect-patterns with high-confidence insight A (confidence=0.8). Verify notification sent. Verify last_insight_notification_sent updated to today. Afternoon: Trigger detect-patterns with high-confidence insight B (confidence=0.9). Verify notification NOT sent (already sent today). Next day: Trigger detect-patterns with insight C. Verify notification sent (new day).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6">
+        <description>Integration test: User disables insight notifications</description>
+        <approach>Disable insight notifications in settings. Trigger detect-patterns with high-confidence insight (confidence=0.85). Verify notification NOT sent (disabled in settings). Enable notifications. Trigger again. Verify notification sent.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC7">
+        <description>Integration test: Quiet hours respected</description>
+        <approach>Set quiet hours: 22:00-07:00. Mock time: 23:00. Trigger detect-patterns with high-confidence insight. Verify notification NOT sent (in quiet hours). Mock time: 08:00 (next day). Trigger again. Verify notification sent (outside quiet hours).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1">
+        <description>Integration test: Low-confidence insight → no notification</description>
+        <approach>Trigger detect-patterns with low-confidence insight (confidence=0.5). Verify notification NOT sent (below 0.7 threshold). Verify insight still saved to database (visible in app, but no push notification).</approach>
+      </test-idea>
+    </ideas>
+  </tests>
+</story-context>

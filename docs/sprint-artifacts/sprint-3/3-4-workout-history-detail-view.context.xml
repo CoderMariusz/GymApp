@@ -1,0 +1,555 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>3</epicId>
+    <storyId>3.4</storyId>
+    <title>Workout History & Detail View</title>
+    <status>ready-for-dev</status>
+    <generatedAt>2025-11-17</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/sprint-3/3-4-workout-history-detail-view.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>user reviewing past workouts</asA>
+    <iWant>to see workout history</iWant>
+    <soThat>I can track consistency and progress</soThat>
+    <tasks>
+      <task id="1" ac-ref="AC1,AC2,AC3">
+        <description>Implement workout history list screen</description>
+        <subtasks>
+          <subtask>Create WorkoutHistoryScreen widget (StatefulWidget with infinite scroll)</subtask>
+          <subtask>Implement workout card component showing date, duration, exercise count, total volume</subtask>
+          <subtask>Add pagination support (20 workouts per page, load more on scroll)</subtask>
+          <subtask>Sort workouts by date (most recent first) using orderBy startTime DESC</subtask>
+          <subtask>Add pull-to-refresh functionality</subtask>
+          <subtask>Implement loading states (initial, pagination, refresh)</subtask>
+          <subtask>Add empty state UI when no workouts exist</subtask>
+        </subtasks>
+      </task>
+      <task id="2" ac-ref="AC7,AC8">
+        <description>Implement filtering and search functionality</description>
+        <subtasks>
+          <subtask>Create date range filter UI (7d, 30d, 3m, 1y, All)</subtask>
+          <subtask>Implement date range filtering in query logic</subtask>
+          <subtask>Add exercise name search field with debounced input (300ms)</subtask>
+          <subtask>Create search indexing on exercise_name in workouts/workout_sets tables</subtask>
+          <subtask>Implement filter state management with Riverpod</subtask>
+          <subtask>Add filter chips UI to show active filters</subtask>
+          <subtask>Handle combined filtering (date range + search)</subtask>
+        </subtasks>
+      </task>
+      <task id="3" ac-ref="AC4">
+        <description>Implement workout detail view</description>
+        <subtasks>
+          <subtask>Create WorkoutDetailScreen widget showing full workout breakdown</subtask>
+          <subtask>Display workout metadata (date, duration, total volume)</subtask>
+          <subtask>Render exercise list with sets breakdown (reps, weight, set number)</subtask>
+          <subtask>Group sets by exercise with section headers</subtask>
+          <subtask>Calculate and display per-exercise volume totals</subtask>
+          <subtask>Add navigation from history card to detail view</subtask>
+          <subtask>Implement hero animation for smooth transition</subtask>
+        </subtasks>
+      </task>
+      <task id="4" ac-ref="AC5,AC6">
+        <description>Implement edit and delete functionality</description>
+        <subtasks>
+          <subtask>Add edit button in detail view app bar</subtask>
+          <subtask>Navigate to workout edit screen (reuse workout logging UI from Story 3.3)</subtask>
+          <subtask>Implement UpdateWorkoutUseCase with optimistic updates</subtask>
+          <subtask>Add delete button with confirmation dialog ("Delete workout? This cannot be undone.")</subtask>
+          <subtask>Implement soft delete with is_deleted flag (don't hard delete data)</subtask>
+          <subtask>Update history list after edit/delete operations</subtask>
+          <subtask>Add undo snackbar for delete action (5 second window)</subtask>
+        </subtasks>
+      </task>
+      <task id="5" ac-ref="AC3">
+        <description>Implement volume calculation and aggregation</description>
+        <subtasks>
+          <subtask>Create volume calculation query: SUM(reps * weight) per workout</subtask>
+          <subtask>Add total volume display in workout cards (kg lifted)</subtask>
+          <subtask>Calculate exercise count: COUNT(DISTINCT exercise_id)</subtask>
+          <subtask>Optimize query with JOIN on workout_sets for aggregations</subtask>
+          <subtask>Add unit tests for volume calculation accuracy</subtask>
+          <subtask>Handle edge cases (zero weight, incomplete sets)</subtask>
+        </subtasks>
+      </task>
+      <task id="6" ac-ref="AC1,AC2,AC3,AC4">
+        <description>Implement data layer with pagination and filtering</description>
+        <subtasks>
+          <subtask>Create GetWorkoutHistoryUseCase with pagination support</subtask>
+          <subtask>Create GetWorkoutDetailUseCase for single workout retrieval</subtask>
+          <subtask>Implement UpdateWorkoutUseCase for editing past workouts</subtask>
+          <subtask>Implement DeleteWorkoutUseCase with soft delete logic</subtask>
+          <subtask>Create WorkoutHistoryEntity with aggregated fields (exerciseCount, totalVolume)</subtask>
+          <subtask>Add pagination to WorkoutRepository (limit, offset parameters)</subtask>
+          <subtask>Implement date range filtering in repository layer</subtask>
+          <subtask>Add search query support in repository</subtask>
+        </subtasks>
+      </task>
+      <task id="7" ac-ref="AC1,AC2,AC3">
+        <description>Optimize database queries and performance</description>
+        <subtasks>
+          <subtask>Create composite index on (user_id, start_time DESC, is_deleted)</subtask>
+          <subtask>Add index on workout_sets(workout_id, exercise_id) for JOIN optimization</subtask>
+          <subtask>Implement query caching for recently viewed workouts</subtask>
+          <subtask>Optimize volume calculation query to run in single query (avoid N+1)</subtask>
+          <subtask>Add database query profiling to ensure &lt;1s load time</subtask>
+          <subtask>Implement pagination cursor strategy for large datasets (1000+ workouts)</subtask>
+        </subtasks>
+      </task>
+      <task id="8" ac-ref="ALL">
+        <description>Write comprehensive tests</description>
+        <subtasks>
+          <subtask>Unit tests: GetWorkoutHistoryUseCase with pagination, filtering, search</subtask>
+          <subtask>Unit tests: Volume calculation accuracy across different scenarios</subtask>
+          <subtask>Unit tests: Soft delete logic, UpdateWorkoutUseCase, DeleteWorkoutUseCase</subtask>
+          <subtask>Widget tests: WorkoutHistoryScreen rendering, pagination, pull-to-refresh</subtask>
+          <subtask>Widget tests: WorkoutDetailScreen, edit/delete button flows</subtask>
+          <subtask>Widget tests: Filter UI (date range, search), filter state management</subtask>
+          <subtask>Integration test: End-to-end history browsing, detail view, edit, delete flow</subtask>
+          <subtask>Performance test: Query execution time &lt;1s for 1000+ workouts</subtask>
+          <subtask>Achieve 80%+ code coverage</subtask>
+        </subtasks>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="AC1">
+      <text>Workout history screen accessible from Fitness tab</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC2">
+      <text>Workouts sorted by date (most recent first)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC3">
+      <text>Workout cards show: Date, duration, exercise count, total volume (kg lifted)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC4">
+      <text>Tap workout → Detail view showing all sets, reps, weight</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC5">
+      <text>Detail view: Edit button to modify past workouts</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC6">
+      <text>Detail view: Delete button with confirmation dialog</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC7">
+      <text>Filter by date range (7d, 30d, 3m, 1y, All)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC8">
+      <text>Search by exercise name</text>
+      <priority>P1</priority>
+    </criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR37: Workout History View</section>
+        <snippet>Users must be able to view their complete workout history sorted chronologically. Each workout card displays date, duration, exercise count, and total volume. Target load time: &lt;1 second for 100+ workouts.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR40: Workout Detail and Editing</section>
+        <snippet>Users can tap any workout to view detailed breakdown (all exercises, sets, reps, weights). Edit and delete functionality required with confirmation dialogs. Soft delete pattern to preserve data integrity.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/epics.md</path>
+        <title>Epic 3: Fitness Coach MVP - Story 3.4</title>
+        <section>Story 3.4: Workout History & Detail View</section>
+        <snippet>Complete workout history with pagination (20 per page), volume calculation, date filtering (7d, 30d, 3m, 1y, All), exercise search, detail view with edit/delete. Prerequisites: Story 3.3 (Workout Logging).</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Hybrid Architecture (D1)</section>
+        <snippet>Feature-first architecture with clean architecture layers (presentation/domain/data). Fitness Coach module located at features/fitness_coach/. Use Riverpod for state management.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Offline-First Sync (D3)</section>
+        <snippet>Hybrid Sync pattern: Write-Through Cache + Sync Queue. Read from Drift (SQLite) first for instant feedback. Sync to Supabase when online. Support pagination and filtering in local database.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Database Schema - Fitness Coach Tables</section>
+        <snippet>Fitness Coach module uses workouts table (start_time, duration, is_deleted) and workout_sets table (exercise_id, reps, weight, set_number). All tables must have RLS policies: USING (auth.uid() = user_id).</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/ux-design-specification.md</path>
+        <title>UX Design Specification</title>
+        <section>Workout History UX</section>
+        <snippet>Infinite scroll list with pull-to-refresh. Workout cards show compact summary (date, time badge, volume badge, exercise count). Tap card → full-screen detail view with hero animation. Filter bar at top (date range chips, search field).</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/sprint-3/3-4-workout-history-detail-view.md</path>
+        <title>Story 3.4: Workout History & Detail View</title>
+        <section>Technical Implementation</section>
+        <snippet>Pagination: 20 workouts per page. Volume calculation: SUM(reps * weight). Date filtering: WHERE start_time BETWEEN. Search: JOIN workout_sets WHERE exercise_name ILIKE. Soft delete: is_deleted flag.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <file>
+        <path>lib/features/fitness_coach/domain/entities/workout_entity.dart</path>
+        <relevance>Base workout entity from Story 3.3. Extend with aggregated fields (exerciseCount, totalVolume) for history view.</relevance>
+        <note>Create WorkoutHistoryEntity that extends WorkoutEntity with computed fields for list display optimization.</note>
+      </file>
+      <file>
+        <path>lib/features/fitness_coach/domain/repositories/workout_repository.dart</path>
+        <relevance>Workout repository from Story 3.3. Add methods for getWorkoutHistory (pagination), getWorkoutDetail, updateWorkout, deleteWorkout.</relevance>
+        <note>Extend existing repository interface with pagination support (limit, offset, dateRange, searchQuery parameters).</note>
+      </file>
+      <file>
+        <path>lib/features/fitness_coach/data/datasources/workout_local_datasource.dart</path>
+        <relevance>Drift datasource from Story 3.3. Add pagination queries, JOIN with workout_sets for aggregations, soft delete logic.</relevance>
+        <note>Optimize queries with proper indexing. Use Drift's aggregation functions for volume calculation.</note>
+      </file>
+      <file>
+        <path>lib/features/fitness_coach/data/datasources/workout_remote_datasource.dart</path>
+        <relevance>Supabase datasource from Story 3.3. Mirror local datasource methods for cloud sync.</relevance>
+        <note>Use Supabase's .range() for pagination, .order() for sorting, .ilike() for search filtering.</note>
+      </file>
+    </code>
+    <dependencies>
+      <flutter>
+        <sdk>3.38+</sdk>
+        <dart>3.10+</dart>
+      </flutter>
+      <packages>
+        <package name="flutter_riverpod" version="^3.0.0" usage="State management for history list, filtering, pagination state" />
+        <package name="riverpod_annotation" version="^3.0.0" usage="Code generation for providers" />
+        <package name="drift" version="^2.14.0" usage="Local SQLite database for offline workout history and pagination" />
+        <package name="drift_flutter" version="^0.1.0" usage="Flutter integration for Drift" />
+        <package name="sqlite3_flutter_libs" version="^0.5.0" usage="SQLite native libraries" />
+        <package name="supabase_flutter" version="^2.0.0" usage="Supabase client for workout data sync and RLS policies" />
+        <package name="infinite_scroll_pagination" version="^4.0.0" usage="Infinite scroll pagination widget for workout history" />
+        <package name="flutter_test" version="sdk" usage="Unit and widget testing framework" />
+        <package name="integration_test" version="sdk" usage="End-to-end testing framework" />
+        <package name="mockito" version="^5.4.0" usage="Mocking dependencies in unit tests" />
+      </packages>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint id="ARCH-1" type="architectural">
+      <description>Must follow Hybrid Architecture pattern (D1)</description>
+      <details>Extend existing Fitness Coach feature at lib/features/fitness_coach/ with history/detail presentation layer. Maintain clean architecture separation.</details>
+    </constraint>
+    <constraint id="ARCH-2" type="architectural">
+      <description>Offline-first implementation required (D3)</description>
+      <details>Read workout history from Drift (SQLite) first. Support full pagination and filtering offline. Sync to Supabase when online. History must work without network.</details>
+    </constraint>
+    <constraint id="ARCH-3" type="architectural">
+      <description>Use Riverpod for state management (D1, D6)</description>
+      <details>Create providers for workout history pagination state, filter state, detail view state. Use AsyncNotifierProvider for data fetching. Providers in fitness_coach/presentation/providers/.</details>
+    </constraint>
+    <constraint id="DATA-1" type="data">
+      <description>Pagination implementation (20 workouts per page)</description>
+      <details>Use limit/offset pagination for initial implementation. Optimize with cursor-based pagination for large datasets (1000+ workouts). Implement infinite scroll with loading indicators.</details>
+    </constraint>
+    <constraint id="DATA-2" type="data">
+      <description>Volume calculation accuracy</description>
+      <details>Total volume = SUM(reps * weight) across all sets in workout. Handle NULL weights (bodyweight exercises = 0kg). Round to 1 decimal place. Display in kg with unit suffix.</details>
+    </constraint>
+    <constraint id="DATA-3" type="data">
+      <description>Soft delete pattern required</description>
+      <details>Add is_deleted BOOLEAN column to workouts table (default FALSE). Delete operation sets is_deleted = TRUE, preserves data. All queries filter WHERE is_deleted = FALSE. Add deleted_at timestamp.</details>
+    </constraint>
+    <constraint id="SEC-1" type="security">
+      <description>Row Level Security (RLS) policies required</description>
+      <details>Enable RLS on workouts and workout_sets tables. Policy: CREATE POLICY "Users can only access own workouts" ON workouts FOR ALL USING (auth.uid() = user_id AND is_deleted = FALSE);</details>
+    </constraint>
+    <constraint id="UX-1" type="ux">
+      <description>Infinite scroll pagination UX</description>
+      <details>Load 20 workouts initially. Show "loading more" indicator at bottom when scrolling. Pull-to-refresh at top. Empty state: "No workouts yet. Start your first workout!" with CTA button.</details>
+    </constraint>
+    <constraint id="UX-2" type="ux">
+      <description>Delete confirmation required</description>
+      <details>Show AlertDialog: "Delete workout? This cannot be undone." with "Cancel" and "Delete" (destructive red) buttons. After delete, show Snackbar with "Undo" action (5 second window).</details>
+    </constraint>
+    <constraint id="UX-3" type="ux">
+      <description>Date range filter chips</description>
+      <details>Filter bar with chips: "7d", "30d", "3m", "1y", "All" (default). Single selection. Chip selection triggers immediate filter with loading state.</details>
+    </constraint>
+    <constraint id="PERF-1" type="performance">
+      <description>History load time &lt;1 second</description>
+      <details>Initial 20 workouts must load in &lt;1s (95th percentile). Optimize with indexes: CREATE INDEX idx_workouts_user_time ON workouts(user_id, start_time DESC, is_deleted). Profile query performance.</details>
+    </constraint>
+    <constraint id="PERF-2" type="performance">
+      <description>Volume calculation optimization</description>
+      <details>Calculate volume in single aggregation query (avoid N+1). Use JOIN with workout_sets. Cache calculated values in workout cards. Re-calculate only on pull-to-refresh.</details>
+    </constraint>
+    <constraint id="PERF-3" type="performance">
+      <description>Search debouncing</description>
+      <details>Debounce search input by 300ms to avoid excessive queries. Show loading indicator during search. Use ILIKE for case-insensitive search. Create GIN index on exercise_name for full-text search performance.</details>
+    </constraint>
+    <constraint id="TEST-1" type="testing">
+      <description>80%+ code coverage required</description>
+      <details>Follow 70/20/10 testing pyramid. Unit tests for use cases, repositories, volume calculation. Widget tests for UI components, pagination, filters. Integration test for full history flow.</details>
+    </constraint>
+    <constraint id="TEST-2" type="testing">
+      <description>Performance testing required</description>
+      <details>Test query performance with 1000+ workouts. Verify &lt;1s load time. Test pagination with large datasets. Measure memory usage during infinite scroll (must stay &lt;100MB).</details>
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>WorkoutHistoryEntity</name>
+      <kind>domain-entity</kind>
+      <signature>
+        class WorkoutHistoryEntity {
+          final String id;
+          final String userId;
+          final DateTime startTime;
+          final int duration; // seconds
+          final int exerciseCount;
+          final double totalVolume; // kg
+          final bool isDeleted;
+          final DateTime? deletedAt;
+          final DateTime createdAt;
+          final DateTime updatedAt;
+        }
+      </signature>
+      <path>lib/features/fitness_coach/domain/entities/workout_history_entity.dart</path>
+      <notes>Use @freezed annotation. Extends base WorkoutEntity with aggregated fields (exerciseCount, totalVolume) for efficient list display without N+1 queries.</notes>
+    </interface>
+    <interface>
+      <name>WorkoutDetailEntity</name>
+      <kind>domain-entity</kind>
+      <signature>
+        class WorkoutDetailEntity {
+          final String id;
+          final String userId;
+          final DateTime startTime;
+          final int duration;
+          final List&lt;ExerciseSetGroup&gt; exerciseGroups; // grouped by exercise
+          final double totalVolume;
+          final bool isDeleted;
+          final DateTime createdAt;
+          final DateTime updatedAt;
+        }
+
+        class ExerciseSetGroup {
+          final String exerciseId;
+          final String exerciseName;
+          final List&lt;WorkoutSetEntity&gt; sets;
+          final double exerciseVolume;
+        }
+      </signature>
+      <path>lib/features/fitness_coach/domain/entities/workout_detail_entity.dart</path>
+      <notes>Detail entity includes full exercise and set breakdown. Sets grouped by exercise for display optimization. Exercise volume pre-calculated.</notes>
+    </interface>
+    <interface>
+      <name>GetWorkoutHistoryUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class GetWorkoutHistoryUseCase {
+          Future&lt;Result&lt;PaginatedWorkouts&gt;&gt; call({
+            required int limit,
+            required int offset,
+            DateRange? dateRange,
+            String? searchQuery,
+          });
+        }
+
+        class PaginatedWorkouts {
+          final List&lt;WorkoutHistoryEntity&gt; workouts;
+          final int totalCount;
+          final bool hasMore;
+        }
+      </signature>
+      <path>lib/features/fitness_coach/domain/usecases/get_workout_history_usecase.dart</path>
+      <notes>Returns paginated results with metadata (totalCount, hasMore). Supports date filtering and search. Default limit: 20, offset: 0.</notes>
+    </interface>
+    <interface>
+      <name>GetWorkoutDetailUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class GetWorkoutDetailUseCase {
+          Future&lt;Result&lt;WorkoutDetailEntity&gt;&gt; call(String workoutId);
+        }
+      </signature>
+      <path>lib/features/fitness_coach/domain/usecases/get_workout_detail_usecase.dart</path>
+      <notes>Fetches single workout with full exercise and set breakdown. Includes JOIN with workout_sets and exercises tables. Returns detailed entity for detail view.</notes>
+    </interface>
+    <interface>
+      <name>UpdateWorkoutUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class UpdateWorkoutUseCase {
+          Future&lt;Result&lt;WorkoutDetailEntity&gt;&gt; call({
+            required String workoutId,
+            DateTime? startTime,
+            int? duration,
+            List&lt;WorkoutSetEntity&gt;? sets,
+          });
+        }
+      </signature>
+      <path>lib/features/fitness_coach/domain/usecases/update_workout_usecase.dart</path>
+      <notes>Updates workout metadata or sets. Supports partial updates (nullable parameters). Recalculates volume after update. Returns updated workout detail entity.</notes>
+    </interface>
+    <interface>
+      <name>DeleteWorkoutUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class DeleteWorkoutUseCase {
+          Future&lt;Result&lt;void&gt;&gt; call(String workoutId, {bool hardDelete = false});
+          Future&lt;Result&lt;void&gt;&gt; undoDelete(String workoutId);
+        }
+      </signature>
+      <path>lib/features/fitness_coach/domain/usecases/delete_workout_usecase.dart</path>
+      <notes>Soft delete by default (sets is_deleted = TRUE, deleted_at = NOW()). Hard delete for admin cleanup (if hardDelete = TRUE). Includes undoDelete for 5-second undo window.</notes>
+    </interface>
+    <interface>
+      <name>WorkoutRepository (extended)</name>
+      <kind>repository</kind>
+      <signature>
+        abstract class WorkoutRepository {
+          // Existing methods from Story 3.3...
+
+          // New methods for Story 3.4:
+          Future&lt;Result&lt;PaginatedWorkouts&gt;&gt; getWorkoutHistory({
+            required String userId,
+            required int limit,
+            required int offset,
+            DateRange? dateRange,
+            String? searchQuery,
+          });
+
+          Future&lt;Result&lt;WorkoutDetailEntity&gt;&gt; getWorkoutDetail(String workoutId);
+          Future&lt;Result&lt;WorkoutDetailEntity&gt;&gt; updateWorkout(String workoutId, UpdateWorkoutParams params);
+          Future&lt;Result&lt;void&gt;&gt; deleteWorkout(String workoutId, {bool hardDelete = false});
+          Future&lt;Result&lt;void&gt;&gt; undoDeleteWorkout(String workoutId);
+        }
+      </signature>
+      <path>lib/features/fitness_coach/domain/repositories/workout_repository.dart</path>
+      <notes>Extends existing repository from Story 3.3. Implemented by WorkoutRepositoryImpl in data layer. Uses both DriftDataSource and SupabaseDataSource.</notes>
+    </interface>
+    <interface>
+      <name>workouts table (extended with soft delete)</name>
+      <kind>database-table</kind>
+      <signature>
+        -- Add to existing workouts table from Story 3.3:
+        ALTER TABLE workouts ADD COLUMN is_deleted BOOLEAN DEFAULT FALSE NOT NULL;
+        ALTER TABLE workouts ADD COLUMN deleted_at TIMESTAMPTZ;
+
+        -- Update index to include is_deleted for query optimization:
+        CREATE INDEX idx_workouts_user_time_deleted ON workouts(user_id, start_time DESC, is_deleted);
+
+        -- Add GIN index for exercise name search:
+        CREATE INDEX idx_workout_sets_exercise_name ON workout_sets USING GIN(to_tsvector('english', exercise_name));
+      </signature>
+      <path>supabase/migrations/</path>
+      <notes>Migration extends existing workouts table with soft delete columns. Update RLS policies to filter is_deleted = FALSE. Add indexes for pagination and search performance.</notes>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Follow 70/20/10 testing pyramid: 70% unit tests (use cases, repositories, entities, volume calculations), 20% widget tests (UI components, pagination, filters, state management), 10% integration tests (end-to-end history flows). Use flutter_test for unit/widget tests, integration_test for E2E. Mock dependencies with mockito. Target 80%+ code coverage. All acceptance criteria must have test coverage. Include performance tests for query execution time.
+    </standards>
+    <locations>
+      <location>test/features/fitness_coach/domain/usecases/</location>
+      <location>test/features/fitness_coach/domain/entities/</location>
+      <location>test/features/fitness_coach/data/repositories/</location>
+      <location>test/features/fitness_coach/presentation/widgets/workout_history/</location>
+      <location>test/features/fitness_coach/presentation/widgets/workout_detail/</location>
+      <location>integration_test/features/fitness_coach/workout_history_flow_test.dart</location>
+    </locations>
+    <ideas>
+      <test-idea ac-ref="AC3">
+        <description>Unit test: Volume calculation accuracy</description>
+        <approach>Test volume = SUM(reps * weight). Test cases: normal sets (10 reps x 50kg = 500kg), multiple exercises, zero weight (bodyweight), NULL handling. Verify rounding to 1 decimal place.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC2,AC3">
+        <description>Unit test: GetWorkoutHistoryUseCase pagination</description>
+        <approach>Mock WorkoutRepository. Call with limit=20, offset=0. Verify repository called with correct params. Test pagination: offset=20 returns next page. Test hasMore flag.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC7">
+        <description>Unit test: Date range filtering</description>
+        <approach>Create test workouts across 1 year. Filter by 7d, 30d, 3m, 1y. Verify correct workouts returned for each range. Test boundary conditions (exactly 7 days ago).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC8">
+        <description>Unit test: Exercise name search</description>
+        <approach>Create workouts with exercises "Bench Press", "Squat", "Deadlift". Search "bench" (case-insensitive). Verify only workouts with Bench Press returned. Test partial matching.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6">
+        <description>Unit test: Soft delete logic</description>
+        <approach>Call DeleteWorkoutUseCase. Verify is_deleted set to TRUE, deleted_at timestamp set. Verify workout not returned in getWorkoutHistory. Test undoDelete restores workout.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4">
+        <description>Unit test: GetWorkoutDetailUseCase</description>
+        <approach>Mock repository with workout containing 3 exercises, 9 total sets. Verify detail entity includes all sets grouped by exercise. Verify exercise volume calculated per exercise.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC5">
+        <description>Unit test: UpdateWorkoutUseCase</description>
+        <approach>Update workout start time and duration. Verify repository updateWorkout called. Update sets (add/remove/modify). Verify volume recalculated. Test partial updates (only duration).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1,AC2,AC3">
+        <description>Widget test: WorkoutHistoryScreen displays workout cards</description>
+        <approach>Mock GetWorkoutHistoryUseCase with 3 workouts. Render WorkoutHistoryScreen. Verify 3 cards displayed. Verify each card shows date, duration, exercise count, total volume.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC2">
+        <description>Widget test: Pagination and infinite scroll</description>
+        <approach>Mock 25 workouts (20 + 5). Render list. Verify 20 cards initially. Scroll to bottom. Verify "loading more" indicator appears. Wait for load. Verify 25 total cards displayed.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC7">
+        <description>Widget test: Date range filter chips</description>
+        <approach>Render WorkoutHistoryScreen. Verify filter chips displayed (7d, 30d, 3m, 1y, All). Tap "7d" chip. Verify chip selected state. Verify GetWorkoutHistoryUseCase called with 7-day date range.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC8">
+        <description>Widget test: Search field debouncing</description>
+        <approach>Render search field. Type "bench". Verify no query for 300ms. Wait 300ms. Verify GetWorkoutHistoryUseCase called once with searchQuery="bench". Verify debouncing prevents multiple calls.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4">
+        <description>Widget test: Navigation to detail view</description>
+        <approach>Render WorkoutHistoryScreen with workout cards. Tap first card. Verify navigation to WorkoutDetailScreen with correct workoutId. Verify hero animation triggered.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4">
+        <description>Widget test: WorkoutDetailScreen displays sets</description>
+        <approach>Mock GetWorkoutDetailUseCase with workout (2 exercises, 6 sets). Render WorkoutDetailScreen. Verify exercise section headers displayed. Verify all sets displayed with reps, weight, set number. Verify total volume displayed.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC5">
+        <description>Widget test: Edit button navigation</description>
+        <approach>Render WorkoutDetailScreen. Tap edit button in app bar. Verify navigation to workout edit screen. Verify workout data passed to edit screen.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6">
+        <description>Widget test: Delete confirmation dialog</description>
+        <approach>Render WorkoutDetailScreen. Tap delete button. Verify AlertDialog appears with "Delete workout? This cannot be undone." message. Tap Cancel. Verify dialog dismissed, no delete. Tap Delete. Verify DeleteWorkoutUseCase called.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6">
+        <description>Widget test: Delete with undo snackbar</description>
+        <approach>Tap delete, confirm. Verify Snackbar appears with "Undo" action. Tap Undo within 5s. Verify undoDelete called, workout restored. Test timeout case: wait 5s, verify undo unavailable.</approach>
+      </test-idea>
+      <test-idea ac-ref="ALL">
+        <description>Integration test: Complete workout history flow</description>
+        <approach>Launch app. Navigate to Fitness tab → History. Verify history list displayed. Filter by "30d". Search "squat". Verify filtered results. Tap workout card. Verify detail view. Tap edit, modify sets. Save. Verify history updated. Tap delete, confirm. Verify workout removed from history.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC2,AC3">
+        <description>Performance test: Query execution time &lt;1s</description>
+        <approach>Seed database with 1000 workouts, 10,000 sets. Execute getWorkoutHistory query. Measure execution time. Verify &lt;1s (95th percentile). Test with different date ranges and search queries.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC2">
+        <description>Performance test: Pagination memory usage</description>
+        <approach>Load 100+ workouts via infinite scroll. Measure memory usage during scroll. Verify stays &lt;100MB. Test scroll-up behavior (verify old items released from memory).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3">
+        <description>Unit test: Volume calculation edge cases</description>
+        <approach>Test edge cases: zero weight sets (bodyweight), NULL weights, negative weights (invalid), very large weights (1000kg). Verify calculation handles all cases correctly without overflow.</approach>
+      </test-idea>
+    </ideas>
+  </tests>
+</story-context>

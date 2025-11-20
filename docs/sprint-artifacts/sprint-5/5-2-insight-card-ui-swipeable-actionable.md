@@ -1,5 +1,13 @@
 # Story 5.2: Insight Card UI (Swipeable, Actionable)
-**Epic:** 5 - Cross-Module Intelligence | **P0** | **3 SP** | **drafted**
+**Epic:** 5 - Cross-Module Intelligence | **P0** | **3 SP** | **ready-for-dev**
+
+## Dev Agent Record
+
+### Context Reference
+
+- **Story Context File:** [5-2-insight-card-ui-swipeable-actionable.context.xml](./5-2-insight-card-ui-swipeable-actionable.context.xml)
+- **Generated:** 2025-11-17
+- **Status:** Context created, story ready for implementation
 
 ## AC
 1. ✅ Insight card on Home tab (top of feed)

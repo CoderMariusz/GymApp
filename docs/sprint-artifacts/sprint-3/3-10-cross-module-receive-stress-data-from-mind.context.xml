@@ -1,0 +1,661 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>3</epicId>
+    <storyId>3.10</storyId>
+    <title>Cross-Module: Receive Stress Data from Mind</title>
+    <status>ready-for-dev</status>
+    <generatedAt>2025-11-17</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/sprint-3/3-10-cross-module-receive-stress-data-from-mind.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>user with high stress</asA>
+    <iWant>Fitness module to adjust workout intensity</iWant>
+    <soThat>I don't overtrain when stressed</soThat>
+    <tasks>
+      <task id="1" ac-ref="AC1,AC2">
+        <description>Implement cross-module data access infrastructure</description>
+        <subtasks>
+          <subtask>Create GetStressDataUseCase to query stress_logs table</subtask>
+          <subtask>Implement CrossModuleService for accessing Mind module data</subtask>
+          <subtask>Add method getTodayStressLevel(userId) returning stress score (1-5)</subtask>
+          <subtask>Implement real-time subscription to stress_logs for live updates (&lt;5s latency)</subtask>
+          <subtask>Add privacy settings check before accessing stress data</subtask>
+        </subtasks>
+      </task>
+      <task id="2" ac-ref="AC2,AC3,AC4">
+        <description>Implement workout intensity adaptation logic</description>
+        <subtasks>
+          <subtask>Create AdaptWorkoutIntensityUseCase with stress-based rules</subtask>
+          <subtask>If stress_level >= 4 (high) → Generate light workout suggestion</subtask>
+          <subtask>If stress_level &lt; 4 → Allow normal or high intensity workouts</subtask>
+          <subtask>Create workout adjustment templates (light session, rest day)</subtask>
+          <subtask>Implement suggestion acceptance/dismissal flow</subtask>
+        </subtasks>
+      </task>
+      <task id="3" ac-ref="AC3,AC5">
+        <description>Implement StressAdjustmentInsight UI component</description>
+        <subtasks>
+          <subtask>Create StressAdjustmentInsight widget (ConsumerWidget)</subtask>
+          <subtask>Implement gradient card (Mind purple → Fitness orange)</subtask>
+          <subtask>Display stress level: "High stress detected. Consider light session or rest day."</subtask>
+          <subtask>Add "Load Light Session" button (loads light template)</subtask>
+          <subtask>Add "Continue as Planned" button (dismisses suggestion)</subtask>
+          <subtask>Show stress level indicator: "Your stress level is 4/5 today."</subtask>
+        </subtasks>
+      </task>
+      <task id="4" ac-ref="AC3,AC4">
+        <description>Display stress data on workout planning screen</description>
+        <subtasks>
+          <subtask>Add stress indicator to workout planning screen header</subtask>
+          <subtask>Display format: "Stress today: 7/10" (convert 1-5 scale to 1-10 display)</subtask>
+          <subtask>Show stress icon with color coding (green: low, yellow: medium, red: high)</subtask>
+          <subtask>Integrate stress data into AI workout suggestions</subtask>
+        </subtasks>
+      </task>
+      <task id="5" ac-ref="AC5,AC6">
+        <description>Implement offline caching and real-time sync</description>
+        <subtasks>
+          <subtask>Cache last 7 days of stress data in Drift (local SQLite)</subtask>
+          <subtask>Create cached_stress_data table in Drift</subtask>
+          <subtask>Implement sync mechanism: Supabase realtime → Drift cache</subtask>
+          <subtask>Ensure offline access to cached stress data</subtask>
+          <subtask>Handle cache expiration (7-day rolling window)</subtask>
+        </subtasks>
+      </task>
+      <task id="6" ac-ref="AC7,AC8">
+        <description>Implement privacy controls and fallback logic</description>
+        <subtasks>
+          <subtask>Add "Allow stress-fitness integration" toggle to settings</subtask>
+          <subtask>Create PrivacySettingsProvider for cross-module permissions</subtask>
+          <subtask>If privacy disabled → Hide stress data and suggestions</subtask>
+          <subtask>Implement fallback when stress data unavailable → Use default workout recommendations</subtask>
+          <subtask>Log privacy state and fallback events for debugging</subtask>
+        </subtasks>
+      </task>
+      <task id="7" ac-ref="AC6">
+        <description>Log workout adjustments and stress context</description>
+        <subtasks>
+          <subtask>When user accepts suggestion, add note to workout: "Adjusted for high stress"</subtask>
+          <subtask>Store stress_level in workout metadata for historical analysis</subtask>
+          <subtask>Enable future correlation analysis (stress vs workout performance)</subtask>
+        </subtasks>
+      </task>
+      <task id="8" ac-ref="ALL">
+        <description>Write comprehensive tests</description>
+        <subtasks>
+          <subtask>Unit tests: GetStressDataUseCase (success, failure, offline scenarios)</subtask>
+          <subtask>Unit tests: AdaptWorkoutIntensityUseCase (high/medium/low stress cases)</subtask>
+          <subtask>Unit tests: Privacy settings enforcement</subtask>
+          <subtask>Unit tests: Fallback logic when stress data unavailable</subtask>
+          <subtask>Widget tests: StressAdjustmentInsight UI rendering and interactions</subtask>
+          <subtask>Widget tests: Stress indicator on workout planning screen</subtask>
+          <subtask>Integration test: End-to-end stress data retrieval and workout adjustment flow</subtask>
+          <subtask>Integration test: Real-time sync from Mind to Fitness module (&lt;5s latency)</subtask>
+          <subtask>Integration test: Offline access to cached stress data</subtask>
+          <subtask>Achieve 75%+ code coverage</subtask>
+        </subtasks>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="AC1">
+      <text>Fitness module queries Mind module for today's stress level (1-5)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC2">
+      <text>If stress >= 4 (high) → Show workout adjustment suggestion</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC3">
+      <text>Suggestion: "High stress detected. Consider light session or rest day."</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC4">
+      <text>User can accept suggestion (loads light template) or dismiss</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC5">
+      <text>Suggestion shown as insight card (Mind purple → Fitness orange gradient)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC6">
+      <text>Logged in workout notes: "Adjusted for high stress"</text>
+      <priority>P1</priority>
+    </criterion>
+    <criterion id="AC7">
+      <text>Stress data displayed on workout planning screen ("Stress today: 7/10")</text>
+      <priority>P1</priority>
+    </criterion>
+    <criterion id="AC8">
+      <text>AI workout suggestions factor stress level</text>
+      <priority>P1</priority>
+    </criterion>
+    <criterion id="AC9">
+      <text>Stress data synced in real-time (&lt;5s latency)</text>
+      <priority>P1</priority>
+    </criterion>
+    <criterion id="AC10">
+      <text>Stress data accessible offline (last 7 days cached)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC11">
+      <text>Privacy: User can disable stress-fitness integration (settings)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC12">
+      <text>Fallback if stress data unavailable → default recommendations</text>
+      <priority>P0</priority>
+    </criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR77: Cross-Module Intelligence - Stress-based workout adjustment</section>
+        <snippet>System detects high stress (Mind) + heavy workout scheduled (Fitness) → suggests light session. Killer feature differentiating LifeOS from competitors.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR79: High workout volume + elevated stress → rest day recommendation</section>
+        <snippet>System detects high workout volume (Fitness) + elevated stress → recommends rest day. Prevents overtraining and burnout.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR81: Stress spike → meditation suggestion</section>
+        <snippet>System suggests meditation (Mind) when Life Coach detects stress spike. Cross-module intelligence for holistic well-being.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Cross-Module Data Flow (D7)</section>
+        <snippet>Shared Core Schema: user_daily_metrics table aggregates data from all modules. Fitness Module → workout_completed → user_daily_metrics. Mind Module → stress_level → user_daily_metrics. CMI Module → Correlation Analysis → Insights.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Database Schema - user_daily_metrics table</section>
+        <snippet>Shared cross-module table: user_daily_metrics with columns: stress_level (1-10), mood_score (1-10), workout_completed (BOOLEAN), meditation_completed (BOOLEAN). Used for cross-module intelligence and pattern detection.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Row Level Security (RLS) Policies</section>
+        <snippet>All cross-module tables must have RLS policies: CREATE POLICY "Users can only access their own metrics" ON user_daily_metrics FOR ALL USING (auth.uid() = user_id);</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Offline-First Sync (D3)</section>
+        <snippet>Hybrid Sync pattern: Write-Through Cache + Sync Queue. Cache critical cross-module data (last 7 days) in Drift for offline access. Real-time subscriptions for live updates when online.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/epics.md</path>
+        <title>Epic 3: Fitness Coach MVP - Story 3.10</title>
+        <section>Story 3.10: Cross-Module: Receive Stress Data from Mind</section>
+        <snippet>Fitness module accesses Mind module stress data to adapt workout intensity. Uses cross-module API via shared user_daily_metrics and stress_logs tables. Privacy controls and offline caching required.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/ux-design-specification.md</path>
+        <title>UX Design Specification</title>
+        <section>Cross-Module Insight Cards</section>
+        <snippet>Insight cards use gradient backgrounds: Mind purple (#7C3AED) → Fitness orange (#F97316). Clear CTA buttons: "Load Light Session" (primary) and "Continue as Planned" (secondary). Icons: 💡 for insights, ⚠️ for warnings.</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/sprint-3/3-10-cross-module-receive-stress-data-from-mind.md</path>
+        <title>Story 3.10: Cross-Module: Receive Stress Data from Mind</title>
+        <section>Technical Implementation</section>
+        <snippet>CrossModuleService queries stress_logs table for today's stress score. StressAdjustmentInsight widget displays gradient card with adjustment suggestions. User can accept (loads light template) or dismiss.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <reference>
+        <path>lib/features/fitness/domain/usecases/</path>
+        <description>Existing Fitness module use cases structure for reference</description>
+        <note>Follow established patterns from Stories 3.1-3.9 for consistency</note>
+      </reference>
+      <reference>
+        <path>lib/features/fitness/presentation/widgets/</path>
+        <description>Existing Fitness widgets (workout cards, progress charts)</description>
+        <note>Match design patterns and styling for cohesive UI</note>
+      </reference>
+      <reference>
+        <path>lib/core/database/tables.drift.dart</path>
+        <description>Existing Drift table definitions</description>
+        <note>Add cached_stress_data table following established patterns</note>
+      </reference>
+      <note>Story 3.10 is the first cross-module integration story for Fitness. No existing cross-module code to reference. This story establishes the pattern for future cross-module features.</note>
+    </code>
+    <dependencies>
+      <flutter>
+        <sdk>3.38+</sdk>
+        <dart>3.10+</dart>
+      </flutter>
+      <packages>
+        <package name="flutter_riverpod" version="^3.0.0" usage="State management for stress data providers and insight card" />
+        <package name="riverpod_annotation" version="^3.0.0" usage="Code generation for cross-module providers" />
+        <package name="drift" version="^2.14.0" usage="Local SQLite caching of stress data (last 7 days)" />
+        <package name="drift_flutter" version="^0.1.0" usage="Flutter integration for Drift" />
+        <package name="supabase_flutter" version="^2.0.0" usage="Real-time subscriptions to stress_logs table and RLS enforcement" />
+        <package name="freezed" version="^2.4.0" usage="Immutable domain entities for stress data" />
+        <package name="freezed_annotation" version="^2.4.0" usage="Freezed code generation annotations" />
+        <package name="flutter_test" version="sdk" usage="Unit and widget testing framework" />
+        <package name="integration_test" version="sdk" usage="End-to-end cross-module integration testing" />
+        <package name="mockito" version="^5.4.0" usage="Mocking dependencies for unit tests" />
+      </packages>
+      <prerequisites>
+        <prerequisite>Epic 1: Core Platform Foundation (auth, data sync, RLS policies)</prerequisite>
+        <prerequisite>Epic 4: Mind &amp; Emotion MVP (stress tracking via stress_logs table)</prerequisite>
+        <prerequisite>Stories 3.1-3.9: Fitness module base functionality (workout logging, templates)</prerequisite>
+      </prerequisites>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint id="ARCH-1" type="architectural">
+      <description>Cross-Module Architecture Pattern (D7)</description>
+      <details>Use shared user_daily_metrics table and module-specific stress_logs table for cross-module data access. Fitness module queries Mind module data via direct table access (same Supabase database). No REST API calls between modules - use shared database layer.</details>
+    </constraint>
+    <constraint id="ARCH-2" type="architectural">
+      <description>Offline-First with 7-day cache (D3)</description>
+      <details>Cache last 7 days of stress data in Drift (SQLite) for offline access. Real-time subscription to stress_logs when online (&lt;5s latency). Fallback to cached data when offline or Mind module unavailable.</details>
+    </constraint>
+    <constraint id="ARCH-3" type="architectural">
+      <description>Privacy-First Design</description>
+      <details>User must consent to cross-module data sharing via settings toggle: "Allow stress-fitness integration" (default ON). When disabled, hide all stress-related UI and use default workout recommendations. Privacy state stored in user_settings table.</details>
+    </constraint>
+    <constraint id="DATA-1" type="data">
+      <description>stress_logs table structure (Mind module)</description>
+      <details>Query stress_logs table: id (UUID), user_id (UUID FK), date (DATE), stress_score (INT 1-5), created_at, updated_at. Use .eq('user_id', userId).eq('date', today).maybeSingle() for today's stress level.</details>
+    </constraint>
+    <constraint id="DATA-2" type="data">
+      <description>cached_stress_data table structure (Drift)</description>
+      <details>Create Drift table: cached_stress_data with columns: id (TEXT), user_id (TEXT), date (DATE), stress_score (INT 1-5), synced_at (DATETIME). Implements 7-day rolling cache with automatic cleanup.</details>
+    </constraint>
+    <constraint id="SEC-1" type="security">
+      <description>Row Level Security (RLS) enforcement</description>
+      <details>Verify RLS policies on stress_logs table: POLICY "Users can only access own stress logs" ON stress_logs FOR ALL USING (auth.uid() = user_id). Supabase client automatically enforces RLS - no additional code needed.</details>
+    </constraint>
+    <constraint id="UX-1" type="ux">
+      <description>Insight card design specification</description>
+      <details>StressAdjustmentInsight card: Gradient background (LinearGradient: [Color(0xFF7C3AED), Color(0xFFF97316)]). Header: "💡 High Stress Detected". Body: "Your stress level is 4/5 today. Consider a light session or rest day." CTAs: ElevatedButton "Load Light Session" + TextButton "Continue as Planned".</details>
+    </constraint>
+    <constraint id="UX-2" type="ux">
+      <description>Stress indicator on workout screen</description>
+      <details>Display stress level on workout planning screen header: "Stress today: 7/10" (convert 1-5 scale to 2-10 display: stress_display = stress_score * 2). Color coding: 1-4 = green (Colors.green), 5-7 = yellow (Colors.amber), 8-10 = red (Colors.red).</details>
+    </constraint>
+    <constraint id="PERF-1" type="performance">
+      <description>Real-time sync latency &lt;5s</description>
+      <details>Supabase realtime subscription must deliver stress updates within 5 seconds. Use .stream() with filter(FilterType.eq('user_id', userId)) for real-time updates. Monitor latency in integration tests.</details>
+    </constraint>
+    <constraint id="PERF-2" type="performance">
+      <description>Offline cache query &lt;100ms</description>
+      <details>Drift cache query must return in &lt;100ms. Use indexed query: (cached_stress_data.userId &amp; cached_stress_data.date) for fast retrieval. Pre-load cache on app startup for instant access.</details>
+    </constraint>
+    <constraint id="BUSINESS-1" type="business-logic">
+      <description>Workout intensity adaptation rules</description>
+      <details>If stress_score >= 4 → Suggest "Light Session" (bodyweight exercises, stretching, yoga). If stress_score &lt; 4 → Allow normal recommendations. Light template: 30-min duration, 3-4 exercises, bodyweight only, low intensity.</details>
+    </constraint>
+    <constraint id="BUSINESS-2" type="business-logic">
+      <description>Fallback logic when stress data unavailable</description>
+      <details>If stress_logs query returns null OR user disabled integration OR offline with no cache → Use default workout recommendations. Log fallback event: "Stress data unavailable - using default recommendations" for debugging.</details>
+    </constraint>
+    <constraint id="TEST-1" type="testing">
+      <description>75%+ code coverage required</description>
+      <details>Cross-module integration is critical. Test all scenarios: high/medium/low stress, privacy enabled/disabled, online/offline, real-time sync, fallback logic. Follow 70/20/10 testing pyramid.</details>
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>StressDataEntity</name>
+      <kind>domain-entity</kind>
+      <signature>
+        @freezed
+        class StressDataEntity with _$StressDataEntity {
+          const factory StressDataEntity({
+            required String id,
+            required String userId,
+            required DateTime date,
+            required int stressScore,  // 1-5
+            required DateTime syncedAt,
+          }) = _StressDataEntity;
+        }
+      </signature>
+      <path>lib/features/fitness/domain/entities/stress_data_entity.dart</path>
+      <notes>Use @freezed for immutability. Validation: stressScore must be 1-5. Used for cached stress data in Drift and domain layer.</notes>
+    </interface>
+    <interface>
+      <name>GetStressDataUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class GetStressDataUseCase {
+          /// Fetches today's stress level from Mind module
+          /// Returns cached data if offline
+          /// Returns null if unavailable or privacy disabled
+          Future&lt;Result&lt;StressDataEntity?&gt;&gt; getTodayStressLevel(String userId);
+
+          /// Fetches stress data for date range (max 7 days)
+          Future&lt;Result&lt;List&lt;StressDataEntity&gt;&gt;&gt; getStressDataRange(
+            String userId,
+            DateTime startDate,
+            DateTime endDate,
+          );
+        }
+      </signature>
+      <path>lib/features/fitness/domain/usecases/get_stress_data_usecase.dart</path>
+      <notes>Returns Result&lt;T&gt; pattern (Success/Failure). Check privacy settings first. Query Supabase stress_logs if online, fallback to Drift cache if offline. Returns null if data unavailable.</notes>
+    </interface>
+    <interface>
+      <name>AdaptWorkoutIntensityUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class AdaptWorkoutIntensityUseCase {
+          /// Generates workout suggestion based on stress level
+          /// Returns light workout template if stress >= 4
+          /// Returns null if stress &lt; 4 (no adjustment needed)
+          Future&lt;Result&lt;WorkoutSuggestion?&gt;&gt; call({
+            required int stressScore,
+            required WorkoutTemplate currentPlan,
+          });
+        }
+      </signature>
+      <path>lib/features/fitness/domain/usecases/adapt_workout_intensity_usecase.dart</path>
+      <notes>Business logic: stress >= 4 → Return light workout template. stress &lt; 4 → Return null (no adjustment). Light template: 30-min, bodyweight exercises, low intensity.</notes>
+    </interface>
+    <interface>
+      <name>WorkoutSuggestion</name>
+      <kind>domain-entity</kind>
+      <signature>
+        @freezed
+        class WorkoutSuggestion with _$WorkoutSuggestion {
+          const factory WorkoutSuggestion({
+            required String id,
+            required String title,           // "Light Session"
+            required String message,         // "High stress detected..."
+            required WorkoutTemplate template,
+            required String reason,          // "Adjusted for high stress"
+            required SuggestionType type,    // stress_adjustment
+          }) = _WorkoutSuggestion;
+        }
+
+        enum SuggestionType { stress_adjustment, recovery, performance }
+      </signature>
+      <path>lib/features/fitness/domain/entities/workout_suggestion.dart</path>
+      <notes>Represents workout adjustment suggestion. Used by AdaptWorkoutIntensityUseCase and StressAdjustmentInsight widget.</notes>
+    </interface>
+    <interface>
+      <name>CrossModuleService</name>
+      <kind>service</kind>
+      <signature>
+        class CrossModuleService {
+          final SupabaseClient _supabase;
+          final PrivacySettingsProvider _privacySettings;
+
+          /// Queries Mind module's stress_logs table for today's stress
+          Future&lt;int?&gt; getTodayStressLevel(String userId) async {
+            // Check privacy settings
+            final canAccess = await _privacySettings.canAccessStressData();
+            if (!canAccess) return null;
+
+            final today = DateTime.now().toIso8601String().split('T')[0];
+            final result = await _supabase
+              .from('stress_logs')
+              .select('stress_score')
+              .eq('user_id', userId)
+              .eq('date', today)
+              .maybeSingle();
+
+            return result?['stress_score'] as int?;
+          }
+
+          /// Subscribes to real-time stress updates
+          Stream&lt;StressDataEntity&gt; subscribeToStressUpdates(String userId) {
+            return _supabase
+              .from('stress_logs')
+              .stream(primaryKey: ['id'])
+              .eq('user_id', userId)
+              .map((data) => StressDataEntity.fromJson(data));
+          }
+        }
+      </signature>
+      <path>lib/features/fitness/data/services/cross_module_service.dart</path>
+      <notes>Handles all cross-module communication with Mind module. Enforces privacy settings. Provides real-time subscription. Returns null if data unavailable or privacy disabled.</notes>
+    </interface>
+    <interface>
+      <name>PrivacySettingsProvider</name>
+      <kind>provider</kind>
+      <signature>
+        @riverpod
+        class PrivacySettingsProvider extends _$PrivacySettingsProvider {
+          Future&lt;bool&gt; canAccessStressData() async {
+            final settings = await _getUserSettings();
+            return settings.allowStressFitnessIntegration ?? true; // default ON
+          }
+
+          Future&lt;void&gt; setStressFitnessIntegration(bool enabled) async {
+            await _updateUserSettings(
+              allowStressFitnessIntegration: enabled,
+            );
+          }
+        }
+      </signature>
+      <path>lib/features/fitness/presentation/providers/privacy_settings_provider.dart</path>
+      <notes>Manages cross-module privacy settings. Stored in user_settings table. Default: enabled. Used by CrossModuleService and UI to check permissions.</notes>
+    </interface>
+    <interface>
+      <name>StressAdjustmentInsight widget</name>
+      <kind>ui-component</kind>
+      <signature>
+        class StressAdjustmentInsight extends ConsumerWidget {
+          final WorkoutSuggestion suggestion;
+          final VoidCallback onAccept;
+          final VoidCallback onDismiss;
+
+          @override
+          Widget build(BuildContext context, WidgetRef ref) {
+            return Card(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Color(0xFF7C3AED), Color(0xFFF97316)], // Mind → Fitness
+                ),
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Padding(
+                padding: EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('💡 High Stress Detected', style: headlineStyle),
+                    SizedBox(height: 8),
+                    Text(suggestion.message, style: bodyStyle),
+                    SizedBox(height: 16),
+                    Row(
+                      children: [
+                        ElevatedButton(
+                          onPressed: onAccept,
+                          child: Text('Load Light Session'),
+                        ),
+                        SizedBox(width: 8),
+                        TextButton(
+                          onPressed: onDismiss,
+                          child: Text('Continue as Planned'),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            );
+          }
+        }
+      </signature>
+      <path>lib/features/fitness/presentation/widgets/stress_adjustment_insight.dart</path>
+      <notes>Gradient card widget for stress-based workout suggestions. Shows on workout planning screen when stress >= 4. User can accept (loads light template) or dismiss. Follows UX design spec.</notes>
+    </interface>
+    <interface>
+      <name>stress_logs table (Supabase PostgreSQL - Mind module)</name>
+      <kind>database-table</kind>
+      <signature>
+        -- Existing table from Epic 4 (Mind module)
+        -- READ ONLY for Fitness module (no INSERT/UPDATE/DELETE)
+        CREATE TABLE stress_logs (
+          id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+          user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+          date DATE NOT NULL,
+          stress_score INT NOT NULL CHECK (stress_score BETWEEN 1 AND 5),
+          created_at TIMESTAMPTZ DEFAULT NOW(),
+          updated_at TIMESTAMPTZ DEFAULT NOW(),
+          UNIQUE(user_id, date)
+        );
+
+        CREATE INDEX idx_stress_logs_user_date ON stress_logs(user_id, date DESC);
+
+        -- RLS Policy (enforced by Supabase)
+        CREATE POLICY "Users can only access own stress logs"
+          ON stress_logs FOR ALL
+          USING (auth.uid() = user_id);
+      </signature>
+      <path>supabase/migrations/</path>
+      <notes>Created by Epic 4 (Mind module). Fitness module has READ ONLY access via RLS. Use .eq('user_id', userId).eq('date', today) to query today's stress.</notes>
+    </interface>
+    <interface>
+      <name>cached_stress_data table (Drift SQLite)</name>
+      <kind>database-table</kind>
+      <signature>
+        @DataClassName('CachedStressData')
+        class CachedStressDataTable extends Table {
+          TextColumn get id => text()();
+          TextColumn get userId => text()();
+          DateTimeColumn get date => dateTime()();
+          IntColumn get stressScore => integer().check(stressScore.isBetweenValues(1, 5))();
+          DateTimeColumn get syncedAt => dateTime()();
+
+          @override
+          Set&lt;Column&gt; get primaryKey => {id};
+        }
+
+        // Query method
+        Future&lt;CachedStressData?&gt; getTodayStressFromCache(String userId) async {
+          final today = DateTime.now().onlyDate();
+          return (select(cachedStressDataTable)
+            ..where((t) => t.userId.equals(userId) &amp; t.date.equals(today))
+          ).getSingleOrNull();
+        }
+
+        // Cleanup method (7-day rolling window)
+        Future&lt;void&gt; cleanupOldCache() async {
+          final cutoffDate = DateTime.now().subtract(Duration(days: 7));
+          await (delete(cachedStressDataTable)
+            ..where((t) => t.date.isSmallerThanValue(cutoffDate))
+          ).go();
+        }
+      </signature>
+      <path>lib/core/database/tables.drift.dart</path>
+      <notes>Local cache of stress data for offline access. Stores last 7 days. Auto-cleanup via cron job. Drift code generation required (build_runner).</notes>
+    </interface>
+    <interface>
+      <name>user_settings table update (add privacy toggle)</name>
+      <kind>database-migration</kind>
+      <signature>
+        -- Migration: Add cross-module privacy settings
+        ALTER TABLE user_settings
+        ADD COLUMN allow_stress_fitness_integration BOOLEAN DEFAULT TRUE;
+
+        -- No RLS policy change needed (inherits from user_settings)
+      </signature>
+      <path>supabase/migrations/</path>
+      <notes>Adds privacy toggle for stress-fitness integration to existing user_settings table. Default: enabled (TRUE). Stored in Supabase, cached in Drift.</notes>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Follow 70/20/10 testing pyramid: 70% unit tests (use cases, services, entities), 20% widget tests (StressAdjustmentInsight, stress indicator), 10% integration tests (cross-module flow, real-time sync). Use flutter_test for unit/widget tests, integration_test for E2E. Mock CrossModuleService and PrivacySettingsProvider with mockito. Target 75%+ code coverage. All acceptance criteria must have test coverage.
+    </standards>
+    <locations>
+      <location>test/features/fitness/domain/usecases/get_stress_data_usecase_test.dart</location>
+      <location>test/features/fitness/domain/usecases/adapt_workout_intensity_usecase_test.dart</location>
+      <location>test/features/fitness/data/services/cross_module_service_test.dart</location>
+      <location>test/features/fitness/presentation/providers/privacy_settings_provider_test.dart</location>
+      <location>test/features/fitness/presentation/widgets/stress_adjustment_insight_test.dart</location>
+      <location>integration_test/features/fitness/cross_module_stress_flow_test.dart</location>
+    </locations>
+    <ideas>
+      <test-idea ac-ref="AC1">
+        <description>Unit test: GetStressDataUseCase - successful query</description>
+        <approach>Mock CrossModuleService to return stress_score = 4. Call getTodayStressLevel(). Assert Success result with stressScore = 4. Verify service called once.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1,AC12">
+        <description>Unit test: GetStressDataUseCase - stress data unavailable</description>
+        <approach>Mock service to return null (no stress log for today). Call getTodayStressLevel(). Assert Success(null). Verify fallback logic triggered (default recommendations).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC11">
+        <description>Unit test: GetStressDataUseCase - privacy disabled</description>
+        <approach>Mock PrivacySettingsProvider.canAccessStressData() = false. Call getTodayStressLevel(). Assert Success(null) without querying database. Verify service NOT called.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC10">
+        <description>Unit test: GetStressDataUseCase - offline mode uses cache</description>
+        <approach>Mock network unavailable (service throws NetworkException). Mock Drift cache returns stress_score = 3. Call getTodayStressLevel(). Assert Success with cached data.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC2,AC3,AC4">
+        <description>Unit test: AdaptWorkoutIntensityUseCase - high stress (>=4)</description>
+        <approach>Call usecase with stress_score = 4. Assert returns WorkoutSuggestion with light template. Verify suggestion.title = "Light Session", suggestion.reason = "Adjusted for high stress".</approach>
+      </test-idea>
+      <test-idea ac-ref="AC2">
+        <description>Unit test: AdaptWorkoutIntensityUseCase - normal stress (&lt;4)</description>
+        <approach>Call usecase with stress_score = 3. Assert returns null (no adjustment needed). Verify no light template generated.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC5">
+        <description>Widget test: StressAdjustmentInsight renders correctly</description>
+        <approach>Render widget with mock WorkoutSuggestion. Verify gradient colors (purple → orange). Verify text: "💡 High Stress Detected", "Your stress level is 4/5 today". Verify buttons: "Load Light Session", "Continue as Planned".</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4">
+        <description>Widget test: StressAdjustmentInsight - accept suggestion</description>
+        <approach>Render widget. Tap "Load Light Session" button. Verify onAccept callback triggered. Verify light template loaded (mock navigation).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4">
+        <description>Widget test: StressAdjustmentInsight - dismiss suggestion</description>
+        <approach>Render widget. Tap "Continue as Planned" button. Verify onDismiss callback triggered. Verify suggestion card dismissed.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC7">
+        <description>Widget test: Stress indicator on workout planning screen</description>
+        <approach>Render workout planning screen with stress_score = 4 (8/10 display). Verify "Stress today: 8/10" text. Verify color = yellow (stress 5-7 range). Test edge cases: 1/10 (green), 10/10 (red).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC9">
+        <description>Integration test: Real-time stress data sync (&lt;5s)</description>
+        <approach>Insert stress_log in Supabase (stress_score = 5). Start real-time subscription. Measure latency until Fitness module receives update. Assert latency &lt; 5 seconds. Verify StressAdjustmentInsight appears.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC10">
+        <description>Integration test: Offline access to cached stress data</description>
+        <approach>Pre-load Drift cache with 7 days of stress data. Disable network. Query getTodayStressLevel(). Verify returns cached data. Verify no Supabase query attempted. Verify UI displays cached stress level.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6">
+        <description>Integration test: Workout adjustment logged in notes</description>
+        <approach>Trigger high stress (stress_score = 5). Show suggestion. Accept suggestion. Complete workout. Query workout notes. Verify contains "Adjusted for high stress". Verify stress_level stored in workout metadata.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC11">
+        <description>Integration test: Privacy toggle disables stress integration</description>
+        <approach>Navigate to Settings. Toggle "Allow stress-fitness integration" OFF. Navigate to workout planning. Verify stress indicator hidden. Verify no StressAdjustmentInsight shown. Toggle ON. Verify stress data appears.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC12">
+        <description>Integration test: Fallback to default recommendations</description>
+        <approach>Mock stress data unavailable (Mind module down). Navigate to workout planning. Verify default recommendations shown (no stress adjustment). Verify fallback event logged. Verify no errors thrown.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC9">
+        <description>Unit test: Drift cache cleanup (7-day rolling window)</description>
+        <approach>Insert 10 days of stress data in Drift cache. Call cleanupOldCache(). Query cache. Verify only last 7 days remain. Verify older data deleted.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC8">
+        <description>Unit test: AI workout suggestions factor stress level</description>
+        <approach>Mock AI service. Call generateWorkoutPlan(stress_score = 5). Verify AI receives stress_score in request payload. Verify generated plan has lower intensity (lighter exercises, fewer sets).</approach>
+      </test-idea>
+    </ideas>
+  </tests>
+</story-context>

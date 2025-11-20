@@ -1,7 +1,7 @@
 # Story 2.8: Daily Plan Manual Adjustment
 
 **Epic:** Epic 2 - Life Coach MVP
-**Priority:** P1 | **Status:** drafted | **Effort:** 2 SP
+**Priority:** P1 | **Status:** ready-for-dev | **Effort:** 2 SP
 
 ---
 
@@ -76,6 +76,11 @@ ReorderableListView(
 **Prerequisites:** Story 2.2 (Daily Plan must exist)
 
 **Coverage Target:** 80%+
+
+---
+
+## Dev Agent Record
+**Context File:** 2-8-daily-plan-manual-adjustment.context.xml
 
 ---
 

@@ -1,0 +1,517 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>6</epicId>
+    <storyId>6.1</storyId>
+    <title>Streak Tracking System (Workouts, Meditations, Check-ins)</title>
+    <status>ready-for-dev</status>
+    <generatedAt>2025-11-17</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/sprint-6/6-1-streak-tracking-system-workouts-meditations-check-ins.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>user building habits</asA>
+    <iWant>to see my streaks for workouts, meditations, and check-ins</iWant>
+    <soThat>I'm motivated to maintain consistency</soThat>
+    <tasks>
+      <task id="1" ac-ref="AC1,AC2,AC3,AC7,AC8">
+        <description>Implement streak tracking data model and database schema</description>
+        <subtasks>
+          <subtask>Create streaks table in Drift (local SQLite)</subtask>
+          <subtask>Create streaks table in Supabase (PostgreSQL) with RLS policies</subtask>
+          <subtask>Add columns: id, user_id, type (workout/meditation/checkin), current_streak, longest_streak, freeze_used_this_week, last_activity_date, created_at, updated_at</subtask>
+          <subtask>Add CHECK constraint on type ENUM ('workout', 'meditation', 'checkin')</subtask>
+          <subtask>Add UNIQUE constraint on (user_id, type)</subtask>
+          <subtask>Create indexes on user_id and type for query performance</subtask>
+        </subtasks>
+      </task>
+      <task id="2" ac-ref="AC1,AC2,AC3">
+        <description>Implement StreakEntity and domain models</description>
+        <subtasks>
+          <subtask>Create StreakEntity with @freezed annotation (id, userId, type, currentStreak, longestStreak, freezeUsedThisWeek, lastActivityDate)</subtask>
+          <subtask>Create StreakType enum (workout, meditation, checkin)</subtask>
+          <subtask>Add validation logic for streak fields (non-negative integers)</subtask>
+          <subtask>Implement copyWith methods for immutability</subtask>
+        </subtasks>
+      </task>
+      <task id="3" ac-ref="AC2,AC3">
+        <description>Implement streak calculation logic</description>
+        <subtasks>
+          <subtask>Create IncrementStreakUseCase - increments streak when activity completed</subtask>
+          <subtask>Check if last_activity_date is today (don't increment twice)</subtask>
+          <subtask>Check if last_activity_date is yesterday (increment streak)</subtask>
+          <subtask>Check if streak should break (missed day, no freeze available)</subtask>
+          <subtask>Update longest_streak if current_streak exceeds it</subtask>
+          <subtask>Update last_activity_date to today</subtask>
+        </subtasks>
+      </task>
+      <task id="4" ac-ref="AC4,AC5,AC6">
+        <description>Implement streak freeze mechanism</description>
+        <subtasks>
+          <subtask>Add freeze logic: 1 freeze per week per streak type</subtask>
+          <subtask>Auto-apply freeze on first miss (don't break streak immediately)</subtask>
+          <subtask>Set freeze_used_this_week = true when freeze used</subtask>
+          <subtask>Implement weekly reset logic (Sunday midnight resets freeze_used_this_week to false)</subtask>
+          <subtask>Create GetFreezeAvailabilityUseCase to check if freeze available</subtask>
+        </subtasks>
+      </task>
+      <task id="5" ac-ref="AC6">
+        <description>Implement weekly freeze reset cron job</description>
+        <subtasks>
+          <subtask>Create Supabase Edge Function for weekly reset (triggered Sunday 00:00 UTC)</subtask>
+          <subtask>SQL query: UPDATE streaks SET freeze_used_this_week = false WHERE freeze_used_this_week = true</subtask>
+          <subtask>Add logging for successful reset operations</subtask>
+          <subtask>Handle timezone conversions (user's local Sunday)</subtask>
+        </subtasks>
+      </task>
+      <task id="6" ac-ref="AC2,AC3">
+        <description>Implement daily streak check cron job</description>
+        <subtasks>
+          <subtask>Create Supabase Edge Function for daily check (triggered every day 00:01 UTC)</subtask>
+          <subtask>For each user, check if activity completed yesterday</subtask>
+          <subtask>If missed and freeze available: use freeze (don't break streak)</subtask>
+          <subtask>If missed and no freeze: break streak (reset current_streak to 0)</subtask>
+          <subtask>Add error handling and retry logic</subtask>
+        </subtasks>
+      </task>
+      <task id="7" ac-ref="AC8">
+        <description>Implement streak display UI on Home tab</description>
+        <subtasks>
+          <subtask>Create StreakCard widget (shows current streak with fire emoji 🔥)</subtask>
+          <subtask>Display format: "🔥 7-day workout streak!" for each streak type</subtask>
+          <subtask>Add progress bar to next milestone (Bronze 7d, Silver 30d, Gold 100d)</subtask>
+          <subtask>Show freeze availability: "Freeze available: 1 this week" or "No freeze available"</subtask>
+          <subtask>Display longest streak: "Personal best: 15 days"</subtask>
+          <subtask>Use LifeOS color scheme: Deep Blue background (#1E3A8A), Teal accents (#14B8A6)</subtask>
+        </subtasks>
+      </task>
+      <task id="8" ac-ref="AC1,AC2,AC3">
+        <description>Integrate streak tracking with existing modules</description>
+        <subtasks>
+          <subtask>Hook workout completion (Epic 3) to call IncrementStreakUseCase with type=workout</subtask>
+          <subtask>Hook meditation completion (Epic 4) to call IncrementStreakUseCase with type=meditation</subtask>
+          <subtask>Hook check-in completion (Epic 2) to call IncrementStreakUseCase with type=checkin</subtask>
+          <subtask>Ensure streak increments happen after successful data save</subtask>
+        </subtasks>
+      </task>
+      <task id="9" ac-ref="ALL">
+        <description>Implement StreakRepository and data sources</description>
+        <subtasks>
+          <subtask>Create StreakRepository interface in domain layer</subtask>
+          <subtask>Implement StreakRepositoryImpl in data layer</subtask>
+          <subtask>Create DriftStreakDataSource for local storage</subtask>
+          <subtask>Create SupabaseStreakDataSource for cloud sync</subtask>
+          <subtask>Implement offline-first pattern: write to Drift, queue for Supabase sync</subtask>
+        </subtasks>
+      </task>
+      <task id="10" ac-ref="ALL">
+        <description>Write comprehensive tests</description>
+        <subtasks>
+          <subtask>Unit tests: StreakEntity validation, IncrementStreakUseCase logic, freeze logic</subtask>
+          <subtask>Unit tests: Streak break scenarios (missed day with/without freeze)</subtask>
+          <subtask>Unit tests: Weekly reset logic, longest streak tracking</subtask>
+          <subtask>Widget tests: StreakCard display, progress bar, freeze indicator</subtask>
+          <subtask>Integration test: Complete activity → streak increments → syncs to Supabase</subtask>
+          <subtask>Integration test: Miss activity with freeze → streak maintained</subtask>
+          <subtask>Integration test: Miss activity without freeze → streak breaks</subtask>
+          <subtask>Achieve 80%+ code coverage</subtask>
+        </subtasks>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="AC1">
+      <text>3 streak types tracked: Workout streak, Meditation streak, Check-in streak</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC2">
+      <text>Streak increments when user completes activity (daily)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC3">
+      <text>Streak breaks if user misses a day (no activity)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC4">
+      <text>Streak freeze: 1 per week per streak type (automatic on first miss)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC5">
+      <text>Freeze availability shown: "Freeze available: 1 this week"</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC6">
+      <text>Freeze resets on Sunday (new week, new freeze)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC7">
+      <text>Longest streak saved (personal record)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC8">
+      <text>Current streak shown on Home tab (🔥 emoji)</text>
+      <priority>P0</priority>
+    </criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR85: Streak tracking for workouts, meditations, check-ins</section>
+        <snippet>System tracks streaks for workouts, meditations, and daily check-ins. Users see current streak with fire emoji. Streaks motivate consistency.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR87: Streak freeze (1 per week)</section>
+        <snippet>Users can use 1 streak freeze per week. Freeze automatically applied on first miss to prevent accidental streak break. Resets Sunday.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/epics.md</path>
+        <title>Epic 6: Gamification & Retention - Story 6.1</title>
+        <section>Story 6.1: Streak Tracking System</section>
+        <snippet>Implement streak tracking for 3 activity types (workout, meditation, check-in). Track current_streak, longest_streak, freeze availability. Cron job daily checks. Prerequisites: Epic 2, 3, 4.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Hybrid Architecture (D1)</section>
+        <snippet>Feature-first architecture with clean architecture layers (presentation/domain/data). Gamification module located at features/gamification/. Use Riverpod for state management.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Offline-First Sync (D3)</section>
+        <snippet>Hybrid Sync pattern: Write-Through Cache + Sync Queue. Save to Drift (SQLite) first for instant feedback, then queue for Supabase sync when online.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/ux-design-specification.md</path>
+        <title>UX Design Specification</title>
+        <section>Streak Card Design</section>
+        <snippet>Streak card on Home tab. Background: Deep Blue (#1E3A8A), Text: White. Fire emoji 🔥 + number. Progress bar to next milestone (7d, 30d, 100d). Show freeze availability.</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/sprint-6/6-1-streak-tracking-system-workouts-meditations-check-ins.md</path>
+        <title>Story 6.1: Streak Tracking System</title>
+        <section>Database Schema</section>
+        <snippet>CREATE TABLE streaks (user_id, type, current_streak, longest_streak, freeze_used_this_week, last_activity_date). Cron job daily checks streaks.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <note>Streak tracking is a new feature for Epic 6. Integration points exist in Epic 2 (check-ins), Epic 3 (workouts), and Epic 4 (meditations). Will need to hook into completion events from these modules.</note>
+      <existing>
+        <file>
+          <path>lib/features/life_coach/domain/usecases/save_checkin_usecase.dart</path>
+          <purpose>Check-in completion event - will trigger checkin streak increment</purpose>
+        </file>
+        <file>
+          <path>lib/features/fitness/domain/usecases/log_workout_usecase.dart</path>
+          <purpose>Workout completion event - will trigger workout streak increment</purpose>
+        </file>
+        <file>
+          <path>lib/features/mind/domain/usecases/complete_meditation_usecase.dart</path>
+          <purpose>Meditation completion event - will trigger meditation streak increment</purpose>
+        </file>
+      </existing>
+    </code>
+    <dependencies>
+      <flutter>
+        <sdk>3.38+</sdk>
+        <dart>3.10+</dart>
+      </flutter>
+      <packages>
+        <package name="flutter_riverpod" version="^3.0.0" usage="State management for streak tracking and UI updates" />
+        <package name="riverpod_annotation" version="^3.0.0" usage="Code generation for providers" />
+        <package name="drift" version="^2.14.0" usage="Local SQLite database for offline streak storage" />
+        <package name="drift_flutter" version="^0.1.0" usage="Flutter integration for Drift" />
+        <package name="sqlite3_flutter_libs" version="^0.5.0" usage="SQLite native libraries" />
+        <package name="path_provider" version="^2.1.0" usage="Get app directories for Drift database" />
+        <package name="supabase_flutter" version="^2.0.0" usage="Supabase client for database sync and Edge Functions" />
+        <package name="freezed" version="^2.4.0" usage="Immutable entity code generation" />
+        <package name="freezed_annotation" version="^2.4.0" usage="Freezed annotations" />
+        <package name="flutter_test" version="sdk" usage="Unit and widget testing framework" />
+        <package name="integration_test" version="sdk" usage="End-to-end testing framework" />
+      </packages>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint id="ARCH-1" type="architectural">
+      <description>Must follow Hybrid Architecture pattern (D1)</description>
+      <details>Create feature structure at lib/features/gamification/ with presentation/, domain/, and data/ layers. Use clean architecture separation of concerns.</details>
+    </constraint>
+    <constraint id="ARCH-2" type="architectural">
+      <description>Offline-first implementation required (D3)</description>
+      <details>Save streak updates to Drift (SQLite) first for instant feedback. Queue for Supabase sync when online. Handle offline mode gracefully.</details>
+    </constraint>
+    <constraint id="ARCH-3" type="architectural">
+      <description>Use Riverpod for state management (D1, D6)</description>
+      <details>Create providers following feature-first structure. Streak state should be observable and reactive across the app.</details>
+    </constraint>
+    <constraint id="DATA-1" type="data">
+      <description>Database schema must match specification</description>
+      <details>streaks table: id (UUID PK), user_id (UUID FK auth.users), type (ENUM 'workout'|'meditation'|'checkin'), current_streak (INT), longest_streak (INT), freeze_used_this_week (BOOLEAN), last_activity_date (DATE), created_at, updated_at. UNIQUE(user_id, type).</details>
+    </constraint>
+    <constraint id="SEC-1" type="security">
+      <description>Row Level Security (RLS) policies required</description>
+      <details>Enable RLS on streaks table. Policy: CREATE POLICY "Users can only access own streaks" ON streaks FOR ALL USING (auth.uid() = user_id);</details>
+    </constraint>
+    <constraint id="BIZ-1" type="business-logic">
+      <description>Streak freeze logic must be automatic</description>
+      <details>When user misses a day, system automatically uses freeze if available (don't ask user). Prevents accidental streak loss. User sees "Freeze used to protect your streak" message.</details>
+    </constraint>
+    <constraint id="BIZ-2" type="business-logic">
+      <description>Weekly freeze reset on Sunday midnight</description>
+      <details>Cron job runs Sunday 00:00 UTC. Resets freeze_used_this_week to false for all users. Consider user timezone for fair reset timing.</details>
+    </constraint>
+    <constraint id="BIZ-3" type="business-logic">
+      <description>Longest streak must persist even after streak breaks</description>
+      <details>longest_streak field never decreases. Only updates when current_streak exceeds it. Provides permanent achievement recognition.</details>
+    </constraint>
+    <constraint id="UX-1" type="ux">
+      <description>Streak display must be prominent on Home tab</description>
+      <details>StreakCard should be visually striking. Use fire emoji 🔥, large numbers, Deep Blue background. User should immediately see their progress.</details>
+    </constraint>
+    <constraint id="UX-2" type="ux">
+      <description>Progress to next milestone must be clear</description>
+      <details>Show progress bar: "3 days until Bronze badge" or "27 days until Gold badge". Motivates user to reach next tier.</details>
+    </constraint>
+    <constraint id="PERF-1" type="performance">
+      <description>Streak increment must be instant (&lt;100ms)</description>
+      <details>Write to local Drift database first. User sees updated streak immediately. Supabase sync happens in background.</details>
+    </constraint>
+    <constraint id="PERF-2" type="performance">
+      <description>Cron jobs must be efficient</description>
+      <details>Daily streak check and weekly reset should complete in &lt;30 seconds for 10,000 users. Use batch processing, indexed queries.</details>
+    </constraint>
+    <constraint id="TEST-1" type="testing">
+      <description>80%+ code coverage required</description>
+      <details>Follow 70/20/10 testing pyramid. Unit tests for streak logic, widget tests for UI, integration tests for full flow. All AC must have test coverage.</details>
+    </constraint>
+    <constraint id="INTEG-1" type="integration">
+      <description>Must integrate with Epic 2, 3, 4 completion events</description>
+      <details>Hook into check-in save (Epic 2), workout log (Epic 3), meditation complete (Epic 4). Use event bus or callback pattern to trigger streak increment.</details>
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>StreakEntity</name>
+      <kind>domain-entity</kind>
+      <signature>
+        @freezed
+        class StreakEntity with _$StreakEntity {
+          const factory StreakEntity({
+            required String id,
+            required String userId,
+            required StreakType type,
+            required int currentStreak,
+            required int longestStreak,
+            required bool freezeUsedThisWeek,
+            required DateTime lastActivityDate,
+            required DateTime createdAt,
+            required DateTime updatedAt,
+          }) = _StreakEntity;
+        }
+
+        enum StreakType { workout, meditation, checkin }
+      </signature>
+      <path>lib/features/gamification/domain/entities/streak_entity.dart</path>
+      <notes>Use @freezed annotation for immutability. Validate currentStreak and longestStreak are non-negative.</notes>
+    </interface>
+    <interface>
+      <name>IncrementStreakUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class IncrementStreakUseCase {
+          Future&lt;Result&lt;StreakEntity&gt;&gt; call({
+            required String userId,
+            required StreakType type,
+            required DateTime activityDate,
+          });
+        }
+      </signature>
+      <path>lib/features/gamification/domain/usecases/increment_streak_usecase.dart</path>
+      <notes>Core streak logic: Check if activity is today, if yesterday (increment), if missed day (check freeze, possibly break). Update longest_streak if needed. Returns updated StreakEntity.</notes>
+    </interface>
+    <interface>
+      <name>GetStreaksUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class GetStreaksUseCase {
+          Future&lt;Result&lt;List&lt;StreakEntity&gt;&gt;&gt; call(String userId);
+        }
+      </signature>
+      <path>lib/features/gamification/domain/usecases/get_streaks_usecase.dart</path>
+      <notes>Fetches all 3 streaks for a user (workout, meditation, checkin). Used by Home tab to display StreakCard.</notes>
+    </interface>
+    <interface>
+      <name>GetFreezeAvailabilityUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class GetFreezeAvailabilityUseCase {
+          Future&lt;Result&lt;bool&gt;&gt; call({
+            required String userId,
+            required StreakType type,
+          });
+        }
+      </signature>
+      <path>lib/features/gamification/domain/usecases/get_freeze_availability_usecase.dart</path>
+      <notes>Returns true if freeze available (freeze_used_this_week = false), false otherwise. Used to show "Freeze available" indicator in UI.</notes>
+    </interface>
+    <interface>
+      <name>StreakRepository</name>
+      <kind>repository</kind>
+      <signature>
+        abstract class StreakRepository {
+          Future&lt;Result&lt;StreakEntity&gt;&gt; getStreak(String userId, StreakType type);
+          Future&lt;Result&lt;List&lt;StreakEntity&gt;&gt;&gt; getAllStreaks(String userId);
+          Future&lt;Result&lt;StreakEntity&gt;&gt; saveStreak(StreakEntity streak);
+          Future&lt;Result&lt;void&gt;&gt; resetWeeklyFreezes();
+        }
+      </signature>
+      <path>lib/features/gamification/domain/repositories/streak_repository.dart</path>
+      <notes>Implemented by StreakRepositoryImpl in data layer. Uses both DriftDataSource and SupabaseDataSource.</notes>
+    </interface>
+    <interface>
+      <name>streaks table (Supabase PostgreSQL)</name>
+      <kind>database-table</kind>
+      <signature>
+        CREATE TABLE streaks (
+          id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+          user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+          type TEXT NOT NULL CHECK (type IN ('workout', 'meditation', 'checkin')),
+          current_streak INT NOT NULL DEFAULT 0 CHECK (current_streak >= 0),
+          longest_streak INT NOT NULL DEFAULT 0 CHECK (longest_streak >= 0),
+          freeze_used_this_week BOOLEAN NOT NULL DEFAULT false,
+          last_activity_date DATE,
+          created_at TIMESTAMPTZ DEFAULT NOW(),
+          updated_at TIMESTAMPTZ DEFAULT NOW(),
+          UNIQUE(user_id, type)
+        );
+        CREATE INDEX idx_streaks_user_id ON streaks(user_id);
+        CREATE INDEX idx_streaks_user_type ON streaks(user_id, type);
+      </signature>
+      <path>supabase/migrations/</path>
+      <notes>Migration file will be created in Supabase migrations folder. Include RLS policies in same migration.</notes>
+    </interface>
+    <interface>
+      <name>streaks table (Drift SQLite)</name>
+      <kind>database-table</kind>
+      <signature>
+        @DataClassName('StreakTable')
+        class Streaks extends Table {
+          TextColumn get id => text()();
+          TextColumn get userId => text()();
+          TextColumn get type => text()();
+          IntColumn get currentStreak => integer().withDefault(const Constant(0))();
+          IntColumn get longestStreak => integer().withDefault(const Constant(0))();
+          BoolColumn get freezeUsedThisWeek => boolean().withDefault(const Constant(false))();
+          DateTimeColumn get lastActivityDate => dateTime().nullable()();
+          DateTimeColumn get createdAt => dateTime()();
+          DateTimeColumn get updatedAt => dateTime()();
+
+          @override
+          Set&lt;Column&gt; get primaryKey => {id};
+        }
+      </signature>
+      <path>lib/core/database/tables.drift.dart</path>
+      <notes>Drift table definition. Mirror of Supabase schema for offline-first architecture.</notes>
+    </interface>
+    <interface>
+      <name>Supabase Edge Function: daily-streak-check</name>
+      <kind>edge-function</kind>
+      <signature>
+        // Deno Edge Function
+        Deno.serve(async (req) => {
+          // 1. Fetch all users with streaks
+          // 2. For each streak, check if last_activity_date is yesterday
+          // 3. If missed and freeze available: use freeze
+          // 4. If missed and no freeze: break streak (current_streak = 0)
+          // 5. Return summary of checks performed
+        })
+      </signature>
+      <path>supabase/functions/daily-streak-check/index.ts</path>
+      <notes>Triggered by cron job daily at 00:01 UTC. Handles streak breaks and auto-freeze usage. Add error logging and retry logic.</notes>
+    </interface>
+    <interface>
+      <name>Supabase Edge Function: weekly-freeze-reset</name>
+      <kind>edge-function</kind>
+      <signature>
+        // Deno Edge Function
+        Deno.serve(async (req) => {
+          // Execute SQL: UPDATE streaks SET freeze_used_this_week = false
+          // Return count of rows updated
+        })
+      </signature>
+      <path>supabase/functions/weekly-freeze-reset/index.ts</path>
+      <notes>Triggered by cron job Sunday 00:00 UTC. Resets freeze availability for all users.</notes>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Follow 70/20/10 testing pyramid: 70% unit tests (use cases, repositories, entities), 20% widget tests (UI components, state management), 10% integration tests (end-to-end flows). Use flutter_test for unit/widget tests, integration_test for E2E. Mock dependencies with mockito. Target 80%+ code coverage. All acceptance criteria must have test coverage.
+    </standards>
+    <locations>
+      <location>test/features/gamification/domain/usecases/</location>
+      <location>test/features/gamification/domain/entities/</location>
+      <location>test/features/gamification/data/repositories/</location>
+      <location>test/features/gamification/presentation/widgets/</location>
+      <location>integration_test/features/gamification/streak_tracking_flow_test.dart</location>
+    </locations>
+    <ideas>
+      <test-idea ac-ref="AC2">
+        <description>Unit test: IncrementStreakUseCase - normal increment</description>
+        <approach>Given streak with current_streak=5, last_activity_date=yesterday. When increment called with today's date. Then current_streak=6, last_activity_date=today.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3,AC4">
+        <description>Unit test: Streak break with freeze available</description>
+        <approach>Given streak with current_streak=10, last_activity_date=2_days_ago, freeze_used_this_week=false. When daily check runs. Then freeze used, current_streak=10 (maintained), freeze_used_this_week=true.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3">
+        <description>Unit test: Streak break without freeze</description>
+        <approach>Given streak with current_streak=10, last_activity_date=2_days_ago, freeze_used_this_week=true. When daily check runs. Then streak breaks, current_streak=0.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC7">
+        <description>Unit test: Longest streak tracking</description>
+        <approach>Given streak with current_streak=15, longest_streak=20. When streak breaks. Then current_streak=0, longest_streak=20 (unchanged). When streak reaches 25. Then longest_streak=25 (updated).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6">
+        <description>Unit test: Weekly freeze reset</description>
+        <approach>Given multiple streaks with freeze_used_this_week=true. When weekly reset runs (Sunday). Then all freeze_used_this_week=false.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1">
+        <description>Unit test: StreakType enum validation</description>
+        <approach>Test that only 3 valid types exist: workout, meditation, checkin. Test serialization/deserialization.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC8">
+        <description>Widget test: StreakCard displays streak correctly</description>
+        <approach>Render StreakCard with streak data (type=workout, current_streak=7). Verify "🔥 7-day workout streak!" displayed. Verify progress bar shows "Bronze badge unlocked!" (7 days reached).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC5,AC8">
+        <description>Widget test: Freeze availability indicator</description>
+        <approach>Render StreakCard with freeze_used_this_week=false. Verify "Freeze available: 1 this week" shown. Render with freeze_used_this_week=true. Verify "No freeze available" shown.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC2">
+        <description>Integration test: Complete workout increments workout streak</description>
+        <approach>Start app with workout streak=5. Complete a workout. Verify workout streak=6 in database. Verify StreakCard updates on Home tab.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3,AC4">
+        <description>Integration test: Miss day with freeze protects streak</description>
+        <approach>Setup streak with last_activity_date=2_days_ago, freeze_available=true. Run daily check cron job. Verify streak maintained, freeze used. Verify notification shown: "Freeze used to protect your streak".</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3">
+        <description>Integration test: Miss day without freeze breaks streak</description>
+        <approach>Setup streak with last_activity_date=2_days_ago, freeze_available=false. Run daily check. Verify current_streak=0. Verify longest_streak preserved. Verify notification shown: "Your streak broke, start a new one!"</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6">
+        <description>Integration test: Weekly freeze reset on Sunday</description>
+        <approach>Setup multiple users with freeze_used_this_week=true. Trigger weekly reset edge function. Verify all users have freeze_used_this_week=false. Verify freeze indicator updated in UI.</approach>
+      </test-idea>
+    </ideas>
+  </tests>
+</story-context>

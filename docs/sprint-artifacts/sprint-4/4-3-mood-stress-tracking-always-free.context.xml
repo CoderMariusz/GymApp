@@ -1,0 +1,425 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/4-3" v="1.0">
+  <metadata>
+    <epicId>4</epicId>
+    <storyId>4.3</storyId>
+    <title>Mood &amp; Stress Tracking (Always Free)</title>
+    <status>ready-for-dev</status>
+    <generatedAt>2025-11-17</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/sprint-4/4-3-mood-stress-tracking-always-free.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>user tracking mental health</asA>
+    <iWant>log mood and stress daily</iWant>
+    <soThat>I can identify patterns</soThat>
+    <tasks>
+      <task id="1" ac-ref="AC1,AC2,AC3">
+        <description>Implement mood and stress logging UI</description>
+        <subtasks>
+          <subtask>Create MoodStressLogWidget for quick logging</subtask>
+          <subtask>Implement dual slider UI: mood scale (1-10) and stress scale (1-10)</subtask>
+          <subtask>Add emoji indicators for each scale value (1=😢, 10=😄 for mood; 1=😌, 10=😰 for stress)</subtask>
+          <subtask>Implement optional notes text field with placeholder "How are you feeling?"</subtask>
+          <subtask>Add "Log Entry" button with haptic feedback</subtask>
+          <subtask>Show success toast after logging: "Entry saved"</subtask>
+        </subtasks>
+      </task>
+      <task id="2" ac-ref="AC3">
+        <description>Integrate quick log from Home tab</description>
+        <subtasks>
+          <subtask>Add "Log Mood" quick action card on Home tab</subtask>
+          <subtask>Show last logged mood/stress with timestamp</subtask>
+          <subtask>Tap card opens MoodStressLogBottomSheet</subtask>
+          <subtask>Implement one-tap logging with default values (mood=5, stress=5) if user wants to skip sliders</subtask>
+        </subtasks>
+      </task>
+      <task id="3" ac-ref="AC1,AC2,AC5">
+        <description>Implement mood/stress data persistence</description>
+        <subtasks>
+          <subtask>Create mood_stress_logs table in Drift (local SQLite)</subtask>
+          <subtask>Create mood_stress_logs table in Supabase (PostgreSQL) with RLS policies</subtask>
+          <subtask>Implement saveMoodStressLog() use case</subtask>
+          <subtask>Add CHECK constraints (mood/stress BETWEEN 1 AND 10)</subtask>
+          <subtask>Implement end-to-end encryption (E2EE) for notes field</subtask>
+          <subtask>Implement sync between Drift and Supabase</subtask>
+        </subtasks>
+      </task>
+      <task id="4" ac-ref="AC4">
+        <description>Implement trend charts (7-day and 30-day)</description>
+        <subtasks>
+          <subtask>Integrate fl_chart package for line chart rendering</subtask>
+          <subtask>Create MoodStressTrendsScreen with tab navigation (7 days / 30 days)</subtask>
+          <subtask>Implement dual-line chart: mood line (blue) and stress line (orange)</subtask>
+          <subtask>Add X-axis labels (dates), Y-axis labels (1-10 scale)</subtask>
+          <subtask>Show data points with tap-to-view details (mood/stress value, date, note)</subtask>
+          <subtask>Handle missing data gracefully (show gaps in chart, no interpolation)</subtask>
+          <subtask>Add summary stats: average mood, average stress, trend direction (up/down/stable)</subtask>
+        </subtasks>
+      </task>
+      <task id="5" ac-ref="AC4">
+        <description>Implement pattern insights</description>
+        <subtasks>
+          <subtask>Calculate weekly/monthly averages for mood and stress</subtask>
+          <subtask>Detect trends: improving (avg up by 1+), declining (avg down by 1+), stable</subtask>
+          <subtask>Show insight cards: "Your mood is improving this week!" or "Stress levels are higher than last week"</subtask>
+          <subtask>Identify correlations (if future stories add context like sleep, exercise)</subtask>
+        </subtasks>
+      </task>
+      <task id="6" ac-ref="AC5">
+        <description>Implement end-to-end encryption for sensitive notes</description>
+        <subtasks>
+          <subtask>Generate user encryption key on first use (store in secure storage)</subtask>
+          <subtask>Encrypt notes field before saving to database (AES-256-GCM)</subtask>
+          <subtask>Decrypt notes when displaying to user</subtask>
+          <subtask>Store encrypted notes in Supabase (backend cannot read plaintext)</subtask>
+          <subtask>Handle encryption key loss scenario (notes unrecoverable, warn user)</subtask>
+        </subtasks>
+      </task>
+      <task id="7" ac-ref="AC1,AC2,AC3,AC4,AC5">
+        <description>Ensure feature is always free (no tier restrictions)</description>
+        <subtasks>
+          <subtask>Verify no tier checks in mood/stress logging logic</subtask>
+          <subtask>Add comment in code: "ALWAYS FREE - Core mental health feature"</subtask>
+          <subtask>Add UI indicator: "Always free" badge on Mood &amp; Stress section</subtask>
+        </subtasks>
+      </task>
+      <task id="8" ac-ref="ALL">
+        <description>Write comprehensive tests</description>
+        <subtasks>
+          <subtask>Unit tests: saveMoodStressLog, E2EE encryption/decryption, trend calculations</subtask>
+          <subtask>Widget tests: logging UI, sliders, quick log from Home, chart rendering</subtask>
+          <subtask>Integration test: end-to-end mood/stress logging and trend viewing</subtask>
+          <subtask>Achieve 80%+ code coverage</subtask>
+        </subtasks>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="AC1">
+      <text>Daily mood logging with 1-10 scale</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC2">
+      <text>Daily stress logging with 1-10 scale</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC3">
+      <text>Quick log from Home tab with optional notes</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC4">
+      <text>Trend charts showing 7-day and 30-day mood/stress patterns</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC5">
+      <text>Notes field uses end-to-end encryption (E2EE) for privacy</text>
+      <priority>P1</priority>
+    </criterion>
+    <criterion id="AC6">
+      <text>Feature is always free (no tier restrictions)</text>
+      <priority>P0</priority>
+    </criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR44: Mood &amp; Stress Tracking</section>
+        <snippet>Users can log mood (1-10 scale) and stress (1-10 scale) daily with optional notes. Trend charts show 7-day and 30-day patterns. Always free feature (core mental health). E2EE for notes field.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>NFR-S2: End-to-End Encryption for Sensitive Data</section>
+        <snippet>Mood/stress notes, CBT chat history, and journal entries must use E2EE. AES-256-GCM encryption. Encryption key derived from user credentials, stored in device secure storage. Backend cannot decrypt.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/epics.md</path>
+        <title>Epic 4: Mind &amp; Emotion - Story 4.3</title>
+        <section>Story 4.3: Mood &amp; Stress Tracking</section>
+        <snippet>Daily mood and stress logging with 1-10 scales, optional notes (E2EE), quick log from Home tab, trend charts (7/30 days). Always free core feature for mental health tracking.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/monetization.md</path>
+        <title>Monetization Strategy</title>
+        <section>Always Free Features</section>
+        <snippet>Core mental health features are always free: mood/stress tracking, basic meditation library access (streaming only), AI chat 1/day. Premium unlocks advanced features, not core wellness tools.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>End-to-End Encryption (D7)</section>
+        <snippet>Sensitive user data (notes, journal, CBT chat) encrypted client-side with AES-256-GCM. Encryption key derived from user password + device-specific salt, stored in FlutterSecureStorage. Backend stores ciphertext only.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/ux-design-specification.md</path>
+        <title>UX Design Specification</title>
+        <section>Mood &amp; Stress Logging UX</section>
+        <snippet>Dual-slider UI with emoji indicators. Mood: 1=😢 to 10=😄. Stress: 1=😌 to 10=😰. Quick log on Home tab shows last entry. Logging takes &lt;30 seconds. Trend charts use blue (mood) and orange (stress) lines.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <note>New mood tracking feature in Mind &amp; Emotion module. E2EE service may be reusable from core/services/encryption_service.dart if exists, otherwise create new.</note>
+    </code>
+    <dependencies>
+      <flutter>
+        <sdk>3.38+</sdk>
+        <dart>3.10+</dart>
+      </flutter>
+      <packages>
+        <package name="flutter_riverpod" version="^3.0.0" usage="State management for mood/stress logging" />
+        <package name="drift" version="^2.14.0" usage="Local SQLite for mood/stress logs" />
+        <package name="supabase_flutter" version="^2.0.0" usage="Database sync" />
+        <package name="fl_chart" version="^0.66.0" usage="Line chart rendering for trends" />
+        <package name="encrypt" version="^5.0.3" usage="AES encryption for notes E2EE" />
+        <package name="flutter_secure_storage" version="^9.0.0" usage="Secure storage for encryption keys" />
+        <package name="crypto" version="^3.0.3" usage="Cryptographic functions (key derivation)" />
+        <package name="intl" version="^0.18.1" usage="Date formatting for charts" />
+        <package name="flutter_test" version="sdk" usage="Unit and widget testing" />
+      </packages>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint id="ARCH-1" type="architectural">
+      <description>Follow feature-first architecture (D1)</description>
+      <details>Mood tracking in lib/features/mind_emotion/mood_tracking/ with presentation/, domain/, data/ layers. E2EE service in core/services/encryption_service.dart for reusability.</details>
+    </constraint>
+    <constraint id="ARCH-2" type="architectural">
+      <description>Offline-first sync for logs (D3)</description>
+      <details>Save mood/stress logs to Drift first, sync to Supabase when online. Encrypted notes stored as ciphertext in both local and remote databases.</details>
+    </constraint>
+    <constraint id="DATA-1" type="data">
+      <description>Mood/stress logs data structure</description>
+      <details>mood_stress_logs table: id (UUID), user_id (UUID FK), date (DATE), mood (INT 1-10), stress (INT 1-10), encrypted_notes (TEXT nullable), created_at. UNIQUE(user_id, date) to allow one log per day.</details>
+    </constraint>
+    <constraint id="SEC-1" type="security">
+      <description>End-to-end encryption for notes (D7, NFR-S2)</description>
+      <details>Encrypt notes with AES-256-GCM before saving. Encryption key derived from user password + device salt using PBKDF2 (100k iterations). Store key in FlutterSecureStorage. Backend cannot decrypt notes.</details>
+    </constraint>
+    <constraint id="SEC-2" type="security">
+      <description>RLS policies for mood/stress logs</description>
+      <details>Enable RLS on mood_stress_logs table. Policy: USING (auth.uid() = user_id) for complete user data isolation. Mood/stress data is highly sensitive.</details>
+    </constraint>
+    <constraint id="UX-1" type="ux">
+      <description>Logging completion time &lt;30 seconds</description>
+      <details>Quick log should be fast. Default slider positions at mid-point (5/10). Optional notes. One-tap "Log Entry" button. Haptic feedback on submit.</details>
+    </constraint>
+    <constraint id="UX-2" type="ux">
+      <description>Chart readability and accessibility</description>
+      <details>Use distinct colors: blue for mood, orange for stress. Sufficient contrast (WCAG AA). Line thickness 2-3px. Data points clearly visible. Tap data point shows detailed tooltip.</details>
+    </constraint>
+    <constraint id="UX-3" type="ux">
+      <description>Handle missing data in charts gracefully</description>
+      <details>If user misses days, show gaps in line chart (no interpolation). Display message: "Log daily for better insights". Encourage consistent logging.</details>
+    </constraint>
+    <constraint id="BUSINESS-1" type="business">
+      <description>Always free - no tier restrictions</description>
+      <details>Mood &amp; Stress Tracking is a core mental health feature, always free for all users. No premium checks. Add "Always Free" badge in UI to communicate value.</details>
+    </constraint>
+    <constraint id="PERF-1" type="performance">
+      <description>Chart rendering time &lt;200ms</description>
+      <details>Optimize fl_chart rendering. Cache chart data. Render 30-day chart with ~30 data points efficiently. Use const where possible.</details>
+    </constraint>
+    <constraint id="TEST-1" type="testing">
+      <description>80%+ code coverage required</description>
+      <details>Unit tests for E2EE encryption/decryption, trend calculations, log saving. Widget tests for logging UI and charts. Integration test for full logging and viewing flow.</details>
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>MoodStressLogEntity</name>
+      <kind>domain-entity</kind>
+      <signature>
+        class MoodStressLogEntity {
+          final String id;
+          final String userId;
+          final DateTime date;
+          final int mood;         // 1-10
+          final int stress;       // 1-10
+          final String? notes;    // decrypted on client
+          final DateTime createdAt;
+        }
+      </signature>
+      <path>lib/features/mind_emotion/mood_tracking/domain/entities/mood_stress_log_entity.dart</path>
+      <notes>Use @freezed for immutability. notes field is decrypted when loaded. mood/stress validated to be 1-10 in constructor.</notes>
+    </interface>
+    <interface>
+      <name>SaveMoodStressLogUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class SaveMoodStressLogUseCase {
+          Future&lt;Result&lt;MoodStressLogEntity&gt;&gt; call({
+            required int mood,
+            required int stress,
+            String? notes,
+          });
+        }
+      </signature>
+      <path>lib/features/mind_emotion/mood_tracking/domain/usecases/save_mood_stress_log_usecase.dart</path>
+      <notes>Validates mood/stress (1-10). Encrypts notes if provided. Saves to Drift, queues for Supabase sync. Returns saved entity with decrypted notes.</notes>
+    </interface>
+    <interface>
+      <name>GetMoodStressLogsUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class GetMoodStressLogsUseCase {
+          Future&lt;Result&lt;List&lt;MoodStressLogEntity&gt;&gt;&gt; call({
+            required DateTime startDate,
+            required DateTime endDate,
+          });
+        }
+      </signature>
+      <path>lib/features/mind_emotion/mood_tracking/domain/usecases/get_mood_stress_logs_usecase.dart</path>
+      <notes>Fetches logs for date range. Decrypts notes for each log. Used by trend charts (7-day, 30-day).</notes>
+    </interface>
+    <interface>
+      <name>CalculateMoodStressTrendsUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class CalculateMoodStressTrendsUseCase {
+          Result&lt;MoodStressTrends&gt; call(List&lt;MoodStressLogEntity&gt; logs);
+        }
+
+        class MoodStressTrends {
+          final double avgMood;
+          final double avgStress;
+          final TrendDirection moodTrend;
+          final TrendDirection stressTrend;
+          final List&lt;DataPoint&gt; moodDataPoints;
+          final List&lt;DataPoint&gt; stressDataPoints;
+        }
+
+        enum TrendDirection { improving, stable, declining }
+      </signature>
+      <path>lib/features/mind_emotion/mood_tracking/domain/usecases/calculate_mood_stress_trends_usecase.dart</path>
+      <notes>Pure calculation logic. Takes logs, returns trend analysis and data points for chart rendering. No I/O operations.</notes>
+    </interface>
+    <interface>
+      <name>EncryptionService</name>
+      <kind>service</kind>
+      <signature>
+        abstract class EncryptionService {
+          Future&lt;String&gt; encrypt(String plaintext);
+          Future&lt;String&gt; decrypt(String ciphertext);
+          Future&lt;void&gt; initializeKey();
+          Future&lt;bool&gt; hasKey();
+        }
+      </signature>
+      <path>lib/core/services/encryption_service.dart</path>
+      <notes>AES-256-GCM encryption. Key derived from user password + device salt (PBKDF2). Store in FlutterSecureStorage. Reusable for all E2EE features (mood notes, CBT chat, journal).</notes>
+    </interface>
+    <interface>
+      <name>MoodStressRepository</name>
+      <kind>repository</kind>
+      <signature>
+        abstract class MoodStressRepository {
+          Future&lt;Result&lt;MoodStressLogEntity&gt;&gt; saveLog(MoodStressLogEntity log);
+          Future&lt;Result&lt;List&lt;MoodStressLogEntity&gt;&gt;&gt; getLogsByDateRange(String userId, DateTime start, DateTime end);
+          Future&lt;Result&lt;MoodStressLogEntity?&gt;&gt; getLogForDate(String userId, DateTime date);
+        }
+      </signature>
+      <path>lib/features/mind_emotion/mood_tracking/domain/repositories/mood_stress_repository.dart</path>
+      <notes>Implemented by MoodStressRepositoryImpl in data layer. Uses DriftDataSource and SupabaseDataSource. Handles E2EE via EncryptionService.</notes>
+    </interface>
+    <interface>
+      <name>mood_stress_logs table (Supabase &amp; Drift)</name>
+      <kind>database-table</kind>
+      <signature>
+        CREATE TABLE mood_stress_logs (
+          id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+          user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+          date DATE NOT NULL,
+          mood INT NOT NULL CHECK (mood BETWEEN 1 AND 10),
+          stress INT NOT NULL CHECK (stress BETWEEN 1 AND 10),
+          encrypted_notes TEXT,
+          created_at TIMESTAMPTZ DEFAULT NOW(),
+          UNIQUE(user_id, date)
+        );
+        CREATE INDEX idx_mood_stress_user_date ON mood_stress_logs(user_id, date DESC);
+      </signature>
+      <path>supabase/migrations/ and lib/core/database/tables.drift.dart</path>
+      <notes>RLS policy: USING (auth.uid() = user_id). encrypted_notes stores ciphertext (backend cannot decrypt). Mirror in Drift for offline support.</notes>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Follow 70/20/10 testing pyramid: 70% unit tests (use cases, E2EE, trend calculations, validation), 20% widget tests (logging UI, charts, sliders), 10% integration tests (end-to-end logging and trend viewing). Use flutter_test for unit/widget tests, integration_test for E2E. Mock EncryptionService for unit tests. Target 80%+ code coverage.
+    </standards>
+    <locations>
+      <location>test/features/mind_emotion/mood_tracking/domain/usecases/</location>
+      <location>test/features/mind_emotion/mood_tracking/domain/entities/</location>
+      <location>test/core/services/encryption_service_test.dart</location>
+      <location>test/features/mind_emotion/mood_tracking/presentation/widgets/</location>
+      <location>integration_test/features/mind_emotion/mood_stress_tracking_flow_test.dart</location>
+    </locations>
+    <ideas>
+      <test-idea ac-ref="AC1,AC2">
+        <description>Unit test: MoodStressLogEntity validation</description>
+        <approach>Test that mood/stress throw exception if outside 1-10 range. Test valid values (1, 5, 10). Test copyWith immutability.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC5">
+        <description>Unit test: EncryptionService encrypt/decrypt</description>
+        <approach>Encrypt plaintext "Feeling anxious today". Verify ciphertext different from plaintext. Decrypt ciphertext. Verify returns original plaintext. Test with empty string and long text.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1,AC2,AC3">
+        <description>Unit test: SaveMoodStressLogUseCase with E2EE notes</description>
+        <approach>Mock repository and encryption service. Call saveLog with mood=7, stress=4, notes="Test note". Verify EncryptionService.encrypt called with notes. Verify repository.saveLog called with encrypted notes.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4">
+        <description>Unit test: CalculateMoodStressTrendsUseCase</description>
+        <approach>Create 7 logs with increasing mood (3→9) and decreasing stress (8→2). Calculate trends. Verify avgMood ~6, avgStress ~5. Verify moodTrend=improving, stressTrend=improving. Verify data points list has 7 items.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4">
+        <description>Unit test: Trend calculation with missing data</description>
+        <approach>Create logs for days 1, 3, 5, 7 (gaps on 2, 4, 6). Calculate trends. Verify data points only for logged days. Verify trend calculation ignores missing days (no interpolation).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1,AC2,AC3">
+        <description>Widget test: Mood/stress logging UI</description>
+        <approach>Render MoodStressLogWidget. Verify mood slider present. Drag slider to value 8. Verify emoji changes to 😊. Drag stress slider to 3. Enter note "Feeling better". Tap "Log Entry". Verify saveLog called with mood=8, stress=3, notes="Feeling better".</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3">
+        <description>Widget test: Quick log from Home tab</description>
+        <approach>Render Home tab. Verify "Log Mood" card present. Tap card. Verify MoodStressLogBottomSheet opens. Verify default values mood=5, stress=5. Tap "Log Entry". Verify log saved with defaults.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4">
+        <description>Widget test: Trend chart rendering</description>
+        <approach>Mock GetMoodStressLogsUseCase with 7 days of data. Render MoodStressTrendsScreen. Verify fl_chart LineChart present. Verify 2 lines (mood=blue, stress=orange). Verify X-axis shows dates. Tap data point. Verify tooltip with mood/stress values.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4">
+        <description>Widget test: Toggle between 7-day and 30-day charts</description>
+        <approach>Render MoodStressTrendsScreen. Verify default shows 7-day chart. Tap "30 days" tab. Verify chart updates with 30-day data. Verify GetMoodStressLogsUseCase called with 30-day date range.</approach>
+      </test-idea>
+      <test-idea ac-ref="ALL">
+        <description>Integration test: Complete mood/stress logging and trend viewing</description>
+        <approach>Launch app. Navigate to Mind &amp; Emotion tab. Log mood=8, stress=3, notes="Good day". Verify log saved to Drift. Verify synced to Supabase. Navigate to Trends screen. Verify today's log appears on chart. Verify notes encrypted in database (check raw DB value).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC5">
+        <description>Integration test: E2EE notes encryption/decryption flow</description>
+        <approach>Save log with notes "Private thought". Query database directly. Verify encrypted_notes field is ciphertext (not plaintext). Load log via app. Verify notes decrypted correctly to "Private thought".</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6">
+        <description>Unit test: No tier restrictions on mood tracking</description>
+        <approach>Mock user tier as "free". Call SaveMoodStressLogUseCase. Verify no TierCheckException thrown. Verify log saved successfully. Confirm no tier check in code path.</approach>
+      </test-idea>
+    </ideas>
+  </tests>
+
+  <devAgentRecord>
+    <recordedAt>2025-11-17</recordedAt>
+    <status>ready-for-dev</status>
+    <agent>BMAD Dev Agent</agent>
+    <notes>Story context prepared and validated for development assignment</notes>
+  </devAgentRecord>
+
+  <created>
+    <author>BMAD Story Context Workflow</author>
+    <timestamp>2025-11-17</timestamp>
+  </created>
+</story-context>

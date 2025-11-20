@@ -1,0 +1,513 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>3</epicId>
+    <storyId>3.8</storyId>
+    <title>Quick Log (Rapid Workout Entry)</title>
+    <status>ready-for-dev</status>
+    <generatedAt>2025-11-17</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/sprint-3/3-8-quick-log-rapid-workout-entry.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>user wanting ultra-fast logging</asA>
+    <iWant>a quick log mode</iWant>
+    <soThat>I can log entire workout in less than 30 seconds</soThat>
+    <tasks>
+      <task id="1" ac-ref="AC1,AC2,AC3">
+        <description>Implement Quick Log modal UI</description>
+        <subtasks>
+          <subtask>Create QuickLogModal widget (ConsumerWidget)</subtask>
+          <subtask>Implement recent exercises list (last 5 exercises)</subtask>
+          <subtask>Add exercise tile with tap-to-log interaction</subtask>
+          <subtask>Implement "Add New Exercise" button with search integration</subtask>
+          <subtask>Create streamlined sets/reps/weight entry UI (tap to edit)</subtask>
+          <subtask>Add "Save Workout" CTA button</subtask>
+          <subtask>Implement modal animations for smooth transitions</subtask>
+        </subtasks>
+      </task>
+      <task id="2" ac-ref="AC2,AC3,AC5">
+        <description>Implement pre-fill last workout logic</description>
+        <subtasks>
+          <subtask>Create getLastWorkout() query to fetch previous sets for exercise</subtask>
+          <subtask>Implement auto-fill logic on exercise tap</subtask>
+          <subtask>Add confirmation UI (check button) for pre-filled data</subtask>
+          <subtask>Support inline editing of pre-filled values</subtask>
+          <subtask>Cache recent workouts for instant pre-fill</subtask>
+        </subtasks>
+      </task>
+      <task id="3" ac-ref="AC1">
+        <description>Add Quick Log entry points</description>
+        <subtasks>
+          <subtask>Add "Quick Log" button to Fitness home screen</subtask>
+          <subtask>Add FAB (+ button) to History screen for quick log access</subtask>
+          <subtask>Implement navigation to Quick Log modal from both entry points</subtask>
+        </subtasks>
+      </task>
+      <task id="4" ac-ref="AC6,AC7">
+        <description>Implement quick log workout persistence</description>
+        <subtasks>
+          <subtask>Create QuickLogWorkoutUseCase for saving workouts</subtask>
+          <subtask>Save workout to workout_sessions and workout_sets tables</subtask>
+          <subtask>Auto-calculate duration based on log start/end timestamps</subtask>
+          <subtask>Support optional manual duration entry</subtask>
+          <subtask>Mark workout as "quick logged" (retrospective vs live)</subtask>
+          <subtask>Ensure saved workout appears in History immediately</subtask>
+        </subtasks>
+      </task>
+      <task id="5" ac-ref="AC4">
+        <description>Implement ultra-fast mode (no rest timer)</description>
+        <subtasks>
+          <subtask>Disable rest timer in quick log flow</subtask>
+          <subtask>Remove rest period prompts and delays</subtask>
+          <subtask>Optimize UI for rapid set logging</subtask>
+          <subtask>Add visual indicator for ultra-fast mode</subtask>
+        </subtasks>
+      </task>
+      <task id="6" ac-ref="AC5">
+        <description>Implement exercise search integration</description>
+        <subtasks>
+          <subtask>Integrate existing exercise search component</subtask>
+          <subtask>Add "Select" action from search results</subtask>
+          <subtask>Support adding searched exercise to quick log session</subtask>
+          <subtask>Update recent exercises list after new exercise logged</subtask>
+        </subtasks>
+      </task>
+      <task id="7" ac-ref="ALL">
+        <description>Implement offline-first support</description>
+        <subtasks>
+          <subtask>Save quick log to Drift (SQLite) first for instant feedback</subtask>
+          <subtask>Queue for Supabase sync when online</subtask>
+          <subtask>Handle offline mode gracefully with user feedback</subtask>
+          <subtask>Implement sync conflict resolution</subtask>
+        </subtasks>
+      </task>
+      <task id="8" ac-ref="ALL">
+        <description>Write comprehensive tests</description>
+        <subtasks>
+          <subtask>Unit tests: QuickLogWorkoutUseCase, getLastWorkout query, duration calculation</subtask>
+          <subtask>Widget tests: Quick Log modal, exercise list, pre-fill behavior, save action</subtask>
+          <subtask>Integration test: End-to-end quick log flow with sync</subtask>
+          <subtask>Test offline logging and sync recovery</subtask>
+          <subtask>Achieve 80%+ code coverage</subtask>
+        </subtasks>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="AC1">
+      <text>"Quick Log" button on Fitness home</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC2">
+      <text>Quick log modal: List of recent exercises</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC3">
+      <text>Tap exercise → Pre-fill last workout → Tap check → Done</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC4">
+      <text>No rest timer (ultra-fast mode)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC5">
+      <text>Add new exercise: Search → Select → Log</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC6">
+      <text>Quick log saves as regular workout (visible in history)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC7">
+      <text>Duration auto-calculated based on log timestamps</text>
+      <priority>P1</priority>
+    </criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR30: Quick workout logging</section>
+        <snippet>Users must be able to log workouts in under 30 seconds using quick log mode. Pre-fill last workout data for common exercises. No rest timers in retrospective mode.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR31: Retrospective workout logging</section>
+        <snippet>Support logging past workouts with date selection. Duration can be estimated or left blank. All quick-logged workouts must sync to history immediately.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/epics.md</path>
+        <title>Epic 3: Fitness Coach MVP - Story 3.8</title>
+        <section>Story 3.8: Quick Log (Rapid Workout Entry)</section>
+        <snippet>Ultra-fast workout logging mode with recent exercises list, pre-filled data, and tap-to-confirm workflow. Target: &lt;30 seconds to log entire workout.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Hybrid Architecture (D1)</section>
+        <snippet>Feature-first architecture with clean architecture layers (presentation/domain/data). Fitness Coach module located at features/fitness_coach/. Use Riverpod for state management.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Offline-First Sync (D3)</section>
+        <snippet>Hybrid Sync pattern: Write-Through Cache + Sync Queue. Save to Drift (SQLite) first for instant feedback (&lt;100ms), then queue for Supabase sync when online. Offline operations must work seamlessly.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Database Schema - Fitness Coach Tables</section>
+        <snippet>Fitness Coach uses workout_sessions (id, user_id, date, duration, type), workout_sets (id, session_id, exercise_id, set_number, reps, weight, rest_seconds), and exercises tables. RLS policies: USING (auth.uid() = user_id).</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/ux-design-specification.md</path>
+        <title>UX Design Specification</title>
+        <section>Quick Log UX</section>
+        <snippet>Quick Log modal: Recent exercises list (last 5), tap to expand with pre-filled sets, tap checkmark to confirm, no rest timers. Ultra-fast mode visual indicator. Target: &lt;30 seconds total logging time.</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/sprint-3/3-8-quick-log-rapid-workout-entry.md</path>
+        <title>Story 3.8: Quick Log (Rapid Workout Entry)</title>
+        <section>Technical Implementation</section>
+        <snippet>QuickLogModal widget with recentExercisesProvider, getLastWorkout() pre-fill logic, and tap-to-confirm workflow. Query: SELECT DISTINCT exercise_id FROM workout_sets WHERE user_id = $1 ORDER BY created_at DESC LIMIT 5.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <reference>
+        <path>lib/features/fitness_coach/domain/entities/workout_session_entity.dart</path>
+        <description>WorkoutSession entity with id, userId, date, duration, type, exercises</description>
+        <relevance>Quick log creates WorkoutSession instances that must match existing schema</relevance>
+      </reference>
+      <reference>
+        <path>lib/features/fitness_coach/domain/entities/workout_set_entity.dart</path>
+        <description>WorkoutSet entity with id, sessionId, exerciseId, setNumber, reps, weight, restSeconds</description>
+        <relevance>Quick log pre-fills WorkoutSet data from previous workouts</relevance>
+      </reference>
+      <reference>
+        <path>lib/features/fitness_coach/presentation/providers/workout_provider.dart</path>
+        <description>Riverpod providers for workout state management</description>
+        <relevance>Quick log integrates with existing workout providers</relevance>
+      </reference>
+      <reference>
+        <path>lib/features/fitness_coach/domain/usecases/log_workout_usecase.dart</path>
+        <description>Existing workout logging use case</description>
+        <relevance>QuickLogWorkoutUseCase should extend or reuse this logic</relevance>
+      </reference>
+    </code>
+    <dependencies>
+      <flutter>
+        <sdk>3.38+</sdk>
+        <dart>3.10+</dart>
+      </flutter>
+      <packages>
+        <package name="flutter_riverpod" version="^3.0.0" usage="State management for quick log modal and data flow" />
+        <package name="riverpod_annotation" version="^3.0.0" usage="Code generation for providers" />
+        <package name="drift" version="^2.14.0" usage="Local SQLite database for offline workout storage" />
+        <package name="drift_flutter" version="^0.1.0" usage="Flutter integration for Drift" />
+        <package name="sqlite3_flutter_libs" version="^0.5.0" usage="SQLite native libraries" />
+        <package name="path_provider" version="^2.1.0" usage="Get app directories for Drift database" />
+        <package name="supabase_flutter" version="^2.0.0" usage="Supabase client for auth and database sync" />
+        <package name="flutter_test" version="sdk" usage="Unit and widget testing framework" />
+        <package name="integration_test" version="sdk" usage="End-to-end testing framework" />
+      </packages>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint id="ARCH-1" type="architectural">
+      <description>Must follow Hybrid Architecture pattern (D1)</description>
+      <details>Create/extend feature structure at lib/features/fitness_coach/ with presentation/, domain/, and data/ layers. Use clean architecture separation of concerns.</details>
+    </constraint>
+    <constraint id="ARCH-2" type="architectural">
+      <description>Offline-first implementation required (D3)</description>
+      <details>Save quick log to Drift (SQLite) first for instant feedback (&lt;100ms). Queue for Supabase sync when online. Handle offline mode gracefully with visual indicators.</details>
+    </constraint>
+    <constraint id="ARCH-3" type="architectural">
+      <description>Use Riverpod for state management (D1, D6)</description>
+      <details>Create providers following feature-first structure. Use ConsumerWidget for quick log modal. Providers should be in fitness_coach/presentation/providers/.</details>
+    </constraint>
+    <constraint id="DATA-1" type="data">
+      <description>Reuse existing workout database schema</description>
+      <details>Quick log must save to existing workout_sessions and workout_sets tables. Add optional "log_type" field (ENUM: 'live', 'quick_log') to differentiate retrospective logs. Maintain referential integrity.</details>
+    </constraint>
+    <constraint id="DATA-2" type="data">
+      <description>Recent exercises query performance</description>
+      <details>SELECT DISTINCT exercise_id FROM workout_sets WHERE user_id = $1 ORDER BY created_at DESC LIMIT 5. Must execute in &lt;50ms. Use index on (user_id, created_at DESC).</details>
+    </constraint>
+    <constraint id="DATA-3" type="data">
+      <description>Pre-fill last workout data efficiently</description>
+      <details>Query last workout sets for specific exercise: SELECT * FROM workout_sets WHERE user_id = $1 AND exercise_id = $2 ORDER BY created_at DESC LIMIT 5. Cache results for instant pre-fill.</details>
+    </constraint>
+    <constraint id="SEC-1" type="security">
+      <description>Row Level Security (RLS) policies required</description>
+      <details>Existing RLS policies on workout_sessions and workout_sets tables apply. Ensure quick log respects: USING (auth.uid() = user_id) for all workout data operations.</details>
+    </constraint>
+    <constraint id="UX-1" type="ux">
+      <description>30-second total logging time target</description>
+      <details>Entire quick log flow must be completable in &lt;30 seconds. Pre-fill reduces friction. One-tap confirmation. Measure 95th percentile completion time.</details>
+    </constraint>
+    <constraint id="UX-2" type="ux">
+      <description>No rest timer in quick log mode</description>
+      <details>Ultra-fast mode removes rest timer UI and delays. Users log sets rapidly without waiting. Visual indicator shows "Quick Log Mode" to set expectations.</details>
+    </constraint>
+    <constraint id="UX-3" type="ux">
+      <description>Streamlined inline editing</description>
+      <details>Pre-filled values must be tap-to-edit with minimal friction. Number pads for reps/weight. Haptic feedback on value change. Auto-advance to next field.</details>
+    </constraint>
+    <constraint id="UX-4" type="ux">
+      <description>Immediate history visibility</description>
+      <details>After "Save Workout", quick-logged workout must appear in History screen instantly (optimistic UI). Show sync status indicator if offline.</details>
+    </constraint>
+    <constraint id="PERF-1" type="performance">
+      <description>Modal render time &lt;100ms</description>
+      <details>Quick Log modal must appear instantly. Optimize widget tree, cache recent exercises provider. Use const constructors where possible.</details>
+    </constraint>
+    <constraint id="PERF-2" type="performance">
+      <description>Save operation &lt;200ms (offline)</description>
+      <details>Saving workout to Drift must complete in &lt;200ms for snappy UX. Use batch inserts for multiple sets. Defer Supabase sync to background queue.</details>
+    </constraint>
+    <constraint id="PERF-3" type="performance">
+      <description>Pre-fill data fetch &lt;50ms</description>
+      <details>getLastWorkout() query must execute in &lt;50ms. Cache recent workout data. Use indexed queries on (user_id, exercise_id, created_at).</details>
+    </constraint>
+    <constraint id="TEST-1" type="testing">
+      <description>80%+ code coverage required</description>
+      <details>Follow 70/20/10 testing pyramid. Unit tests for use cases, widget tests for UI, integration test for full quick log flow. All AC must have test coverage.</details>
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>QuickLogWorkoutUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class QuickLogWorkoutUseCase {
+          Future&lt;Result&lt;WorkoutSessionEntity&gt;&gt; call({
+            required List&lt;WorkoutSetEntity&gt; sets,
+            DateTime? date,
+            int? manualDurationMinutes,
+          });
+        }
+      </signature>
+      <path>lib/features/fitness_coach/domain/usecases/quick_log_workout_usecase.dart</path>
+      <notes>Creates WorkoutSession with auto-calculated duration (based on log timestamps) or manual duration. Sets date to today if not provided. Marks log_type as 'quick_log'.</notes>
+    </interface>
+    <interface>
+      <name>GetRecentExercisesUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class GetRecentExercisesUseCase {
+          Future&lt;Result&lt;List&lt;ExerciseEntity&gt;&gt;&gt; call({int limit = 5});
+        }
+      </signature>
+      <path>lib/features/fitness_coach/domain/usecases/get_recent_exercises_usecase.dart</path>
+      <notes>Returns last N distinct exercises logged by user, ordered by most recent. Default limit is 5 for quick access.</notes>
+    </interface>
+    <interface>
+      <name>GetLastWorkoutForExerciseUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class GetLastWorkoutForExerciseUseCase {
+          Future&lt;Result&lt;List&lt;WorkoutSetEntity&gt;&gt;&gt; call(String exerciseId);
+        }
+      </signature>
+      <path>lib/features/fitness_coach/domain/usecases/get_last_workout_for_exercise_usecase.dart</path>
+      <notes>Fetches the most recent workout sets for a specific exercise to pre-fill quick log. Returns sets ordered by set_number.</notes>
+    </interface>
+    <interface>
+      <name>QuickLogModal</name>
+      <kind>widget</kind>
+      <signature>
+        class QuickLogModal extends ConsumerWidget {
+          const QuickLogModal({Key? key}) : super(key: key);
+
+          @override
+          Widget build(BuildContext context, WidgetRef ref) {
+            // Recent exercises list
+            // Exercise tiles with tap-to-log
+            // Add new exercise button
+            // Save workout CTA
+          }
+        }
+      </signature>
+      <path>lib/features/fitness_coach/presentation/widgets/quick_log_modal.dart</path>
+      <notes>Main quick log UI. Displays recent exercises, handles exercise selection, pre-fill, editing, and save actions. Uses Riverpod for state management.</notes>
+    </interface>
+    <interface>
+      <name>ExerciseTile (Quick Log)</name>
+      <kind>widget</kind>
+      <signature>
+        class QuickLogExerciseTile extends ConsumerWidget {
+          final ExerciseEntity exercise;
+          final VoidCallback onTap;
+
+          const QuickLogExerciseTile({
+            required this.exercise,
+            required this.onTap,
+            Key? key,
+          }) : super(key: key);
+        }
+      </signature>
+      <path>lib/features/fitness_coach/presentation/widgets/quick_log_exercise_tile.dart</path>
+      <notes>Displays exercise in recent list. Tap expands to show pre-filled sets with inline edit. Check button confirms and adds to workout.</notes>
+    </interface>
+    <interface>
+      <name>recentExercisesProvider</name>
+      <kind>riverpod-provider</kind>
+      <signature>
+        @riverpod
+        Future&lt;List&lt;ExerciseEntity&gt;&gt; recentExercises(RecentExercisesRef ref) async {
+          final useCase = ref.read(getRecentExercisesUseCaseProvider);
+          final result = await useCase(limit: 5);
+          return result.fold(
+            (failure) => throw Exception(failure.message),
+            (exercises) => exercises,
+          );
+        }
+      </signature>
+      <path>lib/features/fitness_coach/presentation/providers/recent_exercises_provider.dart</path>
+      <notes>Provides list of recent exercises for quick log modal. Auto-refreshes when new exercises are logged. Uses riverpod_annotation for code generation.</notes>
+    </interface>
+    <interface>
+      <name>quickLogStateProvider</name>
+      <kind>riverpod-provider</kind>
+      <signature>
+        @riverpod
+        class QuickLogState extends _$QuickLogState {
+          @override
+          QuickLogData build() => QuickLogData.initial();
+
+          void addExercise(ExerciseEntity exercise, List&lt;WorkoutSetEntity&gt; sets) { }
+          void updateSet(String exerciseId, int setIndex, WorkoutSetEntity set) { }
+          void removeExercise(String exerciseId) { }
+          Future&lt;void&gt; saveWorkout() async { }
+        }
+      </signature>
+      <path>lib/features/fitness_coach/presentation/providers/quick_log_state_provider.dart</path>
+      <notes>Manages quick log session state: selected exercises, sets, edits. Handles save action and integrates with QuickLogWorkoutUseCase.</notes>
+    </interface>
+    <interface>
+      <name>workout_sessions.log_type (database field)</name>
+      <kind>database-field</kind>
+      <signature>
+        ALTER TABLE workout_sessions
+        ADD COLUMN log_type TEXT CHECK (log_type IN ('live', 'quick_log')) DEFAULT 'live';
+
+        CREATE INDEX idx_workout_sessions_log_type ON workout_sessions(user_id, log_type, date DESC);
+      </signature>
+      <path>supabase/migrations/</path>
+      <notes>Add log_type field to differentiate live workouts from retrospective quick logs. Default 'live' for backward compatibility. Update Drift schema to match.</notes>
+    </interface>
+    <interface>
+      <name>Recent exercises query optimization</name>
+      <kind>database-query</kind>
+      <signature>
+        -- Get recent exercises (last 5 distinct)
+        SELECT DISTINCT e.id, e.name, e.category, MAX(ws.created_at) as last_used
+        FROM exercises e
+        JOIN workout_sets ws ON e.id = ws.exercise_id
+        WHERE ws.user_id = $1
+        GROUP BY e.id, e.name, e.category
+        ORDER BY last_used DESC
+        LIMIT 5;
+      </signature>
+      <path>lib/features/fitness_coach/data/datasources/workout_local_datasource.dart</path>
+      <notes>Optimized query for recent exercises. Uses JOIN to get full exercise details. GROUP BY with MAX for last used timestamp. Requires index on (user_id, created_at).</notes>
+    </interface>
+    <interface>
+      <name>Last workout pre-fill query</name>
+      <kind>database-query</kind>
+      <signature>
+        -- Get last workout sets for exercise
+        SELECT ws.*
+        FROM workout_sets ws
+        JOIN workout_sessions s ON ws.session_id = s.id
+        WHERE s.user_id = $1 AND ws.exercise_id = $2
+        ORDER BY s.date DESC, ws.set_number ASC
+        LIMIT 10;
+      </signature>
+      <path>lib/features/fitness_coach/data/datasources/workout_local_datasource.dart</path>
+      <notes>Fetches most recent sets for specific exercise to pre-fill quick log. Ordered by date (DESC) and set_number (ASC). Limit 10 to cover typical workout size.</notes>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Follow 70/20/10 testing pyramid: 70% unit tests (use cases, repositories, providers), 20% widget tests (UI components, state management), 10% integration tests (end-to-end flows). Use flutter_test for unit/widget tests, integration_test for E2E. Mock dependencies with mockito. Target 80%+ code coverage. All acceptance criteria must have test coverage.
+    </standards>
+    <locations>
+      <location>test/features/fitness_coach/domain/usecases/</location>
+      <location>test/features/fitness_coach/data/repositories/</location>
+      <location>test/features/fitness_coach/presentation/widgets/</location>
+      <location>test/features/fitness_coach/presentation/providers/</location>
+      <location>integration_test/features/fitness_coach/quick_log_flow_test.dart</location>
+    </locations>
+    <ideas>
+      <test-idea ac-ref="AC2">
+        <description>Unit test: GetRecentExercisesUseCase returns last 5 exercises</description>
+        <approach>Mock WorkoutRepository with 7 exercises. Call GetRecentExercisesUseCase(limit: 5). Verify only 5 most recent exercises returned, ordered by last used date.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3">
+        <description>Unit test: GetLastWorkoutForExerciseUseCase pre-fills correctly</description>
+        <approach>Mock repository with 3 sets for "Bench Press" (80kg x 10, 85kg x 8, 90kg x 6). Call use case with exercise_id. Verify sets returned in correct order with accurate values.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6,AC7">
+        <description>Unit test: QuickLogWorkoutUseCase saves with auto-calculated duration</description>
+        <approach>Create QuickLogWorkoutUseCase with log start time T0, add 3 sets, save at T1. Verify WorkoutSession created with duration = T1 - T0 (in minutes). Verify log_type = 'quick_log'.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC7">
+        <description>Unit test: QuickLogWorkoutUseCase accepts manual duration</description>
+        <approach>Call QuickLogWorkoutUseCase with manualDurationMinutes: 45. Verify WorkoutSession created with duration = 45, ignoring auto-calculation.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6">
+        <description>Unit test: Quick log workout appears in history</description>
+        <approach>Mock WorkoutRepository. Save quick log workout. Query getWorkoutHistory(). Verify workout present with correct date, exercises, sets, and log_type.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC2,AC3">
+        <description>Widget test: QuickLogModal displays recent exercises</description>
+        <approach>Mock recentExercisesProvider with 5 exercises. Render QuickLogModal. Verify 5 ExerciseTile widgets displayed. Tap first tile, verify expansion with pre-filled data.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3">
+        <description>Widget test: Pre-fill and confirm workflow</description>
+        <approach>Render QuickLogModal with mocked recent exercises. Tap "Bench Press". Verify pre-filled sets appear (80kg x 10, 85kg x 8). Tap check button. Verify sets added to quick log session.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC5">
+        <description>Widget test: Add new exercise via search</description>
+        <approach>Render QuickLogModal. Tap "Add New Exercise". Mock exercise search results. Select "Squats". Verify Squats added to session (no pre-fill). Enter sets manually. Tap check. Verify added.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6">
+        <description>Widget test: Save Workout button triggers save</description>
+        <approach>Render QuickLogModal. Add 2 exercises with sets. Tap "Save Workout". Verify QuickLogWorkoutUseCase called with correct sets. Verify success toast shown. Verify modal dismissed.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4">
+        <description>Widget test: No rest timer in quick log mode</description>
+        <approach>Render QuickLogModal. Add exercise, log 1st set. Verify no rest timer UI appears. Immediately log 2nd set. Verify no delay or timer prompt.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1,AC2,AC3,AC6">
+        <description>Integration test: Complete quick log flow from Fitness home</description>
+        <approach>Launch app. Navigate to Fitness tab. Tap "Quick Log" button. Verify modal appears with recent exercises. Tap "Bench Press". Verify pre-fill. Tap check. Tap "Save Workout". Verify workout saved to database. Verify workout appears in History screen.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1,AC5">
+        <description>Integration test: Quick log with new exercise via search</description>
+        <approach>Open Quick Log modal. Tap "Add New Exercise". Search "Deadlift". Select result. Enter 3 sets (100kg x 5, 110kg x 5, 120kg x 3). Tap check. Save workout. Verify Deadlift now in recent exercises list on next quick log.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6,AC7">
+        <description>Integration test: Offline quick log and sync</description>
+        <approach>Disable network. Open Quick Log. Add workout. Tap Save. Verify saved to Drift. Verify "Syncing..." indicator shown. Re-enable network. Verify workout syncs to Supabase. Verify appears in history on other device.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3">
+        <description>Widget test: Inline editing of pre-filled values</description>
+        <approach>Render QuickLogModal. Tap "Bench Press" with pre-fill (80kg x 10). Tap weight value. Verify number pad appears. Change to 85kg. Tap reps, change to 12. Tap check. Verify updated values saved (85kg x 12).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC7">
+        <description>Unit test: Duration auto-calculation accuracy</description>
+        <approach>Mock quick log start at 10:00:00, save at 10:15:30. Verify duration = 16 minutes (rounded up). Test edge cases: same minute (0 min), 1 hour+ workout.</approach>
+      </test-idea>
+    </ideas>
+  </tests>
+</story-context>

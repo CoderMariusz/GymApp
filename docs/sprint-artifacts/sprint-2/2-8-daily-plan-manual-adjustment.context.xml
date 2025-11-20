@@ -1,0 +1,618 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>2</epicId>
+    <storyId>2.8</storyId>
+    <title>Daily Plan Manual Adjustment</title>
+    <status>ready-for-dev</status>
+    <generatedAt>2025-11-17</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/sprint-2/2-8-daily-plan-manual-adjustment.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>user with an AI-generated daily plan</asA>
+    <iWant>to manually edit and customize my daily plan</iWant>
+    <soThat>I have control over my tasks and can adapt to changes</soThat>
+    <tasks>
+      <task id="1" ac-ref="AC1,AC2,AC9">
+        <description>Implement inline task editing UI</description>
+        <subtasks>
+          <subtask>Create EditTaskModal widget (StatefulWidget) with text fields</subtask>
+          <subtask>Implement tap-to-edit gesture on DailyPlanTaskTile</subtask>
+          <subtask>Add task title TextField with initial value and validation</subtask>
+          <subtask>Add task description TextField (multiline, optional)</subtask>
+          <subtask>Add estimated time picker (duration selector)</subtask>
+          <subtask>Add priority selector (high/medium/low with color indicators)</subtask>
+          <subtask>Add optional/required toggle switch</subtask>
+          <subtask>Implement "Save" and "Cancel" buttons with proper navigation</subtask>
+        </subtasks>
+      </task>
+      <task id="2" ac-ref="AC5">
+        <description>Implement add custom task functionality</description>
+        <subtasks>
+          <subtask>Create AddTaskModal widget (similar to EditTaskModal)</subtask>
+          <subtask>Add "+" FAB (FloatingActionButton) on daily plan screen</subtask>
+          <subtask>Implement empty state form for new task creation</subtask>
+          <subtask>Generate unique task ID (UUID) for custom tasks</subtask>
+          <subtask>Set default values: priority=medium, optional=false, estimatedTime=30min</subtask>
+          <subtask>Add custom task to end of daily plan list</subtask>
+        </subtasks>
+      </task>
+      <task id="3" ac-ref="AC4">
+        <description>Implement task deletion with confirmation</description>
+        <subtasks>
+          <subtask>Add swipe-to-delete gesture using Dismissible widget</subtask>
+          <subtask>Implement delete confirmation dialog ("Delete this task?")</subtask>
+          <subtask>Add "Delete" button in EditTaskModal</subtask>
+          <subtask>Remove task from daily plan list on confirmation</subtask>
+          <subtask>Show SnackBar with "Task deleted" and undo option</subtask>
+        </subtasks>
+      </task>
+      <task id="4" ac-ref="AC6">
+        <description>Implement drag-and-drop task reordering</description>
+        <subtasks>
+          <subtask>Wrap daily plan list in ReorderableListView</subtask>
+          <subtask>Add drag handle icon to each task tile (right side)</subtask>
+          <subtask>Implement onReorder callback to update task order</subtask>
+          <subtask>Update task order_index field in database</subtask>
+          <subtask>Add haptic feedback on drag start/end (HapticFeedback.mediumImpact())</subtask>
+          <subtask>Animate list reordering smoothly</subtask>
+        </subtasks>
+      </task>
+      <task id="5" ac-ref="AC7,AC8">
+        <description>Implement optimistic UI updates and sync</description>
+        <subtasks>
+          <subtask>Update UI immediately on task edit (optimistic update)</subtask>
+          <subtask>Queue changes for background sync to Supabase</subtask>
+          <subtask>Handle conflict resolution (local wins over server for manual edits)</subtask>
+          <subtask>Show sync status indicator (synced/syncing/error)</subtask>
+          <subtask>Implement retry logic for failed syncs</subtask>
+          <subtask>Store pending changes in local sync queue table</subtask>
+        </subtasks>
+      </task>
+      <task id="6" ac-ref="AC10">
+        <description>Implement undo/redo functionality</description>
+        <subtasks>
+          <subtask>Create UndoService with stack-based state management</subtask>
+          <subtask>Store last 5 actions in undo stack (edit, add, delete, reorder)</subtask>
+          <subtask>Add "Undo" button in app bar (visible when stack not empty)</subtask>
+          <subtask>Implement undo action restoration (reverse last change)</subtask>
+          <subtask>Clear undo stack on plan regeneration</subtask>
+          <subtask>Persist undo stack to local storage (Drift)</subtask>
+        </subtasks>
+      </task>
+      <task id="7" ac-ref="AC8">
+        <description>Implement AI learning from manual adjustments</description>
+        <subtasks>
+          <subtask>Track user adjustment patterns (deleted tasks, reordered tasks, time changes)</subtask>
+          <subtask>Store adjustment events in user_adjustments table</subtask>
+          <subtask>Create adjustment analytics service (count, frequency, patterns)</subtask>
+          <subtask>Pass adjustment history to AI generation prompt (Story 2.2 integration)</subtask>
+          <subtask>Implement adjustment feedback signals for AI model</subtask>
+        </subtasks>
+      </task>
+      <task id="8" ac-ref="AC3">
+        <description>Update daily_plans database schema</description>
+        <subtasks>
+          <subtask>Extend daily_plans.tasks JSONB to include priority, optional, estimatedTime fields</subtask>
+          <subtask>Add order_index field to tasks array for custom ordering</subtask>
+          <subtask>Add last_modified_at timestamp to daily_plans table</subtask>
+          <subtask>Create user_adjustments table (user_id, plan_id, adjustment_type, timestamp)</subtask>
+          <subtask>Add sync_queue table for offline change tracking</subtask>
+          <subtask>Create database migration for schema updates</subtask>
+        </subtasks>
+      </task>
+      <task id="9" ac-ref="ALL">
+        <description>Write comprehensive tests</description>
+        <subtasks>
+          <subtask>Unit tests: UpdateDailyPlanUseCase, AddTaskUseCase, ReorderTasksUseCase</subtask>
+          <subtask>Unit tests: UndoService (push, pop, clear operations)</subtask>
+          <subtask>Widget tests: EditTaskModal, AddTaskModal, swipe-to-delete gesture</subtask>
+          <subtask>Widget tests: ReorderableListView drag-and-drop behavior</subtask>
+          <subtask>Widget tests: Undo button visibility and functionality</subtask>
+          <subtask>Integration test: Complete task CRUD flow (create, read, update, delete)</subtask>
+          <subtask>Integration test: Conflict resolution between local and server changes</subtask>
+          <subtask>Integration test: Offline editing with sync on reconnection</subtask>
+          <subtask>Achieve 80%+ code coverage</subtask>
+        </subtasks>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="AC1">
+      <text>User can tap on task to edit title and description</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC2">
+      <text>User can edit task estimated time using time picker</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC3">
+      <text>User can set task priority (high/medium/low) with visual indicators</text>
+      <priority>P1</priority>
+    </criterion>
+    <criterion id="AC4">
+      <text>User can delete task with swipe gesture and confirmation dialog</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC5">
+      <text>User can add new custom tasks to daily plan via + FAB</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC6">
+      <text>User can reorder tasks using drag-and-drop gesture</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC7">
+      <text>Changes save automatically with optimistic UI updates</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC8">
+      <text>Changes sync across devices in real-time</text>
+      <priority>P1</priority>
+    </criterion>
+    <criterion id="AC9">
+      <text>User can mark tasks as optional vs required</text>
+      <priority>P1</priority>
+    </criterion>
+    <criterion id="AC10">
+      <text>User can undo last 5 actions (edit, add, delete, reorder)</text>
+      <priority>P1</priority>
+    </criterion>
+    <criterion id="AC11">
+      <text>AI learns from manual adjustments and adapts future plans</text>
+      <priority>P2</priority>
+    </criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR9: Manual plan adjustment and customization</section>
+        <snippet>Users must be able to manually adjust AI-generated plans. Support: edit task details, add custom tasks, delete tasks, reorder tasks via drag-and-drop. Changes save automatically. AI learns from adjustments to improve future plans.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/epics.md</path>
+        <title>Epic 2: Life Coach MVP - Story 2.8</title>
+        <section>Story 2.8: Daily Plan Manual Adjustment</section>
+        <snippet>Enable manual editing of daily plans: tap to edit, swipe to delete, drag to reorder, add custom tasks. Optimistic UI updates with offline support. AI learns from user adjustments. Prerequisite: Story 2.2 (AI Daily Plan Generation).</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Offline-First Sync (D3)</section>
+        <snippet>Hybrid Sync pattern: Write-Through Cache + Sync Queue. User edits save to Drift (SQLite) first for instant feedback, then queue for Supabase sync. Implement conflict resolution strategy: local manual edits win over server changes.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Database Schema - daily_plans table</section>
+        <snippet>daily_plans table has JSONB tasks column storing task array. Each task: id, title, description, time, duration, category, priority, optional, estimatedTime, order_index. Support flexible schema for user customizations.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/ux-design-specification.md</path>
+        <title>UX Design Specification</title>
+        <section>Daily Plan Editing UX</section>
+        <snippet>Tap task to edit (modal with form fields). Swipe left to delete (show delete icon, confirmation dialog). Drag handle on right side of task tile for reordering. Priority colors: high=red, medium=orange, low=green. Optimistic UI: changes appear instantly, sync indicator in corner.</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/sprint-2/2-2-ai-daily-plan-generation.md</path>
+        <title>Story 2.2: AI Daily Plan Generation</title>
+        <section>DailyPlanEntity structure</section>
+        <snippet>DailyPlanEntity contains List&lt;TaskEntity&gt; where TaskEntity has: id, title, description, scheduledTime, duration, category. Story 2.8 extends this with priority, optional, estimatedTime, order_index fields.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <reference>
+        <path>lib/features/life_coach/domain/entities/daily_plan_entity.dart</path>
+        <description>Extend TaskEntity to add priority, optional, estimatedTime, orderIndex fields</description>
+        <relevance>Base entity that needs extension for manual adjustment features</relevance>
+      </reference>
+      <reference>
+        <path>lib/features/life_coach/presentation/screens/daily_plan_screen.dart</path>
+        <description>Main screen displaying daily plan - add edit/delete/reorder capabilities</description>
+        <relevance>Primary UI component for this story</relevance>
+      </reference>
+      <reference>
+        <path>lib/features/life_coach/data/repositories/daily_plan_repository_impl.dart</path>
+        <description>Repository handling daily plan CRUD - extend with update/delete methods</description>
+        <relevance>Data layer that needs update operations</relevance>
+      </reference>
+    </code>
+    <dependencies>
+      <flutter>
+        <sdk>3.38+</sdk>
+        <dart>3.10+</dart>
+      </flutter>
+      <packages>
+        <package name="flutter_riverpod" version="^3.0.0" usage="State management for task editing and undo/redo" />
+        <package name="riverpod_annotation" version="^3.0.0" usage="Code generation for providers" />
+        <package name="drift" version="^2.14.0" usage="Local SQLite database for offline task edits" />
+        <package name="supabase_flutter" version="^2.0.0" usage="Real-time sync of plan changes across devices" />
+        <package name="uuid" version="^4.0.0" usage="Generate unique IDs for custom tasks" />
+        <package name="flutter_slidable" version="^3.0.0" usage="Alternative swipe-to-delete implementation (optional)" />
+        <package name="freezed" version="^2.4.0" usage="Immutable entities with copyWith for undo functionality" />
+        <package name="freezed_annotation" version="^2.4.0" usage="Annotations for freezed code generation" />
+        <package name="flutter_test" version="sdk" usage="Unit and widget testing framework" />
+        <package name="mockito" version="^5.4.0" usage="Mocking dependencies in tests" />
+        <package name="integration_test" version="sdk" usage="End-to-end testing framework" />
+      </packages>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint id="ARCH-1" type="architectural">
+      <description>Follow Hybrid Architecture with offline-first pattern</description>
+      <details>Extend existing life_coach feature structure. Add edit/add/delete use cases in domain layer. Repository methods must save to Drift first (optimistic update), then queue for Supabase sync. Target: &lt;50ms local save latency.</details>
+    </constraint>
+    <constraint id="ARCH-2" type="architectural">
+      <description>Implement optimistic UI updates</description>
+      <details>UI must update immediately on user action before server confirmation. Show sync status indicator (synced/syncing/error). Revert changes only on irrecoverable server error. Queue failed syncs for retry.</details>
+    </constraint>
+    <constraint id="DATA-1" type="data">
+      <description>Extend daily_plans JSONB schema for task customization</description>
+      <details>Add fields to tasks JSONB array: priority (enum: high/medium/low), optional (boolean), estimatedTime (integer minutes), orderIndex (integer). Maintain backward compatibility with existing plans.</details>
+    </constraint>
+    <constraint id="DATA-2" type="data">
+      <description>Implement undo stack persistence</description>
+      <details>Store undo actions in local Drift database. Stack limit: 5 actions. Each action stores: type (add/edit/delete/reorder), timestamp, previousState (JSON), currentState (JSON). Clear stack on plan regeneration or app restart.</details>
+    </constraint>
+    <constraint id="DATA-3" type="data">
+      <description>Track user adjustments for AI learning</description>
+      <details>Create user_adjustments table: id, user_id, plan_id, adjustment_type (enum: task_deleted, task_added, task_reordered, time_changed, priority_changed), task_id, previous_value (JSON), new_value (JSON), timestamp. Used for AI personalization.</details>
+    </constraint>
+    <constraint id="SYNC-1" type="synchronization">
+      <description>Conflict resolution strategy for concurrent edits</description>
+      <details>Local manual edits always win over server AI regenerations. Use last_modified_at timestamps to detect conflicts. If AI regenerates plan while user has pending edits, merge changes: keep user edits, add new AI suggestions at end of list.</details>
+    </constraint>
+    <constraint id="SYNC-2" type="synchronization">
+      <description>Real-time sync across devices</description>
+      <details>Use Supabase Realtime subscriptions on daily_plans table. On remote update, merge changes intelligently. Show notification: "Your plan was updated on another device". Refresh UI with animation.</details>
+    </constraint>
+    <constraint id="UX-1" type="ux">
+      <description>Inline editing with modal forms</description>
+      <details>EditTaskModal appears as bottom sheet (iOS) or dialog (Android). Auto-focus title field. "Save" button enabled only when form valid. Escape key / swipe down to cancel. Changes discard on cancel.</details>
+    </constraint>
+    <constraint id="UX-2" type="ux">
+      <description>Swipe-to-delete with confirmation</description>
+      <details>Swipe left reveals red delete background. Release to trigger confirmation dialog: "Delete '[task title]'?" with Cancel/Delete buttons. Delete button in red. Undo option in SnackBar for 5 seconds after delete.</details>
+    </constraint>
+    <constraint id="UX-3" type="ux">
+      <description>Drag-and-drop with visual feedback</description>
+      <details>Long-press drag handle to activate reorder mode. Task tile elevates (shadow increase) during drag. Drop zones show between tiles. Haptic feedback on drag start/drop. Animate smooth position transitions.</details>
+    </constraint>
+    <constraint id="UX-4" type="ux">
+      <description>Undo button placement and behavior</description>
+      <details>Undo button appears in app bar (left of title) when undo stack not empty. Icon: curved arrow left. Badge shows undo count (max 5). Tap to undo last action. Show SnackBar: "Undone: [action description]". No redo functionality in MVP.</details>
+    </constraint>
+    <constraint id="PERF-1" type="performance">
+      <description>Optimistic update latency &lt;50ms</description>
+      <details>UI must respond to edits within 50ms. Save to Drift synchronously in UI thread. Background sync to Supabase in isolate. Measure p95 edit-to-UI-update latency.</details>
+    </constraint>
+    <constraint id="PERF-2" type="performance">
+      <description>Drag-and-drop 60fps performance</description>
+      <details>Reordering animations must maintain 60fps. Use RepaintBoundary for task tiles. Avoid rebuilding entire list on reorder. Measure frame render times during drag operations.</details>
+    </constraint>
+    <constraint id="SEC-1" type="security">
+      <description>User can only edit own plans</description>
+      <details>Verify user_id matches auth.uid() before allowing edits. Enforce via RLS policies: UPDATE/DELETE policies on daily_plans: auth.uid() = user_id. Client-side validation insufficient.</details>
+    </constraint>
+    <constraint id="SEC-2" type="security">
+      <description>GDPR compliance for adjustment tracking</description>
+      <details>User adjustments are personal data. Include in data export. Support deletion via GDPR data deletion flow. Inform users in privacy policy that adjustments used to improve AI recommendations.</details>
+    </constraint>
+    <constraint id="TEST-1" type="testing">
+      <description>80%+ code coverage required</description>
+      <details>Follow 70/20/10 testing pyramid. Unit tests for all use cases (UpdateDailyPlanUseCase, AddTaskUseCase, DeleteTaskUseCase, ReorderTasksUseCase, UndoService). Widget tests for modals and gestures. Integration test for full edit flow with sync.</details>
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>TaskEntity</name>
+      <kind>domain-entity</kind>
+      <signature>
+        class TaskEntity {
+          final String id;
+          final String title;
+          final String? description;
+          final DateTime scheduledTime;
+          final int durationMinutes;
+          final String category;
+          final TaskPriority priority;      // NEW: high/medium/low
+          final bool isOptional;            // NEW: optional vs required
+          final int estimatedTimeMinutes;   // NEW: user-set estimate
+          final int orderIndex;             // NEW: custom order
+          final DateTime createdAt;
+          final DateTime updatedAt;
+        }
+
+        enum TaskPriority { high, medium, low }
+      </signature>
+      <path>lib/features/life_coach/domain/entities/task_entity.dart</path>
+      <notes>Extend existing TaskEntity with new fields for manual customization. Use @freezed for immutability and copyWith. Add validation: title required, estimatedTimeMinutes > 0, priority enum, orderIndex >= 0.</notes>
+    </interface>
+    <interface>
+      <name>UpdateDailyPlanUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class UpdateDailyPlanUseCase {
+          Future&lt;Result&lt;DailyPlanEntity&gt;&gt; call({
+            required String planId,
+            required DailyPlanEntity updatedPlan,
+          });
+        }
+      </signature>
+      <path>lib/features/life_coach/domain/usecases/update_daily_plan_usecase.dart</path>
+      <notes>Updates entire daily plan (batch task updates). Returns Result&lt;T&gt; pattern. Save to Drift first, queue for Supabase sync. Track adjustment in user_adjustments table.</notes>
+    </interface>
+    <interface>
+      <name>AddTaskUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class AddTaskUseCase {
+          Future&lt;Result&lt;TaskEntity&gt;&gt; call({
+            required String planId,
+            required TaskEntity newTask,
+          });
+        }
+      </signature>
+      <path>lib/features/life_coach/domain/usecases/add_task_usecase.dart</path>
+      <notes>Adds custom task to existing daily plan. Generate UUID for task.id. Set orderIndex to max(existing_indices) + 1. Append to tasks array in daily_plans JSONB.</notes>
+    </interface>
+    <interface>
+      <name>DeleteTaskUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class DeleteTaskUseCase {
+          Future&lt;Result&lt;void&gt;&gt; call({
+            required String planId,
+            required String taskId,
+          });
+        }
+      </signature>
+      <path>lib/features/life_coach/domain/usecases/delete_task_usecase.dart</path>
+      <notes>Removes task from daily plan tasks array. Store deleted task in undo stack. Log adjustment event in user_adjustments table with adjustment_type = 'task_deleted'.</notes>
+    </interface>
+    <interface>
+      <name>ReorderTasksUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class ReorderTasksUseCase {
+          Future&lt;Result&lt;List&lt;TaskEntity&gt;&gt;&gt; call({
+            required String planId,
+            required int oldIndex,
+            required int newIndex,
+          });
+        }
+      </signature>
+      <path>lib/features/life_coach/domain/usecases/reorder_tasks_usecase.dart</path>
+      <notes>Updates orderIndex for all tasks in plan to reflect new order. Batch update in single transaction. Store previous order in undo stack. Log 'task_reordered' adjustment event.</notes>
+    </interface>
+    <interface>
+      <name>UndoService</name>
+      <kind>service</kind>
+      <signature>
+        class UndoService {
+          void pushAction(UndoAction action);
+          Future&lt;Result&lt;void&gt;&gt; undo();
+          void clear();
+          bool get canUndo;
+          int get undoCount;
+        }
+
+        class UndoAction {
+          final UndoActionType type;
+          final String planId;
+          final dynamic previousState;
+          final dynamic currentState;
+          final DateTime timestamp;
+        }
+
+        enum UndoActionType { taskAdded, taskEdited, taskDeleted, tasksReordered }
+      </signature>
+      <path>lib/features/life_coach/domain/services/undo_service.dart</path>
+      <notes>Stack-based undo service. Max 5 actions in stack. Store in Drift for persistence across app restarts. Each undo() call pops stack and restores previousState. Clear on plan regeneration.</notes>
+    </interface>
+    <interface>
+      <name>DailyPlanRepository</name>
+      <kind>repository</kind>
+      <signature>
+        abstract class DailyPlanRepository {
+          Future&lt;Result&lt;DailyPlanEntity&gt;&gt; getDailyPlan(String userId, DateTime date);
+          Future&lt;Result&lt;DailyPlanEntity&gt;&gt; updateDailyPlan(DailyPlanEntity plan);
+          Future&lt;Result&lt;TaskEntity&gt;&gt; addTaskToPlan(String planId, TaskEntity task);
+          Future&lt;Result&lt;void&gt;&gt; deleteTaskFromPlan(String planId, String taskId);
+          Future&lt;Result&lt;void&gt;&gt; reorderTasks(String planId, List&lt;TaskEntity&gt; orderedTasks);
+        }
+      </signature>
+      <path>lib/features/life_coach/domain/repositories/daily_plan_repository.dart</path>
+      <notes>Extend existing DailyPlanRepository with update/delete methods. Implementation uses both DriftDataSource and SupabaseDataSource with sync queue pattern.</notes>
+    </interface>
+    <interface>
+      <name>daily_plans table extension (Supabase PostgreSQL)</name>
+      <kind>database-table</kind>
+      <signature>
+        -- Extend existing daily_plans table
+        ALTER TABLE daily_plans
+        ADD COLUMN last_modified_at TIMESTAMPTZ DEFAULT NOW();
+
+        -- Update tasks JSONB schema (documentation only, JSONB is schemaless)
+        -- Each task object in tasks array now includes:
+        -- {
+        --   "id": "uuid",
+        --   "title": "string",
+        --   "description": "string?",
+        --   "scheduledTime": "timestamptz",
+        --   "durationMinutes": int,
+        --   "category": "string",
+        --   "priority": "high|medium|low",      -- NEW
+        --   "isOptional": boolean,              -- NEW
+        --   "estimatedTimeMinutes": int,        -- NEW
+        --   "orderIndex": int                   -- NEW
+        -- }
+
+        CREATE INDEX idx_daily_plans_last_modified ON daily_plans(user_id, last_modified_at DESC);
+      </signature>
+      <path>supabase/migrations/</path>
+      <notes>Migration extends daily_plans table with last_modified_at for conflict detection. JSONB tasks field remains flexible - new fields added at application level.</notes>
+    </interface>
+    <interface>
+      <name>user_adjustments table (Supabase PostgreSQL)</name>
+      <kind>database-table</kind>
+      <signature>
+        CREATE TYPE adjustment_type AS ENUM (
+          'task_deleted', 'task_added', 'task_reordered',
+          'time_changed', 'priority_changed', 'description_changed'
+        );
+
+        CREATE TABLE user_adjustments (
+          id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+          user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+          plan_id UUID NOT NULL REFERENCES daily_plans(id) ON DELETE CASCADE,
+          adjustment_type adjustment_type NOT NULL,
+          task_id TEXT,
+          previous_value JSONB,
+          new_value JSONB,
+          created_at TIMESTAMPTZ DEFAULT NOW()
+        );
+
+        CREATE INDEX idx_user_adjustments_user_date ON user_adjustments(user_id, created_at DESC);
+
+        -- RLS policy
+        ALTER TABLE user_adjustments ENABLE ROW LEVEL SECURITY;
+        CREATE POLICY "Users can only access own adjustments"
+          ON user_adjustments FOR ALL
+          USING (auth.uid() = user_id);
+      </signature>
+      <path>supabase/migrations/</path>
+      <notes>New table for tracking user adjustments for AI learning. Stores before/after state as JSONB. Used by AI generation service to personalize future plans.</notes>
+    </interface>
+    <interface>
+      <name>sync_queue table (Drift SQLite)</name>
+      <kind>database-table</kind>
+      <signature>
+        @DataClassName('SyncQueueEntry')
+        class SyncQueue extends Table {
+          TextColumn get id => text()();
+          TextColumn get entityType => text()();  // 'daily_plan', 'task', etc.
+          TextColumn get entityId => text()();
+          TextColumn get operation => text()();   // 'update', 'delete', 'insert'
+          TextColumn get payload => text()();     // JSON string
+          IntColumn get retryCount => integer().withDefault(const Constant(0))();
+          DateTimeColumn get createdAt => dateTime()();
+          DateTimeColumn get lastAttemptAt => dateTime().nullable()();
+
+          @override
+          Set&lt;Column&gt; get primaryKey => {id};
+        }
+      </signature>
+      <path>lib/core/database/tables.drift.dart</path>
+      <notes>Local sync queue for offline changes. Background service processes queue when online. Retry failed syncs up to 3 times. Clear on successful sync.</notes>
+    </interface>
+    <interface>
+      <name>undo_stack table (Drift SQLite)</name>
+      <kind>database-table</kind>
+      <signature>
+        @DataClassName('UndoStackEntry')
+        class UndoStack extends Table {
+          TextColumn get id => text()();
+          TextColumn get planId => text()();
+          TextColumn get actionType => text()();     // 'add', 'edit', 'delete', 'reorder'
+          TextColumn get previousState => text()();  // JSON string
+          TextColumn get currentState => text()();   // JSON string
+          DateTimeColumn get timestamp => dateTime()();
+          IntColumn get stackPosition => integer()();  // 0 = most recent
+
+          @override
+          Set&lt;Column&gt; get primaryKey => {id};
+        }
+      </signature>
+      <path>lib/core/database/tables.drift.dart</path>
+      <notes>Local undo stack persistence. Max 5 entries per plan. stackPosition 0 is top of stack (most recent action). Clear on plan regeneration.</notes>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Follow 70/20/10 testing pyramid: 70% unit tests (use cases, repositories, entities, services), 20% widget tests (UI components, modals, gestures, state management), 10% integration tests (end-to-end edit flows, sync scenarios). Use flutter_test for unit/widget tests, integration_test for E2E. Mock dependencies with mockito. Target 80%+ code coverage. All acceptance criteria must have test coverage.
+    </standards>
+    <locations>
+      <location>test/features/life_coach/domain/usecases/update_daily_plan_usecase_test.dart</location>
+      <location>test/features/life_coach/domain/usecases/add_task_usecase_test.dart</location>
+      <location>test/features/life_coach/domain/usecases/delete_task_usecase_test.dart</location>
+      <location>test/features/life_coach/domain/usecases/reorder_tasks_usecase_test.dart</location>
+      <location>test/features/life_coach/domain/services/undo_service_test.dart</location>
+      <location>test/features/life_coach/data/repositories/daily_plan_repository_impl_test.dart</location>
+      <location>test/features/life_coach/presentation/widgets/edit_task_modal_test.dart</location>
+      <location>test/features/life_coach/presentation/widgets/add_task_modal_test.dart</location>
+      <location>test/features/life_coach/presentation/screens/daily_plan_screen_test.dart</location>
+      <location>integration_test/features/life_coach/daily_plan_editing_flow_test.dart</location>
+    </locations>
+    <ideas>
+      <test-idea ac-ref="AC1,AC2">
+        <description>Widget test: EditTaskModal displays and updates task fields</description>
+        <approach>Render EditTaskModal with sample task. Verify title, description, time, priority pre-filled. Change title, tap Save. Verify onSave callback called with updated task.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC5">
+        <description>Widget test: AddTaskModal creates new task with defaults</description>
+        <approach>Render AddTaskModal. Verify empty form. Enter title "Custom Task". Verify priority defaults to medium, optional=false, estimatedTime=30min. Tap Save. Verify task created with UUID.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4">
+        <description>Widget test: Swipe-to-delete shows confirmation dialog</description>
+        <approach>Render DailyPlanScreen with task list. Swipe task left using Dismissible tester. Verify delete confirmation dialog appears. Tap Delete. Verify task removed from list.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6">
+        <description>Widget test: Drag-and-drop reorders tasks</description>
+        <approach>Render ReorderableListView with 3 tasks. Drag task at index 0 to index 2. Verify onReorder callback called with (0, 2). Verify task order updated in UI.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC7">
+        <description>Unit test: UpdateDailyPlanUseCase saves optimistically</description>
+        <approach>Mock DailyPlanRepository. Call UpdateDailyPlanUseCase with updated plan. Verify repository.updateDailyPlan() called. Verify Success result returned immediately (no network wait).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC10">
+        <description>Unit test: UndoService push/pop operations</description>
+        <approach>Create UndoService. Push 3 actions. Verify undoCount=3. Call undo(). Verify action popped, undoCount=2. Push 5 more actions. Verify stack limited to 5 (oldest dropped).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC10">
+        <description>Unit test: UndoService restores previous state</description>
+        <approach>Push edit action with previousState=task_v1, currentState=task_v2. Call undo(). Verify DeleteTaskUseCase or UpdateDailyPlanUseCase called to restore task_v1.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC8">
+        <description>Integration test: Changes sync across devices</description>
+        <approach>Edit task on Device A (mock). Save locally. Trigger background sync. Mock Supabase Realtime update on Device B. Verify Device B receives update and refreshes UI.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC7,AC8">
+        <description>Integration test: Offline editing with sync on reconnect</description>
+        <approach>Disable network. Edit 3 tasks. Verify changes saved to Drift and added to sync_queue. Re-enable network. Verify sync service processes queue, pushes to Supabase, clears queue.</approach>
+      </test-idea>
+      <test-idea ac-ref="SYNC-1">
+        <description>Integration test: Conflict resolution - local wins</description>
+        <approach>Create conflicting edits: local manual edit at 10:00am, server AI regeneration at 10:01am (simulated). Verify local edit preserved, AI suggestions appended to end.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3,AC9">
+        <description>Unit test: TaskEntity validation</description>
+        <approach>Test TaskEntity constructor. Verify title required (throws on empty). Verify priority enum valid (high/medium/low). Verify estimatedTimeMinutes > 0. Test copyWith immutability.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC5">
+        <description>Unit test: AddTaskUseCase generates UUID and sets defaults</description>
+        <approach>Mock DailyPlanRepository. Call AddTaskUseCase with new task (no ID). Verify UUID generated. Verify orderIndex set to max(existing) + 1. Verify repository.addTaskToPlan() called.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4">
+        <description>Unit test: DeleteTaskUseCase logs adjustment event</description>
+        <approach>Mock DailyPlanRepository and UserAdjustmentsRepository. Call DeleteTaskUseCase. Verify task removed from plan. Verify adjustment logged with type='task_deleted', previous_value=deleted_task.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6">
+        <description>Unit test: ReorderTasksUseCase updates all orderIndex values</description>
+        <approach>Create 5 tasks with orderIndex 0-4. Call ReorderTasksUseCase(oldIndex=1, newIndex=3). Verify tasks reordered: task[1] moves to position 3, others shift. Verify batch update.</approach>
+      </test-idea>
+      <test-idea ac-ref="ALL">
+        <description>Integration test: Complete CRUD flow</description>
+        <approach>Add custom task → edit task title → reorder task → delete task → undo delete → verify all operations saved to DB and synced. Measure total flow latency &lt;5s.</approach>
+      </test-idea>
+    </ideas>
+  </tests>
+</story-context>

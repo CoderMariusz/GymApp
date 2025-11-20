@@ -1,0 +1,617 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>9</epicId>
+    <storyId>9.5</storyId>
+    <title>Data Privacy &amp; Cross-Module Settings</title>
+    <status>ready-for-dev</status>
+    <generatedAt>2025-11-17</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/sprint-9/9-5-data-privacy-cross-module-settings.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>user concerned about data privacy</asA>
+    <iWant>to control how my data is used and shared</iWant>
+    <soThat>I maintain privacy and comply with GDPR</soThat>
+    <tasks>
+      <task id="1" ac-ref="AC1,AC2,AC3">
+        <description>Implement DataPrivacyScreen UI</description>
+        <subtasks>
+          <subtask>Create DataPrivacyScreen widget in settings feature</subtask>
+          <subtask>Add Section 1: Privacy Controls (cross-module data sharing, AI journal analysis, anonymous analytics)</subtask>
+          <subtask>Add Section 2: GDPR Rights (Export All Data, Delete Account buttons)</subtask>
+          <subtask>Add Section 3: Legal (Privacy Policy link)</subtask>
+          <subtask>Add footer: "Your data is yours. We never sell it." (gray, centered)</subtask>
+          <subtask>Implement toggle switches with warning modals</subtask>
+        </subtasks>
+      </task>
+      <task id="2" ac-ref="AC1">
+        <description>Implement cross-module data sharing toggle</description>
+        <subtasks>
+          <subtask>Create "Allow modules to share data" toggle (default: ON)</subtask>
+          <subtask>Add subtitle: "Cross-module insights require this"</subtask>
+          <subtask>Implement warning modal when disabling</subtask>
+          <subtask>Show impact: "Some features won't work: Cross-module insights, AI daily plan optimization, Fitness intensity adjustment"</subtask>
+          <subtask>Save preference to privacy_settings table</subtask>
+          <subtask>Disable cross-module features when OFF</subtask>
+        </subtasks>
+      </task>
+      <task id="3" ac-ref="AC2">
+        <description>Implement AI journal analysis toggle</description>
+        <subtasks>
+          <subtask>Create "AI analysis of journal entries" toggle (default: OFF, opt-in only)</subtask>
+          <subtask>Add subtitle: "Sentiment analysis (opt-in only)"</subtask>
+          <subtask>When enabled, journals analyzed for sentiment (mood patterns)</subtask>
+          <subtask>When disabled, journals remain fully E2E encrypted (no AI analysis)</subtask>
+          <subtask>Save preference to privacy_settings table</subtask>
+        </subtasks>
+      </task>
+      <task id="4" ac-ref="AC3">
+        <description>Implement anonymous analytics toggle</description>
+        <subtasks>
+          <subtask>Create "Send anonymous analytics" toggle (default: ON)</subtask>
+          <subtask>Add subtitle: "Helps us improve LifeOS (no PII)"</subtask>
+          <subtask>When enabled, send anonymous usage analytics (no personal identifiable information)</subtask>
+          <subtask>When disabled, no analytics sent</subtask>
+          <subtask>Save preference to privacy_settings table</subtask>
+        </subtasks>
+      </task>
+      <task id="5" ac-ref="AC4,AC5,AC6">
+        <description>Implement data export functionality</description>
+        <subtasks>
+          <subtask>Add "Export All Data" button with download icon</subtask>
+          <subtask>Add subtitle: "Download a copy of your data (GDPR)"</subtask>
+          <subtask>Implement confirmation dialog with export details</subtask>
+          <subtask>Call export-user-data Supabase Edge Function (from Story 1.6)</subtask>
+          <subtask>Show "Preparing your data..." loading state</subtask>
+          <subtask>Display "You'll receive an email when ready" confirmation</subtask>
+          <subtask>Generate ZIP file with JSON + CSV formats (all user data)</subtask>
+          <subtask>Send email with download link (expires in 7 days)</subtask>
+        </subtasks>
+      </task>
+      <task id="6" ac-ref="AC7,AC8,AC9">
+        <description>Implement account deletion functionality</description>
+        <subtasks>
+          <subtask>Add "Delete Account" button (RED) with delete forever icon</subtask>
+          <subtask>Add subtitle: "Permanent deletion after 7-day grace period"</subtask>
+          <subtask>Implement confirmation dialog with irreversibility warning</subtask>
+          <subtask>Add password confirmation field</subtask>
+          <subtask>Call delete-account Supabase Edge Function (from Story 1.6)</subtask>
+          <subtask>Set deletion_requested_at timestamp (soft delete)</subtask>
+          <subtask>Display "Account scheduled for deletion on [date]" confirmation</subtask>
+          <subtask>Send deletion confirmation email with cancellation link</subtask>
+        </subtasks>
+      </task>
+      <task id="7" ac-ref="AC9">
+        <description>Implement deletion cancellation flow</description>
+        <subtasks>
+          <subtask>If user logs in during 7-day grace period, show banner: "Your account is scheduled for deletion on [date]. Cancel anytime."</subtask>
+          <subtask>Add "Cancel Deletion" button on banner</subtask>
+          <subtask>Implement CancelDeletionUseCase</subtask>
+          <subtask>Clear deletion_requested_at timestamp</subtask>
+          <subtask>Show "Welcome back! Deletion cancelled." confirmation</subtask>
+        </subtasks>
+      </task>
+      <task id="8" ac-ref="AC10">
+        <description>Implement Privacy Policy integration</description>
+        <subtasks>
+          <subtask>Add "Privacy Policy" link in Section 3</subtask>
+          <subtask>Open Privacy Policy in in-app browser or external link (https://lifeos.app/privacy)</subtask>
+          <subtask>Ensure Privacy Policy covers all GDPR requirements</subtask>
+        </subtasks>
+      </task>
+      <task id="9" ac-ref="ALL">
+        <description>Write comprehensive tests</description>
+        <subtasks>
+          <subtask>Unit tests: Privacy toggle use cases (share data, AI analysis, analytics)</subtask>
+          <subtask>Unit tests: ExportDataUseCase, DeleteAccountUseCase, CancelDeletionUseCase</subtask>
+          <subtask>Widget tests: DataPrivacyScreen, toggles, warning modals, confirmation dialogs</subtask>
+          <subtask>Integration test: Disable cross-module sharing → verify insights disabled</subtask>
+          <subtask>Integration test: Request data export → verify email sent with ZIP</subtask>
+          <subtask>Integration test: Delete account → 7-day grace period → cancel deletion</subtask>
+          <subtask>Integration test: Delete account → wait 7 days → permanent deletion</subtask>
+          <subtask>Achieve 80%+ code coverage</subtask>
+        </subtasks>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="AC1">
+      <text>User can toggle "Allow modules to share data" (default: ON). If OFF: Cross-module insights disabled, Life Coach doesn't see mood/stress, Fitness doesn't see stress. Warning modal shown when disabling (explains impact).</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC2">
+      <text>User can toggle "AI analysis of journal entries" (default: OFF). If ON: Journal sentiment analysis enabled (opt-in only). If OFF: Journals remain fully E2E encrypted.</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC3">
+      <text>User can toggle "Send anonymous analytics" (default: ON). Helps improve LifeOS (no PII).</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC4">
+      <text>User can export all data (GDPR right to data portability). Request export → Background job processes → Email sent with download link (ZIP file, expires in 7 days).</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC5">
+      <text>Export includes: workouts, meditations, journals (encrypted), mood logs, stress logs, goals, daily plans, check-ins.</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC6">
+      <text>Export format: ZIP containing JSON (complete data structure) + CSV files (per data type).</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC7">
+      <text>User can delete account (GDPR right to erasure). Request deletion → 7-day grace period → Confirmation email sent.</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC8">
+      <text>Deletion requires password confirmation.</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC9">
+      <text>User can cancel deletion within 7 days. After 7 days: Account and all data permanently deleted.</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC10">
+      <text>Link to Privacy Policy (opens in-app browser or external link).</text>
+      <priority>P0</priority>
+    </criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR100: Data Export in Machine-Readable Format</section>
+        <snippet>Users can export all their data in machine-readable format (JSON + CSV) for GDPR compliance (Article 20: Right to Data Portability). Export must include all user-generated content and account information.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR101: Account Deletion with Grace Period</section>
+        <snippet>Users can request data deletion (GDPR Article 17: Right to be Forgotten). System implements 7-day grace period allowing users to cancel deletion. Hard delete occurs after grace period expires.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR118: Cross-module data sharing controls</section>
+        <snippet>Users can control whether modules share data for cross-module insights. Toggle to disable data sharing (disables insights, AI optimization). Opt-in for AI journal analysis (sentiment analysis).</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/epics.md</path>
+        <title>Epic 9: Settings &amp; Profile - Story 9.5</title>
+        <section>Story 9.5: Data Privacy &amp; Cross-Module Settings</section>
+        <snippet>User can control cross-module data sharing, AI journal analysis (opt-in), and anonymous analytics. User can export all data (GDPR) and delete account with 7-day grace period. Prerequisites: Story 1.6 (GDPR patterns), Epic 5 (cross-module insights). Technical: privacy_settings table, export/delete Edge Functions (reuse from 1.6).</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Security &amp; GDPR Compliance</section>
+        <snippet>Row Level Security (RLS) policies enforce data isolation. GDPR compliance through export/delete endpoints, consent management, and audit trails. E2EE for sensitive data (journals). All user-related tables have ON DELETE CASCADE for efficient data removal.</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/sprint-1/1-6-gdpr-compliance-data-export-deletion.md</path>
+        <title>Story 1.6: GDPR Compliance (Data Export &amp; Deletion)</title>
+        <section>Technical Implementation</section>
+        <snippet>Export via Supabase Edge Function generates ZIP with JSON+CSV. Deletion uses soft delete flag (deletion_requested_at), followed by hard delete cron job after 7 days. All tables use ON DELETE CASCADE for complete data removal. REUSE patterns from this story.</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/sprint-9/9-5-data-privacy-cross-module-settings.md</path>
+        <title>Story 9.5: Data Privacy &amp; Cross-Module Settings</title>
+        <section>Privacy Controls</section>
+        <snippet>Allow modules to share data (default: ON). If OFF: Cross-module insights disabled. AI journal analysis (default: OFF, opt-in). Send anonymous analytics (default: ON). All preferences saved to privacy_settings table.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <file>
+        <path>lib/features/settings/presentation/pages/data_privacy_screen.dart</path>
+        <description>Data privacy screen with privacy toggles and GDPR actions</description>
+      </file>
+      <file>
+        <path>lib/features/settings/domain/services/data_privacy_service.dart</path>
+        <description>Service for data privacy operations (share data, AI analysis, analytics)</description>
+      </file>
+      <file>
+        <path>lib/features/settings/domain/usecases/update_share_data_setting_usecase.dart</path>
+        <description>Use case for updating cross-module data sharing preference</description>
+      </file>
+      <file>
+        <path>lib/features/settings/domain/usecases/update_ai_analysis_setting_usecase.dart</path>
+        <description>Use case for updating AI journal analysis preference</description>
+      </file>
+      <file>
+        <path>lib/features/settings/domain/usecases/update_analytics_setting_usecase.dart</path>
+        <description>Use case for updating anonymous analytics preference</description>
+      </file>
+      <file>
+        <path>lib/features/settings/domain/usecases/export_data_usecase.dart</path>
+        <description>Use case for requesting data export (REUSE from Story 1.6)</description>
+      </file>
+      <file>
+        <path>lib/features/settings/domain/usecases/delete_account_usecase.dart</path>
+        <description>Use case for requesting account deletion (REUSE from Story 1.6)</description>
+      </file>
+      <file>
+        <path>lib/features/settings/domain/usecases/cancel_deletion_usecase.dart</path>
+        <description>Use case for cancelling account deletion (REUSE from Story 1.6)</description>
+      </file>
+      <file>
+        <path>supabase/functions/export-user-data/index.ts</path>
+        <description>Edge Function for data export (REUSE from Story 1.6)</description>
+      </file>
+      <file>
+        <path>supabase/functions/delete-account/index.ts</path>
+        <description>Edge Function for account deletion (REUSE from Story 1.6)</description>
+      </file>
+    </code>
+    <dependencies>
+      <flutter>
+        <sdk>3.38+</sdk>
+        <dart>3.10+</dart>
+      </flutter>
+      <packages>
+        <package name="flutter_riverpod" version="^3.0.0" usage="State management for privacy settings" />
+        <package name="riverpod_annotation" version="^3.0.0" usage="Code generation for providers" />
+        <package name="supabase_flutter" version="^2.0.0" usage="Supabase client for settings sync and Edge Functions" />
+        <package name="drift" version="^2.14.0" usage="Local SQLite database for offline privacy settings storage" />
+        <package name="url_launcher" version="^6.2.0" usage="Open Privacy Policy link in browser" />
+        <package name="flutter_test" version="sdk" usage="Unit and widget testing framework" />
+        <package name="integration_test" version="sdk" usage="End-to-end testing framework" />
+      </packages>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint id="ARCH-1" type="architectural">
+      <description>Must follow Hybrid Architecture pattern (D1)</description>
+      <details>Create feature structure at lib/features/settings/ with presentation/, domain/, and data/ layers. Use clean architecture separation of concerns. REUSE patterns from Story 1.6 for export/delete functionality.</details>
+    </constraint>
+    <constraint id="ARCH-2" type="architectural">
+      <description>Offline-first implementation required (D3)</description>
+      <details>Save privacy settings to Drift (SQLite) first for instant feedback. Queue for Supabase sync when online. Load settings from local database on app start.</details>
+    </constraint>
+    <constraint id="ARCH-3" type="architectural">
+      <description>Use Riverpod for state management (D1, D6)</description>
+      <details>Create providers following feature-first structure. Use ConsumerWidget for privacy screen. Providers should be in settings/presentation/providers/.</details>
+    </constraint>
+    <constraint id="GDPR-1" type="legal">
+      <description>GDPR Article 20 compliance (Right to Data Portability)</description>
+      <details>Export must include ALL user data in machine-readable format (JSON + CSV). Data must be complete, accurate, and include metadata (timestamps, IDs). Export must be delivered within 24 hours of request. REUSE patterns from Story 1.6.</details>
+    </constraint>
+    <constraint id="GDPR-2" type="legal">
+      <description>GDPR Article 17 compliance (Right to Erasure)</description>
+      <details>Users must be able to request complete data deletion. Deletion must be irreversible after grace period. All data including backups must be purged within 30 days. Provide clear confirmation and warnings. REUSE patterns from Story 1.6.</details>
+    </constraint>
+    <constraint id="DATA-1" type="data">
+      <description>Privacy settings table schema</description>
+      <details>privacy_settings table: user_id (UUID PK FK), share_data_across_modules (BOOLEAN default true), ai_journal_analysis_enabled (BOOLEAN default false), send_anonymous_analytics (BOOLEAN default true), updated_at (TIMESTAMPTZ). Include RLS policies.</details>
+    </constraint>
+    <constraint id="DATA-2" type="data">
+      <description>Cross-module data sharing enforcement</description>
+      <details>When share_data_across_modules is OFF, cross-module insights must be disabled. Life Coach cannot access mood/stress data from Mind module. Fitness cannot access stress data. Enforce at API/service layer.</details>
+    </constraint>
+    <constraint id="DATA-3" type="data">
+      <description>AI journal analysis enforcement</description>
+      <details>When ai_journal_analysis_enabled is OFF (default), journals remain fully E2E encrypted. No AI analysis performed. When ON (opt-in), journals decrypted server-side for sentiment analysis. Clear user consent required.</details>
+    </constraint>
+    <constraint id="SEC-1" type="security">
+      <description>Password confirmation required for deletion</description>
+      <details>Before allowing account deletion, verify user password using Supabase Auth. Prevent unauthorized deletion through stolen sessions. Display irreversibility warning with checkbox confirmation. REUSE patterns from Story 1.6.</details>
+    </constraint>
+    <constraint id="SEC-2" type="security">
+      <description>Export link security and expiration</description>
+      <details>Export download links must expire after 7 days. Use signed URLs from Supabase Storage. Links sent only to verified user email. Prevent unauthorized access to exported data. REUSE patterns from Story 1.6.</details>
+    </constraint>
+    <constraint id="SEC-3" type="security">
+      <description>Row Level Security (RLS) policies required</description>
+      <details>Enable RLS on privacy_settings table. Policy: CREATE POLICY "Users can only access own privacy settings" ON privacy_settings FOR ALL USING (auth.uid() = user_id);</details>
+    </constraint>
+    <constraint id="UX-1" type="ux">
+      <description>Warning modal for disabling cross-module sharing</description>
+      <details>When user disables "Allow modules to share data", show warning modal: "Some features won't work: • Cross-module insights • AI daily plan optimization • Fitness intensity adjustment. Are you sure?" Buttons: "Cancel", "Disable Sharing".</details>
+    </constraint>
+    <constraint id="UX-2" type="ux">
+      <description>Export confirmation dialog</description>
+      <details>Show dialog: "Export All Data. We'll generate a ZIP file with all your data (JSON + CSV). You'll receive an email with the download link (expires in 7 days)." Buttons: "Cancel", "Export".</details>
+    </constraint>
+    <constraint id="UX-3" type="ux">
+      <description>Delete account confirmation dialog</description>
+      <details>Show dialog: "Delete Account. Your account will be scheduled for deletion in 7 days. You can cancel anytime during this period. ⚠️ This action is irreversible after 7 days." Password field + "I understand this is permanent" checkbox. Buttons: "Cancel", "Delete Account" (red).</details>
+    </constraint>
+    <constraint id="UX-4" type="ux">
+      <description>Deletion grace period banner</description>
+      <details>If user logs in during 7-day grace period, show banner at top of app: "Your account is scheduled for deletion on [date]. Cancel anytime." Button: "Cancel Deletion". Banner styled in warning yellow.</details>
+    </constraint>
+    <constraint id="UX-5" type="ux">
+      <description>Footer note for user reassurance</description>
+      <details>Display footer at bottom of DataPrivacyScreen: "Your data is yours. We never sell it." Styled in gray, centered. Reinforces user trust and privacy commitment.</details>
+    </constraint>
+    <constraint id="PERF-1" type="performance">
+      <description>Privacy settings save &lt;100ms</description>
+      <details>Save settings to local Drift database in &lt;100ms for instant UI feedback. Background sync to Supabase should complete in &lt;500ms but not block UI.</details>
+    </constraint>
+    <constraint id="TEST-1" type="testing">
+      <description>80%+ code coverage required</description>
+      <details>Follow 70/20/10 testing pyramid. Unit tests for use cases and privacy enforcement, widget tests for UI, integration tests for GDPR flows. All AC must have test coverage.</details>
+    </constraint>
+    <constraint id="TEST-2" type="testing">
+      <description>GDPR compliance testing</description>
+      <details>Test complete export flow (all data types included). Test deletion cascade across all tables. Test grace period cancellation. Test email delivery. Test edge cases: encrypted journals, large datasets, concurrent requests. REUSE test patterns from Story 1.6.</details>
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>PrivacySettingsEntity</name>
+      <kind>domain-entity</kind>
+      <signature>
+        class PrivacySettingsEntity {
+          final String userId;
+          final bool shareDataAcrossModules;
+          final bool aiJournalAnalysisEnabled;
+          final bool sendAnonymousAnalytics;
+          final DateTime updatedAt;
+        }
+      </signature>
+      <path>lib/features/settings/domain/entities/privacy_settings_entity.dart</path>
+      <notes>Use @freezed annotation for immutability and copyWith. Defaults: shareDataAcrossModules=true, aiJournalAnalysisEnabled=false (opt-in), sendAnonymousAnalytics=true.</notes>
+    </interface>
+    <interface>
+      <name>UpdateShareDataSettingUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class UpdateShareDataSettingUseCase {
+          Future&lt;Result&lt;void&gt;&gt; call({
+            required bool enabled,
+          });
+        }
+      </signature>
+      <path>lib/features/settings/domain/usecases/update_share_data_setting_usecase.dart</path>
+      <notes>Updates shareDataAcrossModules preference. Disables cross-module insights when OFF. Returns Result&lt;T&gt; (Success/Failure).</notes>
+    </interface>
+    <interface>
+      <name>UpdateAIAnalysisSettingUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class UpdateAIAnalysisSettingUseCase {
+          Future&lt;Result&lt;void&gt;&gt; call({
+            required bool enabled,
+          });
+        }
+      </signature>
+      <path>lib/features/settings/domain/usecases/update_ai_analysis_setting_usecase.dart</path>
+      <notes>Updates aiJournalAnalysisEnabled preference. Enables/disables journal sentiment analysis. Returns Result&lt;T&gt; (Success/Failure).</notes>
+    </interface>
+    <interface>
+      <name>UpdateAnalyticsSettingUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class UpdateAnalyticsSettingUseCase {
+          Future&lt;Result&lt;void&gt;&gt; call({
+            required bool enabled,
+          });
+        }
+      </signature>
+      <path>lib/features/settings/domain/usecases/update_analytics_setting_usecase.dart</path>
+      <notes>Updates sendAnonymousAnalytics preference. Enables/disables anonymous usage analytics (no PII). Returns Result&lt;T&gt; (Success/Failure).</notes>
+    </interface>
+    <interface>
+      <name>ExportDataUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class ExportDataUseCase {
+          Future&lt;Result&lt;void&gt;&gt; call();
+        }
+      </signature>
+      <path>lib/features/settings/domain/usecases/export_data_usecase.dart</path>
+      <notes>REUSE from Story 1.6. Triggers Supabase Edge Function to generate export. Returns immediately after request (async processing). User receives email when export ready. Rate limit: max 1 export per hour per user.</notes>
+    </interface>
+    <interface>
+      <name>DeleteAccountUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class DeleteAccountUseCase {
+          Future&lt;Result&lt;void&gt;&gt; call({
+            required String password,
+            required bool confirmed,
+          });
+        }
+      </signature>
+      <path>lib/features/settings/domain/usecases/delete_account_usecase.dart</path>
+      <notes>REUSE from Story 1.6. Verifies password with Supabase Auth. Checks confirmed flag (checkbox). Calls delete-account Edge Function to soft delete. Logs out user immediately. Returns Success or Failure with error.</notes>
+    </interface>
+    <interface>
+      <name>CancelDeletionUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class CancelDeletionUseCase {
+          Future&lt;Result&lt;void&gt;&gt; call();
+        }
+      </signature>
+      <path>lib/features/settings/domain/usecases/cancel_deletion_usecase.dart</path>
+      <notes>REUSE from Story 1.6. Clears deletion_requested_at timestamp. Only works during 7-day grace period. Returns error if grace period expired.</notes>
+    </interface>
+    <interface>
+      <name>DataPrivacyService</name>
+      <kind>service</kind>
+      <signature>
+        abstract class DataPrivacyService {
+          Future&lt;void&gt; updateShareDataAcrossModules(bool enabled);
+          Future&lt;void&gt; updateAIJournalAnalysis(bool enabled);
+          Future&lt;void&gt; updateSendAnonymousAnalytics(bool enabled);
+          Future&lt;void&gt; requestDataExport();
+          Future&lt;void&gt; requestAccountDeletion(String password);
+          Future&lt;void&gt; cancelAccountDeletion();
+        }
+      </signature>
+      <path>lib/features/settings/domain/services/data_privacy_service.dart</path>
+      <notes>High-level service interface for all data privacy operations. Implemented in data layer with Supabase integration.</notes>
+    </interface>
+    <interface>
+      <name>privacy_settings table (Supabase PostgreSQL)</name>
+      <kind>database-table</kind>
+      <signature>
+        CREATE TABLE privacy_settings (
+          user_id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+          share_data_across_modules BOOLEAN DEFAULT true,
+          ai_journal_analysis_enabled BOOLEAN DEFAULT false,
+          send_anonymous_analytics BOOLEAN DEFAULT true,
+          updated_at TIMESTAMPTZ DEFAULT NOW()
+        );
+      </signature>
+      <path>supabase/migrations/</path>
+      <notes>Migration file will be created in Supabase migrations folder. Include RLS policies in same migration: USING (auth.uid() = user_id).</notes>
+    </interface>
+    <interface>
+      <name>privacy_settings table (Drift SQLite)</name>
+      <kind>database-table</kind>
+      <signature>
+        @DataClassName('PrivacySettingTable')
+        class PrivacySettings extends Table {
+          TextColumn get userId => text()();
+          BoolColumn get shareDataAcrossModules => boolean().withDefault(const Constant(true))();
+          BoolColumn get aiJournalAnalysisEnabled => boolean().withDefault(const Constant(false))();
+          BoolColumn get sendAnonymousAnalytics => boolean().withDefault(const Constant(true))();
+          DateTimeColumn get updatedAt => dateTime()();
+
+          @override
+          Set&lt;Column&gt; get primaryKey => {userId};
+        }
+      </signature>
+      <path>lib/core/database/tables.drift.dart</path>
+      <notes>Drift table definition. Mirror of Supabase schema for offline-first architecture. Use drift code generation.</notes>
+    </interface>
+    <interface>
+      <name>export-user-data Edge Function</name>
+      <kind>edge-function</kind>
+      <signature>
+        Deno.serve(async (req) => {
+          const userId = req.headers.get('user-id');
+          // Fetch all user data from all tables
+          // Generate JSON and CSV files
+          // Create ZIP archive
+          // Upload to Storage with 7-day expiration
+          // Send email with download link
+          return new Response(JSON.stringify({ success: true }));
+        });
+      </signature>
+      <path>supabase/functions/export-user-data/index.ts</path>
+      <notes>REUSE from Story 1.6. Async processing. Queries all user tables: workouts, exercises, meditations, journal_entries, mood_logs, goals, daily_plans, user profile. Decrypts journals using user's encryption key. Generates comprehensive JSON structure and individual CSV files.</notes>
+    </interface>
+    <interface>
+      <name>delete-account Edge Function</name>
+      <kind>edge-function</kind>
+      <signature>
+        Deno.serve(async (req) => {
+          const userId = req.headers.get('user-id');
+          // Set deletion_requested_at = NOW()
+          // Schedule hard delete in 7 days
+          // Send confirmation email
+          return new Response(JSON.stringify({
+            success: true,
+            deletion_date: deletionDate
+          }));
+        });
+      </signature>
+      <path>supabase/functions/delete-account/index.ts</path>
+      <notes>REUSE from Story 1.6. Soft delete implementation. Updates users table with deletion_requested_at timestamp. User can still log in and cancel during grace period. Does not immediately delete data.</notes>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Follow 70/20/10 testing pyramid: 70% unit tests (use cases, privacy enforcement logic, business logic), 20% widget tests (UI components, toggles, warning modals, confirmation dialogs), 10% integration tests (end-to-end GDPR flows). Use flutter_test for unit/widget tests, integration_test for E2E. Mock dependencies with mockito. Target 80%+ code coverage. All acceptance criteria must have test coverage. REUSE test patterns from Story 1.6 for export/delete flows.
+    </standards>
+    <locations>
+      <location>test/features/settings/domain/usecases/</location>
+      <location>test/features/settings/domain/services/</location>
+      <location>test/features/settings/data/repositories/</location>
+      <location>test/features/settings/presentation/pages/</location>
+      <location>integration_test/features/settings/data_privacy_flow_test.dart</location>
+    </locations>
+    <ideas>
+      <test-idea ac-ref="AC1">
+        <description>Unit test: UpdateShareDataSettingUseCase disables cross-module sharing</description>
+        <approach>Call UpdateShareDataSettingUseCase with enabled=false. Verify privacy_settings.share_data_across_modules set to false. Verify cross-module insights disabled (check service/API calls). Assert Success result.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1">
+        <description>Unit test: Cross-module data sharing enforcement</description>
+        <approach>Set share_data_across_modules=false. Attempt to fetch mood data from Mind module for Life Coach. Assert data not returned (access denied). Verify insights generation skipped.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC2">
+        <description>Unit test: UpdateAIAnalysisSettingUseCase enables journal analysis</description>
+        <approach>Call UpdateAIAnalysisSettingUseCase with enabled=true (opt-in). Verify ai_journal_analysis_enabled set to true. Verify journal sentiment analysis enabled. Assert Success.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC2">
+        <description>Unit test: Journal E2E encryption enforcement when AI analysis OFF</description>
+        <approach>Set ai_journal_analysis_enabled=false (default). Create journal entry. Verify journal remains E2E encrypted. Verify NO AI analysis performed. Verify journal data not sent to AI service.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC3">
+        <description>Unit test: UpdateAnalyticsSettingUseCase disables analytics</description>
+        <approach>Call UpdateAnalyticsSettingUseCase with enabled=false. Verify send_anonymous_analytics set to false. Verify analytics events not sent. Assert Success.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4,AC5,AC6">
+        <description>Unit test: ExportDataUseCase triggers export</description>
+        <approach>Mock Supabase Edge Function. Call ExportDataUseCase. Verify export-user-data function called. Verify returns Success immediately (async processing). User receives email when ready.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC7,AC8">
+        <description>Unit test: DeleteAccountUseCase validates password</description>
+        <approach>Mock Supabase Auth. Call DeleteAccountUseCase with incorrect password → assert Failure with "Incorrect password". Call with correct password + confirmed=true → assert Success.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC7,AC8">
+        <description>Unit test: DeleteAccountUseCase requires confirmation checkbox</description>
+        <approach>Call DeleteAccountUseCase with correct password but confirmed=false. Assert Failure with "You must confirm deletion". Verify deletion not initiated.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC9">
+        <description>Unit test: CancelDeletionUseCase within grace period</description>
+        <approach>Set deletion_requested_at=3 days ago, grace period=7 days. Call CancelDeletionUseCase. Verify deletion_requested_at cleared. Assert Success.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC9">
+        <description>Unit test: CancelDeletionUseCase fails after grace period</description>
+        <approach>Set deletion_requested_at=8 days ago. Call CancelDeletionUseCase. Assert Failure with "Grace period expired" error. Verify deletion_requested_at unchanged.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1">
+        <description>Widget test: Warning modal appears when disabling cross-module sharing</description>
+        <approach>Render DataPrivacyScreen. Tap "Allow modules to share data" toggle to disable. Verify warning modal appears: "Some features won't work: • Cross-module insights • AI daily plan optimization • Fitness intensity adjustment. Are you sure?" Buttons: "Cancel", "Disable Sharing".</approach>
+      </test-idea>
+      <test-idea ac-ref="AC2">
+        <description>Widget test: AI journal analysis toggle (default OFF, opt-in)</description>
+        <approach>Render DataPrivacyScreen. Verify "AI analysis of journal entries" toggle OFF by default. Tap to enable. Verify confirmation: "Enable sentiment analysis?" Confirm. Verify toggle ON.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4">
+        <description>Widget test: Export All Data button and confirmation dialog</description>
+        <approach>Render DataPrivacyScreen. Tap "Export All Data" button. Verify confirmation dialog appears: "We'll generate a ZIP file with all your data (JSON + CSV). You'll receive an email with the download link (expires in 7 days)." Buttons: "Cancel", "Export".</approach>
+      </test-idea>
+      <test-idea ac-ref="AC7,AC8">
+        <description>Widget test: Delete Account button and confirmation dialog</description>
+        <approach>Render DataPrivacyScreen. Tap "Delete Account" button (red). Verify confirmation dialog appears with: password field, "I understand this is permanent" checkbox, warning: "⚠️ This action is irreversible after 7 days." Buttons: "Cancel", "Delete Account" (red).</approach>
+      </test-idea>
+      <test-idea ac-ref="AC9">
+        <description>Widget test: Deletion grace period banner appears</description>
+        <approach>Set user deletion_requested_at=3 days ago. Render app. Verify banner at top: "Your account is scheduled for deletion on [date]. Cancel anytime." Verify "Cancel Deletion" button. Tap button. Verify deletion cancelled. Verify banner disappears.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC10">
+        <description>Widget test: Privacy Policy link opens browser</description>
+        <approach>Render DataPrivacyScreen. Tap "Privacy Policy" link. Mock url_launcher. Verify launch() called with "https://lifeos.app/privacy". Verify opens in-app browser or external browser.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1">
+        <description>Integration test: Disable cross-module sharing → insights disabled</description>
+        <approach>Enable cross-module sharing. Log mood in Mind module. Verify Life Coach receives mood data for daily plan optimization. Disable cross-module sharing. Log mood again. Verify Life Coach does NOT receive mood data. Verify insights disabled.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4,AC5,AC6">
+        <description>Integration test: Complete data export flow</description>
+        <approach>Request export from UI. Mock Edge Function to generate ZIP. Verify all data types included: workouts, mood_logs, goals, meditations, journal_entries, account info. Check JSON structure and CSV files. Verify email sent with download link. Assert link expires in 7 days. REUSE test patterns from Story 1.6.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC7,AC8,AC9">
+        <description>Integration test: Account deletion with 7-day grace period</description>
+        <approach>Request deletion with password confirmation. Verify deletion_requested_at set. Verify user can still log in. Verify countdown displayed. Wait 3 days (simulate). Cancel deletion. Verify deletion_requested_at cleared. Verify account remains active. REUSE test patterns from Story 1.6.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC9">
+        <description>Integration test: Permanent deletion after grace period</description>
+        <approach>Request deletion. Wait 7 days (simulate). Run cleanup cron job. Verify user deleted from database. Verify all related data deleted (cascading). Verify NO DATA LOSS during grace period. REUSE test patterns from Story 1.6.</approach>
+      </test-idea>
+    </ideas>
+  </tests>
+</story-context>

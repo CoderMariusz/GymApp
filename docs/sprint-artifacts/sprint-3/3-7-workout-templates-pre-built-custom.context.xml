@@ -1,0 +1,596 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>3</epicId>
+    <storyId>3.7</storyId>
+    <title>Workout Templates (Pre-built + Custom)</title>
+    <status>ready-for-dev</status>
+    <generatedAt>2025-11-17</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/sprint-3/3-7-workout-templates-pre-built-custom.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>user following a training program</asA>
+    <iWant>to use pre-built or custom templates</iWant>
+    <soThat>I don't plan every workout from scratch</soThat>
+    <tasks>
+      <task id="1" ac-ref="AC1,AC2,AC3,AC8">
+        <description>Implement Templates screen UI</description>
+        <subtasks>
+          <subtask>Create TemplatesScreen widget (StatefulWidget) accessible from Fitness tab</subtask>
+          <subtask>Implement tab navigation: "Pre-built" and "My Templates"</subtask>
+          <subtask>Create TemplateCard widget showing name, description, exercise count, and sets/reps scheme</subtask>
+          <subtask>Add favorite/star icon toggle on template cards</subtask>
+          <subtask>Implement "Quick Access" section at top showing favorited templates</subtask>
+          <subtask>Add search/filter functionality for templates</subtask>
+          <subtask>Create empty state for "My Templates" with "Create Template" CTA</subtask>
+        </subtasks>
+      </task>
+      <task id="2" ac-ref="AC2">
+        <description>Implement pre-built template seeding</description>
+        <subtasks>
+          <subtask>Create seed_workout_templates.sql migration file</subtask>
+          <subtask>Define 20+ pre-built templates: Push/Pull/Legs (PPL), Upper/Lower, Full Body variations</subtask>
+          <subtask>Define template_exercises entries linking templates to exercises from Story 3.2</subtask>
+          <subtask>Include sets/reps schemes: "3x8-12", "4x10", "5x5", etc.</subtask>
+          <subtask>Test seeding script on fresh database</subtask>
+        </subtasks>
+      </task>
+      <task id="3" ac-ref="AC2,AC3">
+        <description>Implement template data persistence and retrieval</description>
+        <subtasks>
+          <subtask>Create workout_templates table in Supabase (PostgreSQL) with RLS policies</subtask>
+          <subtask>Create template_exercises table (junction table) in Supabase</subtask>
+          <subtask>Create user_workout_templates table for custom templates with RLS policies</subtask>
+          <subtask>Create corresponding Drift tables for offline-first support</subtask>
+          <subtask>Implement WorkoutTemplateRepository with CRUD operations</subtask>
+          <subtask>Add indexes: idx_templates_user_id, idx_template_exercises_template_id</subtask>
+        </subtasks>
+      </task>
+      <task id="4" ac-ref="AC4">
+        <description>Implement start workout from template</description>
+        <subtasks>
+          <subtask>Create StartWorkoutFromTemplateUseCase</subtask>
+          <subtask>Implement template-to-workout conversion logic (copy exercises, sets, reps)</subtask>
+          <subtask>Navigate to active workout screen with pre-filled exercises</subtask>
+          <subtask>Allow user to modify pre-filled exercises before starting</subtask>
+          <subtask>Handle missing/deleted exercises gracefully (show warning)</subtask>
+        </subtasks>
+      </task>
+      <task id="5" ac-ref="AC5,AC6,AC7">
+        <description>Implement custom template creation and editing</description>
+        <subtasks>
+          <subtask>Create CreateTemplateScreen with name input and exercise selector</subtask>
+          <subtask>Implement exercise multi-select from exercise library (Story 3.2 dependency)</subtask>
+          <subtask>Add drag-and-drop reordering for template exercises</subtask>
+          <subtask>Implement sets/reps configuration per exercise</subtask>
+          <subtask>Create CreateTemplateUseCase and UpdateTemplateUseCase</subtask>
+          <subtask>Add validation: minimum 1 exercise, max 50 characters for name</subtask>
+          <subtask>Support "Save from Past Workout" feature (copy completed workout as template)</subtask>
+        </subtasks>
+      </task>
+      <task id="6" ac-ref="AC7">
+        <description>Implement template deletion</description>
+        <subtasks>
+          <subtask>Add delete icon on custom template cards (swipe-to-delete or long-press menu)</subtask>
+          <subtask>Show confirmation dialog: "Delete [Template Name]? This cannot be undone."</subtask>
+          <subtask>Create DeleteTemplateUseCase</subtask>
+          <subtask>Cascade delete template_exercises entries (ON DELETE CASCADE)</subtask>
+          <subtask>Remove from favorites if favorited</subtask>
+        </subtasks>
+      </task>
+      <task id="7" ac-ref="AC8">
+        <description>Implement template favorites</description>
+        <subtasks>
+          <subtask>Create user_template_favorites table (user_id, template_id, created_at)</subtask>
+          <subtask>Implement ToggleFavoriteUseCase</subtask>
+          <subtask>Add star icon toggle on template cards with haptic feedback</subtask>
+          <subtask>Create "Quick Access" section showing favorited templates at top of screen</subtask>
+          <subtask>Sync favorites across devices via Supabase</subtask>
+        </subtasks>
+      </task>
+      <task id="8" ac-ref="ALL">
+        <description>Write comprehensive tests</description>
+        <subtasks>
+          <subtask>Unit tests: CreateTemplateUseCase, StartWorkoutFromTemplateUseCase, DeleteTemplateUseCase</subtask>
+          <subtask>Unit tests: WorkoutTemplateRepository CRUD operations</subtask>
+          <subtask>Widget tests: TemplatesScreen, TemplateCard, CreateTemplateScreen</subtask>
+          <subtask>Widget tests: Favorite toggle, delete confirmation dialog</subtask>
+          <subtask>Integration test: Complete template creation and start workout flow</subtask>
+          <subtask>Integration test: Seed templates load correctly, favorite/unfavorite sync</subtask>
+          <subtask>Achieve 80%+ code coverage</subtask>
+        </subtasks>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="AC1">
+      <text>Templates screen accessible from Fitness tab → "Templates"</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC2">
+      <text>20+ pre-built templates available: Push/Pull/Legs, Upper/Lower, Full Body variations</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC3">
+      <text>Template shows: Name, description, exercises list, sets/reps scheme</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC4">
+      <text>Start workout from template (exercises and sets/reps pre-loaded)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC5">
+      <text>Create custom templates with name and exercise list</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC6">
+      <text>Edit custom templates (modify exercises, sets, reps, name)</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC7">
+      <text>Delete custom templates with confirmation dialog</text>
+      <priority>P0</priority>
+    </criterion>
+    <criterion id="AC8">
+      <text>Favorite templates (star icon) → Quick Access section at top</text>
+      <priority>P1</priority>
+    </criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR43: Pre-built Workout Templates</section>
+        <snippet>System provides 20+ pre-built workout templates covering common training splits: Push/Pull/Legs (PPL), Upper/Lower, Full Body. Templates include exercise selection, sets/reps schemes, and estimated duration. Users can start workouts directly from templates.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/prd.md</path>
+        <title>LifeOS - Product Requirements Document</title>
+        <section>FR44: Custom Workout Templates</section>
+        <snippet>Users can create custom workout templates by saving past workouts or building from scratch. Templates support editing (exercises, sets, reps) and deletion (with confirmation). Users can favorite templates for quick access. Templates sync across devices.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/epics.md</path>
+        <title>Epic 3: Fitness Coach MVP - Story 3.7</title>
+        <section>Story 3.7: Workout Templates (Pre-built + Custom)</section>
+        <snippet>Implement workout template system with 20+ pre-built templates and custom template creation. Users can start workouts from templates, edit/delete custom templates, and favorite templates for quick access. Prerequisite: Story 3.2 (Exercise Library).</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Hybrid Architecture (D1)</section>
+        <snippet>Feature-first architecture with clean architecture layers (presentation/domain/data). Fitness Coach module located at features/fitness_coach/. Use Riverpod for state management.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Offline-First Sync (D3)</section>
+        <snippet>Hybrid Sync pattern: Write-Through Cache + Sync Queue. Save to Drift (SQLite) first for instant feedback (&lt;100ms), then queue for Supabase sync when online. Offline operations must work seamlessly.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ecosystem/architecture.md</path>
+        <title>LifeOS - System Architecture</title>
+        <section>Database Schema - Fitness Coach Tables</section>
+        <snippet>Fitness Coach module uses workouts table, exercises table (Story 3.2), and workout_templates table (Story 3.7). All tables must have RLS policies: USING (auth.uid() = user_id) for user data isolation.</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/sprint-3/3-7-workout-templates-pre-built-custom.md</path>
+        <title>Story 3.7: Workout Templates (Pre-built + Custom)</title>
+        <section>Database Schema</section>
+        <snippet>workout_templates table (global, read-only), template_exercises table (junction), user_workout_templates table (user-specific). Seed data includes 20+ pre-built templates covering PPL, Upper/Lower, Full Body splits.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <reference>
+        <path>lib/features/fitness_coach/domain/entities/exercise_entity.dart</path>
+        <description>Exercise entity from Story 3.2 - required for template exercises</description>
+        <usage>WorkoutTemplateEntity will reference List&lt;ExerciseEntity&gt; for template exercises</usage>
+      </reference>
+      <reference>
+        <path>lib/features/fitness_coach/data/repositories/exercise_repository.dart</path>
+        <description>Exercise repository from Story 3.2 - used to fetch exercises for templates</description>
+        <usage>CreateTemplateScreen will query ExerciseRepository to populate exercise selector</usage>
+      </reference>
+    </code>
+    <dependencies>
+      <flutter>
+        <sdk>3.38+</sdk>
+        <dart>3.10+</dart>
+      </flutter>
+      <packages>
+        <package name="flutter_riverpod" version="^3.0.0" usage="State management for templates screen and template operations" />
+        <package name="riverpod_annotation" version="^3.0.0" usage="Code generation for providers" />
+        <package name="drift" version="^2.14.0" usage="Local SQLite database for offline template storage" />
+        <package name="drift_flutter" version="^0.1.0" usage="Flutter integration for Drift" />
+        <package name="sqlite3_flutter_libs" version="^0.5.0" usage="SQLite native libraries" />
+        <package name="path_provider" version="^2.1.0" usage="Get app directories for Drift database" />
+        <package name="supabase_flutter" version="^2.0.0" usage="Supabase client for auth and database sync" />
+        <package name="freezed_annotation" version="^2.4.0" usage="Immutable entity classes" />
+        <package name="json_annotation" version="^4.8.0" usage="JSON serialization for template data" />
+        <package name="reorderable_grid_view" version="^4.0.0" usage="Drag-and-drop reordering for template exercises" />
+        <package name="flutter_test" version="sdk" usage="Unit and widget testing framework" />
+        <package name="integration_test" version="sdk" usage="End-to-end testing framework" />
+        <package name="mockito" version="^5.4.0" usage="Mocking dependencies in tests" />
+      </packages>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint id="ARCH-1" type="architectural">
+      <description>Must follow Hybrid Architecture pattern (D1)</description>
+      <details>Create feature structure at lib/features/fitness_coach/ with presentation/, domain/, and data/ layers. Use clean architecture separation of concerns. Templates functionality extends existing fitness_coach module.</details>
+    </constraint>
+    <constraint id="ARCH-2" type="architectural">
+      <description>Offline-first implementation required (D3)</description>
+      <details>Save templates to Drift (SQLite) first for instant feedback (&lt;100ms). Queue for Supabase sync when online. Pre-built templates should be cached locally after first fetch. Handle offline mode gracefully.</details>
+    </constraint>
+    <constraint id="ARCH-3" type="architectural">
+      <description>Use Riverpod for state management (D1, D6)</description>
+      <details>Create providers following feature-first structure. Use ConsumerStatefulWidget for TemplatesScreen. Providers should be in fitness_coach/presentation/providers/.</details>
+    </constraint>
+    <constraint id="DATA-1" type="data">
+      <description>Database schema must match specification</description>
+      <details>workout_templates table: id (UUID PK), name (TEXT), description (TEXT), created_at. template_exercises table: template_id (UUID FK), exercise_id (UUID FK), order_index (INT), sets (INT), reps (TEXT), PRIMARY KEY (template_id, exercise_id). user_workout_templates table: id (UUID PK), user_id (UUID FK), name (TEXT), created_at.</details>
+    </constraint>
+    <constraint id="DATA-2" type="data">
+      <description>Pre-built template seeding requirement</description>
+      <details>Seed 20+ pre-built templates covering: Push/Pull/Legs (PPL) variations, Upper/Lower splits, Full Body variations, Powerlifting templates, Bodybuilding templates. Templates must reference valid exercise IDs from Story 3.2 exercise library.</details>
+    </constraint>
+    <constraint id="DATA-3" type="data">
+      <description>Template versioning and updates</description>
+      <details>Pre-built templates are read-only (users cannot edit). If templates need updates in future, use migration versioning. User custom templates are mutable (user owns data). Deleted exercises should show warning in template but not break template.</details>
+    </constraint>
+    <constraint id="SEC-1" type="security">
+      <description>Row Level Security (RLS) policies required</description>
+      <details>Enable RLS on user_workout_templates table. Policy: CREATE POLICY "Users can only access own templates" ON user_workout_templates FOR ALL USING (auth.uid() = user_id). Pre-built workout_templates table is globally readable (no RLS needed).</details>
+    </constraint>
+    <constraint id="UX-1" type="ux">
+      <description>Template preview must show complete information</description>
+      <details>Template cards display: name, description, exercise count, sets/reps scheme summary (e.g., "5 exercises • 3-4 sets • 8-12 reps"), estimated duration (calculate from exercise count × avg time per exercise), favorite star icon. Tap to view full details.</details>
+    </constraint>
+    <constraint id="UX-2" type="ux">
+      <description>Template deletion requires confirmation</description>
+      <details>Show dialog: "Delete [Template Name]? This cannot be undone." with "Cancel" and "Delete" buttons. Delete button in red/destructive color. Add haptic feedback on delete (HapticFeedback.mediumImpact()).</details>
+    </constraint>
+    <constraint id="UX-3" type="ux">
+      <description>Favorite templates Quick Access section</description>
+      <details>Quick Access section appears at top of Templates screen if user has favorited templates. Shows horizontal scrollable list of favorited templates. Star icon toggles with haptic feedback (HapticFeedback.lightImpact()).</details>
+    </constraint>
+    <constraint id="UX-4" type="ux">
+      <description>Template creation UX flow</description>
+      <details>Create Template screen flow: 1) Enter name, 2) Select exercises from library (multi-select with search), 3) Configure sets/reps per exercise, 4) Preview template, 5) Save. Show progress indicator (Step 1 of 4). Support "Save from Past Workout" shortcut (pre-fills exercises from completed workout).</details>
+    </constraint>
+    <constraint id="PERF-1" type="performance">
+      <description>Template list render time &lt;150ms</description>
+      <details>Templates screen must load quickly. Use ListView.builder for lazy loading. Cache pre-built templates locally. Optimize TemplateCard widgets with const constructors. Show shimmer loading state during initial fetch.</details>
+    </constraint>
+    <constraint id="PERF-2" type="performance">
+      <description>Template-to-workout conversion &lt;200ms</description>
+      <details>StartWorkoutFromTemplateUseCase must convert template to active workout quickly. Pre-fetch exercise details during template selection. Use database transactions for atomic operations.</details>
+    </constraint>
+    <constraint id="TEST-1" type="testing">
+      <description>80%+ code coverage required</description>
+      <details>Follow 70/20/10 testing pyramid. Unit tests for use cases (CreateTemplate, StartFromTemplate, DeleteTemplate), widget tests for UI components (TemplatesScreen, TemplateCard, CreateTemplateScreen), integration test for full template creation and workout start flow. All AC must have test coverage.</details>
+    </constraint>
+    <constraint id="TEST-2" type="testing">
+      <description>Seed data validation required</description>
+      <details>Test that all 20+ pre-built templates seed correctly. Verify all exercise_id references in template_exercises exist in exercises table. Test template-to-workout conversion for each pre-built template.</details>
+    </constraint>
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>WorkoutTemplateEntity</name>
+      <kind>domain-entity</kind>
+      <signature>
+        class WorkoutTemplateEntity {
+          final String id;
+          final String name;
+          final String? description;
+          final List&lt;TemplateExerciseEntity&gt; exercises;
+          final DateTime createdAt;
+          final bool isPreBuilt; // true for seeded templates, false for user custom
+          final String? userId; // null for pre-built, user_id for custom
+          final bool isFavorited;
+        }
+      </signature>
+      <path>lib/features/fitness_coach/domain/entities/workout_template_entity.dart</path>
+      <notes>Use @freezed annotation for immutability and copyWith. Validate name length (max 50 chars), exercises list (min 1 exercise).</notes>
+    </interface>
+    <interface>
+      <name>TemplateExerciseEntity</name>
+      <kind>domain-entity</kind>
+      <signature>
+        class TemplateExerciseEntity {
+          final String exerciseId;
+          final ExerciseEntity exercise; // populated via join
+          final int orderIndex;
+          final int sets;
+          final String reps; // "8-12" or "10" or "AMRAP"
+        }
+      </signature>
+      <path>lib/features/fitness_coach/domain/entities/template_exercise_entity.dart</path>
+      <notes>Use @freezed annotation. Validate sets (min 1, max 10), reps format (regex: \d+(-\d+)?|AMRAP).</notes>
+    </interface>
+    <interface>
+      <name>CreateTemplateUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class CreateTemplateUseCase {
+          Future&lt;Result&lt;WorkoutTemplateEntity&gt;&gt; call({
+            required String name,
+            String? description,
+            required List&lt;TemplateExerciseEntity&gt; exercises,
+          });
+        }
+      </signature>
+      <path>lib/features/fitness_coach/domain/usecases/create_template_usecase.dart</path>
+      <notes>Returns Result&lt;T&gt; pattern (Success/Failure). Validate name, exercises list. Save to Drift first, then queue for Supabase sync. Handle duplicate name errors.</notes>
+    </interface>
+    <interface>
+      <name>UpdateTemplateUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class UpdateTemplateUseCase {
+          Future&lt;Result&lt;WorkoutTemplateEntity&gt;&gt; call({
+            required String templateId,
+            required String name,
+            String? description,
+            required List&lt;TemplateExerciseEntity&gt; exercises,
+          });
+        }
+      </signature>
+      <path>lib/features/fitness_coach/domain/usecases/update_template_usecase.dart</path>
+      <notes>Only allow updates to user custom templates (isPreBuilt = false). Pre-built templates are read-only. Return error if user tries to edit pre-built template.</notes>
+    </interface>
+    <interface>
+      <name>DeleteTemplateUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class DeleteTemplateUseCase {
+          Future&lt;Result&lt;void&gt;&gt; call(String templateId);
+        }
+      </signature>
+      <path>lib/features/fitness_coach/domain/usecases/delete_template_usecase.dart</path>
+      <notes>Only allow deletion of user custom templates. Cascade delete template_exercises (ON DELETE CASCADE). Remove from favorites if favorited. Handle not-found errors gracefully.</notes>
+    </interface>
+    <interface>
+      <name>StartWorkoutFromTemplateUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class StartWorkoutFromTemplateUseCase {
+          Future&lt;Result&lt;WorkoutEntity&gt;&gt; call({
+            required String templateId,
+          });
+        }
+      </signature>
+      <path>lib/features/fitness_coach/domain/usecases/start_workout_from_template_usecase.dart</path>
+      <notes>Convert template to active workout. Copy exercises, sets, reps to new workout. Set workout status to "in_progress". Return WorkoutEntity for navigation to active workout screen.</notes>
+    </interface>
+    <interface>
+      <name>ToggleFavoriteTemplateUseCase</name>
+      <kind>use-case</kind>
+      <signature>
+        abstract class ToggleFavoriteTemplateUseCase {
+          Future&lt;Result&lt;bool&gt;&gt; call(String templateId);
+        }
+      </signature>
+      <path>lib/features/fitness_coach/domain/usecases/toggle_favorite_template_usecase.dart</path>
+      <notes>Toggle favorite status. Insert/delete from user_template_favorites table. Return new favorite status (true/false). Sync across devices via Supabase.</notes>
+    </interface>
+    <interface>
+      <name>WorkoutTemplateRepository</name>
+      <kind>repository</kind>
+      <signature>
+        abstract class WorkoutTemplateRepository {
+          Future&lt;Result&lt;List&lt;WorkoutTemplateEntity&gt;&gt;&gt; getAllTemplates(String userId);
+          Future&lt;Result&lt;List&lt;WorkoutTemplateEntity&gt;&gt;&gt; getPreBuiltTemplates();
+          Future&lt;Result&lt;List&lt;WorkoutTemplateEntity&gt;&gt;&gt; getUserTemplates(String userId);
+          Future&lt;Result&lt;List&lt;WorkoutTemplateEntity&gt;&gt;&gt; getFavoritedTemplates(String userId);
+          Future&lt;Result&lt;WorkoutTemplateEntity?&gt;&gt; getTemplateById(String templateId);
+          Future&lt;Result&lt;WorkoutTemplateEntity&gt;&gt; createTemplate(WorkoutTemplateEntity template);
+          Future&lt;Result&lt;WorkoutTemplateEntity&gt;&gt; updateTemplate(WorkoutTemplateEntity template);
+          Future&lt;Result&lt;void&gt;&gt; deleteTemplate(String templateId);
+          Future&lt;Result&lt;bool&gt;&gt; toggleFavorite(String userId, String templateId);
+        }
+      </signature>
+      <path>lib/features/fitness_coach/domain/repositories/workout_template_repository.dart</path>
+      <notes>Implemented by WorkoutTemplateRepositoryImpl in data layer. Uses both DriftDataSource and SupabaseDataSource. Implements offline-first pattern with sync queue.</notes>
+    </interface>
+    <interface>
+      <name>workout_templates table (Supabase PostgreSQL)</name>
+      <kind>database-table</kind>
+      <signature>
+        CREATE TABLE workout_templates (
+          id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+          name TEXT NOT NULL,
+          description TEXT,
+          created_at TIMESTAMPTZ DEFAULT NOW()
+        );
+        CREATE INDEX idx_templates_name ON workout_templates(name);
+      </signature>
+      <path>supabase/migrations/</path>
+      <notes>Global templates table (read-only, seeded). No RLS policies needed (globally readable). Seeded with 20+ pre-built templates.</notes>
+    </interface>
+    <interface>
+      <name>template_exercises table (Supabase PostgreSQL)</name>
+      <kind>database-table</kind>
+      <signature>
+        CREATE TABLE template_exercises (
+          template_id UUID NOT NULL REFERENCES workout_templates(id) ON DELETE CASCADE,
+          exercise_id UUID NOT NULL REFERENCES exercises(id) ON DELETE RESTRICT,
+          order_index INT NOT NULL,
+          sets INT NOT NULL CHECK (sets BETWEEN 1 AND 10),
+          reps TEXT NOT NULL,
+          PRIMARY KEY (template_id, exercise_id)
+        );
+        CREATE INDEX idx_template_exercises_template_id ON template_exercises(template_id);
+      </signature>
+      <path>supabase/migrations/</path>
+      <notes>Junction table linking templates to exercises. ON DELETE RESTRICT for exercise_id (prevent deleting exercises used in templates). order_index for exercise ordering within template.</notes>
+    </interface>
+    <interface>
+      <name>user_workout_templates table (Supabase PostgreSQL)</name>
+      <kind>database-table</kind>
+      <signature>
+        CREATE TABLE user_workout_templates (
+          id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+          user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+          name TEXT NOT NULL,
+          description TEXT,
+          created_at TIMESTAMPTZ DEFAULT NOW(),
+          updated_at TIMESTAMPTZ DEFAULT NOW()
+        );
+        CREATE INDEX idx_user_templates_user_id ON user_workout_templates(user_id);
+        -- RLS Policy
+        ALTER TABLE user_workout_templates ENABLE ROW LEVEL SECURITY;
+        CREATE POLICY "Users can manage own templates" ON user_workout_templates
+          FOR ALL USING (auth.uid() = user_id);
+      </signature>
+      <path>supabase/migrations/</path>
+      <notes>User-specific custom templates. RLS enabled for user data isolation. Similar structure to workout_templates but user-scoped.</notes>
+    </interface>
+    <interface>
+      <name>user_template_favorites table (Supabase PostgreSQL)</name>
+      <kind>database-table</kind>
+      <signature>
+        CREATE TABLE user_template_favorites (
+          user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+          template_id UUID NOT NULL, -- can reference workout_templates or user_workout_templates
+          created_at TIMESTAMPTZ DEFAULT NOW(),
+          PRIMARY KEY (user_id, template_id)
+        );
+        CREATE INDEX idx_favorites_user_id ON user_template_favorites(user_id);
+        -- RLS Policy
+        ALTER TABLE user_template_favorites ENABLE ROW LEVEL SECURITY;
+        CREATE POLICY "Users can manage own favorites" ON user_template_favorites
+          FOR ALL USING (auth.uid() = user_id);
+      </signature>
+      <path>supabase/migrations/</path>
+      <notes>Tracks favorited templates per user. Supports favoriting both pre-built and custom templates. RLS enabled for user data isolation.</notes>
+    </interface>
+    <interface>
+      <name>workout_templates, template_exercises, user_workout_templates tables (Drift SQLite)</name>
+      <kind>database-table</kind>
+      <signature>
+        @DataClassName('WorkoutTemplateTable')
+        class WorkoutTemplates extends Table {
+          TextColumn get id => text()();
+          TextColumn get name => text()();
+          TextColumn get description => text().nullable()();
+          DateTimeColumn get createdAt => dateTime()();
+          BoolColumn get isPreBuilt => boolean().withDefault(const Constant(false))();
+          TextColumn get userId => text().nullable()();
+          @override
+          Set&lt;Column&gt; get primaryKey => {id};
+        }
+
+        @DataClassName('TemplateExerciseTable')
+        class TemplateExercises extends Table {
+          TextColumn get templateId => text()();
+          TextColumn get exerciseId => text()();
+          IntColumn get orderIndex => integer()();
+          IntColumn get sets => integer()();
+          TextColumn get reps => text()();
+          @override
+          Set&lt;Column&gt; get primaryKey => {templateId, exerciseId};
+        }
+
+        @DataClassName('TemplateFavoriteTable')
+        class TemplateFavorites extends Table {
+          TextColumn get userId => text()();
+          TextColumn get templateId => text()();
+          DateTimeColumn get createdAt => dateTime()();
+          @override
+          Set&lt;Column&gt; get primaryKey => {userId, templateId};
+        }
+      </signature>
+      <path>lib/core/database/tables.drift.dart</path>
+      <notes>Drift table definitions. Mirror of Supabase schema for offline-first architecture. Combines workout_templates and user_workout_templates into single table with isPreBuilt flag. Use drift code generation.</notes>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Follow 70/20/10 testing pyramid: 70% unit tests (use cases, repositories, entities), 20% widget tests (UI components, state management), 10% integration tests (end-to-end flows). Use flutter_test for unit/widget tests, integration_test for E2E. Mock dependencies with mockito. Target 80%+ code coverage. All acceptance criteria must have test coverage.
+    </standards>
+    <locations>
+      <location>test/features/fitness_coach/domain/usecases/</location>
+      <location>test/features/fitness_coach/domain/entities/</location>
+      <location>test/features/fitness_coach/data/repositories/</location>
+      <location>test/features/fitness_coach/presentation/screens/</location>
+      <location>test/features/fitness_coach/presentation/widgets/</location>
+      <location>integration_test/features/fitness_coach/workout_templates_flow_test.dart</location>
+    </locations>
+    <ideas>
+      <test-idea ac-ref="AC2">
+        <description>Unit test: Pre-built templates seed data validation</description>
+        <approach>Test that seed migration creates 20+ pre-built templates. Verify all template_exercises reference valid exercise IDs. Verify templates cover PPL, Upper/Lower, Full Body splits. Check sets/reps formats are valid.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC5">
+        <description>Unit test: CreateTemplateUseCase success case</description>
+        <approach>Mock WorkoutTemplateRepository. Create template with name "My PPL Push" and 5 exercises. Verify repository.createTemplate() called with correct entity. Assert Success result returned.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC5">
+        <description>Unit test: CreateTemplateUseCase validation failures</description>
+        <approach>Test validation: empty name fails, name &gt; 50 chars fails, empty exercises list fails, invalid sets/reps format fails. Assert Failure results with appropriate error messages.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC6">
+        <description>Unit test: UpdateTemplateUseCase prevents editing pre-built templates</description>
+        <approach>Mock repository to return pre-built template (isPreBuilt = true). Call UpdateTemplateUseCase. Assert Failure result with "Cannot edit pre-built templates" error message.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC7">
+        <description>Unit test: DeleteTemplateUseCase with cascade delete</description>
+        <approach>Mock repository. Delete template with ID "123". Verify repository.deleteTemplate("123") called. Verify template_exercises entries cascade deleted. Assert Success result.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4">
+        <description>Unit test: StartWorkoutFromTemplateUseCase conversion logic</description>
+        <approach>Mock repository to return template with 3 exercises. Call StartWorkoutFromTemplateUseCase. Verify WorkoutEntity created with same exercises, sets, reps. Verify workout status = "in_progress". Assert Success result.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC8">
+        <description>Unit test: ToggleFavoriteTemplateUseCase toggle behavior</description>
+        <approach>Mock repository. First call: not favorited → favorited (returns true). Second call: favorited → unfavorited (returns false). Verify repository.toggleFavorite() called correctly both times.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC1,AC2,AC3">
+        <description>Widget test: TemplatesScreen displays pre-built templates</description>
+        <approach>Mock provider to return 5 pre-built templates. Render TemplatesScreen. Verify "Pre-built" tab selected. Verify 5 TemplateCard widgets displayed. Verify template names, descriptions, exercise counts visible.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC8">
+        <description>Widget test: Favorite star toggle with haptic feedback</description>
+        <approach>Render TemplateCard for unfavorited template. Tap star icon. Verify haptic feedback triggered (mock HapticFeedback). Verify ToggleFavoriteTemplateUseCase called. Verify star icon state changes to filled.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC7">
+        <description>Widget test: Delete confirmation dialog</description>
+        <approach>Render custom template card. Long-press to show delete option. Tap delete. Verify confirmation dialog appears with "Delete [Template Name]? This cannot be undone." message. Tap "Delete" button. Verify DeleteTemplateUseCase called.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC5">
+        <description>Widget test: CreateTemplateScreen exercise selection</description>
+        <approach>Render CreateTemplateScreen. Enter name "My Template". Tap "Add Exercises". Verify exercise selector displayed (multi-select). Select 3 exercises. Configure sets/reps. Tap "Save". Verify CreateTemplateUseCase called with correct data.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC8">
+        <description>Widget test: Quick Access section shows favorited templates</description>
+        <approach>Mock provider to return 3 favorited templates. Render TemplatesScreen. Verify "Quick Access" section displayed at top. Verify horizontal scrollable list with 3 template cards. Verify favorited templates have filled star icons.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC4">
+        <description>Integration test: Start workout from pre-built template</description>
+        <approach>Launch app. Navigate to Fitness tab → Templates. Tap "Push Day" pre-built template. Tap "Start Workout" button. Verify navigated to active workout screen. Verify exercises pre-filled: Bench Press, Overhead Press, etc. Verify sets/reps pre-filled. Start workout and complete first set.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC5,AC6,AC7">
+        <description>Integration test: Create, edit, delete custom template flow</description>
+        <approach>Navigate to Templates → My Templates. Tap "Create Template". Enter name "My Custom PPL". Select exercises: Bench, Squat, Deadlift. Set 3x8-12 for all. Save. Verify template appears in My Templates. Tap template → Edit. Change name to "My PPL v2". Save. Verify updated. Long-press → Delete. Confirm. Verify template removed.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC8">
+        <description>Integration test: Favorite templates sync across devices</description>
+        <approach>On Device A: favorite "Push Day" template. Mock Supabase realtime sync. On Device B: verify "Push Day" appears in Quick Access. Unfavorite on Device B. Verify removed from Quick Access on Device A.</approach>
+      </test-idea>
+      <test-idea ac-ref="AC2">
+        <description>Integration test: All pre-built templates can start workouts</description>
+        <approach>Fetch all 20+ pre-built templates. For each template: call StartWorkoutFromTemplateUseCase. Verify WorkoutEntity created successfully. Verify no missing exercise references. Verify all sets/reps formats valid.</approach>
+      </test-idea>
+    </ideas>
+  </tests>
+</story-context>
