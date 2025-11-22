@@ -1,19 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:lifeos/features/mind_emotion/presentation/screens/meditation_library_screen.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lifeos/core/router/app_router.dart';
+import 'package:lifeos/core/theme/app_theme.dart';
 
-/// Main application widget
-class LifeOSApp extends StatelessWidget {
+/// LifeOS - Your AI-powered operating system for life
+class LifeOSApp extends ConsumerWidget {
   const LifeOSApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
+  Widget build(BuildContext context, WidgetRef ref) {
+    return MaterialApp.router(
       title: 'LifeOS',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        useMaterial3: true,
-      ),
-      home: const MeditationLibraryScreen(),
+      debugShowCheckedModeBanner: false,
+      theme: AppTheme.lightTheme,
+      darkTheme: AppTheme.darkTheme,
+      themeMode: ThemeMode.system,
+      routerConfig: AppRouter.router,
     );
   }
 }

@@ -15,36 +15,60 @@ dependencies:
   flutter_riverpod: ^3.0.0
   riverpod_annotation: ^3.0.0
 
-  # Local Database
+  # Supabase & Backend
+  supabase_flutter: ^2.3.0
+
+  # Offline-First Database
   drift: ^2.14.0
   drift_flutter: ^0.1.0
-  sqlite3_flutter_libs: ^0.5.0
-  path_provider: ^2.1.0
+  sqlite3_flutter_libs: ^0.5.18
+  path_provider: ^2.1.1
   path: ^1.8.0
 
-  # Backend (Supabase)
-  supabase_flutter: ^2.0.0
-
-  # Code Generation
-  freezed_annotation: ^2.4.0
-  json_annotation: ^4.8.0
-
-  # Routing
+  # Routing & Navigation
   go_router: ^13.0.0
 
-  # Security
-  flutter_secure_storage: ^9.0.0
-  encrypt: ^5.0.3
+  # UI & Design
+  flutter_animate: ^4.3.0
+  lottie: ^3.0.0
+  fl_chart: ^0.66.0
+  shimmer: ^3.0.0
 
-  # UI
-  intl: ^0.19.0
+  # Images & Media
+  image: ^4.1.3
+  image_picker: ^1.0.5
   cached_network_image: ^3.3.0
   flutter_cache_manager: ^3.3.0
 
-  # Audio (Story 4.1 specific)
+  # Audio (Meditations)
   just_audio: ^0.9.36
   just_audio_background: ^0.0.1-beta.10
   audio_service: ^0.18.12
+  audio_session: ^0.1.16
+
+  # Notifications
+  firebase_messaging: ^14.7.6
+  flutter_local_notifications: ^16.3.0
+
+  # Utilities
+  intl: ^0.19.0
+  freezed_annotation: ^2.4.1
+  json_annotation: ^4.8.1
+  uuid: ^4.2.2
+  share_plus: ^7.2.1
+  url_launcher: ^6.2.2
+
+  # Encryption (for E2EE journals)
+  encrypt: ^5.0.3
+
+  # Security
+  flutter_secure_storage: ^9.0.0
+
+  # In-App Purchases
+  in_app_purchase: ^3.1.11
+
+  # Firebase Core
+  firebase_core: ^2.24.2
 
   # Networking
   dio: ^5.4.0
@@ -55,23 +79,20 @@ dependencies:
   # Payment
   flutter_stripe: ^10.0.0
 
-  # Notifications
-  firebase_messaging: ^14.7.0
-  flutter_local_notifications: ^16.3.0
-
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^3.0.0
+  flutter_lints: ^3.0.1
 
   # Code Generation
-  build_runner: ^2.4.0
+  build_runner: ^2.4.7
   riverpod_generator: ^3.0.0
+  freezed: ^2.4.6
+  json_serializable: ^6.7.1
   drift_dev: ^2.14.0
-  freezed: ^2.4.0
-  json_serializable: ^6.7.0
 
   # Testing
+  mocktail: ^1.0.2
   mockito: ^5.4.0
   integration_test:
     sdk: flutter
@@ -81,3 +102,4 @@ flutter:
   assets:
     - assets/images/
     - assets/audio/
+    - assets/fonts/

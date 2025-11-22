@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:lifeos/core/auth/presentation/pages/login_page.dart';
+import 'package:lifeos/core/auth/presentation/pages/register_page.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:lifeos/features/onboarding/screens/login_screen.dart';
-import 'package:lifeos/features/onboarding/screens/register_screen.dart';
-import 'package:lifeos/features/life_coach/screens/home_screen.dart';
 
 /// App Router Configuration
 class AppRouter {
@@ -37,23 +36,30 @@ class AppRouter {
 
     // Routes
     routes: [
-      // Auth Routes
+      // Auth Routes (Story 1.1)
       GoRoute(
         path: '/login',
         name: 'login',
-        builder: (context, state) => const LoginScreen(),
+        builder: (context, state) => const LoginPage(),
       ),
       GoRoute(
         path: '/register',
         name: 'register',
-        builder: (context, state) => const RegisterScreen(),
+        builder: (context, state) => const RegisterPage(),
       ),
 
-      // Main App Routes
+      // Onboarding Route (Epic 7 - placeholder)
+      GoRoute(
+        path: '/onboarding',
+        name: 'onboarding',
+        builder: (context, state) => const OnboardingPlaceholder(),
+      ),
+
+      // Main App Routes (implemented in other stories)
       GoRoute(
         path: '/home',
         name: 'home',
-        builder: (context, state) => const HomeScreen(),
+        builder: (context, state) => const HomePlaceholder(),
       ),
     ],
 
@@ -67,4 +73,34 @@ class AppRouter {
 
   // Prevent instantiation
   AppRouter._();
+}
+
+/// Placeholder for onboarding page (to be implemented in Epic 7)
+class OnboardingPlaceholder extends StatelessWidget {
+  const OnboardingPlaceholder({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Onboarding')),
+      body: const Center(
+        child: Text('Onboarding Flow - To be implemented in Epic 7'),
+      ),
+    );
+  }
+}
+
+/// Placeholder for home screen (implemented in other stories)
+class HomePlaceholder extends StatelessWidget {
+  const HomePlaceholder({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('LifeOS Home')),
+      body: const Center(
+        child: Text('Home Screen - See other feature branches'),
+      ),
+    );
+  }
 }
