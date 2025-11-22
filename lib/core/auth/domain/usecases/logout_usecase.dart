@@ -1,4 +1,4 @@
-import '../../../utils/result.dart';
+import 'package:lifeos/core/error/result.dart';
 import '../exceptions/auth_exceptions.dart';
 import '../repositories/auth_repository.dart';
 import '../repositories/session_repository.dart';
@@ -27,9 +27,9 @@ class LogoutUseCase {
       // Return result from auth repository
       return signOutResult;
     } on AuthException catch (e) {
-      return Failure(e, e.message);
+      return Result.failure(e);
     } catch (e) {
-      return Failure(
+      return Result.failure(
         UnknownAuthException(e.toString()),
         'Failed to log out',
       );

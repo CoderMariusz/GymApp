@@ -1,4 +1,4 @@
-import '../../../utils/result.dart';
+import 'package:lifeos/core/error/result.dart';
 import '../entities/auth_session_entity.dart';
 import '../exceptions/auth_exceptions.dart';
 import '../repositories/session_repository.dart';
@@ -20,32 +20,32 @@ class CheckAuthStatusUseCase {
 
       // Check if load failed
       if (sessionResult is Failure) {
-        return const Success(null);
+        return const Result.success(null);
       }
 
       final session = (sessionResult as Success<AuthSessionEntity?>).data;
 
       // Return null if no session exists
       if (session == null) {
-        return const Success(null);
+        return const Result.success(null);
       }
 
       // Check if session is expired
       if (session.isExpired) {
         // Clear expired session
         await _sessionRepository.deleteSession();
-        return const Failure(
+        return const Result.failure(
           SessionExpiredException(),
           'Your session has expired. Please sign in again.',
         );
       }
 
       // Session is valid
-      return Success(session);
+      return Result.success(session);
     } on AuthException catch (e) {
-      return Failure(e, e.message);
+      return Result.failure(e);
     } catch (e) {
-      return Failure(
+      return Result.failure(
         UnknownAuthException(e.toString()),
         'Failed to check auth status',
       );

@@ -1,4 +1,4 @@
-import '../../../utils/result.dart';
+import 'package:lifeos/core/error/result.dart';
 import '../entities/user_entity.dart';
 import '../exceptions/auth_exceptions.dart';
 import '../repositories/auth_repository.dart';
@@ -20,7 +20,7 @@ class RegisterUserUseCase {
     try {
       // Validate email
       if (!EmailValidator.isValid(email)) {
-        return const Failure(
+        return const Result.failure(
           InvalidEmailException(),
           'Please enter a valid email address',
         );
@@ -29,7 +29,7 @@ class RegisterUserUseCase {
       // Validate password
       final passwordValidation = PasswordValidator.validate(password);
       if (!passwordValidation.isValid) {
-        return Failure(
+        return Result.failure(
           const WeakPasswordException(),
           passwordValidation.errors.join('\n'),
         );
@@ -42,12 +42,9 @@ class RegisterUserUseCase {
         name: name,
       );
     } on AuthException catch (e) {
-      return Failure(e, e.message);
+      return Result.failure(e);
     } catch (e) {
-      return Failure(
-        UnknownAuthException(e.toString()),
-        'An unexpected error occurred',
-      );
+      return Result.failure(UnknownAuthException(e.toString()));
     }
   }
 
@@ -56,12 +53,9 @@ class RegisterUserUseCase {
     try {
       return await _repository.registerWithGoogle();
     } on AuthException catch (e) {
-      return Failure(e, e.message);
+      return Result.failure(e);
     } catch (e) {
-      return Failure(
-        UnknownAuthException(e.toString()),
-        'An unexpected error occurred',
-      );
+      return Result.failure(UnknownAuthException(e.toString()));
     }
   }
 
@@ -70,12 +64,9 @@ class RegisterUserUseCase {
     try {
       return await _repository.registerWithApple();
     } on AuthException catch (e) {
-      return Failure(e, e.message);
+      return Result.failure(e);
     } catch (e) {
-      return Failure(
-        UnknownAuthException(e.toString()),
-        'An unexpected error occurred',
-      );
+      return Result.failure(UnknownAuthException(e.toString()));
     }
   }
 }

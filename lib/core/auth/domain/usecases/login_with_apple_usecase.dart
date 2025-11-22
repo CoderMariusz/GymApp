@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import '../../../utils/result.dart';
+import 'package:lifeos/core/error/result.dart';
 import '../entities/auth_session_entity.dart';
 import '../exceptions/auth_exceptions.dart';
 import '../repositories/auth_repository.dart';
@@ -24,7 +24,7 @@ class LoginWithAppleUseCase {
     try {
       // Check if platform is iOS (Apple Sign-In is iOS only)
       if (!Platform.isIOS) {
-        return const Failure(
+        return const Result.failure(
           OAuthFailedException(),
           'Apple Sign-In is only available on iOS devices',
         );
@@ -44,11 +44,11 @@ class LoginWithAppleUseCase {
       await _sessionRepository.saveSession(session);
       await _sessionRepository.saveRememberMePreference(true);
 
-      return Success(session);
+      return Result.success(session);
     } on AuthException catch (e) {
-      return Failure(e, e.message);
+      return Result.failure(e);
     } catch (e) {
-      return Failure(
+      return Result.failure(
         UnknownAuthException(e.toString()),
         'An unexpected error occurred during Apple sign-in',
       );

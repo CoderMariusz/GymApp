@@ -1,4 +1,4 @@
-import '../../../utils/result.dart';
+import 'package:lifeos/core/error/result.dart';
 import '../exceptions/auth_exceptions.dart';
 import '../repositories/auth_repository.dart';
 import 'login_with_email_usecase.dart';
@@ -16,7 +16,7 @@ class RequestPasswordResetUseCase {
     try {
       // Validate email format
       if (!EmailValidator.isValid(email)) {
-        return const Failure(
+        return const Result.failure(
           InvalidEmailException(),
           'Please enter a valid email address',
         );
@@ -25,9 +25,9 @@ class RequestPasswordResetUseCase {
       // Request password reset from repository
       return await _repository.requestPasswordReset(email);
     } on AuthException catch (e) {
-      return Failure(e, e.message);
+      return Result.failure(e);
     } catch (e) {
-      return Failure(
+      return Result.failure(
         UnknownAuthException(e.toString()),
         'Failed to send password reset email',
       );

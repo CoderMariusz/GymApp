@@ -1,4 +1,4 @@
-import '../../../utils/result.dart';
+import 'package:lifeos/core/error/result.dart';
 import '../entities/auth_session_entity.dart';
 
 /// Session repository interface

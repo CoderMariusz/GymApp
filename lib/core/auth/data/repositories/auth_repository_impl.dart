@@ -1,4 +1,4 @@
-import '../../../utils/result.dart';
+import 'package:lifeos/core/error/result.dart';
 import '../../domain/entities/auth_session_entity.dart';
 import '../../domain/entities/user_entity.dart';
 import '../../domain/exceptions/auth_exceptions.dart';
@@ -25,14 +25,11 @@ class AuthRepositoryImpl implements AuthRepository {
         name: name,
       );
 
-      return Success(userModel.toEntity());
+      return Result.success(userModel.toEntity());
     } on AuthException catch (e) {
-      return Failure(e, e.message);
+      return Result.failure(e);
     } catch (e) {
-      return Failure(
-        UnknownAuthException(e.toString()),
-        'An unexpected error occurred',
-      );
+      return Result.failure(UnknownAuthException(e.toString()));
     }
   }
 
@@ -40,14 +37,11 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<Result<UserEntity>> registerWithGoogle() async {
     try {
       final userModel = await _dataSource.registerWithGoogle();
-      return Success(userModel.toEntity());
+      return Result.success(userModel.toEntity());
     } on AuthException catch (e) {
-      return Failure(e, e.message);
+      return Result.failure(e);
     } catch (e) {
-      return Failure(
-        UnknownAuthException(e.toString()),
-        'An unexpected error occurred',
-      );
+      return Result.failure(UnknownAuthException(e.toString()));
     }
   }
 
@@ -55,14 +49,11 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<Result<UserEntity>> registerWithApple() async {
     try {
       final userModel = await _dataSource.registerWithApple();
-      return Success(userModel.toEntity());
+      return Result.success(userModel.toEntity());
     } on AuthException catch (e) {
-      return Failure(e, e.message);
+      return Result.failure(e);
     } catch (e) {
-      return Failure(
-        UnknownAuthException(e.toString()),
-        'An unexpected error occurred',
-      );
+      return Result.failure(UnknownAuthException(e.toString()));
     }
   }
 
@@ -77,14 +68,11 @@ class AuthRepositoryImpl implements AuthRepository {
         password: password,
       );
 
-      return Success(sessionModel.toEntity());
+      return Result.success(sessionModel.toEntity());
     } on AuthException catch (e) {
-      return Failure(e, e.message);
+      return Result.failure(e);
     } catch (e) {
-      return Failure(
-        UnknownAuthException(e.toString()),
-        'An unexpected error occurred',
-      );
+      return Result.failure(UnknownAuthException(e.toString()));
     }
   }
 
@@ -92,14 +80,11 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<Result<AuthSessionEntity>> loginWithGoogle() async {
     try {
       final sessionModel = await _dataSource.loginWithGoogleSession();
-      return Success(sessionModel.toEntity());
+      return Result.success(sessionModel.toEntity());
     } on AuthException catch (e) {
-      return Failure(e, e.message);
+      return Result.failure(e);
     } catch (e) {
-      return Failure(
-        UnknownAuthException(e.toString()),
-        'An unexpected error occurred',
-      );
+      return Result.failure(UnknownAuthException(e.toString()));
     }
   }
 
@@ -107,14 +92,11 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<Result<AuthSessionEntity>> loginWithApple() async {
     try {
       final sessionModel = await _dataSource.loginWithAppleSession();
-      return Success(sessionModel.toEntity());
+      return Result.success(sessionModel.toEntity());
     } on AuthException catch (e) {
-      return Failure(e, e.message);
+      return Result.failure(e);
     } catch (e) {
-      return Failure(
-        UnknownAuthException(e.toString()),
-        'An unexpected error occurred',
-      );
+      return Result.failure(UnknownAuthException(e.toString()));
     }
   }
 
@@ -122,9 +104,9 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<Result<AuthSessionEntity?>> getCurrentSession() async {
     try {
       final sessionModel = await _dataSource.getCurrentSession();
-      return Success(sessionModel?.toEntity());
+      return Result.success(sessionModel?.toEntity());
     } catch (e) {
-      return Failure(
+      return Result.failure(
         UnknownAuthException(e.toString()),
         'Failed to get current session',
       );
@@ -135,14 +117,11 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<Result<void>> sendEmailVerification(String email) async {
     try {
       await _dataSource.sendEmailVerification(email);
-      return const Success(null);
+      return const Result.success(null);
     } on AuthException catch (e) {
-      return Failure(e, e.message);
+      return Result.failure(e);
     } catch (e) {
-      return Failure(
-        UnknownAuthException(e.toString()),
-        'An unexpected error occurred',
-      );
+      return Result.failure(UnknownAuthException(e.toString()));
     }
   }
 
@@ -150,16 +129,16 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<Result<void>> verifyEmail(String token) async {
     // Email verification is handled by Supabase automatically
     // This method is a placeholder for future implementation
-    return const Success(null);
+    return const Result.success(null);
   }
 
   @override
   Future<Result<UserEntity?>> getCurrentUser() async {
     try {
       final userModel = await _dataSource.getCurrentUser();
-      return Success(userModel?.toEntity());
+      return Result.success(userModel?.toEntity());
     } catch (e) {
-      return Failure(
+      return Result.failure(
         UnknownAuthException(e.toString()),
         'Failed to get current user',
       );
@@ -170,14 +149,11 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<Result<void>> signOut() async {
     try {
       await _dataSource.signOut();
-      return const Success(null);
+      return const Result.success(null);
     } on AuthException catch (e) {
-      return Failure(e, e.message);
+      return Result.failure(e);
     } catch (e) {
-      return Failure(
-        UnknownAuthException(e.toString()),
-        'An unexpected error occurred',
-      );
+      return Result.failure(UnknownAuthException(e.toString()));
     }
   }
 
@@ -185,11 +161,11 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<Result<void>> requestPasswordReset(String email) async {
     try {
       await _dataSource.requestPasswordReset(email);
-      return const Success(null);
+      return const Result.success(null);
     } on AuthException catch (e) {
-      return Failure(e, e.message);
+      return Result.failure(e);
     } catch (e) {
-      return Failure(
+      return Result.failure(
         UnknownAuthException(e.toString()),
         'Failed to send password reset email',
       );
@@ -200,11 +176,11 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<Result<void>> updatePassword(String newPassword) async {
     try {
       await _dataSource.updatePassword(newPassword);
-      return const Success(null);
+      return const Result.success(null);
     } on AuthException catch (e) {
-      return Failure(e, e.message);
+      return Result.failure(e);
     } catch (e) {
-      return Failure(
+      return Result.failure(
         UnknownAuthException(e.toString()),
         'Failed to update password',
       );

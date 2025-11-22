@@ -1,4 +1,4 @@
-import '../../../utils/result.dart';
+import 'package:lifeos/core/error/result.dart';
 import '../exceptions/auth_exceptions.dart';
 import '../repositories/auth_repository.dart';
 import '../validators/password_validator.dart';
@@ -18,7 +18,7 @@ class UpdatePasswordUseCase {
       // Validate password
       final validation = PasswordValidator.validate(newPassword);
       if (!validation.isValid) {
-        return Failure(
+        return Result.failure(
           const WeakPasswordException(),
           validation.errors.join('\n'),
         );
@@ -27,9 +27,9 @@ class UpdatePasswordUseCase {
       // Update password via repository
       return await _repository.updatePassword(newPassword);
     } on AuthException catch (e) {
-      return Failure(e, e.message);
+      return Result.failure(e);
     } catch (e) {
-      return Failure(
+      return Result.failure(
         UnknownAuthException(e.toString()),
         'Failed to update password',
       );

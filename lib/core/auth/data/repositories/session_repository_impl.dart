@@ -1,4 +1,4 @@
-import '../../../utils/result.dart';
+import 'package:lifeos/core/error/result.dart';
 import '../../domain/entities/auth_session_entity.dart';
 import '../../domain/repositories/session_repository.dart';
 import '../datasources/secure_storage_datasource.dart';
@@ -23,9 +23,9 @@ class SessionRepositoryImpl implements SessionRepository {
         userData: model.user.toJson(),
       );
 
-      return const Success(null);
+      return const Result.success(null);
     } catch (e) {
-      return Failure(
+      return Result.failure(
         Exception('Failed to save session'),
         'Failed to save session: $e',
       );
@@ -38,7 +38,7 @@ class SessionRepositoryImpl implements SessionRepository {
       final data = await _dataSource.loadSession();
 
       if (data == null) {
-        return const Success(null);
+        return const Result.success(null);
       }
 
       final model = AuthSessionModel.fromJson({
@@ -48,9 +48,9 @@ class SessionRepositoryImpl implements SessionRepository {
         'user': data['userData'],
       });
 
-      return Success(model.toEntity());
+      return Result.success(model.toEntity());
     } catch (e) {
-      return Failure(
+      return Result.failure(
         Exception('Failed to load session'),
         'Failed to load session: $e',
       );
@@ -61,9 +61,9 @@ class SessionRepositoryImpl implements SessionRepository {
   Future<Result<void>> deleteSession() async {
     try {
       await _dataSource.deleteSession();
-      return const Success(null);
+      return const Result.success(null);
     } catch (e) {
-      return Failure(
+      return Result.failure(
         Exception('Failed to delete session'),
         'Failed to delete session: $e',
       );
@@ -74,9 +74,9 @@ class SessionRepositoryImpl implements SessionRepository {
   Future<Result<void>> saveRememberMePreference(bool rememberMe) async {
     try {
       await _dataSource.saveRememberMePreference(rememberMe);
-      return const Success(null);
+      return const Result.success(null);
     } catch (e) {
-      return Failure(
+      return Result.failure(
         Exception('Failed to save preference'),
         'Failed to save remember me preference: $e',
       );
@@ -87,10 +87,10 @@ class SessionRepositoryImpl implements SessionRepository {
   Future<Result<bool>> loadRememberMePreference() async {
     try {
       final rememberMe = await _dataSource.loadRememberMePreference();
-      return Success(rememberMe);
+      return Result.success(rememberMe);
     } catch (e) {
       // Default to true on error
-      return const Success(true);
+      return const Result.success(true);
     }
   }
 
@@ -98,9 +98,9 @@ class SessionRepositoryImpl implements SessionRepository {
   Future<Result<void>> clearAll() async {
     try {
       await _dataSource.clearAll();
-      return const Success(null);
+      return const Result.success(null);
     } catch (e) {
-      return Failure(
+      return Result.failure(
         Exception('Failed to clear all data'),
         'Failed to clear all data: $e',
       );

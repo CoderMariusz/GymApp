@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:supabase_flutter/supabase_flutter.dart' hide AuthState;
 
 import '../../../initialization/app_initializer.dart';
 import '../../data/datasources/secure_storage_datasource.dart';
@@ -119,8 +119,8 @@ final appInitializerProvider = Provider<AppInitializer>((ref) {
   return AppInitializer(checkAuthStatusUseCase);
 });
 
-/// Auth state provider
-final authStateProvider = StateNotifierProvider<AuthNotifier, AuthState>((ref) {
+/// Auth notifier provider
+final authNotifierProvider = Provider<AuthNotifier>((ref) {
   final repository = ref.watch(authRepositoryProvider);
   final registerUseCase = ref.watch(registerUserUseCaseProvider);
   final loginWithEmailUseCase = ref.watch(loginWithEmailUseCaseProvider);
@@ -136,4 +136,10 @@ final authStateProvider = StateNotifierProvider<AuthNotifier, AuthState>((ref) {
     loginWithAppleUseCase: loginWithAppleUseCase,
     logoutUseCase: logoutUseCase,
   );
+});
+
+/// Auth state provider
+final authStateProvider = StateProvider<AuthState>((ref) {
+  final notifier = ref.watch(authNotifierProvider);
+  return notifier.build();
 });

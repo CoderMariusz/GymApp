@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import '../../../auth/domain/exceptions/auth_exceptions.dart';
-import '../../../utils/result.dart';
+import 'package:lifeos/core/error/result.dart';
 import '../repositories/profile_repository.dart';
 
 /// Upload avatar use case
@@ -21,7 +21,7 @@ class UploadAvatarUseCase {
     try {
       // Check if file exists
       if (!imageFile.existsSync()) {
-        return const Failure(
+        return const Result.failure(
           UnknownAuthException('File not found'),
           'Selected image file not found',
         );
@@ -30,7 +30,7 @@ class UploadAvatarUseCase {
       // Validate file size
       final fileSize = imageFile.lengthSync();
       if (fileSize > maxFileSizeBytes) {
-        return Failure(
+        return Result.failure(
           const UnknownAuthException('File too large'),
           'Image must be under ${(maxFileSizeBytes / (1024 * 1024)).toStringAsFixed(0)}MB',
         );
@@ -39,9 +39,9 @@ class UploadAvatarUseCase {
       // Upload via repository (includes compression)
       return await _repository.uploadAvatar(imageFile);
     } on AuthException catch (e) {
-      return Failure(e, e.message);
+      return Result.failure(e);
     } catch (e) {
-      return Failure(
+      return Result.failure(
         UnknownAuthException(e.toString()),
         'Failed to upload avatar',
       );

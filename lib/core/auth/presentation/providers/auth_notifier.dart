@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../utils/result.dart';
+import 'package:lifeos/core/error/result.dart';
 import '../../domain/repositories/auth_repository.dart';
 import '../../domain/usecases/login_with_apple_usecase.dart';
 import '../../domain/usecases/login_with_email_usecase.dart';
@@ -11,14 +11,15 @@ import 'auth_state.dart';
 
 /// Auth state notifier
 /// Manages authentication state and operations
-class AuthNotifier extends StateNotifier<AuthState> {
-  final AuthRepository _repository;
-  final RegisterUserUseCase _registerUseCase;
-  final LoginWithEmailUseCase _loginWithEmailUseCase;
-  final LoginWithGoogleUseCase _loginWithGoogleUseCase;
-  final LoginWithAppleUseCase _loginWithAppleUseCase;
-  final LogoutUseCase _logoutUseCase;
+class AuthNotifier extends Notifier<AuthState> {
+  late final AuthRepository _repository;
+  late final RegisterUserUseCase _registerUseCase;
+  late final LoginWithEmailUseCase _loginWithEmailUseCase;
+  late final LoginWithGoogleUseCase _loginWithGoogleUseCase;
+  late final LoginWithAppleUseCase _loginWithAppleUseCase;
+  late final LogoutUseCase _logoutUseCase;
 
+  /// Constructor to inject dependencies (called by provider)
   AuthNotifier({
     required AuthRepository repository,
     required RegisterUserUseCase registerUseCase,
@@ -31,9 +32,13 @@ class AuthNotifier extends StateNotifier<AuthState> {
         _loginWithEmailUseCase = loginWithEmailUseCase,
         _loginWithGoogleUseCase = loginWithGoogleUseCase,
         _loginWithAppleUseCase = loginWithAppleUseCase,
-        _logoutUseCase = logoutUseCase,
-        super(const AuthState.initial()) {
+        _logoutUseCase = logoutUseCase;
+
+  @override
+  AuthState build() {
+    // Initialize will be called separately since build must be synchronous
     _initialize();
+    return const AuthState.initial();
   }
 
   /// Initialize - check for existing session
@@ -48,7 +53,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
           state = const AuthState.unauthenticated();
         }
       },
-      failure: (_, __) {
+      failure: (exception) {
         state = const AuthState.unauthenticated();
       },
     );
@@ -81,8 +86,8 @@ class AuthNotifier extends StateNotifier<AuthState> {
       success: (user) {
         state = AuthState.authenticated(user);
       },
-      failure: (exception, message) {
-        state = AuthState.error(message);
+      failure: (exception) {
+        state = AuthState.error(exception.toString());
         // Reset to unauthenticated after showing error
         Future.delayed(const Duration(seconds: 3), () {
           if (state is _Error) {
@@ -103,8 +108,8 @@ class AuthNotifier extends StateNotifier<AuthState> {
       success: (user) {
         state = AuthState.authenticated(user);
       },
-      failure: (exception, message) {
-        state = AuthState.error(message);
+      failure: (exception) {
+        state = AuthState.error(exception.toString());
         Future.delayed(const Duration(seconds: 3), () {
           if (state is _Error) {
             state = const AuthState.unauthenticated();
@@ -124,8 +129,8 @@ class AuthNotifier extends StateNotifier<AuthState> {
       success: (user) {
         state = AuthState.authenticated(user);
       },
-      failure: (exception, message) {
-        state = AuthState.error(message);
+      failure: (exception) {
+        state = AuthState.error(exception.toString());
         Future.delayed(const Duration(seconds: 3), () {
           if (state is _Error) {
             state = const AuthState.unauthenticated();
@@ -153,8 +158,8 @@ class AuthNotifier extends StateNotifier<AuthState> {
       success: (session) {
         state = AuthState.authenticated(session.user);
       },
-      failure: (exception, message) {
-        state = AuthState.error(message);
+      failure: (exception) {
+        state = AuthState.error(exception.toString());
         Future.delayed(const Duration(seconds: 3), () {
           if (state is _Error) {
             state = const AuthState.unauthenticated();
@@ -174,8 +179,8 @@ class AuthNotifier extends StateNotifier<AuthState> {
       success: (session) {
         state = AuthState.authenticated(session.user);
       },
-      failure: (exception, message) {
-        state = AuthState.error(message);
+      failure: (exception) {
+        state = AuthState.error(exception.toString());
         Future.delayed(const Duration(seconds: 3), () {
           if (state is _Error) {
             state = const AuthState.unauthenticated();
@@ -195,8 +200,8 @@ class AuthNotifier extends StateNotifier<AuthState> {
       success: (session) {
         state = AuthState.authenticated(session.user);
       },
-      failure: (exception, message) {
-        state = AuthState.error(message);
+      failure: (exception) {
+        state = AuthState.error(exception.toString());
         Future.delayed(const Duration(seconds: 3), () {
           if (state is _Error) {
             state = const AuthState.unauthenticated();
@@ -216,8 +221,8 @@ class AuthNotifier extends StateNotifier<AuthState> {
       success: (_) {
         state = const AuthState.unauthenticated();
       },
-      failure: (exception, message) {
-        state = AuthState.error(message);
+      failure: (exception) {
+        state = AuthState.error(exception.toString());
       },
     );
   }

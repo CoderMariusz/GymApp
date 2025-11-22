@@ -5,7 +5,7 @@ import 'package:path_provider/path_provider.dart';
 
 import '../../../auth/domain/entities/user_entity.dart';
 import '../../../auth/domain/exceptions/auth_exceptions.dart';
-import '../../../utils/result.dart';
+import 'package:lifeos/core/error/result.dart';
 import '../../domain/entities/profile_update_request.dart';
 import '../../domain/repositories/profile_repository.dart';
 import '../datasources/supabase_storage_datasource.dart';
@@ -39,7 +39,7 @@ class ProfileRepositoryImpl implements ProfileRepository {
 
         // If only email is being updated, return early
         if (request.name == null && request.avatarUrl == null) {
-          return Success(userModel.toEntity());
+          return Result.success(userModel.toEntity());
         }
       }
 
@@ -50,11 +50,11 @@ class ProfileRepositoryImpl implements ProfileRepository {
         avatarUrl: request.avatarUrl,
       );
 
-      return Success(userModel.toEntity());
+      return Result.success(userModel.toEntity());
     } on AuthException catch (e) {
-      return Failure(e, e.message);
+      return Result.failure(e);
     } catch (e) {
-      return Failure(
+      return Result.failure(
         UnknownAuthException(e.toString()),
         'Failed to update profile',
       );
@@ -80,11 +80,11 @@ class ProfileRepositoryImpl implements ProfileRepository {
         await compressedFile.delete();
       }
 
-      return Success(publicUrl);
+      return Result.success(publicUrl);
     } on AuthException catch (e) {
-      return Failure(e, e.message);
+      return Result.failure(e);
     } catch (e) {
-      return Failure(
+      return Result.failure(
         UnknownAuthException(e.toString()),
         'Failed to upload avatar',
       );
@@ -102,11 +102,11 @@ class ProfileRepositoryImpl implements ProfileRepository {
         newPassword: newPassword,
       );
 
-      return const Success(null);
+      return const Result.success(null);
     } on AuthException catch (e) {
-      return Failure(e, e.message);
+      return Result.failure(e);
     } catch (e) {
-      return Failure(
+      return Result.failure(
         UnknownAuthException(e.toString()),
         'Failed to change password',
       );
@@ -120,11 +120,11 @@ class ProfileRepositoryImpl implements ProfileRepository {
 
       await _storageDataSource.deleteAvatar(userId);
 
-      return const Success(null);
+      return const Result.success(null);
     } on AuthException catch (e) {
-      return Failure(e, e.message);
+      return Result.failure(e);
     } catch (e) {
-      return Failure(
+      return Result.failure(
         UnknownAuthException(e.toString()),
         'Failed to delete avatar',
       );

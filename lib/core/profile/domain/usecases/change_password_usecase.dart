@@ -1,6 +1,6 @@
 import '../../../auth/domain/exceptions/auth_exceptions.dart';
 import '../../../auth/domain/validators/password_validator.dart';
-import '../../../utils/result.dart';
+import 'package:lifeos/core/error/result.dart';
 import '../repositories/profile_repository.dart';
 
 /// Change password use case
@@ -20,7 +20,7 @@ class ChangePasswordUseCase {
     try {
       // Validate current password is not empty
       if (currentPassword.isEmpty) {
-        return const Failure(
+        return const Result.failure(
           InvalidCredentialsException(),
           'Current password is required',
         );
@@ -29,7 +29,7 @@ class ChangePasswordUseCase {
       // Validate new password
       final validation = PasswordValidator.validate(newPassword);
       if (!validation.isValid) {
-        return Failure(
+        return Result.failure(
           const WeakPasswordException(),
           validation.errors.join('\n'),
         );
@@ -37,7 +37,7 @@ class ChangePasswordUseCase {
 
       // Check passwords are different
       if (currentPassword == newPassword) {
-        return const Failure(
+        return const Result.failure(
           WeakPasswordException(),
           'New password must be different from current password',
         );
@@ -49,9 +49,9 @@ class ChangePasswordUseCase {
         newPassword: newPassword,
       );
     } on AuthException catch (e) {
-      return Failure(e, e.message);
+      return Result.failure(e);
     } catch (e) {
-      return Failure(
+      return Result.failure(
         UnknownAuthException(e.toString()),
         'Failed to change password',
       );

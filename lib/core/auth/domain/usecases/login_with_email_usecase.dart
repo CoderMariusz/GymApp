@@ -1,4 +1,4 @@
-import '../../../utils/result.dart';
+import 'package:lifeos/core/error/result.dart';
 import '../entities/auth_session_entity.dart';
 import '../exceptions/auth_exceptions.dart';
 import '../repositories/auth_repository.dart';
@@ -25,7 +25,7 @@ class LoginWithEmailUseCase {
     try {
       // Validate email format
       if (!EmailValidator.isValid(email)) {
-        return const Failure(
+        return const Result.failure(
           InvalidEmailException(),
           'Please enter a valid email address',
         );
@@ -47,7 +47,7 @@ class LoginWithEmailUseCase {
 
       // Check if email is verified
       if (!session.user.emailVerified) {
-        return const Failure(
+        return const Result.failure(
           EmailNotVerifiedException(),
           'Please verify your email before logging in',
         );
@@ -61,11 +61,11 @@ class LoginWithEmailUseCase {
         await _sessionRepository.saveRememberMePreference(false);
       }
 
-      return Success(session);
+      return Result.success(session);
     } on AuthException catch (e) {
-      return Failure(e, e.message);
+      return Result.failure(e);
     } catch (e) {
-      return Failure(
+      return Result.failure(
         UnknownAuthException(e.toString()),
         'An unexpected error occurred during login',
       );

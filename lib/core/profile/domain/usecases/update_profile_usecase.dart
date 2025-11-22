@@ -1,7 +1,7 @@
 import '../../../auth/domain/entities/user_entity.dart';
 import '../../../auth/domain/exceptions/auth_exceptions.dart';
 import '../../../auth/domain/usecases/login_with_email_usecase.dart';
-import '../../../utils/result.dart';
+import 'package:lifeos/core/error/result.dart';
 import '../entities/profile_update_request.dart';
 import '../repositories/profile_repository.dart';
 
@@ -19,7 +19,7 @@ class UpdateProfileUseCase {
     try {
       // Validate email if being updated
       if (request.email != null && !EmailValidator.isValid(request.email!)) {
-        return const Failure(
+        return const Result.failure(
           InvalidEmailException(),
           'Please enter a valid email address',
         );
@@ -27,7 +27,7 @@ class UpdateProfileUseCase {
 
       // Check if request has any changes
       if (!request.hasChanges) {
-        return const Failure(
+        return const Result.failure(
           UnknownAuthException('No changes to save'),
           'No changes to save',
         );
@@ -36,9 +36,9 @@ class UpdateProfileUseCase {
       // Update profile via repository
       return await _repository.updateProfile(request);
     } on AuthException catch (e) {
-      return Failure(e, e.message);
+      return Result.failure(e);
     } catch (e) {
-      return Failure(
+      return Result.failure(
         UnknownAuthException(e.toString()),
         'Failed to update profile',
       );

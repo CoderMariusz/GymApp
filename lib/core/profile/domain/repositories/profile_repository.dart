@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import '../../../utils/result.dart';
+import 'package:lifeos/core/error/result.dart';
 import '../../../auth/domain/entities/user_entity.dart';
 import '../entities/profile_update_request.dart';
 

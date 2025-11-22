@@ -48,12 +48,12 @@ dependencies:
   audio_session: ^0.1.16
 
   # Notifications
-  firebase_messaging: ^14.7.6
+  # firebase_messaging: ^14.7.6  # Disabled for web compatibility
   flutter_local_notifications: ^16.3.0
 
   # Utilities
   intl: ^0.19.0
-  freezed_annotation: ^2.4.1
+  freezed_annotation: ^3.0.0
   json_annotation: ^4.8.1
   uuid: ^4.2.2
   share_plus: ^7.2.1
@@ -73,7 +73,7 @@ dependencies:
   in_app_purchase: ^3.1.11
 
   # Firebase Core
-  firebase_core: ^2.24.2
+  # firebase_core: ^2.24.2  # Disabled for web compatibility
 
   # Networking
   dio: ^5.4.0
@@ -83,7 +83,7 @@ dependencies:
   posthog_flutter: ^4.0.0
 
   # Payment
-  flutter_stripe: ^10.0.0
+  flutter_stripe: ^12.1.1
 
 dev_dependencies:
   flutter_test:
@@ -93,7 +93,7 @@ dev_dependencies:
   # Code Generation
   build_runner: ^2.4.7
   riverpod_generator: ^3.0.0
-  freezed: ^2.4.6
+  freezed: ^3.0.0
   json_serializable: ^6.7.1
   drift_dev: ^2.14.0
 

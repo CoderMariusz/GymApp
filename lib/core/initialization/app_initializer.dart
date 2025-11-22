@@ -1,5 +1,6 @@
+import 'package:lifeos/core/error/result.dart';
+
 import '../auth/domain/usecases/check_auth_status_usecase.dart';
-import '../utils/result.dart';
 
 /// Application initializer
 /// Handles app startup logic including auth status check
@@ -16,13 +17,11 @@ class AppInitializer {
       // Check if user has valid session
       final authStatusResult = await _checkAuthStatusUseCase.call();
 
-      // If check failed or no session, go to login
-      if (authStatusResult is Failure || authStatusResult is Success && (authStatusResult as Success).data == null) {
-        return '/login';
-      }
-
-      // Session exists and is valid, go to home
-      return '/home';
+      // Use pattern matching with freezed Result
+      return authStatusResult.when(
+        success: (session) => session != null ? '/home' : '/login',
+        failure: (_) => '/login',
+      );
     } catch (e) {
       // On error, default to login screen
       return '/login';
@@ -34,7 +33,10 @@ class AppInitializer {
   Future<bool> isAuthenticated() async {
     try {
       final authStatusResult = await _checkAuthStatusUseCase.call();
-      return authStatusResult is Success && (authStatusResult as Success).data != null;
+      return authStatusResult.when(
+        success: (session) => session != null,
+        failure: (_) => false,
+      );
     } catch (e) {
       return false;
     }
