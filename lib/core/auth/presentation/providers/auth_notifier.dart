@@ -19,23 +19,16 @@ class AuthNotifier extends Notifier<AuthState> {
   late final LoginWithAppleUseCase _loginWithAppleUseCase;
   late final LogoutUseCase _logoutUseCase;
 
-  /// Constructor to inject dependencies (called by provider)
-  AuthNotifier({
-    required AuthRepository repository,
-    required RegisterUserUseCase registerUseCase,
-    required LoginWithEmailUseCase loginWithEmailUseCase,
-    required LoginWithGoogleUseCase loginWithGoogleUseCase,
-    required LoginWithAppleUseCase loginWithAppleUseCase,
-    required LogoutUseCase logoutUseCase,
-  })  : _repository = repository,
-        _registerUseCase = registerUseCase,
-        _loginWithEmailUseCase = loginWithEmailUseCase,
-        _loginWithGoogleUseCase = loginWithGoogleUseCase,
-        _loginWithAppleUseCase = loginWithAppleUseCase,
-        _logoutUseCase = logoutUseCase;
-
   @override
   AuthState build() {
+    // Get dependencies from ref
+    _repository = ref.watch(authRepositoryProvider);
+    _registerUseCase = ref.watch(registerUserUseCaseProvider);
+    _loginWithEmailUseCase = ref.watch(loginWithEmailUseCaseProvider);
+    _loginWithGoogleUseCase = ref.watch(loginWithGoogleUseCaseProvider);
+    _loginWithAppleUseCase = ref.watch(loginWithAppleUseCaseProvider);
+    _logoutUseCase = ref.watch(logoutUseCaseProvider);
+
     // Initialize will be called separately since build must be synchronous
     _initialize();
     return const AuthState.initial();
@@ -90,7 +83,7 @@ class AuthNotifier extends Notifier<AuthState> {
         state = AuthState.error(exception.toString());
         // Reset to unauthenticated after showing error
         Future.delayed(const Duration(seconds: 3), () {
-          if (state is _Error) {
+          if (state.maybeWhen(error: (_) => true, orElse: () => false)) {
             state = const AuthState.unauthenticated();
           }
         });
@@ -111,7 +104,7 @@ class AuthNotifier extends Notifier<AuthState> {
       failure: (exception) {
         state = AuthState.error(exception.toString());
         Future.delayed(const Duration(seconds: 3), () {
-          if (state is _Error) {
+          if (state.maybeWhen(error: (_) => true, orElse: () => false)) {
             state = const AuthState.unauthenticated();
           }
         });
@@ -132,7 +125,7 @@ class AuthNotifier extends Notifier<AuthState> {
       failure: (exception) {
         state = AuthState.error(exception.toString());
         Future.delayed(const Duration(seconds: 3), () {
-          if (state is _Error) {
+          if (state.maybeWhen(error: (_) => true, orElse: () => false)) {
             state = const AuthState.unauthenticated();
           }
         });
@@ -161,7 +154,7 @@ class AuthNotifier extends Notifier<AuthState> {
       failure: (exception) {
         state = AuthState.error(exception.toString());
         Future.delayed(const Duration(seconds: 3), () {
-          if (state is _Error) {
+          if (state.maybeWhen(error: (_) => true, orElse: () => false)) {
             state = const AuthState.unauthenticated();
           }
         });
@@ -182,7 +175,7 @@ class AuthNotifier extends Notifier<AuthState> {
       failure: (exception) {
         state = AuthState.error(exception.toString());
         Future.delayed(const Duration(seconds: 3), () {
-          if (state is _Error) {
+          if (state.maybeWhen(error: (_) => true, orElse: () => false)) {
             state = const AuthState.unauthenticated();
           }
         });
@@ -203,7 +196,7 @@ class AuthNotifier extends Notifier<AuthState> {
       failure: (exception) {
         state = AuthState.error(exception.toString());
         Future.delayed(const Duration(seconds: 3), () {
-          if (state is _Error) {
+          if (state.maybeWhen(error: (_) => true, orElse: () => false)) {
             state = const AuthState.unauthenticated();
           }
         });
@@ -229,7 +222,7 @@ class AuthNotifier extends Notifier<AuthState> {
 
   /// Clear error state
   void clearError() {
-    if (state is _Error) {
+    if (state.maybeWhen(error: (_) => true, orElse: () => false)) {
       state = const AuthState.unauthenticated();
     }
   }

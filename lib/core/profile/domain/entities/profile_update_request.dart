@@ -11,9 +11,10 @@ class ProfileUpdateRequest with _$ProfileUpdateRequest {
     String? email,
     String? avatarUrl,
   }) = _ProfileUpdateRequest;
+}
 
-  const ProfileUpdateRequest._();
-
+/// Extension for ProfileUpdateRequest helper methods
+extension ProfileUpdateRequestX on ProfileUpdateRequest {
   /// Check if request has any changes
   bool get hasChanges => name != null || email != null || avatarUrl != null;
 }

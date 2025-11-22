@@ -25,9 +25,8 @@ class LoginWithAppleUseCase {
       // Check if platform is iOS (Apple Sign-In is iOS only)
       if (!Platform.isIOS) {
         return const Result.failure(
-          OAuthFailedException(),
-          'Apple Sign-In is only available on iOS devices',
-        );
+        OAuthFailedException(),
+      );
       }
 
       // Login through auth repository (handles OAuth flow)
@@ -46,11 +45,11 @@ class LoginWithAppleUseCase {
 
       return Result.success(session);
     } on AuthException catch (e) {
-      return Result.failure(e);
+      return Result.failure(
+        e);
     } catch (e) {
       return Result.failure(
         UnknownAuthException(e.toString()),
-        'An unexpected error occurred during Apple sign-in',
       );
     }
   }

@@ -27,7 +27,6 @@ class SessionRepositoryImpl implements SessionRepository {
     } catch (e) {
       return Result.failure(
         Exception('Failed to save session'),
-        'Failed to save session: $e',
       );
     }
   }
@@ -52,7 +51,6 @@ class SessionRepositoryImpl implements SessionRepository {
     } catch (e) {
       return Result.failure(
         Exception('Failed to load session'),
-        'Failed to load session: $e',
       );
     }
   }
@@ -65,7 +63,6 @@ class SessionRepositoryImpl implements SessionRepository {
     } catch (e) {
       return Result.failure(
         Exception('Failed to delete session'),
-        'Failed to delete session: $e',
       );
     }
   }
@@ -78,7 +75,6 @@ class SessionRepositoryImpl implements SessionRepository {
     } catch (e) {
       return Result.failure(
         Exception('Failed to save preference'),
-        'Failed to save remember me preference: $e',
       );
     }
   }
@@ -102,7 +98,6 @@ class SessionRepositoryImpl implements SessionRepository {
     } catch (e) {
       return Result.failure(
         Exception('Failed to clear all data'),
-        'Failed to clear all data: $e',
       );
     }
   }

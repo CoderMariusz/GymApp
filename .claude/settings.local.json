@@ -25,7 +25,10 @@
       "Bash(done)",
       "Bash(for file in lib/core/auth/domain/usecases/*.dart lib/core/profile/domain/usecases/*.dart)",
       "Bash([ -f \"$file\" ])",
-      "Bash(perl:*)"
+      "Bash(perl:*)",
+      "Bash(flutter devices:*)",
+      "Bash(python fix_result_calls.py:*)",
+      "Bash(mkdir:*)"
     ],
     "deny": [],
     "ask": []

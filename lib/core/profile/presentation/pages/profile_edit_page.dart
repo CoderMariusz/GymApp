@@ -151,11 +151,11 @@ class _ProfileEditPageState extends ConsumerState<ProfileEditPage> {
           success: (url) {
             avatarUrl = url;
           },
-          failure: (exception, message) {
+          failure: (exception) {
             if (!mounted) return;
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text('Avatar upload failed: $message'),
+                content: Text('Avatar upload failed: ${exception.toString()}'),
                 backgroundColor: Colors.red,
                 behavior: SnackBarBehavior.floating,
               ),
@@ -222,10 +222,10 @@ class _ProfileEditPageState extends ConsumerState<ProfileEditPage> {
             // Navigate back
             context.pop();
           },
-          failure: (exception, message) {
+          failure: (exception) {
             setState(() {
               _isLoading = false;
-              _emailError = message;
+              _emailError = exception.toString();
             });
           },
         );
@@ -338,10 +338,10 @@ class _ProfileEditPageState extends ConsumerState<ProfileEditPage> {
                     ),
                   );
                 },
-                failure: (exception, message) {
+                failure: (exception) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text(message),
+                      content: Text(exception.toString()),
                       backgroundColor: Colors.red,
                       behavior: SnackBarBehavior.floating,
                     ),

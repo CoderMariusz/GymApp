@@ -20,27 +20,25 @@ class UpdateProfileUseCase {
       // Validate email if being updated
       if (request.email != null && !EmailValidator.isValid(request.email!)) {
         return const Result.failure(
-          InvalidEmailException(),
-          'Please enter a valid email address',
-        );
+        InvalidEmailException(),
+      );
       }
 
       // Check if request has any changes
       if (!request.hasChanges) {
         return const Result.failure(
-          UnknownAuthException('No changes to save'),
-          'No changes to save',
-        );
+        UnknownAuthException('No changes to save'),
+      );
       }
 
       // Update profile via repository
       return await _repository.updateProfile(request);
     } on AuthException catch (e) {
-      return Result.failure(e);
+      return Result.failure(
+        e);
     } catch (e) {
       return Result.failure(
         UnknownAuthException(e.toString()),
-        'Failed to update profile',
       );
     }
   }

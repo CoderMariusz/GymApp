@@ -22,16 +22,14 @@ class RegisterUserUseCase {
       if (!EmailValidator.isValid(email)) {
         return const Result.failure(
           InvalidEmailException(),
-          'Please enter a valid email address',
         );
       }
 
       // Validate password
       final passwordValidation = PasswordValidator.validate(password);
       if (!passwordValidation.isValid) {
-        return Result.failure(
-          const WeakPasswordException(),
-          passwordValidation.errors.join('\n'),
+        return const Result.failure(
+          WeakPasswordException(),
         );
       }
 

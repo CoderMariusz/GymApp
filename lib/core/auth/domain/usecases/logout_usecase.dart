@@ -27,11 +27,11 @@ class LogoutUseCase {
       // Return result from auth repository
       return signOutResult;
     } on AuthException catch (e) {
-      return Result.failure(e);
+      return Result.failure(
+        e);
     } catch (e) {
       return Result.failure(
         UnknownAuthException(e.toString()),
-        'Failed to log out',
       );
     }
   }

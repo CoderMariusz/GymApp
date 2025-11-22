@@ -26,9 +26,8 @@ class LoginWithEmailUseCase {
       // Validate email format
       if (!EmailValidator.isValid(email)) {
         return const Result.failure(
-          InvalidEmailException(),
-          'Please enter a valid email address',
-        );
+        InvalidEmailException(),
+      );
       }
 
       // Login through auth repository
@@ -48,9 +47,8 @@ class LoginWithEmailUseCase {
       // Check if email is verified
       if (!session.user.emailVerified) {
         return const Result.failure(
-          EmailNotVerifiedException(),
-          'Please verify your email before logging in',
-        );
+        EmailNotVerifiedException(),
+      );
       }
 
       // Save session if remember me is true
@@ -63,11 +61,11 @@ class LoginWithEmailUseCase {
 
       return Result.success(session);
     } on AuthException catch (e) {
-      return Result.failure(e);
+      return Result.failure(
+        e);
     } catch (e) {
       return Result.failure(
         UnknownAuthException(e.toString()),
-        'An unexpected error occurred during login',
       );
     }
   }

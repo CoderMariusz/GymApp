@@ -35,11 +35,11 @@ class LoginWithGoogleUseCase {
 
       return Result.success(session);
     } on AuthException catch (e) {
-      return Result.failure(e);
+      return Result.failure(
+        e);
     } catch (e) {
       return Result.failure(
         UnknownAuthException(e.toString()),
-        'An unexpected error occurred during Google sign-in',
       );
     }
   }

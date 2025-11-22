@@ -52,11 +52,11 @@ class ProfileRepositoryImpl implements ProfileRepository {
 
       return Result.success(userModel.toEntity());
     } on AuthException catch (e) {
-      return Result.failure(e);
+      return Result.failure(
+        e);
     } catch (e) {
       return Result.failure(
         UnknownAuthException(e.toString()),
-        'Failed to update profile',
       );
     }
   }
@@ -82,11 +82,11 @@ class ProfileRepositoryImpl implements ProfileRepository {
 
       return Result.success(publicUrl);
     } on AuthException catch (e) {
-      return Result.failure(e);
+      return Result.failure(
+        e);
     } catch (e) {
       return Result.failure(
         UnknownAuthException(e.toString()),
-        'Failed to upload avatar',
       );
     }
   }
@@ -104,11 +104,11 @@ class ProfileRepositoryImpl implements ProfileRepository {
 
       return const Result.success(null);
     } on AuthException catch (e) {
-      return Result.failure(e);
+      return Result.failure(
+        e);
     } catch (e) {
       return Result.failure(
         UnknownAuthException(e.toString()),
-        'Failed to change password',
       );
     }
   }
@@ -122,11 +122,11 @@ class ProfileRepositoryImpl implements ProfileRepository {
 
       return const Result.success(null);
     } on AuthException catch (e) {
-      return Result.failure(e);
+      return Result.failure(
+        e);
     } catch (e) {
       return Result.failure(
         UnknownAuthException(e.toString()),
-        'Failed to delete avatar',
       );
     }
   }

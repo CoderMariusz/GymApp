@@ -17,19 +17,18 @@ class RequestPasswordResetUseCase {
       // Validate email format
       if (!EmailValidator.isValid(email)) {
         return const Result.failure(
-          InvalidEmailException(),
-          'Please enter a valid email address',
-        );
+        InvalidEmailException(),
+      );
       }
 
       // Request password reset from repository
       return await _repository.requestPasswordReset(email);
     } on AuthException catch (e) {
-      return Result.failure(e);
+      return Result.failure(
+        e);
     } catch (e) {
       return Result.failure(
         UnknownAuthException(e.toString()),
-        'Failed to send password reset email',
       );
     }
   }

@@ -88,10 +88,10 @@ class _ResetPasswordPageState extends ConsumerState<ResetPasswordPage> {
           // Navigate to home (user is already authenticated via reset token)
           context.go(AppRoutes.home);
         },
-        failure: (exception, message) {
+        failure: (exception) {
           setState(() {
             _isLoading = false;
-            _passwordError = message;
+            _passwordError = exception.toString();
           });
         },
       );

@@ -108,7 +108,6 @@ class AuthRepositoryImpl implements AuthRepository {
     } catch (e) {
       return Result.failure(
         UnknownAuthException(e.toString()),
-        'Failed to get current session',
       );
     }
   }
@@ -140,7 +139,6 @@ class AuthRepositoryImpl implements AuthRepository {
     } catch (e) {
       return Result.failure(
         UnknownAuthException(e.toString()),
-        'Failed to get current user',
       );
     }
   }
@@ -167,7 +165,6 @@ class AuthRepositoryImpl implements AuthRepository {
     } catch (e) {
       return Result.failure(
         UnknownAuthException(e.toString()),
-        'Failed to send password reset email',
       );
     }
   }
@@ -182,7 +179,6 @@ class AuthRepositoryImpl implements AuthRepository {
     } catch (e) {
       return Result.failure(
         UnknownAuthException(e.toString()),
-        'Failed to update password',
       );
     }
   }

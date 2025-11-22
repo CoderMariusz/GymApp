@@ -119,27 +119,5 @@ final appInitializerProvider = Provider<AppInitializer>((ref) {
   return AppInitializer(checkAuthStatusUseCase);
 });
 
-/// Auth notifier provider
-final authNotifierProvider = Provider<AuthNotifier>((ref) {
-  final repository = ref.watch(authRepositoryProvider);
-  final registerUseCase = ref.watch(registerUserUseCaseProvider);
-  final loginWithEmailUseCase = ref.watch(loginWithEmailUseCaseProvider);
-  final loginWithGoogleUseCase = ref.watch(loginWithGoogleUseCaseProvider);
-  final loginWithAppleUseCase = ref.watch(loginWithAppleUseCaseProvider);
-  final logoutUseCase = ref.watch(logoutUseCaseProvider);
-
-  return AuthNotifier(
-    repository: repository,
-    registerUseCase: registerUseCase,
-    loginWithEmailUseCase: loginWithEmailUseCase,
-    loginWithGoogleUseCase: loginWithGoogleUseCase,
-    loginWithAppleUseCase: loginWithAppleUseCase,
-    logoutUseCase: logoutUseCase,
-  );
-});
-
-/// Auth state provider
-final authStateProvider = StateProvider<AuthState>((ref) {
-  final notifier = ref.watch(authNotifierProvider);
-  return notifier.build();
-});
+/// Auth state provider (combines notifier and state)
+final authStateProvider = NotifierProvider<AuthNotifier, AuthState>(AuthNotifier.new);

@@ -62,10 +62,10 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
             _isLoading = false;
           });
         },
-        failure: (exception, message) {
+        failure: (exception) {
           setState(() {
             _isLoading = false;
-            _emailError = message;
+            _emailError = exception.toString();
           });
         },
       );

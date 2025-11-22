@@ -22,17 +22,15 @@ class UploadAvatarUseCase {
       // Check if file exists
       if (!imageFile.existsSync()) {
         return const Result.failure(
-          UnknownAuthException('File not found'),
-          'Selected image file not found',
-        );
+        UnknownAuthException('File not found'),
+      );
       }
 
       // Validate file size
       final fileSize = imageFile.lengthSync();
       if (fileSize > maxFileSizeBytes) {
         return Result.failure(
-          const UnknownAuthException('File too large'),
-          'Image must be under ${(maxFileSizeBytes / (1024 * 1024)).toStringAsFixed(0)}MB',
+          UnknownAuthException('File too large: ${(fileSize / (1024 * 1024)).toStringAsFixed(0)}MB'),
         );
       }
 
@@ -43,7 +41,6 @@ class UploadAvatarUseCase {
     } catch (e) {
       return Result.failure(
         UnknownAuthException(e.toString()),
-        'Failed to upload avatar',
       );
     }
   }
