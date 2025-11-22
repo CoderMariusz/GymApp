@@ -1,18 +1,19 @@
-name: lifeos_app
-description: LifeOS - Your Life Operating System
+name: lifeos
+description: Life Operating System - AI-powered modular life coaching
 publish_to: 'none'
 version: 1.0.0+1
 
 environment:
   sdk: '>=3.10.0 <4.0.0'
+  flutter: '>=3.38.0'
 
 dependencies:
   flutter:
     sdk: flutter
 
   # State Management
-  flutter_riverpod: ^2.4.9
-  riverpod_annotation: ^2.3.3
+  flutter_riverpod: ^3.0.0
+  riverpod_annotation: ^3.0.0
 
   # Supabase & Backend
   supabase_flutter: ^2.3.0
@@ -21,6 +22,8 @@ dependencies:
   drift: ^2.14.0
   drift_flutter: ^0.1.0
   sqlite3_flutter_libs: ^0.5.18
+  path_provider: ^2.1.1
+  path: ^1.8.0
 
   # Routing & Navigation
   go_router: ^13.0.0
@@ -35,14 +38,17 @@ dependencies:
   image: ^4.1.3
   image_picker: ^1.0.5
   cached_network_image: ^3.3.0
+  flutter_cache_manager: ^3.3.0
 
   # Audio (Meditations)
   just_audio: ^0.9.36
+  just_audio_background: ^0.0.1-beta.10
+  audio_service: ^0.18.12
   audio_session: ^0.1.16
 
   # Notifications
   firebase_messaging: ^14.7.6
-  flutter_local_notifications: ^16.2.0
+  flutter_local_notifications: ^16.3.0
 
   # Utilities
   intl: ^0.19.0
@@ -51,7 +57,6 @@ dependencies:
   uuid: ^4.2.2
   share_plus: ^7.2.1
   url_launcher: ^6.2.2
-  path_provider: ^2.1.1
 
   # Encryption (for E2EE journals)
   encrypt: ^5.0.3
@@ -65,6 +70,15 @@ dependencies:
   # Firebase Core
   firebase_core: ^2.24.2
 
+  # Networking
+  dio: ^5.4.0
+
+  # Analytics
+  posthog_flutter: ^4.0.0
+
+  # Payment
+  flutter_stripe: ^10.0.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -72,19 +86,19 @@ dev_dependencies:
 
   # Code Generation
   build_runner: ^2.4.7
-  riverpod_generator: ^2.3.9
+  riverpod_generator: ^3.0.0
   freezed: ^2.4.6
   json_serializable: ^6.7.1
   drift_dev: ^2.14.0
 
   # Testing
   mocktail: ^1.0.2
+  mockito: ^5.4.0
   integration_test:
     sdk: flutter
 
 flutter:
   uses-material-design: true
-
   assets:
     - assets/images/
     - assets/audio/

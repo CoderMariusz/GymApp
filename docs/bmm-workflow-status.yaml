@@ -8,7 +8,7 @@
 # MVP: 3 Modules (Life Coach + Fitness Coach + Mind & Emotion)
 
 generated: "2025-01-16"
-last_updated: "2025-11-17"  # Sprint planning complete - all 66 stories ready for dev
+last_updated: "2025-11-17"  # Sprint 0 completed (2025-01-18), Sprint planning complete - all 66 stories ready for dev
 project: "LifeOS"
 project_type: "software"
 selected_track: "enterprise"
@@ -102,6 +102,9 @@ workflow_status: |
   create-devops-strategy: docs/ecosystem/devops-strategy.md  # ✅ COMPLETE (CI/CD, environments, monitoring)
   validate-architecture: docs/ecosystem/architecture-validation-report.md  # ✅ COMPLETE (APPROVED with minor recommendations)
   solutioning-gate-check: recommended  # agent: architect (NEXT STEP)
+
+  # Phase 2.5: Sprint 0 (✅ COMPLETE - 2025-01-18)
+  sprint-0-database: docs/ecosystem/sprint-0-database-schema-completion.md  # ✅ COMPLETE (7 tables, 5 system templates, 2 Edge Functions, Drift tables)
 
   # Phase 3: Implementation Planning (✅ COMPLETE - 2025-11-17)
   sprint-planning: docs/sprint-artifacts/  # ✅ COMPLETE (9 epics, 66 stories, all ready-for-dev)
@@ -293,23 +296,36 @@ next_steps:
     - step: 2
       action: "Complete Sprint 0: Database Schema Completion"
       owner: "Developer"
-      status: "REQUIRED BEFORE SPRINT 1"
-      priority: "CRITICAL"
+      status: "completed - 2025-01-18"
+      priority: "DONE"
       details: |
-        📋 See: docs/ecosystem/sprint-0-database-schema-completion.md
+        ✅ COMPLETE: All Sprint 0 tasks finished
 
-        MUST complete before Epic 1:
-        - Add 6 missing database tables (workout_templates, mental_health_screenings, subscriptions, streaks, ai_conversations, mood_logs)
-        - Create 2 Edge Functions (mental health screening, workout templates)
-        - Add Drift mirror tables for offline support
+        Completed:
+        - 7 PostgreSQL tables created (user_daily_metrics + 6 Sprint 0 tables)
+        - 5 system workout templates inserted (Push, Pull, Leg, Full Body, HIIT)
+        - 2 Edge Functions created (process-mental-health-screening, generate-workout-plan-from-template)
+        - Drift mirror tables defined for offline-first support
+        - RLS policies configured for all tables
 
-        Effort: 18-21 hours (1-2 weeks)
-        Impact: Blocks 38/123 FRs (31%)
+        Result: 100% database schema ready
+        Impact: Unblocked 38/123 FRs (31%)
 
     - step: 3
-      action: "Fix minor architecture issues"
-      owner: "Developer"
-      status: "recommended"
+      action: "Begin Sprint Planning"
+      owner: "BMAD SM"
+      status: "READY TO START - NEXT STEP"
+      priority: "HIGH"
+      details: |
+        Sprint 0 complete! Now ready for:
+        - Run sprint-planning workflow
+        - Break down Epic 1 (Core Platform) into Sprint 1
+        - Estimate story points
+        - Allocate test development effort
+
+        Command: Load SM agent and run *sprint-planning
+
+    - step: 4
       action: "Set up development environment"
       owner: "Development Team"
       status: "ready"
@@ -342,16 +358,6 @@ next_steps:
         - Interface definitions
         - Test scenarios (75-85% coverage target)
 
-    - step: 4
-      action: "Begin Sprint Planning"
-      owner: "BMAD SM"
-      status: "ready after Sprint 0"
-      details: |
-        After Sprint 0 complete:
-        - Run sprint-planning workflow
-        - Break down Epic 1 (Core Platform) into Sprint 1
-        - Estimate story points
-        - Allocate test development effort
     - step: 3
       action: "Follow BMAD dev workflow"
       owner: "Development Team"
@@ -367,7 +373,6 @@ next_steps:
         7. Code review by SM
         8. Move to 'done' status
         9. Update sprint-status.yaml
-
   future_phases:
     - phase: "Phase 1: Planning"
       estimated_start: "After Product Brief approved"
