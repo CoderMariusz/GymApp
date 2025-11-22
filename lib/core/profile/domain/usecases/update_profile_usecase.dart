@@ -1,6 +1,6 @@
 import '../../../auth/domain/entities/user_entity.dart';
 import '../../../auth/domain/exceptions/auth_exceptions.dart';
-import '../../../auth/domain/validators/password_validator.dart';
+import '../../../auth/domain/usecases/login_with_email_usecase.dart';
 import '../../../utils/result.dart';
 import '../entities/profile_update_request.dart';
 import '../repositories/profile_repository.dart';
