@@ -49,8 +49,12 @@ abstract class AuthRepository {
   /// Sign out
   Future<Result<void>> signOut();
 
-  /// Reset password
-  Future<Result<void>> resetPassword(String email);
+  /// Request password reset - sends email with reset link
+  Future<Result<void>> requestPasswordReset(String email);
+
+  /// Update password - called after user clicks reset link
+  /// User must be authenticated via reset token
+  Future<Result<void>> updatePassword(String newPassword);
 
   /// Stream of authentication state changes
   Stream<UserEntity?> get authStateChanges;

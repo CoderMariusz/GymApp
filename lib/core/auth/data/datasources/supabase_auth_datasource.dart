@@ -386,6 +386,36 @@ class SupabaseAuthDataSource {
     }
   }
 
+  /// Request password reset
+  /// Sends email with reset link that expires in 1 hour
+  Future<void> requestPasswordReset(String email) async {
+    try {
+      await _client.auth.resetPasswordForEmail(
+        email,
+        redirectTo: 'lifeos://reset-password',
+      );
+    } on AuthException catch (e) {
+      throw _handleAuthException(e);
+    } catch (e) {
+      throw UnknownAuthException(e.toString());
+    }
+  }
+
+  /// Update password
+  /// User must be authenticated via reset token
+  /// Old password is automatically invalidated
+  Future<void> updatePassword(String newPassword) async {
+    try {
+      await _client.auth.updateUser(
+        UserAttributes(password: newPassword),
+      );
+    } on AuthException catch (e) {
+      throw _handleAuthException(e);
+    } catch (e) {
+      throw UnknownAuthException(e.toString());
+    }
+  }
+
   /// Handle Supabase auth exceptions
   Exception _handleAuthException(AuthException e) {
     final message = e.message.toLowerCase();

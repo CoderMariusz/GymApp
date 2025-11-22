@@ -15,6 +15,8 @@ import '../../domain/usecases/login_with_email_usecase.dart';
 import '../../domain/usecases/login_with_google_usecase.dart';
 import '../../domain/usecases/logout_usecase.dart';
 import '../../domain/usecases/register_user_usecase.dart';
+import '../../domain/usecases/request_password_reset_usecase.dart';
+import '../../domain/usecases/update_password_usecase.dart';
 import 'auth_notifier.dart';
 import 'auth_state.dart';
 
@@ -97,6 +99,18 @@ final logoutUseCaseProvider = Provider<LogoutUseCase>((ref) {
   final authRepository = ref.watch(authRepositoryProvider);
   final sessionRepository = ref.watch(sessionRepositoryProvider);
   return LogoutUseCase(authRepository, sessionRepository);
+});
+
+/// Request password reset use case provider
+final requestPasswordResetUseCaseProvider = Provider<RequestPasswordResetUseCase>((ref) {
+  final authRepository = ref.watch(authRepositoryProvider);
+  return RequestPasswordResetUseCase(authRepository);
+});
+
+/// Update password use case provider
+final updatePasswordUseCaseProvider = Provider<UpdatePasswordUseCase>((ref) {
+  final authRepository = ref.watch(authRepositoryProvider);
+  return UpdatePasswordUseCase(authRepository);
 });
 
 /// App initializer provider

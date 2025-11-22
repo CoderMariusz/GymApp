@@ -182,9 +182,33 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<Result<void>> resetPassword(String email) async {
-    // Password reset - to be implemented in Story 1.3
-    return const Success(null);
+  Future<Result<void>> requestPasswordReset(String email) async {
+    try {
+      await _dataSource.requestPasswordReset(email);
+      return const Success(null);
+    } on AuthException catch (e) {
+      return Failure(e, e.message);
+    } catch (e) {
+      return Failure(
+        UnknownAuthException(e.toString()),
+        'Failed to send password reset email',
+      );
+    }
+  }
+
+  @override
+  Future<Result<void>> updatePassword(String newPassword) async {
+    try {
+      await _dataSource.updatePassword(newPassword);
+      return const Success(null);
+    } on AuthException catch (e) {
+      return Failure(e, e.message);
+    } catch (e) {
+      return Failure(
+        UnknownAuthException(e.toString()),
+        'Failed to update password',
+      );
+    }
   }
 
   @override
