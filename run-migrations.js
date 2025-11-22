@@ -1,10 +1,23 @@
+require('dotenv').config();
 const { Client } = require('pg');
 const fs = require('fs');
 const path = require('path');
 
 async function runMigrations() {
+  // Load database connection string from environment variables
+  const connectionString = process.env.DATABASE_URL;
+
+  if (!connectionString) {
+    console.error('❌ Error: Missing required environment variable!');
+    console.error('   Required: DATABASE_URL');
+    console.error('   Format: postgresql://postgres:PASSWORD@db.PROJECT_ID.supabase.co:5432/postgres');
+    console.error('   Please create a .env file with this variable.');
+    console.error('   See .env.example for reference.');
+    process.exit(1);
+  }
+
   const client = new Client({
-    connectionString: 'postgresql://postgres:MA2025ma!!!@db.mogaptihdxdfimszomef.supabase.co:5432/postgres',
+    connectionString: connectionString,
     ssl: { rejectUnauthorized: false }
   });
 

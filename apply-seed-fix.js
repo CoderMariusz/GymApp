@@ -1,10 +1,21 @@
 // Apply seed data fix via Supabase REST API
+require('dotenv').config();
 const fs = require('fs');
 const path = require('path');
 const https = require('https');
 
-const SUPABASE_URL = 'https://mogaptihdxdfimszomef.supabase.co';
-const SERVICE_ROLE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1vZ2FwdGloZHhkZmltc3pvbWVmIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2MzM5NTQ2NiwiZXhwIjoyMDc4OTcxNDY2fQ.pQAKLjlmL7gwBJnKXd93hq8COtKY4tkFhHLiuZX8l7U';
+// Load credentials from environment variables
+const SUPABASE_URL = process.env.SUPABASE_URL;
+const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+// Validate required environment variables
+if (!SUPABASE_URL || !SERVICE_ROLE_KEY) {
+  console.error('❌ Error: Missing required environment variables!');
+  console.error('   Required: SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY');
+  console.error('   Please create a .env file with these variables.');
+  console.error('   See .env.example for reference.');
+  process.exit(1);
+}
 
 async function executeSQL(sql) {
   return new Promise((resolve, reject) => {

@@ -34,6 +34,59 @@ Before applying these migrations:
 ✅ **Supabase project created** (via Supabase Dashboard)
 ✅ **Database accessible** (either via CLI or Dashboard)
 ✅ **PostgreSQL version 15+** (Supabase default)
+✅ **Environment variables configured** (see Setup below)
+
+---
+
+## Setup: Environment Variables
+
+**⚠️ SECURITY:** Never commit credentials to version control!
+
+### Step 1: Create .env file
+
+Copy the example file and fill in your credentials:
+
+```bash
+cp .env.example .env
+```
+
+### Step 2: Get your Supabase credentials
+
+1. **Supabase URL:**
+   - Go to Supabase Dashboard → Settings → API
+   - Copy **Project URL** (e.g., `https://your-project-id.supabase.co`)
+
+2. **Service Role Key:**
+   - Same page → **service_role** key (⚠️ Keep this secret!)
+   - This is used by `apply-seed-fix.js` for admin operations
+
+3. **Database Password:**
+   - Go to Settings → Database
+   - Copy **Database password** (or reset if needed)
+
+4. **Database Connection String:**
+   - Format: `postgresql://postgres:PASSWORD@db.PROJECT_ID.supabase.co:5432/postgres`
+   - Replace `PASSWORD` and `PROJECT_ID` with your values
+
+### Step 3: Fill in .env file
+
+```bash
+# .env
+SUPABASE_URL=https://your-project-id.supabase.co
+SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+DATABASE_URL=postgresql://postgres:YOUR_PASSWORD@db.your-project-id.supabase.co:5432/postgres
+PGPASSWORD=YOUR_PASSWORD
+```
+
+### Step 4: Install dependencies
+
+```bash
+npm install
+```
+
+This installs `dotenv` package required by the migration scripts.
+
+---
 
 ---
 
@@ -134,23 +187,48 @@ ORDER BY table_name;
 
 ---
 
-## Method 3: Direct PostgreSQL (psql)
+## Method 3: Node.js Scripts (Automated)
+
+**Best for:** Automated migrations with validation
+
+### Step 1: Run combined migrations
+
+```bash
+# Apply all migrations at once
+node run-migrations.js
+
+# Or apply seed fix only
+node run-migrations.js seed
+```
+
+### Step 2: Apply seed data fix
+
+```bash
+# Fix system workout templates (after migrations)
+node apply-seed-fix.js
+```
+
+**Note:** These scripts use environment variables from `.env` file (see Setup section above).
+
+---
+
+## Method 4: Direct PostgreSQL (psql)
 
 **Best for:** Direct database access
 
-### Step 1: Get connection string
+### Step 1: Use environment variable
 
-From Supabase Dashboard:
-1. Go to **Settings** → **Database**
-2. Copy **Connection string** (URI format)
-3. Replace `[YOUR-PASSWORD]` with your database password
+```bash
+# Load password from .env
+export PGPASSWORD=$(grep PGPASSWORD .env | cut -d '=' -f2)
+
+# Connect to database (using DATABASE_URL from .env)
+psql $DATABASE_URL
+```
 
 ### Step 2: Apply migrations
 
 ```bash
-# Connect to database
-psql "postgresql://postgres:[YOUR-PASSWORD]@db.[PROJECT-REF].supabase.co:5432/postgres"
-
 # Apply each migration
 \i migrations/sprint-0/001_workout_templates.sql
 \i migrations/sprint-0/002_mental_health_screenings.sql

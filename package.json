@@ -1,5 +1,6 @@
 {
   "devDependencies": {
+    "dotenv": "^16.4.5",
     "node-fetch": "^2.7.0",
     "pg": "^8.16.3",
     "supabase": "^2.58.5"
