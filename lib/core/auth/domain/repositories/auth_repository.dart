@@ -1,4 +1,5 @@
 import '../../../utils/result.dart';
+import '../entities/auth_session_entity.dart';
 import '../entities/user_entity.dart';
 
 /// Authentication repository interface
@@ -18,16 +19,23 @@ abstract class AuthRepository {
   Future<Result<UserEntity>> registerWithApple();
 
   /// Login with email and password
-  Future<Result<UserEntity>> loginWithEmail({
+  /// Returns AuthSessionEntity with tokens and user data
+  Future<Result<AuthSessionEntity>> loginWithEmail({
     required String email,
     required String password,
   });
 
   /// Login with Google OAuth
-  Future<Result<UserEntity>> loginWithGoogle();
+  /// Returns AuthSessionEntity with tokens and user data
+  Future<Result<AuthSessionEntity>> loginWithGoogle();
 
   /// Login with Apple Sign-In
-  Future<Result<UserEntity>> loginWithApple();
+  /// Returns AuthSessionEntity with tokens and user data
+  Future<Result<AuthSessionEntity>> loginWithApple();
+
+  /// Get current session from Supabase
+  /// Returns null if no active session
+  Future<Result<AuthSessionEntity?>> getCurrentSession();
 
   /// Send email verification
   Future<Result<void>> sendEmailVerification(String email);
