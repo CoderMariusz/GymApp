@@ -64,7 +64,7 @@ development_status:
   # Epic 3: Fitness Coach MVP
   epic-3: "contexted"
   3-1-smart-pattern-memory-pre-fill-last-workout: "ready-for-dev"
-  3-2-exercise-library-500-exercises: "ready-for-dev"
+  3-2-exercise-library-500-exercises: "in-progress"
   3-3-workout-logging-with-rest-timer: "ready-for-dev"
   3-4-workout-history-detail-view: "ready-for-dev"
   3-5-progress-charts-strength-volume-prs: "ready-for-dev"
