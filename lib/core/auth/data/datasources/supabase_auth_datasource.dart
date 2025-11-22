@@ -1,6 +1,7 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../domain/exceptions/auth_exceptions.dart';
+import '../models/auth_session_model.dart';
 import '../models/user_model.dart';
 
 /// Supabase authentication data source
@@ -259,6 +260,159 @@ class SupabaseAuthDataSource {
       return response;
     } catch (e) {
       return null;
+    }
+  }
+
+  /// Login with email and password (returns session)
+  Future<AuthSessionModel> loginWithEmailSession({
+    required String email,
+    required String password,
+  }) async {
+    try {
+      final response = await _client.auth.signInWithPassword(
+        email: email,
+        password: password,
+      );
+
+      if (response.user == null || response.session == null) {
+        throw const InvalidCredentialsException();
+      }
+
+      // Fetch user profile
+      final profileData = await _getUserProfile(response.user!.id);
+
+      return AuthSessionModel.fromSupabase(
+        session: response.session!,
+        profileData: profileData ?? {},
+      );
+    } on AuthException catch (e) {
+      throw _handleAuthException(e);
+    } catch (e) {
+      throw UnknownAuthException(e.toString());
+    }
+  }
+
+  /// Login with Google OAuth (returns session)
+  Future<AuthSessionModel> loginWithGoogleSession() async {
+    try {
+      final response = await _client.auth.signInWithOAuth(
+        OAuthProvider.google,
+        redirectTo: 'lifeos://auth/callback',
+      );
+
+      if (!response) {
+        throw const OAuthCancelledException();
+      }
+
+      // Get current session after OAuth
+      final session = _client.auth.currentSession;
+      if (session == null) {
+        throw const OAuthFailedException();
+      }
+
+      final user = session.user;
+
+      // Create/update user profile
+      await _createOrUpdateUserProfile(user);
+
+      // Fetch user profile
+      final profileData = await _getUserProfile(user.id);
+
+      return AuthSessionModel.fromSupabase(
+        session: session,
+        profileData: profileData ?? {},
+      );
+    } on AuthException catch (e) {
+      throw _handleAuthException(e);
+    } catch (e) {
+      throw UnknownAuthException(e.toString());
+    }
+  }
+
+  /// Login with Apple Sign-In (returns session)
+  Future<AuthSessionModel> loginWithAppleSession() async {
+    try {
+      final response = await _client.auth.signInWithOAuth(
+        OAuthProvider.apple,
+        redirectTo: 'lifeos://auth/callback',
+      );
+
+      if (!response) {
+        throw const OAuthCancelledException();
+      }
+
+      // Get current session after OAuth
+      final session = _client.auth.currentSession;
+      if (session == null) {
+        throw const OAuthFailedException();
+      }
+
+      final user = session.user;
+
+      // Create/update user profile
+      await _createOrUpdateUserProfile(user);
+
+      // Fetch user profile
+      final profileData = await _getUserProfile(user.id);
+
+      return AuthSessionModel.fromSupabase(
+        session: session,
+        profileData: profileData ?? {},
+      );
+    } on AuthException catch (e) {
+      throw _handleAuthException(e);
+    } catch (e) {
+      throw UnknownAuthException(e.toString());
+    }
+  }
+
+  /// Get current session
+  Future<AuthSessionModel?> getCurrentSession() async {
+    try {
+      final session = _client.auth.currentSession;
+      if (session == null) return null;
+
+      final user = session.user;
+
+      // Fetch user profile
+      final profileData = await _getUserProfile(user.id);
+
+      return AuthSessionModel.fromSupabase(
+        session: session,
+        profileData: profileData ?? {},
+      );
+    } catch (e) {
+      return null;
+    }
+  }
+
+  /// Request password reset
+  /// Sends email with reset link that expires in 1 hour
+  Future<void> requestPasswordReset(String email) async {
+    try {
+      await _client.auth.resetPasswordForEmail(
+        email,
+        redirectTo: 'lifeos://reset-password',
+      );
+    } on AuthException catch (e) {
+      throw _handleAuthException(e);
+    } catch (e) {
+      throw UnknownAuthException(e.toString());
+    }
+  }
+
+  /// Update password
+  /// User must be authenticated via reset token
+  /// Old password is automatically invalidated
+  Future<void> updatePassword(String newPassword) async {
+    try {
+      await _client.auth.updateUser(
+        UserAttributes(password: newPassword),
+      );
+    } on AuthException catch (e) {
+      throw _handleAuthException(e);
+    } catch (e) {
+      throw UnknownAuthException(e.toString());
     }
   }
 

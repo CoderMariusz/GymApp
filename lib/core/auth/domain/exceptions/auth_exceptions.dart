@@ -63,6 +63,15 @@ class InvalidCredentialsException extends AuthException {
         );
 }
 
+/// Email not verified exception
+class EmailNotVerifiedException extends AuthException {
+  const EmailNotVerifiedException()
+      : super(
+          'Please verify your email before logging in',
+          code: 'email-not-verified',
+        );
+}
+
 /// OAuth cancelled exception
 class OAuthCancelledException extends AuthException {
   const OAuthCancelledException()

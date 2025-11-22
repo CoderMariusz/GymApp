@@ -2,6 +2,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../utils/result.dart';
 import '../../domain/repositories/auth_repository.dart';
+import '../../domain/usecases/login_with_apple_usecase.dart';
+import '../../domain/usecases/login_with_email_usecase.dart';
+import '../../domain/usecases/login_with_google_usecase.dart';
+import '../../domain/usecases/logout_usecase.dart';
 import '../../domain/usecases/register_user_usecase.dart';
 import 'auth_state.dart';
 
@@ -10,12 +14,24 @@ import 'auth_state.dart';
 class AuthNotifier extends StateNotifier<AuthState> {
   final AuthRepository _repository;
   final RegisterUserUseCase _registerUseCase;
+  final LoginWithEmailUseCase _loginWithEmailUseCase;
+  final LoginWithGoogleUseCase _loginWithGoogleUseCase;
+  final LoginWithAppleUseCase _loginWithAppleUseCase;
+  final LogoutUseCase _logoutUseCase;
 
   AuthNotifier({
     required AuthRepository repository,
     required RegisterUserUseCase registerUseCase,
+    required LoginWithEmailUseCase loginWithEmailUseCase,
+    required LoginWithGoogleUseCase loginWithGoogleUseCase,
+    required LoginWithAppleUseCase loginWithAppleUseCase,
+    required LogoutUseCase logoutUseCase,
   })  : _repository = repository,
         _registerUseCase = registerUseCase,
+        _loginWithEmailUseCase = loginWithEmailUseCase,
+        _loginWithGoogleUseCase = loginWithGoogleUseCase,
+        _loginWithAppleUseCase = loginWithAppleUseCase,
+        _logoutUseCase = logoutUseCase,
         super(const AuthState.initial()) {
     _initialize();
   }
@@ -123,17 +139,61 @@ class AuthNotifier extends StateNotifier<AuthState> {
   Future<void> loginWithEmail({
     required String email,
     required String password,
+    bool rememberMe = true,
   }) async {
     state = const AuthState.loading();
 
-    final result = await _repository.loginWithEmail(
+    final result = await _loginWithEmailUseCase.call(
       email: email,
       password: password,
+      rememberMe: rememberMe,
     );
 
     result.when(
-      success: (user) {
-        state = AuthState.authenticated(user);
+      success: (session) {
+        state = AuthState.authenticated(session.user);
+      },
+      failure: (exception, message) {
+        state = AuthState.error(message);
+        Future.delayed(const Duration(seconds: 3), () {
+          if (state is _Error) {
+            state = const AuthState.unauthenticated();
+          }
+        });
+      },
+    );
+  }
+
+  /// Login with Google OAuth
+  Future<void> loginWithGoogle() async {
+    state = const AuthState.loading();
+
+    final result = await _loginWithGoogleUseCase.call();
+
+    result.when(
+      success: (session) {
+        state = AuthState.authenticated(session.user);
+      },
+      failure: (exception, message) {
+        state = AuthState.error(message);
+        Future.delayed(const Duration(seconds: 3), () {
+          if (state is _Error) {
+            state = const AuthState.unauthenticated();
+          }
+        });
+      },
+    );
+  }
+
+  /// Login with Apple Sign-In
+  Future<void> loginWithApple() async {
+    state = const AuthState.loading();
+
+    final result = await _loginWithAppleUseCase.call();
+
+    result.when(
+      success: (session) {
+        state = AuthState.authenticated(session.user);
       },
       failure: (exception, message) {
         state = AuthState.error(message);
@@ -150,7 +210,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
   Future<void> signOut() async {
     state = const AuthState.loading();
 
-    final result = await _repository.signOut();
+    final result = await _logoutUseCase.call();
 
     result.when(
       success: (_) {
