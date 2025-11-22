@@ -1,11 +1,11 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:lifeos_app/core/auth/domain/entities/user_entity.dart';
-import 'package:lifeos_app/core/auth/domain/exceptions/auth_exceptions.dart';
-import 'package:lifeos_app/core/auth/domain/repositories/auth_repository.dart';
-import 'package:lifeos_app/core/auth/domain/usecases/register_user_usecase.dart';
-import 'package:lifeos_app/core/auth/presentation/providers/auth_notifier.dart';
-import 'package:lifeos_app/core/auth/presentation/providers/auth_state.dart';
-import 'package:lifeos_app/core/utils/result.dart';
+import 'package:lifeos/core/auth/domain/entities/user_entity.dart';
+import 'package:lifeos/core/auth/domain/exceptions/auth_exceptions.dart';
+import 'package:lifeos/core/auth/domain/repositories/auth_repository.dart';
+import 'package:lifeos/core/auth/domain/usecases/register_user_usecase.dart';
+import 'package:lifeos/core/auth/presentation/providers/auth_notifier.dart';
+import 'package:lifeos/core/auth/presentation/providers/auth_state.dart';
+import 'package:lifeos/core/utils/result.dart';
 import 'package:mocktail/mocktail.dart';
 
 class MockAuthRepository extends Mock implements AuthRepository {}

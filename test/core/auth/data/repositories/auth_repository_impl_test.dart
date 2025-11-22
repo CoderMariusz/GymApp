@@ -1,10 +1,10 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:lifeos_app/core/auth/data/datasources/supabase_auth_datasource.dart';
-import 'package:lifeos_app/core/auth/data/models/user_model.dart';
-import 'package:lifeos_app/core/auth/data/repositories/auth_repository_impl.dart';
-import 'package:lifeos_app/core/auth/domain/entities/user_entity.dart';
-import 'package:lifeos_app/core/auth/domain/exceptions/auth_exceptions.dart';
-import 'package:lifeos_app/core/utils/result.dart';
+import 'package:lifeos/core/auth/data/datasources/supabase_auth_datasource.dart';
+import 'package:lifeos/core/auth/data/models/user_model.dart';
+import 'package:lifeos/core/auth/data/repositories/auth_repository_impl.dart';
+import 'package:lifeos/core/auth/domain/entities/user_entity.dart';
+import 'package:lifeos/core/auth/domain/exceptions/auth_exceptions.dart';
+import 'package:lifeos/core/utils/result.dart';
 import 'package:mocktail/mocktail.dart';
 
 class MockSupabaseAuthDataSource extends Mock

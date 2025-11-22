@@ -3,10 +3,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:lifeos_app/core/auth/presentation/pages/login_page.dart';
-import 'package:lifeos_app/core/auth/presentation/providers/auth_notifier.dart';
-import 'package:lifeos_app/core/auth/presentation/providers/auth_provider.dart';
-import 'package:lifeos_app/core/auth/presentation/providers/auth_state.dart';
+import 'package:lifeos/core/auth/presentation/pages/login_page.dart';
+import 'package:lifeos/core/auth/presentation/providers/auth_notifier.dart';
+import 'package:lifeos/core/auth/presentation/providers/auth_provider.dart';
+import 'package:lifeos/core/auth/presentation/providers/auth_state.dart';
 import 'package:mocktail/mocktail.dart';
 
 class MockAuthNotifier extends StateNotifier<AuthState> with Mock

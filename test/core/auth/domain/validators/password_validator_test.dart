@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:lifeos_app/core/auth/domain/validators/password_validator.dart';
+import 'package:lifeos/core/auth/domain/validators/password_validator.dart';
 
 void main() {
   group('PasswordValidator', () {
