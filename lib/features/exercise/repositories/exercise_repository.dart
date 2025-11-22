@@ -4,6 +4,7 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/exercise.dart';
 import '../models/exercise_favorite.dart';
+import '../models/exercise_exceptions.dart';
 
 /// Repository for exercise-related database operations
 ///
@@ -155,6 +156,12 @@ class ExerciseRepository {
   /// Create a custom exercise (AC5: User can add custom exercises)
   ///
   /// AC6: Custom exercises saved to user's library
+  ///
+  /// Validates inputs before creating:
+  /// - Name: required, max 100 characters
+  /// - Muscle groups: at least one required
+  /// - Description: max 500 characters
+  /// - Instructions: max 2000 characters
   Future<Exercise> createCustomExercise({
     required String name,
     String? description,
@@ -163,21 +170,59 @@ class ExerciseRepository {
     required ExerciseDifficulty difficulty,
     String? instructions,
   }) async {
+    // ============================================================================
+    // INPUT VALIDATION
+    // ============================================================================
+
+    // Validate name
+    final trimmedName = name.trim();
+    if (trimmedName.isEmpty) {
+      throw const ValidationException('Exercise name cannot be empty');
+    }
+
+    if (trimmedName.length > 100) {
+      throw const ValidationException('Exercise name must be less than 100 characters');
+    }
+
+    // Validate muscle groups
+    if (muscleGroups.isEmpty) {
+      throw const ValidationException('At least one muscle group must be selected');
+    }
+
+    // Validate muscle groups aren't empty strings
+    if (muscleGroups.any((mg) => mg.trim().isEmpty)) {
+      throw const ValidationException('Muscle group names cannot be empty');
+    }
+
+    // Validate description length
+    if (description != null && description.length > 500) {
+      throw const ValidationException('Description must be less than 500 characters');
+    }
+
+    // Validate instructions length
+    if (instructions != null && instructions.length > 2000) {
+      throw const ValidationException('Instructions must be less than 2000 characters');
+    }
+
+    // ============================================================================
+    // CREATE EXERCISE
+    // ============================================================================
+
     try {
       final userId = _supabase.auth.currentUser?.id;
       if (userId == null) {
-        throw Exception('User must be authenticated to create custom exercises');
+        throw const AuthenticationException('User must be authenticated to create custom exercises');
       }
 
       final response = await _supabase
           .from('exercises')
           .insert({
-            'name': name,
-            'description': description,
-            'muscle_groups': muscleGroups,
+            'name': trimmedName,
+            'description': description?.trim(),
+            'muscle_groups': muscleGroups.map((mg) => mg.trim()).toList(),
             'equipment': equipment.name,
             'difficulty': difficulty.name,
-            'instructions': instructions,
+            'instructions': instructions?.trim(),
             'is_custom': true,
             'created_by': userId,
           })
@@ -185,8 +230,18 @@ class ExerciseRepository {
           .single();
 
       return Exercise.fromJson(response as Map<String, dynamic>);
+    } on PostgrestException catch (e) {
+      // Handle Supabase-specific errors
+      if (e.code == 'PGRST301') {
+        throw const AuthenticationException('User not authenticated');
+      }
+      throw ServerException('Database error: ${e.message}');
     } catch (e) {
-      throw Exception('Failed to create custom exercise: $e');
+      // Re-throw if already our exception type
+      if (e is ExerciseException) rethrow;
+
+      // Wrap other exceptions
+      throw ExerciseException('Failed to create custom exercise: $e');
     }
   }
 
@@ -326,18 +381,14 @@ class ExerciseRepository {
   /// Toggle favorite status for an exercise (AC7: star icon)
   ///
   /// Returns true if exercise was favorited, false if unfavorited
+  ///
+  /// SECURITY: Uses auth.uid() in database function (no user_id parameter)
   Future<bool> toggleExerciseFavorite(String exerciseId) async {
     try {
-      final userId = _supabase.auth.currentUser?.id;
-      if (userId == null) {
-        throw Exception('User must be authenticated');
-      }
-
-      // Call the database function
+      // Call the database function (it uses auth.uid() internally)
       final response = await _supabase.rpc(
         'toggle_exercise_favorite',
         params: {
-          'p_user_id': userId,
           'p_exercise_id': exerciseId,
         },
       );
@@ -384,17 +435,12 @@ class ExerciseRepository {
   }
 
   /// Get count of user's favorite exercises
+  ///
+  /// SECURITY: Uses auth.uid() in database function (no user_id parameter)
   Future<int> getFavoritesCount() async {
     try {
-      final userId = _supabase.auth.currentUser?.id;
-      if (userId == null) {
-        return 0;
-      }
-
-      final response = await _supabase.rpc(
-        'get_user_favorites_count',
-        params: {'p_user_id': userId},
-      );
+      // Call the database function (it uses auth.uid() internally)
+      final response = await _supabase.rpc('get_user_favorites_count');
 
       return response as int;
     } catch (e) {
