@@ -1,8 +1,11 @@
-# LifeOS - Sprint Status
-# Generated: 2025-11-17
-# Project: LifeOS (Life Operating System)
-# Tracking System: file-system
-# Story Location: docs/sprint-artifacts
+# ============================================================================
+# SPRINT STATUS - LifeOS
+# ============================================================================
+# generated: 2025-01-18
+# project: LifeOS
+# project_key: lifeos
+# tracking_system: file-system
+# story_location: docs/sprint-artifacts
 
 # STATUS DEFINITIONS:
 # ==================
@@ -29,51 +32,56 @@
 # - SM typically drafts next story after previous one is 'done' to incorporate learnings
 # - Dev moves story to 'review', SM reviews, then Dev moves to 'done'
 
-project_name: "LifeOS"
-generated_date: "2025-11-17"
-last_updated: "2025-11-17"  # All 66 stories: Epic 1-4 ready-for-dev (38), Epic 5-9 ready-for-dev (28)
-tracking_system: "file-system"
-story_location: "docs/sprint-artifacts"
+generated: 2025-01-18
+project: LifeOS
+project_key: lifeos
+tracking_system: file-system
+story_location: docs/sprint-artifacts
 
-# Epic Development Status
 development_status:
-  # Epic 1: Core Platform Foundation
-  epic-1: "contexted"
-  1-1-user-account-creation: "ready-for-dev"
-  1-2-user-login-session-management: "ready-for-dev"
-  1-3-password-reset-flow: "ready-for-dev"
-  1-4-user-profile-management: "ready-for-dev"
-  1-5-data-sync-across-devices: "ready-for-dev"
-  1-6-gdpr-compliance-data-export-deletion: "ready-for-dev"
-  epic-1-retrospective: "optional"
+  # ============================================================================
+  # Epic 1: Core Platform Foundation (Sprint 1)
+  # ============================================================================
+  epic-1: contexted
+  1-1-user-account-creation: drafted
+  1-2-user-login-session-management: drafted
+  1-3-password-reset-flow: drafted
+  1-4-user-profile-management: drafted
+  1-5-data-sync-across-devices: drafted
+  1-6-gdpr-compliance-data-export-deletion: drafted
+  epic-1-retrospective: optional
 
-  # Epic 2: Life Coach MVP
-  epic-2: "contexted"
-  2-1-morning-check-in-flow: "ready-for-dev"
-  2-2-ai-daily-plan-generation: "ready-for-dev"
-  2-3-goal-creation-tracking: "ready-for-dev"
-  2-4-ai-conversational-coaching: "ready-for-dev"
-  2-5-evening-reflection-flow: "ready-for-dev"
-  2-6-streak-tracking-check-ins: "ready-for-dev"
-  2-7-progress-dashboard-life-coach: "ready-for-dev"
-  2-8-daily-plan-manual-adjustment: "ready-for-dev"
-  2-9-goal-suggestions-ai: "ready-for-dev"
-  2-10-weekly-summary-report-life-coach: "ready-for-dev"
-  epic-2-retrospective: "optional"
+  # ============================================================================
+  # Epic 2: Life Coach MVP (Sprint 2)
+  # ============================================================================
+  epic-2: contexted
+  2-1-morning-check-in-flow: drafted
+  2-2-ai-daily-plan-generation: ready-for-dev  # has detailed context
+  2-3-goal-creation-tracking: drafted
+  2-4-ai-conversational-coaching: drafted
+  2-5-evening-reflection-flow: drafted
+  2-6-streak-tracking-check-ins: drafted
+  2-7-progress-dashboard-life-coach: drafted
+  2-8-daily-plan-manual-adjustment: drafted
+  2-9-goal-suggestions-ai: drafted
+  2-10-weekly-summary-report-life-coach: drafted
+  epic-2-retrospective: optional
 
-  # Epic 3: Fitness Coach MVP
-  epic-3: "contexted"
-  3-1-smart-pattern-memory-pre-fill-last-workout: "ready-for-dev"
-  3-2-exercise-library-500-exercises: "ready-for-dev"
-  3-3-workout-logging-with-rest-timer: "ready-for-dev"
-  3-4-workout-history-detail-view: "ready-for-dev"
-  3-5-progress-charts-strength-volume-prs: "ready-for-dev"
-  3-6-body-measurements-tracking: "ready-for-dev"
-  3-7-workout-templates-pre-built-custom: "ready-for-dev"
-  3-8-quick-log-rapid-workout-entry: "ready-for-dev"
-  3-9-exercise-instructions-form-tips: "ready-for-dev"
-  3-10-cross-module-receive-stress-data-from-mind: "ready-for-dev"
-  epic-3-retrospective: "optional"
+  # ============================================================================
+  # Epic 3: Fitness Coach MVP (Sprint 3)
+  # ============================================================================
+  epic-3: contexted
+  3-1-smart-pattern-memory-pre-fill-last-workout: ready-for-dev  # has detailed context
+  3-2-exercise-library-500-exercises: drafted
+  3-3-workout-logging-with-rest-timer: drafted
+  3-4-workout-history-detail-view: drafted
+  3-5-progress-charts-strength-volume-prs: drafted
+  3-6-body-measurements-tracking: drafted
+  3-7-workout-templates-pre-built-custom: drafted
+  3-8-quick-log-rapid-workout-entry: drafted
+  3-9-exercise-instructions-form-tips: drafted
+  3-10-cross-module-receive-stress-data-from-mind: drafted
+  epic-3-retrospective: optional
 
   # Epic 4: Mind & Emotion MVP
   epic-4: "contexted"
@@ -94,62 +102,82 @@ development_status:
   4-15-code-generation-and-build-setup: "backlog"
   epic-4-retrospective: "optional"
 
-  # Epic 5: Cross-Module Intelligence
-  epic-5: "contexted"
-  5-1-insight-engine-detect-patterns-generate-insights: "ready-for-dev"
-  5-2-insight-card-ui-swipeable-actionable: "ready-for-dev"
-  5-3-high-stress-heavy-workout-suggest-light-session: "ready-for-dev"
-  5-4-poor-sleep-morning-workout-suggest-afternoon: "ready-for-dev"
-  5-5-sleep-quality-workout-performance-correlation: "ready-for-dev"
-  epic-5-retrospective: "optional"
+  # ============================================================================
+  # Epic 5: Cross-Module Intelligence (Sprint 5)
+  # ============================================================================
+  epic-5: contexted
+  5-1-insight-engine-detect-patterns-generate-insights: ready-for-dev  # has detailed context
+  5-2-insight-card-ui-swipeable-actionable: drafted
+  5-3-high-stress-heavy-workout-suggest-light-session: drafted
+  5-4-poor-sleep-morning-workout-suggest-afternoon: drafted
+  5-5-sleep-quality-workout-performance-correlation: drafted
+  epic-5-retrospective: optional
 
-  # Epic 6: Gamification & Retention
-  epic-6: "contexted"
-  6-1-streak-tracking-system-workouts-meditations-check-ins: "ready-for-dev"
-  6-2-milestone-badges-bronze-silver-gold: "ready-for-dev"
-  6-3-streak-break-alerts-push-notification: "ready-for-dev"
-  6-4-celebration-animations-confetti-badge-pop: "ready-for-dev"
-  6-5-shareable-milestone-cards-social-sharing: "ready-for-dev"
-  6-6-weekly-summary-report-all-modules: "ready-for-dev"
-  epic-6-retrospective: "optional"
+  # ============================================================================
+  # Epic 6: Gamification & Retention (Sprint 6)
+  # ============================================================================
+  epic-6: contexted
+  6-1-streak-tracking-system-workouts-meditations-check-ins: drafted
+  6-2-milestone-badges-bronze-silver-gold: drafted
+  6-3-streak-break-alerts-push-notification: drafted
+  6-4-celebration-animations-confetti-badge-pop: drafted
+  6-5-shareable-milestone-cards-social-sharing: drafted
+  6-6-weekly-summary-report-all-modules: drafted
+  epic-6-retrospective: optional
 
-  # Epic 7: Onboarding & Subscriptions
-  epic-7: "contexted"
-  7-1-onboarding-flow-choose-your-journey: "ready-for-dev"
-  7-2-onboarding-set-initial-goals-choose-ai-personality: "ready-for-dev"
-  7-3-onboarding-permissions-interactive-tutorial: "ready-for-dev"
-  7-4-free-tier-life-coach-basic: "ready-for-dev"
-  7-5-14-day-trial-all-premium-features: "ready-for-dev"
-  7-6-subscription-management-in-app-purchase: "ready-for-dev"
-  7-7-cancel-subscription-graceful-degradation: "ready-for-dev"
-  epic-7-retrospective: "optional"
+  # ============================================================================
+  # Epic 7: Onboarding & Subscriptions (Sprint 7)
+  # ============================================================================
+  epic-7: contexted
+  7-1-onboarding-flow-choose-your-journey: drafted
+  7-2-onboarding-set-initial-goals-choose-ai-personality: drafted
+  7-3-onboarding-permissions-interactive-tutorial: drafted
+  7-4-free-tier-life-coach-basic: drafted
+  7-5-14-day-trial-all-premium-features: drafted
+  7-6-subscription-management-in-app-purchase: ready-for-dev  # has detailed context
+  7-7-cancel-subscription-graceful-degradation: drafted
+  epic-7-retrospective: optional
 
-  # Epic 8: Notifications & Engagement
-  epic-8: "contexted"
-  8-1-push-notification-infrastructure: "ready-for-dev"
-  8-2-daily-reminders-morning-check-in-workout-meditation: "ready-for-dev"
-  8-3-streak-alerts-about-to-break-freeze-milestone: "ready-for-dev"
-  8-4-cross-module-insight-notifications: "ready-for-dev"
-  8-5-weekly-summary-notification-quiet-hours: "ready-for-dev"
-  epic-8-retrospective: "optional"
+  # ============================================================================
+  # Epic 8: Notifications & Engagement (Sprint 8)
+  # ============================================================================
+  epic-8: contexted
+  8-1-push-notification-infrastructure: drafted
+  8-2-daily-reminders-morning-check-in-workout-meditation: drafted
+  8-3-streak-alerts-about-to-break-freeze-milestone: drafted
+  8-4-cross-module-insight-notifications: drafted
+  8-5-weekly-summary-notification-quiet-hours: drafted
+  epic-8-retrospective: optional
 
-  # Epic 9: Settings & Profile
-  epic-9: "contexted"
-  9-1-personal-settings: "ready-for-dev"
-  9-2-notification-preferences: "ready-for-dev"
-  9-3-unit-preferences: "ready-for-dev"
-  9-4-subscription-billing-management: "ready-for-dev"
-  9-5-data-privacy-cross-module-settings: "ready-for-dev"
-  epic-9-retrospective: "optional"
+  # ============================================================================
+  # Epic 9: Settings & Profile (Sprint 9)
+  # ============================================================================
+  epic-9: contexted
+  9-1-personal-settings: drafted
+  9-2-notification-preferences: drafted
+  9-3-unit-preferences: drafted
+  9-4-subscription-billing-management: drafted
+  9-5-data-privacy-cross-module-settings: drafted
+  epic-9-retrospective: optional
 
-# Epic Titles
-epic_titles:
-  epic-1: "Core Platform Foundation"
-  epic-2: "Life Coach MVP"
-  epic-3: "Fitness Coach MVP"
-  epic-4: "Mind & Emotion MVP"
-  epic-5: "Cross-Module Intelligence"
-  epic-6: "Gamification & Retention"
-  epic-7: "Onboarding & Subscriptions"
-  epic-8: "Notifications & Engagement"
-  epic-9: "Settings & Profile"
+# ============================================================================
+# SUMMARY
+# ============================================================================
+summary:
+  total_epics: 9
+  total_stories: 66
+  epics_contexted: 9
+  stories_drafted: 61
+  stories_ready_for_dev: 5
+  stories_in_progress: 0
+  stories_done: 0
+
+# ============================================================================
+# NOTES
+# ============================================================================
+notes:
+  - "Sprint 0 completed - Database schema ready (7 tables, 2 Edge Functions)"
+  - "All 9 epics have tech-spec context files"
+  - "All 66 stories have been drafted"
+  - "5 stories have detailed context and are ready-for-dev"
+  - "Next step: Begin implementation with Epic 1 (Core Platform Foundation)"

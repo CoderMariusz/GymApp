@@ -19,3 +19,22 @@ void main() async {
     ),
   );
 }
+
+/// LifeOS - Your AI-powered operating system for life
+class LifeOSApp extends StatelessWidget {
+  const LifeOSApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp.router(
+      title: 'LifeOS',
+      debugShowCheckedModeBanner: false,
+
+      // Theme
+      theme: AppTheme.lightTheme,
+
+      // Router
+      routerConfig: AppRouter.router,
+    );
+  }
+}
