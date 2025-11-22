@@ -197,16 +197,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                   child: TextButton(
                     onPressed: isLoading
                         ? null
-                        : () {
-                            // TODO: Implement forgot password (Story 1.3)
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text(
-                                  'Forgot password feature coming soon (Story 1.3)',
-                                ),
-                              ),
-                            );
-                          },
+                        : () => context.push('/forgot-password'),
                     child: const Text('Forgot password?'),
                   ),
                 ),

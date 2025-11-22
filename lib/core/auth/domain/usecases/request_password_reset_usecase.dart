@@ -1,7 +1,7 @@
 import '../../../utils/result.dart';
 import '../exceptions/auth_exceptions.dart';
 import '../repositories/auth_repository.dart';
-import '../validators/password_validator.dart';
+import 'login_with_email_usecase.dart';
 
 /// Request password reset use case
 /// Sends password reset email to user
