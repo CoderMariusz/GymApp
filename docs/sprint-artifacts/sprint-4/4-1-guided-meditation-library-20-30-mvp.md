@@ -385,3 +385,28 @@ Validated all 8 tasks from story context file (.context.xml):
 5. **Most critical library features** are complete and well-implemented
 
 **Recommendation:** Seek Product Manager clarification on AC7 scope before mandating rework. If AC7 must be in 4.1, implement minimal audio player. If AC7 can move to 4.2, update context.xml to match story split.
+
+---
+
+## Review Resolution - 2025-11-22
+
+**Decision:** Findings moved to separate backlog stories for MVP prioritization
+
+**Actions Taken:**
+1. ✅ **AC7 (Audio Streaming)** - Scope clarified with PM: Full audio player deferred to Story 4.2
+2. ✅ **AC8 (Download UI)** - Extracted to Story 4.13 (P1, 1 SP, backlog)
+3. ✅ **AC9 (Completion Tracking)** - Extracted to Story 4.14 (P1, 1 SP, backlog, depends on 4.2)
+4. ✅ **Code Generation** - Extracted to Story 4.15 (P2, 0.5 SP, backlog)
+
+**Story 4.1 Final Status:** ✅ **DONE**
+- Library functionality complete and approved
+- 6/6 library-focused ACs implemented
+- Clean architecture, comprehensive tests, proper security
+- Code review findings addressed via story extraction
+
+**New Stories Created:**
+- Story 4.13: Meditation Download UI (backlog)
+- Story 4.14: Meditation Completion Tracking Integration (backlog)
+- Story 4.15: Code Generation and Build Setup (backlog)
+
+**MVP Decision:** Stories 4.13-4.15 marked as backlog - will be prioritized based on MVP scope review.

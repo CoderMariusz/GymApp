@@ -77,7 +77,7 @@ development_status:
 
   # Epic 4: Mind & Emotion MVP
   epic-4: "contexted"
-  4-1-guided-meditation-library-20-30-mvp: "review"
+  4-1-guided-meditation-library-20-30-mvp: "done"
   4-2-meditation-player-with-breathing-animation: "ready-for-dev"
   4-3-mood-stress-tracking-always-free: "ready-for-dev"
   4-4-cbt-chat-with-ai-1-day-free-unlimited-premium: "ready-for-dev"
@@ -89,6 +89,9 @@ development_status:
   4-10-meditation-recommendations-ai: "ready-for-dev"
   4-11-mood-workout-correlation-insights: "ready-for-dev"
   4-12-cross-module-share-mood-stress-with-life-coach-fitness: "ready-for-dev"
+  4-13-meditation-download-ui: "backlog"
+  4-14-meditation-completion-tracking-integration: "backlog"
+  4-15-code-generation-and-build-setup: "backlog"
   epic-4-retrospective: "optional"
 
   # Epic 5: Cross-Module Intelligence
