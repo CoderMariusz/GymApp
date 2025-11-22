@@ -57,3 +57,21 @@ class MeditationCaches extends Table {
   @override
   Set<Column> get primaryKey => {id};
 }
+
+/// Sync Queue table - tracks pending sync operations for offline-first functionality
+@DataClassName('SyncQueueItem')
+class SyncQueue extends Table {
+  TextColumn get id => text()();
+  TextColumn get tableName => text()(); // Name of table to sync
+  TextColumn get recordId => text()(); // ID of the record to sync
+  TextColumn get operation => text()(); // 'insert' | 'update' | 'delete'
+  TextColumn get payload => text()(); // JSON string of the data to sync
+  IntColumn get retryCount => integer().withDefault(const Constant(0))();
+  DateTimeColumn get createdAt => dateTime()();
+  DateTimeColumn get lastAttemptAt => dateTime().nullable()();
+  TextColumn get errorMessage => text().nullable()();
+  BoolColumn get isPending => boolean().withDefault(const Constant(true))();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}

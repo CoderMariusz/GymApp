@@ -1,23 +1,35 @@
 import 'package:drift/drift.dart';
 import 'package:drift_flutter/drift_flutter.dart';
 import 'package:lifeos/core/database/tables.drift.dart';
+import 'package:lifeos/core/database/tables/sprint0_tables.dart';
 
 part 'database.g.dart';
 
 /// Local database for offline-first functionality
 @DriftDatabase(
   tables: [
+    // Meditation tables
     MeditationFavorites,
     MeditationDownloads,
     MeditationSessions,
     MeditationCaches,
+    // Sprint 0 tables
+    WorkoutTemplates,
+    MentalHealthScreenings,
+    Subscriptions,
+    Streaks,
+    AiConversations,
+    MoodLogs,
+    UserDailyMetrics,
+    // Sync infrastructure
+    SyncQueue,
   ],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
 
   static QueryExecutor _openConnection() {
     return driftDatabase(name: 'lifeos_db');
@@ -138,5 +150,54 @@ class AppDatabase extends _$AppDatabase {
 
   Future<void> clearCache() {
     return delete(meditationCaches).go();
+  }
+
+  // Sync Queue operations
+  Future<void> enqueueSyncOperation({
+    required String id,
+    required String tableName,
+    required String recordId,
+    required String operation,
+    required String payload,
+  }) {
+    return into(syncQueue).insert(
+      SyncQueueCompanion.insert(
+        id: id,
+        tableName: tableName,
+        recordId: recordId,
+        operation: operation,
+        payload: payload,
+        createdAt: DateTime.now(),
+      ),
+    );
+  }
+
+  Future<List<SyncQueueItem>> getPendingSyncItems() {
+    return (select(syncQueue)..where((tbl) => tbl.isPending.equals(true)))
+        .get();
+  }
+
+  Future<void> markSyncItemCompleted(String id) {
+    return (update(syncQueue)..where((tbl) => tbl.id.equals(id)))
+        .write(const SyncQueueCompanion(isPending: Value(false)));
+  }
+
+  Future<void> updateSyncItemRetry(String id, String errorMessage) {
+    return (update(syncQueue)..where((tbl) => tbl.id.equals(id))).write(
+      SyncQueueCompanion(
+        retryCount: Value((select(syncQueue)
+                  ..where((tbl) => tbl.id.equals(id)))
+                .getSingle()
+                .then((item) => item.retryCount + 1)
+            as int),
+        lastAttemptAt: Value(DateTime.now()),
+        errorMessage: Value(errorMessage),
+      ),
+    );
+  }
+
+  Future<void> clearCompletedSyncItems() {
+    return (delete(syncQueue)..where((tbl) => tbl.isPending.equals(false)))
+        .go();
   }
 }

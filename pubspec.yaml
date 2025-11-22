@@ -72,6 +72,7 @@ dependencies:
 
   # Networking
   dio: ^5.4.0
+  connectivity_plus: ^5.0.0
 
   # Analytics
   posthog_flutter: ^4.0.0
