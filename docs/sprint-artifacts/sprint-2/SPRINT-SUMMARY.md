@@ -2,9 +2,9 @@
 
 **Sprint:** 2
 **Epic:** Epic 2 - Life Coach MVP
-**Status:** Drafted
-**Sprint Duration:** 2-3 weeks (TBD)
-**Team Velocity:** 28 SP (estimated)
+**Status:** 🔄 In Progress (70%) - Updated 2025-11-23
+**Sprint Duration:** 2-3 weeks
+**Team Velocity:** 28 SP (20 SP completed)
 
 ---
 
@@ -30,17 +30,17 @@ By the end of Sprint 2, users should be able to:
 
 | Story ID | Title | Priority | Effort (SP) | Status |
 |----------|-------|----------|-------------|--------|
-| 2.1 | Morning Check-in Flow | P0 | 3 | drafted |
-| 2.2 | AI Daily Plan Generation | P0 | 5 | drafted |
-| 2.3 | Goal Creation & Tracking | P0 | 3 | drafted |
-| 2.4 | AI Conversational Coaching | P0 | 5 | drafted |
-| 2.5 | Evening Reflection Flow | P0 | 2 | drafted |
-| 2.6 | Streak Tracking (Check-ins) | P1 | 3 | drafted |
-| 2.7 | Progress Dashboard | P1 | 3 | drafted |
-| 2.8 | Daily Plan Manual Adjustment | P1 | 2 | drafted |
-| 2.9 | Goal Suggestions (AI) | P2 | 2 | drafted |
-| 2.10 | Weekly Summary Report | P1 | 3 | drafted |
-| **TOTAL** | **10 stories** | - | **28 SP** | **drafted** |
+| 2.1 | Morning Check-in Flow | P0 | 3 | ✅ completed |
+| 2.2 | AI Daily Plan Generation | P0 | 5 | ✅ completed |
+| 2.3 | Goal Creation & Tracking | P0 | 3 | ✅ completed |
+| 2.4 | AI Conversational Coaching | P0 | 5 | ✅ completed |
+| 2.5 | Evening Reflection Flow | P0 | 2 | ✅ completed |
+| 2.6 | Streak Tracking (Check-ins) | P1 | 3 | 🔄 partial |
+| 2.7 | Progress Dashboard | P1 | 3 | ✅ completed |
+| 2.8 | Daily Plan Manual Adjustment | P1 | 2 | 🔄 partial |
+| 2.9 | Goal Suggestions (AI) | P2 | 2 | ✅ completed |
+| 2.10 | Weekly Summary Report | P1 | 3 | ⏸️ not started |
+| **TOTAL** | **10 stories** | - | **28 SP** | **~70% complete** |
 
 ---
 

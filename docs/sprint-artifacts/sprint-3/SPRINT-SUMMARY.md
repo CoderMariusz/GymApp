@@ -2,9 +2,9 @@
 
 **Sprint:** 3
 **Epic:** Epic 3 - Fitness Coach MVP
-**Status:** Drafted
-**Sprint Duration:** 2-3 weeks (TBD)
-**Team Velocity:** 27 SP (estimated)
+**Status:** 🔄 In Progress (65%) - Updated 2025-11-23
+**Sprint Duration:** 2-3 weeks
+**Team Velocity:** 27 SP (18 SP completed)
 
 ---
 
@@ -30,17 +30,17 @@ By the end of Sprint 3, users should be able to:
 
 | Story ID | Title | Priority | Effort (SP) | Status |
 |----------|-------|----------|-------------|--------|
-| 3.1 | Smart Pattern Memory - Pre-fill Last Workout | P0 | 5 | drafted |
-| 3.2 | Exercise Library (500+ Exercises) | P0 | 3 | drafted |
-| 3.3 | Workout Logging with Rest Timer | P0 | 3 | drafted |
-| 3.4 | Workout History & Detail View | P0 | 2 | drafted |
-| 3.5 | Progress Charts (Strength, Volume, PRs) | P1 | 3 | drafted |
-| 3.6 | Body Measurements Tracking | P1 | 2 | drafted |
-| 3.7 | Workout Templates (Pre-built + Custom) | P1 | 3 | drafted |
-| 3.8 | Quick Log (Rapid Workout Entry) | P1 | 2 | drafted |
-| 3.9 | Exercise Instructions & Form Tips | P2 | 2 | drafted |
-| 3.10 | Cross-Module: Receive Stress Data from Mind | P1 | 2 | drafted |
-| **TOTAL** | **10 stories** | - | **27 SP** | **drafted** |
+| 3.1 | Smart Pattern Memory - Pre-fill Last Workout | P0 | 5 | ✅ completed |
+| 3.2 | Exercise Library (500+ Exercises) | P0 | 3 | ✅ completed |
+| 3.3 | Workout Logging with Rest Timer | P0 | 3 | ✅ completed |
+| 3.4 | Workout History & Detail View | P0 | 2 | 🔄 partial |
+| 3.5 | Progress Charts (Strength, Volume, PRs) | P1 | 3 | ✅ completed |
+| 3.6 | Body Measurements Tracking | P1 | 2 | ✅ completed |
+| 3.7 | Workout Templates (Pre-built + Custom) | P1 | 3 | ✅ completed |
+| 3.8 | Quick Log (Rapid Workout Entry) | P1 | 2 | ✅ completed |
+| 3.9 | Exercise Instructions & Form Tips | P2 | 2 | 🔄 partial |
+| 3.10 | Cross-Module: Receive Stress Data from Mind | P1 | 2 | ⏸️ not started |
+| **TOTAL** | **10 stories** | - | **27 SP** | **~65% complete** |
 
 ---
 

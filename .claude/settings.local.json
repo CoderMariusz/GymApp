@@ -18,7 +18,8 @@
       "Bash(flutter run:*)",
       "Bash(timeout 5 cat:*)",
       "Bash(timeout 10 echo:*)",
-      "Bash(flutter create:*)"
+      "Bash(flutter create:*)",
+      "Bash(tree:*)"
     ],
     "deny": [],
     "ask": []

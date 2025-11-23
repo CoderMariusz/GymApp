@@ -156,6 +156,15 @@ logs/
 .DS_Store
 Thumbs.db
 
+# Analysis & debug outputs (temporary)
+*_output.txt
+*_errors.txt
+error_analysis_data.json
+errors_summary.md
+flutter_analyze_*.txt
+analyze_output_*.txt
+build_runner_output*.txt
+
 # ============================================================================
 # DATABASE & DATA
 # ============================================================================
