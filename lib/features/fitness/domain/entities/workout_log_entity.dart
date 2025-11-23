@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:gymapp/features/fitness/domain/entities/exercise_set_entity.dart';
+import 'package:lifeos/features/fitness/domain/entities/exercise_set_entity.dart';
 
 part 'workout_log_entity.freezed.dart';
 

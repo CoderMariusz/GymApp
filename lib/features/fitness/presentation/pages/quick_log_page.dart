@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
-import 'package:gymapp/core/widgets/daily_input_form.dart';
-import 'package:gymapp/core/auth/presentation/providers/auth_provider.dart';
-import 'package:gymapp/features/fitness/presentation/providers/workout_log_provider.dart';
-import 'package:gymapp/features/fitness/domain/entities/workout_log_entity.dart';
-import 'package:gymapp/features/fitness/domain/entities/exercise_set_entity.dart';
+import 'package:lifeos/core/widgets/daily_input_form.dart';
+import 'package:lifeos/core/auth/presentation/providers/auth_provider.dart';
+import 'package:lifeos/features/fitness/presentation/providers/workout_log_provider.dart';
+import 'package:lifeos/features/fitness/domain/entities/workout_log_entity.dart';
+import 'package:lifeos/features/fitness/domain/entities/exercise_set_entity.dart';
 
 /// Quick Log Page
 /// Story 3.8: Simplified workout logging for fast entry
@@ -21,8 +21,8 @@ class QuickLogPage extends ConsumerWidget {
         title: const Text('Quick Log'),
         backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
       ),
-      body: authState.maybeWhen(
-        authenticated: (user) => DailyInputForm(
+      body: authState.maybeMap(
+        authenticated: (authenticated) => DailyInputForm(
           fields: [
             FormFieldConfig(
               label: 'Exercise Name',
@@ -75,7 +75,7 @@ class QuickLogPage extends ConsumerWidget {
 
             final quickLog = WorkoutLogEntity(
               id: const Uuid().v4(),
-              userId: user.id,
+              userId: authenticated.user.id,
               timestamp: data['time'] as DateTime? ?? DateTime.now(),
               workoutName: exerciseName,
               duration: 0,
@@ -88,8 +88,8 @@ class QuickLogPage extends ConsumerWidget {
                 .read(workoutLogProvider.notifier)
                 .quickLogWorkout(quickLog);
 
-            result.when(
-              success: (_) {
+            result.map(
+              success: (success) {
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
@@ -100,11 +100,11 @@ class QuickLogPage extends ConsumerWidget {
                   Navigator.pop(context);
                 }
               },
-              failure: (error) {
+              failure: (failure) {
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text('Error: ${error.toString()}'),
+                      content: Text('Error: ${failure.exception.toString()}'),
                       backgroundColor: Colors.red,
                     ),
                   );

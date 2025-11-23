@@ -100,8 +100,8 @@ final filteredMeditationsProvider =
     userId: 'current_user_id', // TODO: Get from auth provider
   );
 
-  return result.when(
-    success: (meditations) => meditations,
-    failure: (error) => throw error,
+  return result.map(
+    success: (success) => success.data,
+    failure: (failure) => throw failure.exception,
   );
 });

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
-import 'package:gymapp/core/auth/presentation/providers/auth_provider.dart';
-import 'package:gymapp/core/widgets/daily_input_form.dart';
-import 'package:gymapp/features/life_coach/presentation/providers/goals_provider.dart';
-import 'package:gymapp/features/life_coach/domain/entities/goal_entity.dart';
+import 'package:lifeos/core/auth/presentation/providers/auth_provider.dart';
+import 'package:lifeos/core/widgets/daily_input_form.dart';
+import 'package:lifeos/features/life_coach/presentation/providers/goals_provider.dart';
+import 'package:lifeos/features/life_coach/domain/entities/goal_entity.dart';
 
 class CreateGoalPage extends ConsumerWidget {
   const CreateGoalPage({super.key});
@@ -18,8 +18,8 @@ class CreateGoalPage extends ConsumerWidget {
         title: const Text('Create Goal'),
         backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
       ),
-      body: authState.maybeWhen(
-        authenticated: (user) => DailyInputForm(
+      body: authState.maybeMap(
+        authenticated: (authenticated) => DailyInputForm(
           fields: [
             FormFieldConfig(
               label: 'Goal Title',
@@ -56,7 +56,7 @@ class CreateGoalPage extends ConsumerWidget {
           onSubmit: (data) async {
             final goal = GoalEntity(
               id: const Uuid().v4(),
-              userId: user.id,
+              userId: authenticated.user.id,
               title: data['Goal Title'] as String,
               description: data['Description'] as String?,
               category: data['Category'] as String,
@@ -69,8 +69,8 @@ class CreateGoalPage extends ConsumerWidget {
 
             final result = await ref.read(goalsProvider.notifier).createGoal(goal);
 
-            result.when(
-              success: (_) {
+            result.map(
+              success: (success) {
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('Goal created!'), backgroundColor: Colors.green),
@@ -78,10 +78,10 @@ class CreateGoalPage extends ConsumerWidget {
                   Navigator.pop(context);
                 }
               },
-              failure: (error) {
+              failure: (failure) {
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Error: $error'), backgroundColor: Colors.red),
+                    SnackBar(content: Text('Error: ${failure.exception}'), backgroundColor: Colors.red),
                   );
                 }
               },

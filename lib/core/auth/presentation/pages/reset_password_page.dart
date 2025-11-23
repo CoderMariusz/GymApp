@@ -73,8 +73,8 @@ class _ResetPasswordPageState extends ConsumerState<ResetPasswordPage> {
         _passwordController.text,
       );
 
-      result.when(
-        success: (_) {
+      result.map(
+        success: (success) {
           // Show success message
           if (!mounted) return;
           ScaffoldMessenger.of(context).showSnackBar(
@@ -88,10 +88,10 @@ class _ResetPasswordPageState extends ConsumerState<ResetPasswordPage> {
           // Navigate to home (user is already authenticated via reset token)
           context.go(AppRoutes.home);
         },
-        failure: (exception) {
+        failure: (failure) {
           setState(() {
             _isLoading = false;
-            _passwordError = exception.toString();
+            _passwordError = failure.exception.toString();
           });
         },
       );

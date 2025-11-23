@@ -1,16 +1,16 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:gymapp/core/ai/ai_service.dart';
-import 'package:gymapp/core/error/failures.dart';
-import 'package:gymapp/core/utils/rate_limiter.dart';
-import 'package:gymapp/features/life_coach/ai/daily_plan_generator.dart';
-import 'package:gymapp/features/life_coach/domain/repositories/goals_repository.dart';
-import 'package:gymapp/features/life_coach/domain/repositories/check_in_repository.dart';
-import 'package:gymapp/features/life_coach/data/repositories/daily_plan_repository.dart';
-import 'package:gymapp/features/life_coach/domain/repositories/preferences_repository.dart';
+import 'package:lifeos/core/ai/ai_service.dart';
+import 'package:lifeos/core/error/failures.dart';
+import 'package:lifeos/core/utils/rate_limiter.dart';
+import 'package:lifeos/features/life_coach/ai/daily_plan_generator.dart';
+import 'package:lifeos/features/life_coach/domain/repositories/goals_repository.dart';
+import 'package:lifeos/features/life_coach/domain/repositories/check_in_repository.dart';
+import 'package:lifeos/features/life_coach/data/repositories/daily_plan_repository.dart';
+import 'package:lifeos/features/life_coach/domain/repositories/preferences_repository.dart';
 
-import 'daily_plan_generator_test.mocks.dart';
+import 'daily_plan_generator_test.mocks.dart' as mocks;
 
 @GenerateMocks([
   AIService,
@@ -22,20 +22,20 @@ import 'daily_plan_generator_test.mocks.dart';
 ])
 void main() {
   late DailyPlanGenerator generator;
-  late MockAIService mockAIService;
-  late MockGoalsRepository mockGoalsRepo;
-  late MockCheckInRepository mockCheckInRepo;
-  late MockDailyPlanRepository mockPlanRepo;
-  late MockPreferencesRepository mockPrefsRepo;
-  late MockRateLimiter mockRateLimiter;
+  late mocks.MockAIService mockAIService;
+  late mocks.MockGoalsRepository mockGoalsRepo;
+  late mocks.MockCheckInRepository mockCheckInRepo;
+  late mocks.MockDailyPlanRepository mockPlanRepo;
+  late mocks.MockPreferencesRepository mockPrefsRepo;
+  late mocks.MockRateLimiter mockRateLimiter;
 
   setUp(() {
-    mockAIService = MockAIService();
-    mockGoalsRepo = MockGoalsRepository();
-    mockCheckInRepo = MockCheckInRepository();
-    mockPlanRepo = MockDailyPlanRepository();
-    mockPrefsRepo = MockPreferencesRepository();
-    mockRateLimiter = MockRateLimiter();
+    mockAIService = mocks.MockAIService();
+    mockGoalsRepo = mocks.MockGoalsRepository();
+    mockCheckInRepo = mocks.MockCheckInRepository();
+    mockPlanRepo = mocks.MockDailyPlanRepository();
+    mockPrefsRepo = mocks.MockPreferencesRepository();
+    mockRateLimiter = mocks.MockRateLimiter();
 
     generator = DailyPlanGenerator(
       aiService: mockAIService,
@@ -79,7 +79,7 @@ void main() {
         when(mockAIService.generateCompletion(
           systemPrompt: anyNamed('systemPrompt'),
           userPrompt: anyNamed('userPrompt'),
-        )).thenAnswer((_) async => MockAIResponse(validAIResponse));
+        )).thenAnswer((_) async => createMockAIResponse(validAIResponse));
         when(mockPlanRepo.savePlan(any)).thenAnswer((_) async => {});
 
         // Act
@@ -103,10 +103,10 @@ void main() {
 
         // Assert
         expect(result.isFailure, true);
-        result.when(
+        result.map(
           success: (_) => fail('Should not succeed'),
-          failure: (error) {
-            expect(error, isA<RateLimitFailure>());
+          failure: (failure) {
+            expect(failure.exception, isA<RateLimitFailure>());
           },
         );
       });
@@ -120,18 +120,18 @@ void main() {
         when(mockAIService.generateCompletion(
           systemPrompt: anyNamed('systemPrompt'),
           userPrompt: anyNamed('userPrompt'),
-        )).thenAnswer((_) async => MockAIResponse('invalid json'));
+        )).thenAnswer((_) async => createMockAIResponse('invalid json'));
 
         // Act
         final result = await generator.generatePlan(userId: testUserId);
 
         // Assert
         expect(result.isFailure, true);
-        result.when(
+        result.map(
           success: (_) => fail('Should not succeed'),
-          failure: (error) {
-            expect(error, isA<AIParsingFailure>());
-            expect(error.message, contains('Invalid JSON format'));
+          failure: (failure) {
+            expect(failure.exception, isA<AIParsingFailure>());
+            expect((failure.exception as AIParsingFailure).message, contains('Invalid JSON format'));
           },
         );
       });
@@ -147,18 +147,18 @@ void main() {
         when(mockAIService.generateCompletion(
           systemPrompt: anyNamed('systemPrompt'),
           userPrompt: anyNamed('userPrompt'),
-        )).thenAnswer((_) async => MockAIResponse(invalidResponse));
+        )).thenAnswer((_) async => createMockAIResponse(invalidResponse));
 
         // Act
         final result = await generator.generatePlan(userId: testUserId);
 
         // Assert
         expect(result.isFailure, true);
-        result.when(
+        result.map(
           success: (_) => fail('Should not succeed'),
-          failure: (error) {
-            expect(error, isA<AIParsingFailure>());
-            expect(error.message, contains('Expected "tasks" to be a list'));
+          failure: (failure) {
+            expect(failure.exception, isA<AIParsingFailure>());
+            expect((failure.exception as AIParsingFailure).message, contains('Expected "tasks" to be a list'));
           },
         );
       });
@@ -172,7 +172,7 @@ void main() {
         when(mockAIService.generateCompletion(
           systemPrompt: anyNamed('systemPrompt'),
           userPrompt: anyNamed('userPrompt'),
-        )).thenAnswer((_) async => MockAIResponse(validAIResponse));
+        )).thenAnswer((_) async => createMockAIResponse(validAIResponse));
         when(mockPlanRepo.savePlan(any)).thenThrow(Exception('Database error'));
 
         // Act
@@ -180,11 +180,11 @@ void main() {
 
         // Assert
         expect(result.isFailure, true);
-        result.when(
+        result.map(
           success: (_) => fail('Should not succeed'),
-          failure: (error) {
-            expect(error, isA<DatabaseFailure>());
-            expect(error.message, contains('Failed to save plan'));
+          failure: (failure) {
+            expect(failure.exception, isA<DatabaseFailure>());
+            expect((failure.exception as DatabaseFailure).message, contains('Failed to save plan'));
           },
         );
       });
@@ -200,7 +200,7 @@ void main() {
         when(mockAIService.generateCompletion(
           systemPrompt: anyNamed('systemPrompt'),
           userPrompt: anyNamed('userPrompt'),
-        )).thenAnswer((_) async => MockAIResponse(validAIResponse));
+        )).thenAnswer((_) async => createMockAIResponse(validAIResponse));
         when(mockPlanRepo.savePlan(any)).thenAnswer((_) async => {});
 
         // Act
@@ -245,16 +245,18 @@ void main() {
   });
 }
 
-class MockAIResponse {
-  final String content;
-  final int tokensUsed;
-  final double estimatedCost;
-  final String model;
-
-  MockAIResponse(
-    this.content, {
-    this.tokensUsed = 100,
-    this.estimatedCost = 0.01,
-    this.model = 'gpt-4o-mini',
-  });
+// Helper function to create AIResponse for testing
+AIResponse createMockAIResponse(
+  String content, {
+  int tokensUsed = 100,
+  double estimatedCost = 0.01,
+  String model = 'gpt-4o-mini',
+}) {
+  return AIResponse(
+    content: content,
+    tokensUsed: tokensUsed,
+    estimatedCost: estimatedCost,
+    timestamp: DateTime.now(),
+    model: model,
+  );
 }

@@ -1,10 +1,10 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:gymapp/core/database/database.dart';
-import 'package:gymapp/core/error/failures.dart';
-import 'package:gymapp/features/fitness/data/repositories/measurements_repository_impl.dart';
-import 'package:gymapp/features/fitness/domain/entities/body_measurement_entity.dart';
+import 'package:lifeos/core/database/database.dart';
+import 'package:lifeos/core/error/failures.dart';
+import 'package:lifeos/features/fitness/data/repositories/measurements_repository_impl.dart';
+import 'package:lifeos/features/fitness/domain/entities/body_measurement_entity.dart';
 
 import 'measurements_repository_impl_test.mocks.dart';
 
@@ -63,11 +63,11 @@ void main() {
 
         // Assert
         expect(result.isFailure, true);
-        result.when(
+        result.map(
           success: (_) => fail('Should not succeed'),
-          failure: (error) {
-            expect(error, isA<DatabaseFailure>());
-            expect(error.message, contains('Failed to record measurement'));
+          failure: (failure) {
+            expect(failure.exception, isA<DatabaseFailure>());
+            expect((failure.exception as DatabaseFailure).message, contains('Failed to record measurement'));
           },
         );
       });

@@ -1,6 +1,7 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:lifeos/core/ai/ai_provider.dart';
 import 'package:lifeos/core/database/database.dart';
+import 'package:lifeos/core/database/database_providers.dart';
 import '../../domain/repositories/goals_repository.dart';
 import '../../domain/repositories/check_in_repository.dart';
 import '../../domain/repositories/preferences_repository.dart';
@@ -9,12 +10,6 @@ import '../daily_plan_generator.dart';
 import '../models/daily_plan.dart';
 
 part 'daily_plan_provider.g.dart';
-
-// Database provider (reuse existing if available, or create new)
-@riverpod
-AppDatabase appDatabase(AppDatabaseRef ref) {
-  return AppDatabase();
-}
 
 // Repository providers (mocks for now - will be replaced when Epic 2 stories are implemented)
 @riverpod
@@ -65,12 +60,12 @@ class DailyPlanNotifier extends _$DailyPlanNotifier {
       final generator = ref.read(dailyPlanGeneratorProvider);
       final result = await generator.generatePlan();
 
-      result.when(
-        success: (plan) {
-          state = AsyncValue.data(plan);
+      result.map(
+        success: (success) {
+          state = AsyncValue.data(success.data);
         },
-        failure: (error) {
-          state = AsyncValue.error(error, StackTrace.current);
+        failure: (failure) {
+          state = AsyncValue.error(failure.exception, StackTrace.current);
         },
       );
     } catch (error, stackTrace) {
@@ -177,8 +172,3 @@ class DailyPlanNotifier extends _$DailyPlanNotifier {
     state = AsyncValue.data(updatedPlan);
   }
 }
-
-// Migration note: Use existing appDatabaseProvider if available
-final appDatabaseProvider = Provider<AppDatabase>((ref) {
-  return AppDatabase();
-});

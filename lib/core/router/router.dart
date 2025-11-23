@@ -25,8 +25,8 @@ final routerProvider = Provider<GoRouter>((ref) {
     initialLocation: AppRoutes.register,
     debugLogDiagnostics: true,
     redirect: (context, state) {
-      final isAuthenticated = authState.maybeWhen(
-        authenticated: (_) => true,
+      final isAuthenticated = authState.maybeMap(
+        authenticated: (authenticated) => true,
         orElse: () => false,
       );
 

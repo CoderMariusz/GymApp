@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
-import 'package:gymapp/core/widgets/daily_input_form.dart';
-import 'package:gymapp/core/auth/presentation/providers/auth_provider.dart';
-import 'package:gymapp/features/life_coach/presentation/providers/check_in_provider.dart';
-import 'package:gymapp/features/life_coach/domain/entities/check_in_entity.dart';
+import 'package:lifeos/core/widgets/daily_input_form.dart';
+import 'package:lifeos/core/auth/presentation/providers/auth_provider.dart';
+import 'package:lifeos/features/life_coach/presentation/providers/check_in_provider.dart';
+import 'package:lifeos/features/life_coach/domain/entities/check_in_entity.dart';
 
 /// Evening Reflection Page
 /// Story 2.5: Allows users to reflect on their day and plan for tomorrow
@@ -20,8 +20,8 @@ class EveningReflectionPage extends ConsumerWidget {
         title: const Text('Evening Reflection'),
         backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
       ),
-      body: authState.maybeWhen(
-        authenticated: (user) => DailyInputForm(
+      body: authState.maybeMap(
+        authenticated: (authenticated) => DailyInputForm(
           fields: [
             FormFieldConfig(
               label: 'Today\'s Wins',
@@ -47,7 +47,7 @@ class EveningReflectionPage extends ConsumerWidget {
           onSubmit: (data) async {
             final reflection = CheckInEntity(
               id: const Uuid().v4(),
-              userId: user.id,
+              userId: authenticated.user.id,
               type: CheckInType.evening,
               timestamp: DateTime.now(),
               productivityRating: data['mood'] as int?,
@@ -61,8 +61,8 @@ class EveningReflectionPage extends ConsumerWidget {
                 .read(checkInProvider.notifier)
                 .createEveningReflection(reflection);
 
-            result.when(
-              success: (_) {
+            result.map(
+              success: (success) {
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
@@ -73,11 +73,11 @@ class EveningReflectionPage extends ConsumerWidget {
                   Navigator.pop(context);
                 }
               },
-              failure: (error) {
+              failure: (failure) {
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text('Error: ${error.toString()}'),
+                      content: Text('Error: ${failure.exception.toString()}'),
                       backgroundColor: Colors.red,
                     ),
                   );

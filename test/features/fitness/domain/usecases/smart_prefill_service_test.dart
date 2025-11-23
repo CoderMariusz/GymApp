@@ -1,20 +1,20 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:gymapp/features/fitness/domain/entities/workout_log.dart';
-import 'package:gymapp/features/fitness/domain/entities/exercise_set_entity.dart';
-import 'package:gymapp/features/fitness/domain/repositories/workout_repository.dart';
-import 'package:gymapp/features/fitness/domain/usecases/smart_prefill_service.dart';
+import 'package:lifeos/features/fitness/domain/entities/workout_log.dart';
+import 'package:lifeos/features/fitness/domain/entities/exercise_set_entity.dart';
+import 'package:lifeos/features/fitness/domain/repositories/workout_repository.dart';
+import 'package:lifeos/features/fitness/domain/usecases/smart_prefill_service.dart';
 
-import 'smart_prefill_service_test.mocks.dart';
+import 'smart_prefill_service_test.mocks.dart' as mocks;
 
 @GenerateMocks([WorkoutRepository])
 void main() {
   late SmartPrefillService service;
-  late MockWorkoutRepository mockRepository;
+  late mocks.MockWorkoutRepository mockRepository;
 
   setUp(() {
-    mockRepository = MockWorkoutRepository();
+    mockRepository = mocks.MockWorkoutRepository();
     service = SmartPrefillService(mockRepository);
   });
 
@@ -47,16 +47,24 @@ void main() {
             date: DateTime.now(),
             sets: [
               ExerciseSetEntity(
+                id: 'test-id-1',
+                workoutLogId: 'test-workout-1',
+                exerciseName: testExerciseName,
+                setNumber: 1,
                 weight: 100.0,
                 reps: 8,
-                rpe: 6.0,
-                restSeconds: 120,
+                restTime: 120,
+                createdAt: DateTime.now(),
               ),
               ExerciseSetEntity(
+                id: 'test-id-2',
+                workoutLogId: 'test-workout-1',
+                exerciseName: testExerciseName,
+                setNumber: 2,
                 weight: 100.0,
                 reps: 8,
-                rpe: 7.0,
-                restSeconds: 120,
+                restTime: 120,
+                createdAt: DateTime.now(),
               ),
             ],
           ),

@@ -1,25 +1,29 @@
 // Story 3.2: Exercise Library - Riverpod Providers
 // State management for exercise library, search, filters, and favorites
 
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/exercise.dart';
 import '../repositories/exercise_repository.dart';
+
+part 'exercise_providers.g.dart';
 
 // ============================================================================
 // REPOSITORY PROVIDER
 // ============================================================================
 
 /// Provider for Supabase client
-final supabaseClientProvider = Provider<SupabaseClient>((ref) {
+@riverpod
+SupabaseClient supabaseClient(SupabaseClientRef ref) {
   return Supabase.instance.client;
-});
+}
 
 /// Provider for ExerciseRepository
-final exerciseRepositoryProvider = Provider<ExerciseRepository>((ref) {
+@riverpod
+ExerciseRepository exerciseRepository(ExerciseRepositoryRef ref) {
   final supabase = ref.watch(supabaseClientProvider);
   return ExerciseRepository(supabase: supabase);
-});
+}
 
 // ============================================================================
 // EXERCISE LIBRARY PROVIDERS
@@ -29,43 +33,77 @@ final exerciseRepositoryProvider = Provider<ExerciseRepository>((ref) {
 ///
 /// This loads all exercises from the database (system + custom)
 /// Cached automatically by Riverpod
-final allExercisesProvider = FutureProvider<List<Exercise>>((ref) async {
+@riverpod
+Future<List<Exercise>> allExercises(AllExercisesRef ref) async {
   final repository = ref.watch(exerciseRepositoryProvider);
   return await repository.getAllExercises();
-});
+}
 
 /// Provider for user's custom exercises (AC6: Custom exercises saved to user's library)
-final customExercisesProvider = FutureProvider<List<Exercise>>((ref) async {
+@riverpod
+Future<List<Exercise>> customExercises(CustomExercisesRef ref) async {
   final repository = ref.watch(exerciseRepositoryProvider);
   return await repository.getUserCustomExercises();
-});
+}
 
 /// Provider for favorite exercises (AC7: Favorite exercises → Quick access)
-final favoriteExercisesProvider = FutureProvider<List<Exercise>>((ref) async {
+@riverpod
+Future<List<Exercise>> favoriteExercises(FavoriteExercisesRef ref) async {
   final repository = ref.watch(exerciseRepositoryProvider);
   return await repository.getFavoriteExercises();
-});
+}
 
 // ============================================================================
 // SEARCH AND FILTER STATE PROVIDERS
 // ============================================================================
 
 /// Provider for search query state (AC3: Search bar with real-time filtering)
-final searchQueryProvider = StateProvider<String>((ref) => '');
+@riverpod
+class SearchQuery extends _$SearchQuery {
+  @override
+  String build() => '';
+
+  void update(String query) => state = query;
+}
 
 /// Provider for selected category filter (AC2: Categories)
 ///
 /// Options: All, Chest, Back, Legs, Shoulders, Arms, Core, Cardio, Other
-final selectedCategoryProvider = StateProvider<String>((ref) => 'All');
+@riverpod
+class SelectedCategory extends _$SelectedCategory {
+  @override
+  String build() => 'All';
+
+  void update(String category) => state = category;
+}
 
 /// Provider for selected equipment filter (AC2: Filter by equipment)
-final selectedEquipmentProvider = StateProvider<EquipmentType?>((ref) => null);
+@riverpod
+class SelectedEquipment extends _$SelectedEquipment {
+  @override
+  EquipmentType? build() => null;
+
+  void update(EquipmentType? equipment) => state = equipment;
+}
 
 /// Provider for selected difficulty filter
-final selectedDifficultyProvider = StateProvider<ExerciseDifficulty?>((ref) => null);
+@riverpod
+class SelectedDifficulty extends _$SelectedDifficulty {
+  @override
+  ExerciseDifficulty? build() => null;
+
+  void update(ExerciseDifficulty? difficulty) => state = difficulty;
+}
 
 /// Provider for "show favorites only" toggle
-final showFavoritesOnlyProvider = StateProvider<bool>((ref) => false);
+@riverpod
+class ShowFavoritesOnly extends _$ShowFavoritesOnly {
+  @override
+  bool build() => false;
+
+  void toggle() => state = !state;
+  void update(bool value) => state = value;
+}
 
 // ============================================================================
 // FILTERED EXERCISES PROVIDER (AC3: Real-time filtering <200ms)
@@ -78,7 +116,8 @@ final showFavoritesOnlyProvider = StateProvider<bool>((ref) => false);
 ///
 /// AC3: Search bar with real-time filtering (<200ms)
 /// Uses client-side filtering for optimal performance
-final filteredExercisesProvider = Provider<AsyncValue<List<Exercise>>>((ref) {
+@riverpod
+Future<List<Exercise>> filteredExercises(FilteredExercisesRef ref) async {
   // Watch all filter states
   final searchQuery = ref.watch(searchQueryProvider);
   final selectedCategory = ref.watch(selectedCategoryProvider);
@@ -87,41 +126,34 @@ final filteredExercisesProvider = Provider<AsyncValue<List<Exercise>>>((ref) {
   final showFavoritesOnly = ref.watch(showFavoritesOnlyProvider);
 
   // Get exercises source (favorites or all)
-  final exercisesAsync = showFavoritesOnly
-      ? ref.watch(favoriteExercisesProvider)
-      : ref.watch(allExercisesProvider);
+  final exercises = showFavoritesOnly
+      ? await ref.watch(favoriteExercisesProvider.future)
+      : await ref.watch(allExercisesProvider.future);
 
-  // Apply filters to exercises
-  return exercisesAsync.when(
-    data: (exercises) {
-      var filtered = exercises;
+  var filtered = exercises;
 
-      // Apply search filter (AC3)
-      if (searchQuery.isNotEmpty) {
-        filtered = filtered.filterBySearch(searchQuery);
-      }
+  // Apply search filter (AC3)
+  if (searchQuery.isNotEmpty) {
+    filtered = filtered.filterBySearch(searchQuery);
+  }
 
-      // Apply category filter (AC2)
-      if (selectedCategory != 'All') {
-        filtered = filtered.filterByCategory(selectedCategory);
-      }
+  // Apply category filter (AC2)
+  if (selectedCategory != 'All') {
+    filtered = filtered.filterByCategory(selectedCategory);
+  }
 
-      // Apply equipment filter
-      if (selectedEquipment != null) {
-        filtered = filtered.filterByEquipment(selectedEquipment);
-      }
+  // Apply equipment filter
+  if (selectedEquipment != null) {
+    filtered = filtered.filterByEquipment(selectedEquipment);
+  }
 
-      // Apply difficulty filter
-      if (selectedDifficulty != null) {
-        filtered = filtered.filterByDifficulty(selectedDifficulty);
-      }
+  // Apply difficulty filter
+  if (selectedDifficulty != null) {
+    filtered = filtered.filterByDifficulty(selectedDifficulty);
+  }
 
-      return AsyncValue.data(filtered);
-    },
-    loading: () => const AsyncValue.loading(),
-    error: (error, stack) => AsyncValue.error(error, stack),
-  );
-});
+  return filtered;
+}
 
 // ============================================================================
 // EXERCISE DETAIL PROVIDER
@@ -130,10 +162,11 @@ final filteredExercisesProvider = Provider<AsyncValue<List<Exercise>>>((ref) {
 /// Provider for a single exercise by ID (AC4: Exercise details)
 ///
 /// Use like: ref.watch(exerciseDetailProvider(exerciseId))
-final exerciseDetailProvider = FutureProvider.family<Exercise, String>((ref, exerciseId) async {
+@riverpod
+Future<Exercise> exerciseDetail(ExerciseDetailRef ref, String exerciseId) async {
   final repository = ref.watch(exerciseRepositoryProvider);
   return await repository.getExerciseById(exerciseId);
-});
+}
 
 // ============================================================================
 // FAVORITE STATUS PROVIDER
@@ -142,84 +175,73 @@ final exerciseDetailProvider = FutureProvider.family<Exercise, String>((ref, exe
 /// Provider for checking if an exercise is favorited (AC7)
 ///
 /// Use like: ref.watch(isExerciseFavoritedProvider(exerciseId))
-final isExerciseFavoritedProvider = FutureProvider.family<bool, String>((ref, exerciseId) async {
+@riverpod
+Future<bool> isExerciseFavorited(IsExerciseFavoritedRef ref, String exerciseId) async {
   final repository = ref.watch(exerciseRepositoryProvider);
   return await repository.isExerciseFavorited(exerciseId);
-});
+}
 
 /// Provider for favorites count
-final favoritesCountProvider = FutureProvider<int>((ref) async {
+@riverpod
+Future<int> favoritesCount(FavoritesCountRef ref) async {
   final repository = ref.watch(exerciseRepositoryProvider);
   return await repository.getFavoritesCount();
-});
+}
 
 // ============================================================================
 // CATEGORY STATISTICS PROVIDER
 // ============================================================================
 
 /// Provider for exercise counts by category (for UI display)
-final categoryCountsProvider = Provider<Map<String, int>>((ref) {
-  final exercisesAsync = ref.watch(allExercisesProvider);
+@riverpod
+Future<Map<String, int>> categoryCounts(CategoryCountsRef ref) async {
+  final exercises = await ref.watch(allExercisesProvider.future);
 
-  return exercisesAsync.when(
-    data: (exercises) {
-      final counts = <String, int>{};
+  final counts = <String, int>{};
 
-      // Count exercises in each category
-      for (final exercise in exercises) {
-        final category = exercise.primaryCategory;
-        counts[category] = (counts[category] ?? 0) + 1;
-      }
+  // Count exercises in each category
+  for (final exercise in exercises) {
+    final category = exercise.primaryCategory;
+    counts[category] = (counts[category] ?? 0) + 1;
+  }
 
-      return counts;
-    },
-    loading: () => {},
-    error: (_, __) => {},
-  );
-});
+  return counts;
+}
 
 // ============================================================================
 // NOTIFIER FOR TOGGLING FAVORITES (AC7: star icon)
 // ============================================================================
 
 /// State notifier for managing favorite toggle action
-class FavoriteToggleNotifier extends StateNotifier<AsyncValue<bool>> {
-  FavoriteToggleNotifier(this.repository, this.exerciseId)
-      : super(const AsyncValue.loading()) {
-    _checkInitialState();
-  }
+@riverpod
+class FavoriteToggle extends _$FavoriteToggle {
+  late String exerciseId;
 
-  final ExerciseRepository repository;
-  final String exerciseId;
-
-  Future<void> _checkInitialState() async {
-    state = const AsyncValue.loading();
-    state = await AsyncValue.guard(() => repository.isExerciseFavorited(exerciseId));
+  @override
+  Future<bool> build(String id) async {
+    exerciseId = id;
+    final repository = ref.watch(exerciseRepositoryProvider);
+    return await repository.isExerciseFavorited(exerciseId);
   }
 
   Future<void> toggle() async {
+    final repository = ref.read(exerciseRepositoryProvider);
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() => repository.toggleExerciseFavorite(exerciseId));
   }
 }
-
-/// Provider for favorite toggle notifier
-final favoriteToggleProvider = StateNotifierProvider.family<FavoriteToggleNotifier, AsyncValue<bool>, String>(
-  (ref, exerciseId) {
-    final repository = ref.watch(exerciseRepositoryProvider);
-    return FavoriteToggleNotifier(repository, exerciseId);
-  },
-);
 
 // ============================================================================
 // CUSTOM EXERCISE CREATION PROVIDER
 // ============================================================================
 
 /// State notifier for creating custom exercises (AC5: User can add custom exercises)
-class CustomExerciseCreationNotifier extends StateNotifier<AsyncValue<Exercise?>> {
-  CustomExerciseCreationNotifier(this.repository) : super(const AsyncValue.data(null));
-
-  final ExerciseRepository repository;
+@riverpod
+class CustomExerciseCreation extends _$CustomExerciseCreation {
+  @override
+  AsyncValue<Exercise?> build() {
+    return const AsyncValue.data(null);
+  }
 
   Future<void> createCustomExercise({
     required String name,
@@ -229,6 +251,7 @@ class CustomExerciseCreationNotifier extends StateNotifier<AsyncValue<Exercise?>
     required ExerciseDifficulty difficulty,
     String? instructions,
   }) async {
+    final repository = ref.read(exerciseRepositoryProvider);
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() => repository.createCustomExercise(
           name: name,
@@ -244,10 +267,3 @@ class CustomExerciseCreationNotifier extends StateNotifier<AsyncValue<Exercise?>
     state = const AsyncValue.data(null);
   }
 }
-
-/// Provider for custom exercise creation
-final customExerciseCreationProvider =
-    StateNotifierProvider<CustomExerciseCreationNotifier, AsyncValue<Exercise?>>((ref) {
-  final repository = ref.watch(exerciseRepositoryProvider);
-  return CustomExerciseCreationNotifier(repository);
-});

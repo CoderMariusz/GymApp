@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:gymapp/features/fitness/domain/entities/exercise_set_entity.dart';
+import 'package:lifeos/features/fitness/domain/entities/exercise_set_entity.dart';
 
 /// Widget for inputting exercise set data
 class ExerciseSetInput extends StatefulWidget {

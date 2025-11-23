@@ -1,15 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/annotations.dart';
-import 'package:mockito/mockito.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:gymapp/features/fitness/presentation/pages/templates_page.dart';
-import 'package:gymapp/features/fitness/presentation/providers/templates_provider.dart';
-import 'package:gymapp/features/fitness/domain/entities/workout_template_entity.dart';
+import 'package:lifeos/features/fitness/presentation/pages/templates_page.dart';
+import 'package:lifeos/features/fitness/presentation/providers/templates_provider.dart';
+import 'package:lifeos/features/fitness/domain/entities/workout_template_entity.dart';
 
-import 'templates_page_test.mocks.dart';
-
-@GenerateMocks([])
 void main() {
   testWidgets('TemplatesPage renders with tab bar', (tester) async {
     // Arrange

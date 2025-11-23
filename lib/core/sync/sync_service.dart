@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:drift/drift.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:lifeos/core/database/database.dart';
 import 'package:lifeos/core/sync/sync_queue.dart';
@@ -200,8 +201,8 @@ class SyncService {
             energyScore: Value(data['energy_score']),
             stressLevel: Value(data['stress_level']),
             notes: Value(data['notes']),
-            loggedAt: DateTime.parse(data['logged_at']),
-            createdAt: DateTime.parse(data['created_at']),
+            loggedAt: Value(DateTime.parse(data['logged_at'])),
+            createdAt: Value(DateTime.parse(data['created_at'])),
             isSynced: const Value(true),
             lastSyncedAt: Value(DateTime.now()),
           ),

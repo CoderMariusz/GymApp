@@ -1,10 +1,10 @@
 import 'package:drift/drift.dart';
-import 'package:gymapp/core/database/database.dart';
-import 'package:gymapp/core/error/result.dart';
-import 'package:gymapp/core/error/failures.dart';
-import 'package:gymapp/features/fitness/data/models/workout_template_model.dart';
-import 'package:gymapp/features/fitness/domain/entities/workout_template_entity.dart';
-import 'package:gymapp/features/fitness/domain/repositories/templates_repository.dart';
+import 'package:lifeos/core/database/database.dart';
+import 'package:lifeos/core/error/result.dart';
+import 'package:lifeos/core/error/failures.dart';
+import 'package:lifeos/features/fitness/data/models/workout_template_model.dart';
+import 'package:lifeos/features/fitness/domain/entities/workout_template_entity.dart';
+import 'package:lifeos/features/fitness/domain/repositories/templates_repository.dart';
 
 class TemplatesRepositoryImpl implements TemplatesRepository {
   final AppDatabase _database;

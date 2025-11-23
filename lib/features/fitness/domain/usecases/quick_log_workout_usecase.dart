@@ -1,7 +1,7 @@
-import 'package:gymapp/core/error/result.dart';
-import 'package:gymapp/core/error/failures.dart';
-import 'package:gymapp/features/fitness/domain/entities/workout_log_entity.dart';
-import 'package:gymapp/features/fitness/domain/repositories/workout_log_repository.dart';
+import 'package:lifeos/core/error/result.dart';
+import 'package:lifeos/core/error/failures.dart';
+import 'package:lifeos/features/fitness/domain/entities/workout_log_entity.dart';
+import 'package:lifeos/features/fitness/domain/repositories/workout_log_repository.dart';
 
 /// Use case for quick logging a workout (simplified entry)
 class QuickLogWorkoutUseCase {

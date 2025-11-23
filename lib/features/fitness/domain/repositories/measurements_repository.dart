@@ -1,5 +1,5 @@
-import 'package:gymapp/core/error/result.dart';
-import 'package:gymapp/features/fitness/domain/entities/body_measurement_entity.dart';
+import 'package:lifeos/core/error/result.dart';
+import 'package:lifeos/features/fitness/domain/entities/body_measurement_entity.dart';
 
 abstract class MeasurementsRepository {
   Future<Result<BodyMeasurementEntity>> recordMeasurement(BodyMeasurementEntity measurement);

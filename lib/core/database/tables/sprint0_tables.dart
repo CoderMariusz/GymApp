@@ -14,6 +14,13 @@ class WorkoutTemplates extends Table {
   TextColumn get userId => text().named('user_id')();
   TextColumn get name => text()();
   TextColumn get description => text().nullable()();
+  TextColumn get category => text().withDefault(const Constant(''))();
+  TextColumn get difficulty => text().withDefault(const Constant(''))();
+  IntColumn get estimatedDuration => integer().named('estimated_duration').withDefault(const Constant(0))();
+  BoolColumn get isPreBuilt => boolean().named('is_pre_built').withDefault(const Constant(false))();
+  BoolColumn get isFavorite => boolean().named('is_favorite').withDefault(const Constant(false))();
+  IntColumn get timesUsed => integer().named('times_used').withDefault(const Constant(0))();
+  DateTimeColumn get lastUsed => dateTime().named('last_used').nullable()();
   BoolColumn get isPublic => boolean().named('is_public').withDefault(const Constant(false))();
   TextColumn get createdBy => text().named('created_by').withDefault(const Constant('user'))();
   TextColumn get exercises => text()(); // JSON string of exercises array

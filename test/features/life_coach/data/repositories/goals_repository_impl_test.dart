@@ -1,10 +1,10 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:gymapp/core/database/database.dart';
-import 'package:gymapp/core/error/failures.dart';
-import 'package:gymapp/features/life_coach/data/repositories/goals_repository_impl.dart';
-import 'package:gymapp/features/life_coach/domain/entities/goal_entity.dart';
+import 'package:lifeos/core/database/database.dart';
+import 'package:lifeos/core/error/failures.dart';
+import 'package:lifeos/features/life_coach/data/repositories/goals_repository_impl.dart';
+import 'package:lifeos/features/life_coach/domain/entities/goal_entity.dart';
 
 import 'goals_repository_impl_test.mocks.dart';
 
@@ -62,11 +62,11 @@ void main() {
 
         // Assert
         expect(result.isFailure, true);
-        result.when(
+        result.map(
           success: (_) => fail('Should not succeed'),
-          failure: (error) {
-            expect(error, isA<DatabaseFailure>());
-            expect(error.message, contains('Failed to create goal'));
+          failure: (failure) {
+            expect(failure.exception, isA<DatabaseFailure>());
+            expect((failure.exception as DatabaseFailure).message, contains('Failed to create goal'));
           },
         );
       });

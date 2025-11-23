@@ -1,6 +1,6 @@
-import 'package:gymapp/core/error/result.dart';
-import 'package:gymapp/features/fitness/domain/entities/workout_template_entity.dart';
-import 'package:gymapp/features/fitness/domain/repositories/templates_repository.dart';
+import 'package:lifeos/core/error/result.dart';
+import 'package:lifeos/features/fitness/domain/entities/workout_template_entity.dart';
+import 'package:lifeos/features/fitness/domain/repositories/templates_repository.dart';
 
 class GetTemplatesUseCase {
   final TemplatesRepository _repository;

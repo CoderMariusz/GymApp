@@ -1,11 +1,11 @@
 import 'dart:convert';
 import 'package:drift/drift.dart';
-import 'package:gymapp/core/database/database.dart';
-import 'package:gymapp/core/error/result.dart';
-import 'package:gymapp/core/error/failures.dart';
-import 'package:gymapp/features/life_coach/data/models/goal_model.dart';
-import 'package:gymapp/features/life_coach/domain/entities/goal_entity.dart';
-import 'package:gymapp/features/life_coach/domain/repositories/goals_repository.dart';
+import 'package:lifeos/core/database/database.dart';
+import 'package:lifeos/core/error/result.dart';
+import 'package:lifeos/core/error/failures.dart';
+import 'package:lifeos/features/life_coach/data/models/goal_model.dart';
+import 'package:lifeos/features/life_coach/domain/entities/goal_entity.dart';
+import 'package:lifeos/features/life_coach/domain/repositories/goals_repository.dart';
 
 class GoalsRepositoryImpl implements GoalsRepository {
   final AppDatabase _database;
@@ -179,13 +179,13 @@ class GoalsRepositoryImpl implements GoalsRepository {
 
       final goal = await getGoalById(goalId);
       await goal.when(
-        success: (entity) async {
-          final targetVal = entity.targetValue;
-          final percentage = entity.hasTarget && targetVal != null && targetVal > 0
+        success: (data) async {
+          final targetVal = data.targetValue;
+          final percentage = data.hasTarget && targetVal != null && targetVal > 0
               ? ((value / targetVal) * 100).clamp(0, 100).round()
               : 0;
 
-          await updateGoal(entity.copyWith(
+          await updateGoal(data.copyWith(
             currentValue: value,
             completionPercentage: percentage,
             isCompleted: percentage >= 100,
@@ -205,8 +205,8 @@ class GoalsRepositoryImpl implements GoalsRepository {
   Future<Result<double>> getProgressPercentage(String goalId) async {
     final result = await getGoalById(goalId);
     return result.when(
-      success: (goal) => Result.success(goal.progressPercentage),
-      failure: (error) => Result.failure(error),
+      success: (data) => Result.success(data.progressPercentage),
+      failure: (exception) => Result.failure(exception),
     );
   }
 }

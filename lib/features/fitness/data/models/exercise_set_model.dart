@@ -1,6 +1,7 @@
+import 'package:drift/drift.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:gymapp/features/fitness/domain/entities/exercise_set_entity.dart';
-import 'package:gymapp/core/database/database.dart';
+import 'package:lifeos/features/fitness/domain/entities/exercise_set_entity.dart';
+import 'package:lifeos/core/database/database.dart';
 
 part 'exercise_set_model.freezed.dart';
 part 'exercise_set_model.g.dart';
@@ -54,7 +55,7 @@ class ExerciseSetModel with _$ExerciseSetModel {
       duration: Value(duration),
       restTime: Value(restTime),
       notes: Value(notes),
-      createdAt: createdAt,
+      createdAt: Value(createdAt),
     );
   }
 

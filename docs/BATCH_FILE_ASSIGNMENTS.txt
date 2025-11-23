@@ -1,0 +1,220 @@
+=================================================================
+BATCH FILE ASSIGNMENTS - Conflict Prevention
+=================================================================
+
+RULE: Each file should be modified by ONLY ONE batch.
+If overlap detected, higher priority batch takes precedence.
+
+=================================================================
+BATCH 1: Freezed Sealed Classes (Agent 1)
+=================================================================
+PRIORITY: HIGH
+FILES TO MODIFY: 23 files
+
+lib/core/error/result.dart
+lib/core/auth/presentation/providers/auth_state.dart
+lib/core/ai/models/ai_request.dart
+lib/core/ai/models/ai_response.dart
+lib/core/charts/models/chart_data.dart
+lib/features/fitness/domain/entities/workout_log.dart
+lib/features/fitness/domain/entities/workout_pattern.dart
+lib/features/fitness/domain/entities/exercise_set_entity.dart
+lib/features/fitness/domain/entities/workout_template_entity.dart
+lib/features/fitness/data/models/workout_log_model.dart
+lib/features/fitness/data/models/workout_template_model.dart
+lib/features/fitness/data/models/exercise_set_model.dart
+lib/features/fitness/data/models/body_measurement_model.dart
+lib/features/life_coach/domain/entities/goal_entity.dart
+lib/features/life_coach/data/models/goal_model.dart
+lib/features/life_coach/data/models/check_in_model.dart
+lib/features/life_coach/goals/models/goal_suggestion.dart
+lib/features/life_coach/presentation/widgets/task_edit_dialog.dart
+lib/features/mind_emotion/domain/entities/meditation_entity.dart
+lib/features/mind_emotion/data/models/meditation_model.dart
+lib/features/exercise/models/exercise.dart
+lib/features/exercise/models/exercise_favorite.dart
+lib/core/profile/domain/entities/user_preferences.dart
+
+COMMAND AFTER: flutter pub run build_runner build --delete-conflicting-outputs
+
+=================================================================
+BATCH 2: Riverpod Code Generation (Agent 2)
+=================================================================
+PRIORITY: HIGH
+FILES TO MODIFY: 15+ files
+
+lib/core/ai/ai_provider.dart
+lib/core/database/database.dart (check @riverpod usage)
+lib/features/life_coach/ai/providers/daily_plan_provider.dart
+lib/features/life_coach/ai/providers/goal_suggester.dart
+lib/features/life_coach/presentation/providers/goals_provider.dart
+lib/features/life_coach/presentation/providers/check_in_provider.dart
+lib/features/life_coach/presentation/providers/dashboard_provider.dart
+lib/features/life_coach/chat/providers/chat_provider.dart
+lib/features/life_coach/chat/providers/chat_repository.dart
+lib/features/life_coach/data/repositories/daily_plan_repository.dart
+lib/features/life_coach/data/repositories/goals_repository_impl.dart
+lib/features/life_coach/data/repositories/check_in_repository.dart
+lib/features/fitness/presentation/providers/measurements_provider.dart
+lib/features/fitness/presentation/providers/smart_prefill_provider.dart
+lib/features/fitness/presentation/providers/fitness_charts_provider.dart
+lib/features/fitness/data/repositories/workout_repository.dart
+lib/features/exercise/providers/exercise_providers.dart
+
+COMMAND AFTER: flutter pub run build_runner build --delete-conflicting-outputs
+
+=================================================================
+BATCH 3: Result<T> Pattern Fixes (Agent 3)
+=================================================================
+PRIORITY: MEDIUM
+FILES TO MODIFY: ~20 files (pages/providers using .when())
+
+lib/core/auth/presentation/pages/forgot_password_page.dart
+lib/core/auth/presentation/pages/reset_password_page.dart
+lib/core/profile/presentation/pages/profile_edit_page.dart
+lib/core/router/router.dart
+lib/features/life_coach/ai/providers/daily_plan_provider.dart (SHARED with Batch 2 - coordinate!)
+lib/features/life_coach/chat/providers/chat_provider.dart (SHARED with Batch 2 - coordinate!)
+lib/features/life_coach/presentation/providers/dashboard_provider.dart (SHARED with Batch 2 - coordinate!)
+lib/features/life_coach/presentation/providers/goals_provider.dart (SHARED with Batch 2 - let Batch 2 handle!)
+lib/features/life_coach/presentation/pages/goals_list_page.dart
+lib/features/life_coach/presentation/pages/goal_suggestions_page.dart
+lib/features/life_coach/presentation/pages/daily_plan_page.dart
+lib/features/life_coach/presentation/pages/daily_plan_edit_page.dart
+lib/features/fitness/presentation/pages/measurements_page.dart
+lib/features/fitness/presentation/pages/templates_page.dart
+lib/features/fitness/presentation/pages/workout_log_page.dart
+
+NOTES:
+- DO NOT modify files already touched by Batch 2
+- Focus on .when() pattern fixes in UI layer
+- Wait for Batch 1 to complete (Result<T> needs sealed keyword)
+
+COMMAND AFTER: flutter analyze (no build_runner needed)
+
+=================================================================
+BATCH 4: Drift Value<T> Fixes (Agent 4)
+=================================================================
+PRIORITY: MEDIUM
+FILES TO MODIFY: ~12 files
+
+lib/features/fitness/data/models/body_measurement_model.dart (SHARED with Batch 1 - let Batch 1 handle sealed, this batch handles Value)
+lib/features/life_coach/data/models/goal_model.dart (SHARED with Batch 1 - let Batch 1 handle sealed, this batch handles Value)
+lib/features/life_coach/data/models/check_in_model.dart (SHARED with Batch 1 - same as above)
+lib/features/fitness/data/models/exercise_set_model.dart (SHARED with Batch 1 - same as above)
+lib/features/fitness/data/models/workout_log_model.dart (SHARED with Batch 1 - same as above)
+lib/features/fitness/data/models/workout_template_model.dart (SHARED with Batch 1 - same as above)
+lib/features/fitness/data/repositories/measurements_repository_impl.dart
+lib/features/life_coach/data/repositories/goals_repository_impl.dart (SHARED with Batch 2 - coordinate!)
+lib/features/life_coach/data/repositories/check_in_repository.dart (SHARED with Batch 2 - coordinate!)
+lib/core/sync/sync_service.dart
+lib/core/database/database.dart (only Value fixes, not @riverpod)
+
+NOTES:
+- Focus ONLY on .Value() → Value() replacements
+- Do NOT modify @freezed or @riverpod annotations (other batches handle that)
+- Can run in parallel with Batch 1 IF careful about merge conflicts
+
+COMMAND AFTER: flutter analyze (no build_runner needed)
+
+=================================================================
+BATCH 5: Test Mocks Generation (Agent 5)
+=================================================================
+PRIORITY: LOW
+FILES TO MODIFY: 7 test files ONLY
+
+test/features/fitness/data/repositories/measurements_repository_impl_test.dart
+test/features/fitness/domain/usecases/smart_prefill_service_test.dart
+test/features/life_coach/ai/daily_plan_generator_test.dart
+test/features/life_coach/data/repositories/goals_repository_impl_test.dart
+test/features/fitness/presentation/pages/measurements_page_test.dart
+test/features/fitness/presentation/pages/templates_page_test.dart
+test/features/life_coach/goals/presentation/pages/goal_suggestions_page_test.dart
+
+NOTES:
+- ONLY modifies test/ directory
+- NO conflicts with other batches
+- Safe to run in parallel with all other batches
+
+COMMAND AFTER: flutter pub run build_runner build --delete-conflicting-outputs
+
+=================================================================
+BATCH 6: Missing Files & Cleanup (Agent 6)
+=================================================================
+PRIORITY: LOW
+FILES TO CREATE/MODIFY: Various
+
+CREATE NEW FILES:
+lib/features/exercise/presentation/pages/exercise_detail_screen.dart (NEW)
+lib/features/exercise/presentation/pages/create_custom_exercise_screen.dart (NEW)
+
+FIX IMPORTS IN:
+All files importing 'package:lifeos/core/utils/result.dart' (should be core/error/result.dart)
+
+FIX MISSING ARGUMENTS IN:
+~20 files with missing_required_argument errors
+(Find with: grep "missing_required_argument" analyze_output.txt)
+
+FIX TYPE MISMATCHES IN:
+~50 files with argument_type_not_assignable errors
+(Find with: grep "argument_type_not_assignable" analyze_output.txt)
+
+NOTES:
+- This batch is a "catch-all" for issues not covered by others
+- Should run LAST (after Batches 1-5)
+- May have MANY file touches - coordinate with all other batches
+
+COMMAND AFTER: flutter analyze
+
+=================================================================
+CONFLICT RESOLUTION STRATEGY
+=================================================================
+
+If two batches need to modify the same file:
+
+1. Higher priority batch goes first
+2. Lower priority batch waits or skips that file
+3. Use git to track changes
+
+Example conflict:
+- Batch 1 (HIGH): Adds sealed to goal_model.dart
+- Batch 4 (MED): Fixes Value() in goal_model.dart
+
+Resolution:
+- Batch 1 runs first, commits changes
+- Batch 4 pulls Batch 1's changes, then applies Value() fixes
+
+=================================================================
+PARALLEL EXECUTION SAFE BATCHES
+=================================================================
+
+Can run together without conflicts:
+✅ Batch 1 + Batch 5 (different file sets)
+✅ Batch 5 + Any (test files only)
+⚠️ Batch 2 + Batch 3 (some shared providers - coordinate!)
+⚠️ Batch 1 + Batch 4 (shared model files - coordinate!)
+
+Recommended parallel groups:
+- Group A: Batch 1 + Batch 5 (safe)
+- Group B: Batch 2 (alone, needs full provider context)
+- Group C: Batch 3 + Batch 4 (coordinate on timing)
+- Group D: Batch 6 (runs last)
+
+=================================================================
+VERIFICATION COMMANDS
+=================================================================
+
+After your batch completes:
+
+# Check error count
+flutter analyze 2>&1 | grep -c "error -"
+
+# Check specific error types you were fixing
+flutter analyze 2>&1 | grep "YOUR_ERROR_TYPE"
+
+# Verify your changes compiled
+flutter analyze lib/path/to/your/files/
+
+=================================================================
+END OF FILE ASSIGNMENTS
+=================================================================

@@ -1,46 +1,50 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:gymapp/core/database/database.dart';
-import 'package:gymapp/core/error/result.dart';
-import 'package:gymapp/core/initialization/app_initializer.dart';
-import 'package:gymapp/features/fitness/data/repositories/workout_log_repository_impl.dart';
-import 'package:gymapp/features/fitness/domain/entities/workout_log_entity.dart';
-import 'package:gymapp/features/fitness/domain/entities/exercise_set_entity.dart';
-import 'package:gymapp/features/fitness/domain/repositories/workout_log_repository.dart';
-import 'package:gymapp/features/fitness/domain/usecases/create_workout_log_usecase.dart';
-import 'package:gymapp/features/fitness/domain/usecases/quick_log_workout_usecase.dart';
-import 'package:gymapp/features/fitness/domain/usecases/get_workout_history_usecase.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:lifeos/core/database/database.dart';
+import 'package:lifeos/core/database/database_providers.dart';
+import 'package:lifeos/core/error/result.dart';
+import 'package:lifeos/features/fitness/data/repositories/workout_log_repository_impl.dart';
+import 'package:lifeos/features/fitness/domain/entities/workout_log_entity.dart';
+import 'package:lifeos/features/fitness/domain/entities/exercise_set_entity.dart';
+import 'package:lifeos/features/fitness/domain/repositories/workout_log_repository.dart';
+import 'package:lifeos/features/fitness/domain/usecases/create_workout_log_usecase.dart';
+import 'package:lifeos/features/fitness/domain/usecases/quick_log_workout_usecase.dart';
+import 'package:lifeos/features/fitness/domain/usecases/get_workout_history_usecase.dart';
+
+part 'workout_log_provider.g.dart';
 
 /// Database provider for workout logs
-final workoutLogDatabaseProvider = Provider<AppDatabase>((ref) {
+@riverpod
+AppDatabase workoutLogDatabase(WorkoutLogDatabaseRef ref) {
   return ref.watch(appDatabaseProvider);
-});
+}
 
 /// Repository provider
-final workoutLogRepositoryProvider = Provider<WorkoutLogRepository>((ref) {
+@riverpod
+WorkoutLogRepository workoutLogRepository(WorkoutLogRepositoryRef ref) {
   final database = ref.watch(workoutLogDatabaseProvider);
   return WorkoutLogRepositoryImpl(database);
-});
+}
 
 /// Create workout log use case
-final createWorkoutLogUseCaseProvider =
-    Provider<CreateWorkoutLogUseCase>((ref) {
+@riverpod
+CreateWorkoutLogUseCase createWorkoutLogUseCase(CreateWorkoutLogUseCaseRef ref) {
   final repository = ref.watch(workoutLogRepositoryProvider);
   return CreateWorkoutLogUseCase(repository);
-});
+}
 
 /// Quick log workout use case
-final quickLogWorkoutUseCaseProvider =
-    Provider<QuickLogWorkoutUseCase>((ref) {
+@riverpod
+QuickLogWorkoutUseCase quickLogWorkoutUseCase(QuickLogWorkoutUseCaseRef ref) {
   final repository = ref.watch(workoutLogRepositoryProvider);
   return QuickLogWorkoutUseCase(repository);
-});
+}
 
 /// Get workout history use case
-final getWorkoutHistoryUseCaseProvider =
-    Provider<GetWorkoutHistoryUseCase>((ref) {
+@riverpod
+GetWorkoutHistoryUseCase getWorkoutHistoryUseCase(GetWorkoutHistoryUseCaseRef ref) {
   final repository = ref.watch(workoutLogRepositoryProvider);
   return GetWorkoutHistoryUseCase(repository);
-});
+}
 
 /// Workout log state
 class WorkoutLogState {
@@ -76,18 +80,22 @@ class WorkoutLogState {
 }
 
 /// Workout log notifier
-class WorkoutLogNotifier extends StateNotifier<WorkoutLogState> {
-  final WorkoutLogRepository _repository;
-  final CreateWorkoutLogUseCase _createWorkoutLog;
-  final QuickLogWorkoutUseCase _quickLogWorkout;
-  final GetWorkoutHistoryUseCase _getWorkoutHistory;
+@riverpod
+class WorkoutLogNotifier extends _$WorkoutLogNotifier {
+  late final WorkoutLogRepository _repository;
+  late final CreateWorkoutLogUseCase _createWorkoutLog;
+  late final QuickLogWorkoutUseCase _quickLogWorkout;
+  late final GetWorkoutHistoryUseCase _getWorkoutHistory;
 
-  WorkoutLogNotifier(
-    this._repository,
-    this._createWorkoutLog,
-    this._quickLogWorkout,
-    this._getWorkoutHistory,
-  ) : super(WorkoutLogState());
+  @override
+  WorkoutLogState build() {
+    _repository = ref.watch(workoutLogRepositoryProvider);
+    _createWorkoutLog = ref.watch(createWorkoutLogUseCaseProvider);
+    _quickLogWorkout = ref.watch(quickLogWorkoutUseCaseProvider);
+    _getWorkoutHistory = ref.watch(getWorkoutHistoryUseCaseProvider);
+
+    return WorkoutLogState();
+  }
 
   /// Create workout log
   Future<Result<WorkoutLogEntity>> createWorkoutLog(
@@ -96,17 +104,17 @@ class WorkoutLogNotifier extends StateNotifier<WorkoutLogState> {
 
     final result = await _createWorkoutLog(workoutLog);
 
-    result.when(
-      success: (createdWorkout) {
+    result.map(
+      success: (success) {
         state = state.copyWith(
           isLoading: false,
-          workoutHistory: [createdWorkout, ...state.workoutHistory],
+          workoutHistory: [success.data, ...state.workoutHistory],
         );
       },
       failure: (failure) {
         state = state.copyWith(
           isLoading: false,
-          error: failure.toString(),
+          error: failure.exception.toString(),
         );
       },
     );
@@ -121,17 +129,17 @@ class WorkoutLogNotifier extends StateNotifier<WorkoutLogState> {
 
     final result = await _quickLogWorkout(workoutLog);
 
-    result.when(
-      success: (createdWorkout) {
+    result.map(
+      success: (success) {
         state = state.copyWith(
           isLoading: false,
-          workoutHistory: [createdWorkout, ...state.workoutHistory],
+          workoutHistory: [success.data, ...state.workoutHistory],
         );
       },
       failure: (failure) {
         state = state.copyWith(
           isLoading: false,
-          error: failure.toString(),
+          error: failure.exception.toString(),
         );
       },
     );
@@ -145,17 +153,17 @@ class WorkoutLogNotifier extends StateNotifier<WorkoutLogState> {
 
     final result = await _getWorkoutHistory(userId);
 
-    result.when(
-      success: (workouts) {
+    result.map(
+      success: (success) {
         state = state.copyWith(
           isLoading: false,
-          workoutHistory: workouts,
+          workoutHistory: success.data,
         );
       },
       failure: (failure) {
         state = state.copyWith(
           isLoading: false,
-          error: failure.toString(),
+          error: failure.exception.toString(),
         );
       },
     );
@@ -187,19 +195,3 @@ class WorkoutLogNotifier extends StateNotifier<WorkoutLogState> {
     state = state.copyWith(currentSets: []);
   }
 }
-
-/// Workout log provider
-final workoutLogProvider =
-    StateNotifierProvider<WorkoutLogNotifier, WorkoutLogState>((ref) {
-  final repository = ref.watch(workoutLogRepositoryProvider);
-  final createWorkout = ref.watch(createWorkoutLogUseCaseProvider);
-  final quickLog = ref.watch(quickLogWorkoutUseCaseProvider);
-  final getHistory = ref.watch(getWorkoutHistoryUseCaseProvider);
-
-  return WorkoutLogNotifier(
-    repository,
-    createWorkout,
-    quickLog,
-    getHistory,
-  );
-});

@@ -1,7 +1,8 @@
 import 'dart:convert';
+import 'package:drift/drift.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:gymapp/features/life_coach/domain/entities/goal_entity.dart';
-import 'package:gymapp/core/database/database.dart';
+import 'package:lifeos/features/life_coach/domain/entities/goal_entity.dart';
+import 'package:lifeos/core/database/database.dart';
 
 part 'goal_model.freezed.dart';
 part 'goal_model.g.dart';
@@ -68,16 +69,16 @@ class GoalModel with _$GoalModel {
       targetDate: Value(targetDate),
       targetValue: Value(targetValue),
       unit: Value(unit),
-      currentValue: currentValue,
-      completionPercentage: completionPercentage,
-      isCompleted: isCompleted,
+      currentValue: Value(currentValue),
+      completionPercentage: Value(completionPercentage),
+      isCompleted: Value(isCompleted),
       completedAt: Value(completedAt),
       tags: Value(tags != null ? jsonEncode(tags) : null),
-      priority: priority,
-      isArchived: isArchived,
-      createdAt: createdAt,
-      updatedAt: updatedAt,
-      isSynced: isSynced,
+      priority: Value(priority),
+      isArchived: Value(isArchived),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+      isSynced: Value(isSynced),
     );
   }
 

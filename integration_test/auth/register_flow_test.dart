@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
-import 'package:lifeos_app/main.dart' as app;
+import 'package:lifeos/main.dart' as app;
 
 /// Integration tests for user registration flow
 /// Tests complete end-to-end registration scenarios

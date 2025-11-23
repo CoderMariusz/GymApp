@@ -66,7 +66,7 @@ class MeditationLocalDataSourceImpl implements MeditationLocalDataSource {
           category: meditation.category,
           audioUrl: meditation.audioUrl,
           thumbnailUrl: meditation.thumbnailUrl,
-          isPremium: meditation.isPremium,
+          isPremium: Value(meditation.isPremium),
           createdAt: DateTime.parse(meditation.createdAt),
           cachedAt: DateTime.now(),
         ),

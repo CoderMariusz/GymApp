@@ -183,7 +183,7 @@ class AppDatabase extends _$AppDatabase {
         userId: userId,
         meditationId: meditationId,
         durationListenedSeconds: durationListenedSeconds,
-        completed: completed,
+        completed: Value(completed),
         completedAt: Value(completedAt),
         createdAt: DateTime.now(),
       ),

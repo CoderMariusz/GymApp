@@ -1,15 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/annotations.dart';
-import 'package:mockito/mockito.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:gymapp/features/fitness/presentation/pages/measurements_page.dart';
-import 'package:gymapp/features/fitness/presentation/providers/measurements_provider.dart';
-import 'package:gymapp/features/fitness/domain/entities/body_measurement_entity.dart';
+import 'package:lifeos/features/fitness/presentation/pages/measurements_page.dart';
+import 'package:lifeos/features/fitness/presentation/providers/measurements_provider.dart';
+import 'package:lifeos/features/fitness/domain/entities/body_measurement_entity.dart';
 
-import 'measurements_page_test.mocks.dart';
-
-@GenerateMocks([])
 void main() {
   testWidgets('MeasurementsPage renders correctly', (tester) async {
     // Arrange

@@ -1,10 +1,10 @@
 import 'package:drift/drift.dart';
-import 'package:gymapp/core/database/database.dart';
-import 'package:gymapp/core/error/result.dart';
-import 'package:gymapp/core/error/failures.dart';
-import 'package:gymapp/features/life_coach/data/models/check_in_model.dart';
-import 'package:gymapp/features/life_coach/domain/entities/check_in_entity.dart';
-import 'package:gymapp/features/life_coach/domain/repositories/check_in_repository.dart';
+import 'package:lifeos/core/database/database.dart';
+import 'package:lifeos/core/error/result.dart';
+import 'package:lifeos/core/error/failures.dart';
+import 'package:lifeos/features/life_coach/data/models/check_in_model.dart';
+import 'package:lifeos/features/life_coach/domain/entities/check_in_entity.dart';
+import 'package:lifeos/features/life_coach/domain/repositories/check_in_repository.dart';
 
 class CheckInRepositoryImpl implements CheckInRepository {
   final AppDatabase _database;
@@ -109,13 +109,13 @@ class CheckInRepositoryImpl implements CheckInRepository {
       final result = await getCheckInsForDate(userId, today);
 
       return result.when(
-        success: (checkIns) {
-          final todaysCheckIn = checkIns
+        success: (data) {
+          final todaysCheckIn = data
               .where((checkIn) => checkIn.type == type)
               .firstOrNull;
           return Result.success(todaysCheckIn);
         },
-        failure: (failure) => Result.failure(failure),
+        failure: (exception) => Result.failure(exception),
       );
     } catch (e) {
       return Result.failure(
@@ -194,14 +194,14 @@ class CheckInRepositoryImpl implements CheckInRepository {
       final result = await getAllCheckIns(userId);
 
       return result.when(
-        success: (checkIns) {
-          if (checkIns.isEmpty) return const Result.success(0);
+        success: (data) {
+          if (data.isEmpty) return const Result.success(0);
 
           // Calculate streak
           int streak = 0;
           DateTime? lastDate;
 
-          for (final checkIn in checkIns) {
+          for (final checkIn in data) {
             final checkInDate = DateTime(
               checkIn.timestamp.year,
               checkIn.timestamp.month,
@@ -240,7 +240,7 @@ class CheckInRepositoryImpl implements CheckInRepository {
 
           return Result.success(streak);
         },
-        failure: (failure) => Result.failure(failure),
+        failure: (exception) => Result.failure(exception),
       );
     } catch (e) {
       return Result.failure(

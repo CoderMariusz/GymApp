@@ -5,7 +5,7 @@
 // Token Savings: ~50% (reused across all CRUD operations)
 // ============================================================================
 
-import 'package:gymapp/core/error/result.dart';
+import 'package:lifeos/core/error/result.dart';
 
 /// Base repository interface for CRUD operations
 ///

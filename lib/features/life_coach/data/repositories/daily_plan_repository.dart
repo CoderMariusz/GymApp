@@ -17,7 +17,7 @@ class DailyPlanRepository {
             tasksJson: jsonEncode(plan.tasks.map((t) => t.toJson()).toList()),
             dailyTheme: plan.dailyTheme,
             motivationalQuote: Value(plan.motivationalQuote),
-            createdAt: plan.createdAt,
+            createdAt: Value(plan.createdAt),
             source: plan.source.index,
             metadataJson: Value(plan.metadata != null ? jsonEncode(plan.metadata) : null),
           ),

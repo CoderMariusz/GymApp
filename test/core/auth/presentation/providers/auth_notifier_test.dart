@@ -5,7 +5,7 @@ import 'package:lifeos/core/auth/domain/repositories/auth_repository.dart';
 import 'package:lifeos/core/auth/domain/usecases/register_user_usecase.dart';
 import 'package:lifeos/core/auth/presentation/providers/auth_notifier.dart';
 import 'package:lifeos/core/auth/presentation/providers/auth_state.dart';
-import 'package:lifeos/core/utils/result.dart';
+import 'package:lifeos/core/error/result.dart';
 import 'package:mocktail/mocktail.dart';
 
 class MockAuthRepository extends Mock implements AuthRepository {}

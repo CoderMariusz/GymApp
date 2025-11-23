@@ -14,7 +14,8 @@ final connectivityStatusProvider = StreamProvider<List<ConnectivityResult>>((ref
 
 /// Provider for checking if device is online
 final isOnlineProvider = StreamProvider<bool>((ref) {
-  return ref.watch(connectivityStatusProvider.stream).map(
+  final connectivity = ref.watch(connectivityProvider);
+  return connectivity.onConnectivityChanged.map(
         (result) => !result.contains(ConnectivityResult.none),
       );
 });

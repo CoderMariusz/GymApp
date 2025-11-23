@@ -1,6 +1,7 @@
+import 'package:drift/drift.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:gymapp/features/fitness/domain/entities/workout_log_entity.dart';
-import 'package:gymapp/core/database/database.dart';
+import 'package:lifeos/features/fitness/domain/entities/workout_log_entity.dart';
+import 'package:lifeos/core/database/database.dart';
 
 part 'workout_log_model.freezed.dart';
 part 'workout_log_model.g.dart';
@@ -51,10 +52,10 @@ class WorkoutLogModel with _$WorkoutLogModel {
       workoutName: workoutName,
       duration: duration,
       notes: Value(notes),
-      isQuickLog: isQuickLog,
-      createdAt: createdAt,
+      isQuickLog: Value(isQuickLog),
+      createdAt: Value(createdAt),
       updatedAt: Value(updatedAt ?? DateTime.now()),
-      isSynced: isSynced,
+      isSynced: Value(isSynced),
     );
   }
 

@@ -4,7 +4,7 @@
 // Used in: Goals, Measurements, Workouts, Habits, Check-Ins
 // ============================================================================
 
-import 'package:gymapp/core/error/result.dart';
+import 'package:lifeos/core/error/result.dart';
 
 /// Mixin for entities that track progress over time
 ///

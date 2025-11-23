@@ -1,7 +1,8 @@
 import 'dart:convert';
+import 'package:drift/drift.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:gymapp/features/fitness/domain/entities/workout_template_entity.dart';
-import 'package:gymapp/core/database/database.dart';
+import 'package:lifeos/features/fitness/domain/entities/workout_template_entity.dart';
+import 'package:lifeos/core/database/database.dart';
 
 part 'workout_template_model.freezed.dart';
 part 'workout_template_model.g.dart';
@@ -54,20 +55,20 @@ class WorkoutTemplateModel with _$WorkoutTemplateModel {
   WorkoutTemplatesCompanion toDriftCompanion() {
     return WorkoutTemplatesCompanion.insert(
       id: id,
-      userId: Value(userId),
+      userId: userId,
       name: name,
       description: Value(description),
       category: category,
       difficulty: difficulty,
       estimatedDuration: estimatedDuration,
       exercises: exercisesJson,
-      isPreBuilt: isPreBuilt,
-      isFavorite: isFavorite,
-      timesUsed: timesUsed,
+      isPreBuilt: Value(isPreBuilt),
+      isFavorite: Value(isFavorite),
+      timesUsed: Value(timesUsed),
       lastUsed: Value(lastUsed),
-      createdAt: createdAt,
+      createdAt: Value(createdAt),
       updatedAt: Value(updatedAt),
-      isSynced: isSynced,
+      isSynced: Value(isSynced),
     );
   }
 

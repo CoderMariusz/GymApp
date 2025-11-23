@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 import 'package:intl/intl.dart';
-import 'package:gymapp/core/auth/presentation/providers/auth_provider.dart';
-import 'package:gymapp/core/widgets/daily_input_form.dart';
-import 'package:gymapp/features/fitness/presentation/providers/measurements_provider.dart';
-import 'package:gymapp/features/fitness/domain/entities/body_measurement_entity.dart';
+import 'package:lifeos/core/auth/presentation/providers/auth_provider.dart';
+import 'package:lifeos/core/widgets/daily_input_form.dart';
+import 'package:lifeos/features/fitness/presentation/providers/measurements_provider.dart';
+import 'package:lifeos/features/fitness/domain/entities/body_measurement_entity.dart';
 
 class MeasurementsPage extends ConsumerStatefulWidget {
   const MeasurementsPage({super.key});
@@ -20,8 +20,8 @@ class _MeasurementsPageState extends ConsumerState<MeasurementsPage> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final authState = ref.read(authStateProvider);
-      authState.maybeWhen(
-        authenticated: (user) => ref.read(measurementsProvider.notifier).loadHistory(user.id, limit: 20),
+      authState.maybeMap(
+        authenticated: (authenticated) => ref.read(measurementsProvider.notifier).loadHistory(authenticated.user.id, limit: 20),
         orElse: () {},
       );
     });
@@ -29,8 +29,8 @@ class _MeasurementsPageState extends ConsumerState<MeasurementsPage> {
 
   void _showAddDialog(BuildContext context) {
     final authState = ref.read(authStateProvider);
-    authState.maybeWhen(
-      authenticated: (user) {
+    authState.maybeMap(
+      authenticated: (authenticated) {
         showDialog(
           context: context,
           builder: (context) => Dialog(
@@ -60,7 +60,7 @@ class _MeasurementsPageState extends ConsumerState<MeasurementsPage> {
                 onSubmit: (data) async {
                   final measurement = BodyMeasurementEntity(
                     id: const Uuid().v4(),
-                    userId: user.id,
+                    userId: authenticated.user.id,
                     timestamp: DateTime.now(),
                     weight: double.tryParse(data['Weight (kg)'] as String? ?? ''),
                     bodyFat: double.tryParse(data['Body Fat (%)'] as String? ?? ''),
@@ -70,8 +70,8 @@ class _MeasurementsPageState extends ConsumerState<MeasurementsPage> {
                   );
 
                   final result = await ref.read(measurementsProvider.notifier).recordMeasurement(measurement);
-                  result.when(
-                    success: (_) {
+                  result.map(
+                    success: (success) {
                       if (context.mounted) {
                         Navigator.pop(context);
                         ScaffoldMessenger.of(context).showSnackBar(
@@ -79,10 +79,10 @@ class _MeasurementsPageState extends ConsumerState<MeasurementsPage> {
                         );
                       }
                     },
-                    failure: (error) {
+                    failure: (failure) {
                       if (context.mounted) {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Error: $error'), backgroundColor: Colors.red),
+                          SnackBar(content: Text('Error: ${failure.exception}'), backgroundColor: Colors.red),
                         );
                       }
                     },

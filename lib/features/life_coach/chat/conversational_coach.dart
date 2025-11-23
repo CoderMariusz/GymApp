@@ -204,12 +204,15 @@ class ConversationalCoach {
 
   Future<String> _buildSystemPrompt() async {
     // Get user context
-    final goals = await _goalsRepo.getActiveGoals();
+    final goalsResult = await _goalsRepo.getActiveGoals();
     final checkIn = await _checkInRepo.getCheckInForDate(DateTime.now());
 
-    final goalsContext = goals.isEmpty
-        ? ''
-        : '\nUser\'s active goals:\n${goals.map((g) => '- ${g.title} (${g.category.name})').join('\n')}';
+    final goalsContext = switch (goalsResult) {
+      Success(:final data) => data.isEmpty
+          ? ''
+          : '\nUser\'s active goals:\n${data.map((g) => '- ${g.title} (${g.category.name})').join('\n')}',
+      Failure() => '',
+    };
 
     final moodContext = checkIn != null
         ? '\nToday\'s check-in:\n- Mood: ${checkIn.mood}/10\n- Energy: ${checkIn.energy}/10\n- Sleep: ${checkIn.sleepQuality}/10'

@@ -15,9 +15,9 @@ class ChatRepository {
             userId: session.userId,
             title: session.title,
             messagesJson: jsonEncode(session.messages.map((m) => m.toJson()).toList()),
-            createdAt: session.createdAt,
+            createdAt: Value(session.createdAt),
             lastMessageAt: Value(session.lastMessageAt),
-            isArchived: session.isArchived,
+            isArchived: Value(session.isArchived),
           ),
           mode: InsertMode.replace,
         );

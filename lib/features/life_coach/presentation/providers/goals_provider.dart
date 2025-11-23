@@ -1,49 +1,58 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:gymapp/core/database/database.dart';
-import 'package:gymapp/core/error/result.dart';
-import 'package:gymapp/core/initialization/app_initializer.dart';
-import 'package:gymapp/features/life_coach/data/repositories/goals_repository_impl.dart';
-import 'package:gymapp/features/life_coach/domain/entities/goal_entity.dart';
-import 'package:gymapp/features/life_coach/domain/repositories/goals_repository.dart';
-import 'package:gymapp/features/life_coach/domain/usecases/create_goal_usecase.dart';
-import 'package:gymapp/features/life_coach/domain/usecases/get_goals_usecase.dart';
-import 'package:gymapp/features/life_coach/domain/usecases/update_goal_usecase.dart';
-import 'package:gymapp/features/life_coach/domain/usecases/delete_goal_usecase.dart';
-import 'package:gymapp/features/life_coach/domain/usecases/record_goal_progress_usecase.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:lifeos/core/database/database.dart';
+import 'package:lifeos/core/database/database_providers.dart';
+import 'package:lifeos/core/error/result.dart';
+import 'package:lifeos/features/life_coach/data/repositories/goals_repository_impl.dart';
+import 'package:lifeos/features/life_coach/domain/entities/goal_entity.dart';
+import 'package:lifeos/features/life_coach/domain/repositories/goals_repository.dart';
+import 'package:lifeos/features/life_coach/domain/usecases/create_goal_usecase.dart';
+import 'package:lifeos/features/life_coach/domain/usecases/get_goals_usecase.dart';
+import 'package:lifeos/features/life_coach/domain/usecases/update_goal_usecase.dart';
+import 'package:lifeos/features/life_coach/domain/usecases/delete_goal_usecase.dart';
+import 'package:lifeos/features/life_coach/domain/usecases/record_goal_progress_usecase.dart';
 
-final goalsDatabaseProvider = Provider<AppDatabase>((ref) {
+part 'goals_provider.g.dart';
+
+@riverpod
+AppDatabase goalsDatabase(GoalsDatabaseRef ref) {
   return ref.watch(appDatabaseProvider);
-});
+}
 
-final goalsRepositoryProvider = Provider<GoalsRepository>((ref) {
+@riverpod
+GoalsRepository goalsRepository(GoalsRepositoryRef ref) {
   final database = ref.watch(goalsDatabaseProvider);
   return GoalsRepositoryImpl(database);
-});
+}
 
-final createGoalUseCaseProvider = Provider<CreateGoalUseCase>((ref) {
+@riverpod
+CreateGoalUseCase createGoalUseCase(CreateGoalUseCaseRef ref) {
   final repository = ref.watch(goalsRepositoryProvider);
   return CreateGoalUseCase(repository);
-});
+}
 
-final getGoalsUseCaseProvider = Provider<GetGoalsUseCase>((ref) {
+@riverpod
+GetGoalsUseCase getGoalsUseCase(GetGoalsUseCaseRef ref) {
   final repository = ref.watch(goalsRepositoryProvider);
   return GetGoalsUseCase(repository);
-});
+}
 
-final updateGoalUseCaseProvider = Provider<UpdateGoalUseCase>((ref) {
+@riverpod
+UpdateGoalUseCase updateGoalUseCase(UpdateGoalUseCaseRef ref) {
   final repository = ref.watch(goalsRepositoryProvider);
   return UpdateGoalUseCase(repository);
-});
+}
 
-final deleteGoalUseCaseProvider = Provider<DeleteGoalUseCase>((ref) {
+@riverpod
+DeleteGoalUseCase deleteGoalUseCase(DeleteGoalUseCaseRef ref) {
   final repository = ref.watch(goalsRepositoryProvider);
   return DeleteGoalUseCase(repository);
-});
+}
 
-final recordGoalProgressUseCaseProvider = Provider<RecordGoalProgressUseCase>((ref) {
+@riverpod
+RecordGoalProgressUseCase recordGoalProgressUseCase(RecordGoalProgressUseCaseRef ref) {
   final repository = ref.watch(goalsRepositoryProvider);
   return RecordGoalProgressUseCase(repository);
-});
+}
 
 class GoalsState {
   final bool isLoading;
@@ -69,39 +78,43 @@ class GoalsState {
   }
 }
 
-class GoalsNotifier extends StateNotifier<GoalsState> {
-  final GoalsRepository _repository;
-  final CreateGoalUseCase _createGoal;
-  final GetGoalsUseCase _getGoals;
-  final UpdateGoalUseCase _updateGoal;
-  final DeleteGoalUseCase _deleteGoal;
-  final RecordGoalProgressUseCase _recordProgress;
+@riverpod
+class GoalsNotifier extends _$GoalsNotifier {
+  late final GoalsRepository _repository;
+  late final CreateGoalUseCase _createGoal;
+  late final GetGoalsUseCase _getGoals;
+  late final UpdateGoalUseCase _updateGoal;
+  late final DeleteGoalUseCase _deleteGoal;
+  late final RecordGoalProgressUseCase _recordProgress;
 
-  GoalsNotifier(
-    this._repository,
-    this._createGoal,
-    this._getGoals,
-    this._updateGoal,
-    this._deleteGoal,
-    this._recordProgress,
-  ) : super(GoalsState());
+  @override
+  GoalsState build() {
+    _repository = ref.watch(goalsRepositoryProvider);
+    _createGoal = ref.watch(createGoalUseCaseProvider);
+    _getGoals = ref.watch(getGoalsUseCaseProvider);
+    _updateGoal = ref.watch(updateGoalUseCaseProvider);
+    _deleteGoal = ref.watch(deleteGoalUseCaseProvider);
+    _recordProgress = ref.watch(recordGoalProgressUseCaseProvider);
+
+    return GoalsState();
+  }
 
   Future<Result<GoalEntity>> createGoal(GoalEntity goal) async {
     state = state.copyWith(isLoading: true, error: null);
 
     final result = await _createGoal(goal);
 
-    result.when(
-      success: (createdGoal) {
+    result.map(
+      success: (success) {
         state = state.copyWith(
           isLoading: false,
-          goals: [createdGoal, ...state.goals],
+          goals: [success.data, ...state.goals],
         );
       },
       failure: (failure) {
         state = state.copyWith(
           isLoading: false,
-          error: failure.toString(),
+          error: failure.exception.toString(),
         );
       },
     );
@@ -114,17 +127,17 @@ class GoalsNotifier extends StateNotifier<GoalsState> {
 
     final result = await _getGoals(userId, activeOnly: activeOnly);
 
-    result.when(
-      success: (goals) {
+    result.map(
+      success: (success) {
         state = state.copyWith(
           isLoading: false,
-          goals: goals,
+          goals: success.data,
         );
       },
       failure: (failure) {
         state = state.copyWith(
           isLoading: false,
-          error: failure.toString(),
+          error: failure.exception.toString(),
         );
       },
     );
@@ -135,10 +148,10 @@ class GoalsNotifier extends StateNotifier<GoalsState> {
 
     final result = await _updateGoal(goal);
 
-    result.when(
-      success: (updatedGoal) {
+    result.map(
+      success: (success) {
         final updatedGoals = state.goals.map((g) {
-          return g.id == updatedGoal.id ? updatedGoal : g;
+          return g.id == success.data.id ? success.data : g;
         }).toList();
 
         state = state.copyWith(
@@ -149,7 +162,7 @@ class GoalsNotifier extends StateNotifier<GoalsState> {
       failure: (failure) {
         state = state.copyWith(
           isLoading: false,
-          error: failure.toString(),
+          error: failure.exception.toString(),
         );
       },
     );
@@ -160,14 +173,14 @@ class GoalsNotifier extends StateNotifier<GoalsState> {
   Future<Result<void>> deleteGoal(String goalId) async {
     final result = await _deleteGoal(goalId);
 
-    result.when(
-      success: (_) {
+    result.map(
+      success: (success) {
         state = state.copyWith(
           goals: state.goals.where((g) => g.id != goalId).toList(),
         );
       },
       failure: (failure) {
-        state = state.copyWith(error: failure.toString());
+        state = state.copyWith(error: failure.exception.toString());
       },
     );
 
@@ -185,21 +198,3 @@ class GoalsNotifier extends StateNotifier<GoalsState> {
     return result;
   }
 }
-
-final goalsProvider = StateNotifierProvider<GoalsNotifier, GoalsState>((ref) {
-  final repository = ref.watch(goalsRepositoryProvider);
-  final createGoal = ref.watch(createGoalUseCaseProvider);
-  final getGoals = ref.watch(getGoalsUseCaseProvider);
-  final updateGoal = ref.watch(updateGoalUseCaseProvider);
-  final deleteGoal = ref.watch(deleteGoalUseCaseProvider);
-  final recordProgress = ref.watch(recordGoalProgressUseCaseProvider);
-
-  return GoalsNotifier(
-    repository,
-    createGoal,
-    getGoals,
-    updateGoal,
-    deleteGoal,
-    recordProgress,
-  );
-});

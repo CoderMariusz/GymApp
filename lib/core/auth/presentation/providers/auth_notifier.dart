@@ -40,9 +40,9 @@ class AuthNotifier extends Notifier<AuthState> {
     final result = await _repository.getCurrentUser();
 
     result.when(
-      success: (user) {
-        if (user != null) {
-          state = AuthState.authenticated(user);
+      success: (data) {
+        if (data != null) {
+          state = AuthState.authenticated(data);
         } else {
           state = const AuthState.unauthenticated();
         }
@@ -77,14 +77,14 @@ class AuthNotifier extends Notifier<AuthState> {
     );
 
     result.when(
-      success: (user) {
-        state = AuthState.authenticated(user);
+      success: (data) {
+        state = AuthState.authenticated(data);
       },
       failure: (exception) {
         state = AuthState.error(exception.toString());
         // Reset to unauthenticated after showing error
         Future.delayed(const Duration(seconds: 3), () {
-          if (state.maybeWhen(error: (_) => true, orElse: () => false)) {
+          if (state.maybeMap(error: (_) => true, orElse: () => false)) {
             state = const AuthState.unauthenticated();
           }
         });
@@ -98,14 +98,14 @@ class AuthNotifier extends Notifier<AuthState> {
 
     final result = await _registerUseCase.callWithGoogle();
 
-    result.when(
-      success: (user) {
-        state = AuthState.authenticated(user);
+    result.map(
+      success: (success) {
+        state = AuthState.authenticated(success.data);
       },
-      failure: (exception) {
-        state = AuthState.error(exception.toString());
+      failure: (failure) {
+        state = AuthState.error(failure.exception.toString());
         Future.delayed(const Duration(seconds: 3), () {
-          if (state.maybeWhen(error: (_) => true, orElse: () => false)) {
+          if (state.maybeMap(error: (_) => true, orElse: () => false)) {
             state = const AuthState.unauthenticated();
           }
         });
@@ -119,14 +119,14 @@ class AuthNotifier extends Notifier<AuthState> {
 
     final result = await _registerUseCase.callWithApple();
 
-    result.when(
-      success: (user) {
-        state = AuthState.authenticated(user);
+    result.map(
+      success: (success) {
+        state = AuthState.authenticated(success.data);
       },
-      failure: (exception) {
-        state = AuthState.error(exception.toString());
+      failure: (failure) {
+        state = AuthState.error(failure.exception.toString());
         Future.delayed(const Duration(seconds: 3), () {
-          if (state.maybeWhen(error: (_) => true, orElse: () => false)) {
+          if (state.maybeMap(error: (_) => true, orElse: () => false)) {
             state = const AuthState.unauthenticated();
           }
         });
@@ -149,13 +149,13 @@ class AuthNotifier extends Notifier<AuthState> {
     );
 
     result.when(
-      success: (session) {
-        state = AuthState.authenticated(session.user);
+      success: (data) {
+        state = AuthState.authenticated(data.user);
       },
       failure: (exception) {
         state = AuthState.error(exception.toString());
         Future.delayed(const Duration(seconds: 3), () {
-          if (state.maybeWhen(error: (_) => true, orElse: () => false)) {
+          if (state.maybeMap(error: (_) => true, orElse: () => false)) {
             state = const AuthState.unauthenticated();
           }
         });
@@ -170,13 +170,13 @@ class AuthNotifier extends Notifier<AuthState> {
     final result = await _loginWithGoogleUseCase.call();
 
     result.when(
-      success: (session) {
-        state = AuthState.authenticated(session.user);
+      success: (data) {
+        state = AuthState.authenticated(data.user);
       },
       failure: (exception) {
         state = AuthState.error(exception.toString());
         Future.delayed(const Duration(seconds: 3), () {
-          if (state.maybeWhen(error: (_) => true, orElse: () => false)) {
+          if (state.maybeMap(error: (_) => true, orElse: () => false)) {
             state = const AuthState.unauthenticated();
           }
         });
@@ -191,13 +191,13 @@ class AuthNotifier extends Notifier<AuthState> {
     final result = await _loginWithAppleUseCase.call();
 
     result.when(
-      success: (session) {
-        state = AuthState.authenticated(session.user);
+      success: (data) {
+        state = AuthState.authenticated(data.user);
       },
       failure: (exception) {
         state = AuthState.error(exception.toString());
         Future.delayed(const Duration(seconds: 3), () {
-          if (state.maybeWhen(error: (_) => true, orElse: () => false)) {
+          if (state.maybeMap(error: (_) => true, orElse: () => false)) {
             state = const AuthState.unauthenticated();
           }
         });
@@ -212,7 +212,7 @@ class AuthNotifier extends Notifier<AuthState> {
     final result = await _logoutUseCase.call();
 
     result.when(
-      success: (_) {
+      success: (data) {
         state = const AuthState.unauthenticated();
       },
       failure: (exception) {
@@ -223,7 +223,7 @@ class AuthNotifier extends Notifier<AuthState> {
 
   /// Clear error state
   void clearError() {
-    if (state.maybeWhen(error: (_) => true, orElse: () => false)) {
+    if (state.maybeMap(error: (_) => true, orElse: () => false)) {
       state = const AuthState.unauthenticated();
     }
   }

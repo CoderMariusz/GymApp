@@ -1,6 +1,7 @@
+import 'package:drift/drift.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:gymapp/features/fitness/domain/entities/body_measurement_entity.dart';
-import 'package:gymapp/core/database/database.dart';
+import 'package:lifeos/features/fitness/domain/entities/body_measurement_entity.dart';
+import 'package:lifeos/core/database/database.dart';
 
 part 'body_measurement_model.freezed.dart';
 part 'body_measurement_model.g.dart';
@@ -70,9 +71,9 @@ class BodyMeasurementModel with _$BodyMeasurementModel {
       calves: Value(calves),
       photoUrl: Value(photoUrl),
       notes: Value(notes),
-      createdAt: createdAt,
+      createdAt: Value(createdAt),
       updatedAt: Value(updatedAt),
-      isSynced: isSynced,
+      isSynced: Value(isSynced),
     );
   }
 

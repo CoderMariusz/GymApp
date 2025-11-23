@@ -1,44 +1,14 @@
 {
   "permissions": {
     "allow": [
-      "Bash(flutter doctor:*)",
-      "Bash(cd:*)",
-      "Bash(flutter test:*)",
-      "Bash(git checkout:*)",
-      "Bash(git pull:*)",
-      "Bash(flutter clean:*)",
-      "Bash(flutter pub get:*)",
-      "Bash(flutter pub run build_runner build:*)",
-      "Bash(taskkill:*)",
-      "Bash(flutter run:*)",
-      "Bash(find:*)",
-      "Bash(flutter analyze:*)",
-      "Bash(flutter build:*)",
-      "Bash(git add:*)",
-      "Bash(git commit:*)",
-      "Bash(perl -i -pe:*)",
-      "Bash(for file in lib/core/auth/data/repositories/*.dart lib/core/auth/domain/**/*.dart lib/core/auth/presentation/providers/*.dart lib/core/initialization/*.dart lib/core/profile/**/*.dart)",
-      "Bash(do)",
-      "Bash(if [ -f \"$file\" ])",
-      "Bash(then)",
-      "Bash(fi)",
-      "Bash(done)",
-      "Bash(for file in lib/core/auth/domain/usecases/*.dart lib/core/profile/domain/usecases/*.dart)",
-      "Bash([ -f \"$file\" ])",
-      "Bash(perl:*)",
-      "Bash(flutter devices:*)",
-      "Bash(python fix_result_calls.py:*)",
-      "Bash(mkdir:*)",
-      "Bash(cat:*)",
-      "Bash(git log:*)",
-      "Bash(git branch:*)",
-      "Bash(git cherry-pick:*)"
+      "Bash(ls \"C:\\Users\\Mariusz K\\Documents\\Programowanie\\GymAPP\\GymApp\\lib\\core\\error\"\" | grep -E \".freezed.dart)",
+      "Bash(.g.dart \")"
     ],
     "deny": [],
     "ask": []
   },
+  "enableAllProjectMcpServers": true,
   "enabledMcpjsonServers": [
     "supabase"
-  ],
-  "enableAllProjectMcpServers": true
+  ]
 }

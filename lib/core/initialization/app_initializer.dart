@@ -18,7 +18,7 @@ class AppInitializer {
       final authStatusResult = await _checkAuthStatusUseCase.call();
 
       // Use pattern matching with freezed Result
-      return authStatusResult.when(
+      return authStatusResult.map(
         success: (session) => session != null ? '/home' : '/login',
         failure: (_) => '/login',
       );
@@ -33,7 +33,7 @@ class AppInitializer {
   Future<bool> isAuthenticated() async {
     try {
       final authStatusResult = await _checkAuthStatusUseCase.call();
-      return authStatusResult.when(
+      return authStatusResult.map(
         success: (session) => session != null,
         failure: (_) => false,
       );

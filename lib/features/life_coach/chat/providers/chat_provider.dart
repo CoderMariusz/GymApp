@@ -1,5 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:lifeos/core/ai/ai_provider.dart';
+import 'package:lifeos/core/database/database_providers.dart';
 import '../../ai/providers/daily_plan_provider.dart';
 import '../conversational_coach.dart';
 import '../models/chat_message.dart';
@@ -38,13 +39,13 @@ class ChatSessionNotifier extends _$ChatSessionNotifier {
         userMessage: message,
       );
 
-      result.when(
-        success: (_) {
+      result.map(
+        success: (success) {
           // Refresh state to show new message
           ref.invalidateSelf();
         },
-        failure: (error) {
-          throw error; // Propagate error to UI
+        failure: (failure) {
+          throw failure.exception; // Propagate error to UI
         },
       );
     } catch (e) {

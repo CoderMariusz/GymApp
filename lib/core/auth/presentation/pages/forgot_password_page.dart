@@ -55,17 +55,17 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
         _emailController.text.trim(),
       );
 
-      result.when(
-        success: (_) {
+      result.map(
+        success: (success) {
           setState(() {
             _emailSent = true;
             _isLoading = false;
           });
         },
-        failure: (exception) {
+        failure: (failure) {
           setState(() {
             _isLoading = false;
-            _emailError = exception.toString();
+            _emailError = failure.exception.toString();
           });
         },
       );

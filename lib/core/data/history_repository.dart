@@ -4,7 +4,7 @@
 // Used for: Workout History, Goal History, Measurements History, etc.
 // ============================================================================
 
-import 'package:gymapp/core/error/result.dart';
+import 'package:lifeos/core/error/result.dart';
 
 /// Generic repository for historical/time-series data
 ///

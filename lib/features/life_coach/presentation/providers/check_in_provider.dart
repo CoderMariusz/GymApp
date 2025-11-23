@@ -1,45 +1,49 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:gymapp/core/database/database.dart';
-import 'package:gymapp/core/error/result.dart';
-import 'package:gymapp/core/initialization/app_initializer.dart';
-import 'package:gymapp/features/life_coach/data/repositories/check_in_repository_impl.dart';
-import 'package:gymapp/features/life_coach/domain/entities/check_in_entity.dart';
-import 'package:gymapp/features/life_coach/domain/repositories/check_in_repository.dart';
-import 'package:gymapp/features/life_coach/domain/usecases/create_morning_checkin_usecase.dart';
-import 'package:gymapp/features/life_coach/domain/usecases/create_evening_reflection_usecase.dart';
-import 'package:gymapp/features/life_coach/domain/usecases/get_todays_checkin_usecase.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:lifeos/core/database/database.dart';
+import 'package:lifeos/core/database/database_providers.dart';
+import 'package:lifeos/core/error/result.dart';
+import 'package:lifeos/features/life_coach/data/repositories/check_in_repository_impl.dart';
+import 'package:lifeos/features/life_coach/domain/entities/check_in_entity.dart';
+import 'package:lifeos/features/life_coach/domain/repositories/check_in_repository.dart';
+import 'package:lifeos/features/life_coach/domain/usecases/create_morning_checkin_usecase.dart';
+import 'package:lifeos/features/life_coach/domain/usecases/create_evening_reflection_usecase.dart';
+import 'package:lifeos/features/life_coach/domain/usecases/get_todays_checkin_usecase.dart';
+
+part 'check_in_provider.g.dart';
 
 /// Database provider for check-ins
-final checkInDatabaseProvider = Provider<AppDatabase>((ref) {
+@riverpod
+AppDatabase checkInDatabase(CheckInDatabaseRef ref) {
   return ref.watch(appDatabaseProvider);
-});
+}
 
 /// Repository provider
-final checkInRepositoryProvider = Provider<CheckInRepository>((ref) {
+@riverpod
+CheckInRepository checkInRepository(CheckInRepositoryRef ref) {
   final database = ref.watch(checkInDatabaseProvider);
   return CheckInRepositoryImpl(database);
-});
+}
 
 /// Create morning check-in use case
-final createMorningCheckInUseCaseProvider =
-    Provider<CreateMorningCheckInUseCase>((ref) {
+@riverpod
+CreateMorningCheckInUseCase createMorningCheckInUseCase(CreateMorningCheckInUseCaseRef ref) {
   final repository = ref.watch(checkInRepositoryProvider);
   return CreateMorningCheckInUseCase(repository);
-});
+}
 
 /// Create evening reflection use case
-final createEveningReflectionUseCaseProvider =
-    Provider<CreateEveningReflectionUseCase>((ref) {
+@riverpod
+CreateEveningReflectionUseCase createEveningReflectionUseCase(CreateEveningReflectionUseCaseRef ref) {
   final repository = ref.watch(checkInRepositoryProvider);
   return CreateEveningReflectionUseCase(repository);
-});
+}
 
 /// Get today's check-in use case
-final getTodaysCheckInUseCaseProvider =
-    Provider<GetTodaysCheckInUseCase>((ref) {
+@riverpod
+GetTodaysCheckInUseCase getTodaysCheckInUseCase(GetTodaysCheckInUseCaseRef ref) {
   final repository = ref.watch(checkInRepositoryProvider);
   return GetTodaysCheckInUseCase(repository);
-});
+}
 
 /// Check-in state
 class CheckInState {
@@ -77,18 +81,22 @@ class CheckInState {
 }
 
 /// Check-in notifier
-class CheckInNotifier extends StateNotifier<CheckInState> {
-  final CheckInRepository _repository;
-  final CreateMorningCheckInUseCase _createMorningCheckIn;
-  final CreateEveningReflectionUseCase _createEveningReflection;
-  final GetTodaysCheckInUseCase _getTodaysCheckIn;
+@riverpod
+class CheckInNotifier extends _$CheckInNotifier {
+  late final CheckInRepository _repository;
+  late final CreateMorningCheckInUseCase _createMorningCheckIn;
+  late final CreateEveningReflectionUseCase _createEveningReflection;
+  late final GetTodaysCheckInUseCase _getTodaysCheckIn;
 
-  CheckInNotifier(
-    this._repository,
-    this._createMorningCheckIn,
-    this._createEveningReflection,
-    this._getTodaysCheckIn,
-  ) : super(CheckInState());
+  @override
+  CheckInState build() {
+    _repository = ref.watch(checkInRepositoryProvider);
+    _createMorningCheckIn = ref.watch(createMorningCheckInUseCaseProvider);
+    _createEveningReflection = ref.watch(createEveningReflectionUseCaseProvider);
+    _getTodaysCheckIn = ref.watch(getTodaysCheckInUseCaseProvider);
+
+    return CheckInState();
+  }
 
   /// Create morning check-in
   Future<Result<CheckInEntity>> createMorningCheckIn(
@@ -97,17 +105,17 @@ class CheckInNotifier extends StateNotifier<CheckInState> {
 
     final result = await _createMorningCheckIn(checkIn);
 
-    result.when(
-      success: (createdCheckIn) {
+    result.map(
+      success: (success) {
         state = state.copyWith(
           isLoading: false,
-          todaysMorningCheckIn: createdCheckIn,
+          todaysMorningCheckIn: success.data,
         );
       },
       failure: (failure) {
         state = state.copyWith(
           isLoading: false,
-          error: failure.toString(),
+          error: failure.exception.toString(),
         );
       },
     );
@@ -122,17 +130,17 @@ class CheckInNotifier extends StateNotifier<CheckInState> {
 
     final result = await _createEveningReflection(checkIn);
 
-    result.when(
-      success: (createdCheckIn) {
+    result.map(
+      success: (success) {
         state = state.copyWith(
           isLoading: false,
-          todaysEveningCheckIn: createdCheckIn,
+          todaysEveningCheckIn: success.data,
         );
       },
       failure: (failure) {
         state = state.copyWith(
           isLoading: false,
-          error: failure.toString(),
+          error: failure.exception.toString(),
         );
       },
     );
@@ -148,18 +156,18 @@ class CheckInNotifier extends StateNotifier<CheckInState> {
     final morningResult =
         await _getTodaysCheckIn(userId, CheckInType.morning);
     CheckInEntity? morningCheckIn;
-    morningResult.when(
-      success: (checkIn) => morningCheckIn = checkIn,
-      failure: (_) => null,
+    morningResult.map(
+      success: (success) => morningCheckIn = success.data,
+      failure: (failure) => null,
     );
 
     // Load evening check-in
     final eveningResult =
         await _getTodaysCheckIn(userId, CheckInType.evening);
     CheckInEntity? eveningCheckIn;
-    eveningResult.when(
-      success: (checkIn) => eveningCheckIn = checkIn,
-      failure: (_) => null,
+    eveningResult.map(
+      success: (success) => eveningCheckIn = success.data,
+      failure: (failure) => null,
     );
 
     state = state.copyWith(
@@ -173,7 +181,7 @@ class CheckInNotifier extends StateNotifier<CheckInState> {
   Future<void> loadRecentCheckIns(String userId) async {
     final result = await _repository.getAllCheckIns(userId);
 
-    result.when(
+    result.map(
       success: (checkIns) {
         state = state.copyWith(
           recentCheckIns: checkIns.take(10).toList(),
@@ -183,19 +191,3 @@ class CheckInNotifier extends StateNotifier<CheckInState> {
     );
   }
 }
-
-/// Check-in provider
-final checkInProvider =
-    StateNotifierProvider<CheckInNotifier, CheckInState>((ref) {
-  final repository = ref.watch(checkInRepositoryProvider);
-  final createMorning = ref.watch(createMorningCheckInUseCaseProvider);
-  final createEvening = ref.watch(createEveningReflectionUseCaseProvider);
-  final getTodaysCheckIn = ref.watch(getTodaysCheckInUseCaseProvider);
-
-  return CheckInNotifier(
-    repository,
-    createMorning,
-    createEvening,
-    getTodaysCheckIn,
-  );
-});

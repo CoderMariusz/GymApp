@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
-import 'package:gymapp/core/auth/presentation/providers/auth_provider.dart';
-import 'package:gymapp/features/fitness/presentation/providers/workout_log_provider.dart';
-import 'package:gymapp/features/fitness/presentation/widgets/rest_timer_widget.dart';
-import 'package:gymapp/features/fitness/presentation/widgets/exercise_set_input.dart';
-import 'package:gymapp/features/fitness/domain/entities/workout_log_entity.dart';
-import 'package:gymapp/features/fitness/domain/entities/exercise_set_entity.dart';
+import 'package:lifeos/core/auth/presentation/providers/auth_provider.dart';
+import 'package:lifeos/features/fitness/presentation/providers/workout_log_provider.dart';
+import 'package:lifeos/features/fitness/presentation/widgets/rest_timer_widget.dart';
+import 'package:lifeos/features/fitness/presentation/widgets/exercise_set_input.dart';
+import 'package:lifeos/features/fitness/domain/entities/workout_log_entity.dart';
+import 'package:lifeos/features/fitness/domain/entities/exercise_set_entity.dart';
 
 /// Workout Logging Page
 /// Story 3.3: Advanced workout logging with rest timer
@@ -59,8 +59,8 @@ class _WorkoutLoggingPageState extends ConsumerState<WorkoutLoggingPage> {
   Future<void> _saveWorkout() async {
     final authState = ref.read(authStateProvider);
 
-    await authState.maybeWhen(
-      authenticated: (user) async {
+    await authState.maybeMap(
+      authenticated: (authenticated) async {
         if (_sets.isEmpty) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
@@ -76,7 +76,7 @@ class _WorkoutLoggingPageState extends ConsumerState<WorkoutLoggingPage> {
 
         final workoutLog = WorkoutLogEntity(
           id: const Uuid().v4(),
-          userId: user.id,
+          userId: authenticated.user.id,
           timestamp: DateTime.now(),
           workoutName: _workoutNameController.text.isNotEmpty
               ? _workoutNameController.text
@@ -91,8 +91,8 @@ class _WorkoutLoggingPageState extends ConsumerState<WorkoutLoggingPage> {
                   workoutLog,
                 );
 
-        result.when(
-          success: (_) {
+        result.map(
+          success: (success) {
             if (context.mounted) {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
@@ -103,11 +103,11 @@ class _WorkoutLoggingPageState extends ConsumerState<WorkoutLoggingPage> {
               Navigator.pop(context);
             }
           },
-          failure: (error) {
+          failure: (failure) {
             if (context.mounted) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text('Error: ${error.toString()}'),
+                  content: Text('Error: ${failure.exception.toString()}'),
                   backgroundColor: Colors.red,
                 ),
               );

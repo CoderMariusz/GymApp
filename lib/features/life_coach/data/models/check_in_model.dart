@@ -1,7 +1,8 @@
 import 'dart:convert';
+import 'package:drift/drift.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:gymapp/features/life_coach/domain/entities/check_in_entity.dart';
-import 'package:gymapp/core/database/database.dart';
+import 'package:lifeos/features/life_coach/domain/entities/check_in_entity.dart';
+import 'package:lifeos/core/database/database.dart';
 
 part 'check_in_model.freezed.dart';
 part 'check_in_model.g.dart';
@@ -81,9 +82,9 @@ class CheckInModel with _$CheckInModel {
       tomorrowFocus: Value(tomorrowFocus),
       tags: Value(tags != null ? jsonEncode(tags) : null),
       notes: Value(notes),
-      createdAt: createdAt,
+      createdAt: Value(createdAt),
       updatedAt: Value(updatedAt ?? DateTime.now()),
-      isSynced: isSynced,
+      isSynced: Value(isSynced),
     );
   }
 

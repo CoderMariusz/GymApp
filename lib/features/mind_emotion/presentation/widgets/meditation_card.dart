@@ -294,21 +294,21 @@ class _MeditationCardState extends ConsumerState<MeditationCard>
       meditationId: widget.meditation.id,
     );
 
-    result.when(
-      success: (newState) {
-        if (newState != _isFavorite) {
+    result.map(
+      success: (success) {
+        if (success.data != _isFavorite) {
           setState(() {
-            _isFavorite = newState;
+            _isFavorite = success.data;
           });
         }
       },
-      failure: (error) {
+      failure: (failure) {
         // Revert on error
         setState(() {
           _isFavorite = !_isFavorite;
         });
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to update favorite: $error')),
+          SnackBar(content: Text('Failed to update favorite: ${failure.exception}')),
         );
       },
     );

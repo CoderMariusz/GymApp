@@ -90,16 +90,15 @@ void main() {
         };
 
         // Act: Resolve conflict
-        final resolver = ConflictResolver();
+        final resolver = ConflictResolver(strategy: ConflictStrategy.lastWriteWins);
         final resolved = resolver.resolve(
-          local: localRecord,
-          remote: remoteRecord,
-          strategy: ConflictStrategy.lastWriteWins,
+          localData: localRecord,
+          remoteData: remoteRecord,
         );
 
         // Assert: Remote wins (newer timestamp)
-        expect(resolved['name'], 'Remote Name');
-        expect(resolved['updated_at'], remoteRecord['updated_at']);
+        expect(resolved.resolvedData['name'], 'Remote Name');
+        expect(resolved.resolvedData['updated_at'], remoteRecord['updated_at']);
       });
 
       test('should detect conflicts based on timestamps', () async {
@@ -117,13 +116,13 @@ void main() {
         };
 
         // Act
-        final hasConflict = resolver.hasConflict(
-          local: localRecord,
-          remote: remoteRecord,
+        final resolution = resolver.resolve(
+          localData: localRecord,
+          remoteData: remoteRecord,
         );
 
         // Assert
-        expect(hasConflict, true);
+        expect(resolution.wasConflict, true);
       });
 
       test('should not detect conflict if timestamps match', () async {
@@ -142,13 +141,13 @@ void main() {
         };
 
         // Act
-        final hasConflict = resolver.hasConflict(
-          local: localRecord,
-          remote: remoteRecord,
+        final resolution = resolver.resolve(
+          localData: localRecord,
+          remoteData: remoteRecord,
         );
 
         // Assert
-        expect(hasConflict, false);
+        expect(resolution.wasConflict, false);
       });
     });
 

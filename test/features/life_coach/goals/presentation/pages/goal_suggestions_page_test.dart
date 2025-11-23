@@ -1,13 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/annotations.dart';
-import 'package:mockito/mockito.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:gymapp/features/life_coach/goals/presentation/pages/goal_suggestions_page.dart';
+import 'package:lifeos/features/life_coach/goals/presentation/pages/goal_suggestions_page.dart';
 
-import 'goal_suggestions_page_test.mocks.dart';
-
-@GenerateMocks([])
 void main() {
   testWidgets('GoalSuggestionsPage renders correctly', (tester) async {
     // Arrange

@@ -1,6 +1,6 @@
-import 'package:gymapp/core/error/result.dart';
-import 'package:gymapp/features/fitness/domain/entities/body_measurement_entity.dart';
-import 'package:gymapp/features/fitness/domain/repositories/measurements_repository.dart';
+import 'package:lifeos/core/error/result.dart';
+import 'package:lifeos/features/fitness/domain/entities/body_measurement_entity.dart';
+import 'package:lifeos/features/fitness/domain/repositories/measurements_repository.dart';
 
 class RecordMeasurementUseCase {
   final MeasurementsRepository _repository;

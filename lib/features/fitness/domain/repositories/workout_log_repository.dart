@@ -1,6 +1,6 @@
-import 'package:gymapp/core/error/result.dart';
-import 'package:gymapp/features/fitness/domain/entities/workout_log_entity.dart';
-import 'package:gymapp/features/fitness/domain/entities/exercise_set_entity.dart';
+import 'package:lifeos/core/error/result.dart';
+import 'package:lifeos/features/fitness/domain/entities/workout_log_entity.dart';
+import 'package:lifeos/features/fitness/domain/entities/exercise_set_entity.dart';
 
 /// Repository interface for workout log operations
 abstract class WorkoutLogRepository {

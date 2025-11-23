@@ -1,12 +1,12 @@
 import 'package:drift/drift.dart';
-import 'package:gymapp/core/database/database.dart';
-import 'package:gymapp/core/error/result.dart';
-import 'package:gymapp/core/error/failures.dart';
-import 'package:gymapp/features/fitness/data/models/workout_log_model.dart';
-import 'package:gymapp/features/fitness/data/models/exercise_set_model.dart';
-import 'package:gymapp/features/fitness/domain/entities/workout_log_entity.dart';
-import 'package:gymapp/features/fitness/domain/entities/exercise_set_entity.dart';
-import 'package:gymapp/features/fitness/domain/repositories/workout_log_repository.dart';
+import 'package:lifeos/core/database/database.dart';
+import 'package:lifeos/core/error/result.dart';
+import 'package:lifeos/core/error/failures.dart';
+import 'package:lifeos/features/fitness/data/models/workout_log_model.dart';
+import 'package:lifeos/features/fitness/data/models/exercise_set_model.dart';
+import 'package:lifeos/features/fitness/domain/entities/workout_log_entity.dart';
+import 'package:lifeos/features/fitness/domain/entities/exercise_set_entity.dart';
+import 'package:lifeos/features/fitness/domain/repositories/workout_log_repository.dart';
 
 class WorkoutLogRepositoryImpl implements WorkoutLogRepository {
   final AppDatabase _database;
@@ -79,8 +79,8 @@ class WorkoutLogRepositoryImpl implements WorkoutLogRepository {
       // Get sets for this workout
       final setsResult = await getSetsForWorkout(id);
       List<ExerciseSetEntity> sets = [];
-      setsResult.when(
-        success: (s) => sets = s,
+      setsResult.map(
+        success: (success) => sets = success.data,
         failure: (_) => null,
       );
 

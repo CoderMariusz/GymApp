@@ -21,23 +21,24 @@ class ToggleFavoriteUseCase {
       // Get current favorites
       final favoritesResult = await _repository.getFavoriteIds(userId);
 
-      return favoritesResult.when(
-        success: (favoriteIds) async {
+      return favoritesResult.map(
+        success: (success) async {
+          final favoriteIds = success.data;
           final isFavorited = favoriteIds.contains(meditationId);
 
           // Toggle the favorite status
           final toggleResult =
               await _repository.toggleFavorite(userId, meditationId);
 
-          return toggleResult.when(
+          return toggleResult.map(
             success: (_) {
               // Return new favorite state (opposite of current)
               return Result.success(!isFavorited);
             },
-            failure: (error) => Result.failure(error),
+            failure: (failure) => Result.failure(failure.exception),
           );
         },
-        failure: (error) => Result.failure(error),
+        failure: (failure) => Result.failure(failure.exception),
       );
     } catch (e) {
       return Result.failure(

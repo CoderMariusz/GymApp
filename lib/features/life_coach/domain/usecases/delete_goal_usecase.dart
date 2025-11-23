@@ -1,5 +1,5 @@
-import 'package:gymapp/core/error/result.dart';
-import 'package:gymapp/features/life_coach/domain/repositories/goals_repository.dart';
+import 'package:lifeos/core/error/result.dart';
+import 'package:lifeos/features/life_coach/domain/repositories/goals_repository.dart';
 
 class DeleteGoalUseCase {
   final GoalsRepository _repository;

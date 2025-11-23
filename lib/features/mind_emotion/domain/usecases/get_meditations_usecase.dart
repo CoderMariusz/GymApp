@@ -30,9 +30,9 @@ class GetMeditationsUseCase {
       // Get all meditations from repository
       final result = await _repository.getMeditations();
 
-      return result.when(
-        success: (meditations) async {
-          var filteredMeditations = meditations;
+      return result.map(
+        success: (success) async {
+          var filteredMeditations = success.data;
 
           // Apply category filter
           if (category != null) {
@@ -75,7 +75,7 @@ class GetMeditationsUseCase {
 
           return Result.success(filteredMeditations);
         },
-        failure: (error) => Result.failure(error),
+        failure: (failure) => Result.failure(failure.exception),
       );
     } catch (e) {
       return Result.failure(Exception('Failed to get meditations: $e'));
