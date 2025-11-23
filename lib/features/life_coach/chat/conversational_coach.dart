@@ -1,5 +1,8 @@
 import 'package:uuid/uuid.dart';
 import '../../../core/ai/ai_service.dart';
+import '../../../core/error/result.dart';
+import '../../../core/error/failures.dart';
+import '../../../core/utils/rate_limiter.dart';
 import '../domain/repositories/goals_repository.dart';
 import '../domain/repositories/check_in_repository.dart';
 import 'models/chat_message.dart';
@@ -10,22 +13,36 @@ class ConversationalCoach {
   final GoalsRepository _goalsRepo;
   final CheckInRepository _checkInRepo;
   final ChatRepository _chatRepo;
+  final RateLimiter _rateLimiter;
 
   ConversationalCoach({
     required AIService aiService,
     required GoalsRepository goalsRepo,
     required CheckInRepository checkInRepo,
     required ChatRepository chatRepo,
+    RateLimiter? rateLimiter,
   })  : _aiService = aiService,
         _goalsRepo = goalsRepo,
         _checkInRepo = checkInRepo,
-        _chatRepo = chatRepo;
+        _chatRepo = chatRepo,
+        _rateLimiter = rateLimiter ??
+            RateLimiter(
+              requestsPerMinute: 10,
+              burstSize: 3,
+            );
 
   /// Send a message and get AI response
-  Future<ChatMessage> sendMessage({
+  Future<Result<ChatMessage>> sendMessage({
     required String sessionId,
     required String userMessage,
   }) async {
+    // Check rate limit
+    try {
+      _rateLimiter.checkLimit(sessionId);
+    } on RateLimitFailure catch (e) {
+      return Result.failure(e);
+    }
+
     try {
       // 1. Create user message
       final userMsg = ChatMessage(
@@ -36,7 +53,13 @@ class ConversationalCoach {
       );
 
       // Save user message
-      await _chatRepo.addMessage(sessionId, userMsg);
+      try {
+        await _chatRepo.addMessage(sessionId, userMsg);
+      } catch (e) {
+        return Result.failure(
+          DatabaseFailure('Failed to save user message: ${e.toString()}'),
+        );
+      }
 
       // 2. Get conversation context
       final session = await _chatRepo.getSession(sessionId);
@@ -69,19 +92,40 @@ class ConversationalCoach {
       );
 
       // Save assistant message
-      await _chatRepo.addMessage(sessionId, assistantMsg);
+      try {
+        await _chatRepo.addMessage(sessionId, assistantMsg);
+      } catch (e) {
+        return Result.failure(
+          DatabaseFailure('Failed to save assistant message: ${e.toString()}'),
+        );
+      }
 
-      return assistantMsg;
+      return Result.success(assistantMsg);
+    } on NetworkFailure catch (e) {
+      return Result.failure(e);
+    } on AIServiceFailure catch (e) {
+      return Result.failure(e);
     } catch (e) {
-      throw Exception('Failed to get AI response: ${e.toString()}');
+      return Result.failure(
+        AIServiceFailure('Unexpected error in chat: ${e.toString()}'),
+      );
     }
   }
 
   /// Send a message with streaming response
+  /// Yields chunks of the AI response as they arrive
+  /// In case of error, yields an error message starting with "[ERROR]"
   Stream<String> sendMessageStream({
     required String sessionId,
     required String userMessage,
   }) async* {
+    // Check rate limit
+    if (!_rateLimiter.isAllowed(sessionId)) {
+      final waitTime = _rateLimiter.timeUntilAllowed(sessionId);
+      yield '[ERROR] Rate limit exceeded. Please wait ${waitTime.inSeconds} seconds.';
+      return;
+    }
+
     try {
       // 1. Create and save user message
       final userMsg = ChatMessage(
@@ -90,7 +134,13 @@ class ConversationalCoach {
         content: userMessage,
         timestamp: DateTime.now(),
       );
-      await _chatRepo.addMessage(sessionId, userMsg);
+
+      try {
+        await _chatRepo.addMessage(sessionId, userMsg);
+      } catch (e) {
+        yield '[ERROR] Failed to save message: ${e.toString()}';
+        return;
+      }
 
       // 2. Get context
       final session = await _chatRepo.getSession(sessionId);
@@ -122,9 +172,19 @@ class ConversationalCoach {
         content: buffer.toString(),
         timestamp: DateTime.now(),
       );
-      await _chatRepo.addMessage(sessionId, assistantMsg);
+
+      try {
+        await _chatRepo.addMessage(sessionId, assistantMsg);
+      } catch (e) {
+        // Message already streamed to user, just log the save error
+        yield '[ERROR] Failed to save response: ${e.toString()}';
+      }
+    } on NetworkFailure catch (e) {
+      yield '[ERROR] Network error: ${e.message}';
+    } on AIServiceFailure catch (e) {
+      yield '[ERROR] AI service error: ${e.message}';
     } catch (e) {
-      throw Exception('Failed to stream AI response: ${e.toString()}');
+      yield '[ERROR] Unexpected error: ${e.toString()}';
     }
   }
 

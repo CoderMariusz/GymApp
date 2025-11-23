@@ -32,3 +32,23 @@ class NotFoundException extends Failure {
 class AuthFailure extends Failure {
   AuthFailure(String message) : super('Auth Error: $message');
 }
+
+/// AI Service failures
+class AIServiceFailure extends Failure {
+  AIServiceFailure(String message) : super('AI Service Error: $message');
+}
+
+/// AI Response parsing failures
+class AIParsingFailure extends Failure {
+  AIParsingFailure(String message) : super('AI Parsing Error: $message');
+}
+
+/// Rate limit exceeded failures
+class RateLimitFailure extends Failure {
+  RateLimitFailure(String message) : super('Rate Limit Exceeded: $message');
+}
+
+/// Calendar integration failures
+class CalendarFailure extends Failure {
+  CalendarFailure(String message) : super('Calendar Error: $message');
+}

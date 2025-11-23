@@ -28,24 +28,32 @@ class _TaskEditDialogState extends State<TaskEditDialog> {
   void initState() {
     super.initState();
 
-    if (widget.task != null) {
-      // Editing existing task
-      _titleController = TextEditingController(text: widget.task!.title);
-      _descriptionController = TextEditingController(text: widget.task!.description);
-      _whyController = TextEditingController(text: widget.task!.why);
+    final task = widget.task;
+    if (task != null) {
+      // Editing existing task - no force unwraps needed
+      _titleController = TextEditingController(text: task.title);
+      _descriptionController = TextEditingController(text: task.description);
+      _whyController = TextEditingController(text: task.why);
       _durationController = TextEditingController(
-        text: widget.task!.estimatedDuration.toString(),
+        text: task.estimatedDuration.toString(),
       );
-      _category = widget.task!.category;
-      _priority = widget.task!.priority;
-      _energyLevel = widget.task!.energyLevel;
+      _category = task.category;
+      _priority = task.priority;
+      _energyLevel = task.energyLevel;
 
-      // Parse suggested time
-      final parts = widget.task!.suggestedTime.split(':');
-      _suggestedTime = TimeOfDay(
-        hour: int.parse(parts[0]),
-        minute: int.parse(parts[1]),
-      );
+      // Parse suggested time with error handling
+      final parts = task.suggestedTime.split(':');
+      if (parts.length == 2) {
+        final hour = int.tryParse(parts[0]);
+        final minute = int.tryParse(parts[1]);
+        if (hour != null && minute != null && hour >= 0 && hour < 24 && minute >= 0 && minute < 60) {
+          _suggestedTime = TimeOfDay(hour: hour, minute: minute);
+        } else {
+          _suggestedTime = TimeOfDay.now();
+        }
+      } else {
+        _suggestedTime = TimeOfDay.now();
+      }
     } else {
       // Creating new task
       _titleController = TextEditingController();
