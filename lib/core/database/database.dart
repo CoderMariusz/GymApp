@@ -70,6 +70,31 @@ class AppDatabase extends _$AppDatabase {
     },
   );
 
+  @override
+  MigrationStrategy get migration => MigrationStrategy(
+    onCreate: (Migrator m) async {
+      await m.createAll();
+    },
+    onUpgrade: (Migrator m, int from, int to) async {
+      if (from < 2) {
+        // Migration from v1 to v2 - add batch1 tables
+        await m.createTable(checkIns);
+        await m.createTable(workoutLogs);
+        await m.createTable(exerciseSets);
+      }
+      if (from < 3) {
+        // Migration from v2 to v3 - add batch3 tables
+        await m.createTable(goals);
+        await m.createTable(goalProgressTable);
+        await m.createTable(bodyMeasurements);
+      }
+      if (from < 4) {
+        // Migration from v3 to v4
+        // Currently no schema changes, just version bump for consistency
+      }
+    },
+  );
+
   static QueryExecutor _openConnection() {
     return driftDatabase(name: 'lifeos_db');
   }
