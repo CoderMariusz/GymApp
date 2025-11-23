@@ -26,3 +26,25 @@ class DailyPlans extends Table {
   @override
   Set<Column> get primaryKey => {id};
 }
+
+// =============================================================================
+// Table: ChatSessions (AI coaching chat sessions)
+// =============================================================================
+
+@DataClassName('ChatSessionData')
+class ChatSessions extends Table {
+  TextColumn get id => text()();
+  TextColumn get userId => text().named('user_id')();
+  TextColumn get title => text()();
+  TextColumn get messagesJson => text().named('messages_json')();  // JSON array of messages
+  DateTimeColumn get createdAt => dateTime().named('created_at').withDefault(currentDateAndTime)();
+  DateTimeColumn get lastMessageAt => dateTime().named('last_message_at').nullable()();
+  BoolColumn get isArchived => boolean().named('is_archived').withDefault(const Constant(false))();
+
+  // Sync metadata
+  BoolColumn get isSynced => boolean().named('is_synced').withDefault(const Constant(false))();
+  DateTimeColumn get lastSyncedAt => dateTime().named('last_synced_at').nullable()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
