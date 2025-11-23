@@ -18,7 +18,7 @@ class SyncService {
 
   bool _isOnline = false;
   bool _isSyncing = false;
-  StreamSubscription<List<ConnectivityResult>>? _connectivitySubscription;
+  StreamSubscription<ConnectivityResult>? _connectivitySubscription;
   Timer? _syncTimer;
 
   final StreamController<SyncStatus> _statusController = StreamController.broadcast();
@@ -50,7 +50,7 @@ class SyncService {
   Future<void> initialize(String userId) async {
     // Check initial connectivity
     final connectivityResult = await _connectivity.checkConnectivity();
-    _isOnline = !connectivityResult.contains(ConnectivityResult.none);
+    _isOnline = connectivityResult != ConnectivityResult.none;
 
     // Listen to connectivity changes
     _connectivitySubscription = _connectivity.onConnectivityChanged.listen(
@@ -96,9 +96,9 @@ class SyncService {
   }
 
   /// Handle connectivity changes
-  void _onConnectivityChanged(List<ConnectivityResult> result) {
+  void _onConnectivityChanged(ConnectivityResult result) {
     final wasOnline = _isOnline;
-    _isOnline = !result.contains(ConnectivityResult.none);
+    _isOnline = result != ConnectivityResult.none;
 
     if (!wasOnline && _isOnline) {
       // Just came online - process pending queue

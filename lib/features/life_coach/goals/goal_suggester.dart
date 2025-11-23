@@ -21,10 +21,10 @@ class GoalSuggester {
         _checkInRepo = checkInRepo,
         _prefsRepo = prefsRepo;
 
-  Future<List<GoalSuggestion>> suggestGoals({int count = 3}) async {
+  Future<List<GoalSuggestion>> suggestGoals({int count = 3, String? userId}) async {
     try {
       // 1. Gather context
-      final existingGoals = await _goalsRepo.getActiveGoals();
+      final existingGoals = await _goalsRepo.getActiveGoals(userId ?? 'default');
       final recentCheckIns = await _checkInRepo.getRecentCheckIns(days: 7);
       final prefs = await _prefsRepo.getUserPreferences();
 

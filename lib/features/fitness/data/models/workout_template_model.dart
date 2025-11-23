@@ -67,7 +67,7 @@ class WorkoutTemplateModel with _$WorkoutTemplateModel {
       timesUsed: Value(timesUsed),
       lastUsed: Value(lastUsed),
       createdAt: Value(createdAt),
-      updatedAt: Value(updatedAt),
+      updatedAt: updatedAt != null ? Value(updatedAt) : Value(DateTime.now()),
       isSynced: Value(isSynced),
     );
   }

@@ -66,7 +66,7 @@ class ConversationalCoach {
       final conversationHistory = session?.messages ?? [];
 
       // 3. Build context-aware prompt
-      final systemPrompt = await _buildSystemPrompt();
+      final systemPrompt = await _buildSystemPrompt(session?.userId);
       final contextualPrompt = _buildContextualPrompt(
         conversationHistory,
         userMessage,
@@ -147,7 +147,7 @@ class ConversationalCoach {
       final conversationHistory = session?.messages ?? [];
 
       // 3. Build prompts
-      final systemPrompt = await _buildSystemPrompt();
+      final systemPrompt = await _buildSystemPrompt(session?.userId);
       final contextualPrompt = _buildContextualPrompt(
         conversationHistory,
         userMessage,
@@ -202,9 +202,9 @@ class ConversationalCoach {
     return session;
   }
 
-  Future<String> _buildSystemPrompt() async {
+  Future<String> _buildSystemPrompt([String? userId]) async {
     // Get user context
-    final goalsResult = await _goalsRepo.getActiveGoals();
+    final goalsResult = await _goalsRepo.getActiveGoals(userId ?? 'default');
     final checkIn = await _checkInRepo.getCheckInForDate(DateTime.now());
 
     final goalsContext = switch (goalsResult) {

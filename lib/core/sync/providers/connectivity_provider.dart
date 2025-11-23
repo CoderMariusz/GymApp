@@ -7,7 +7,7 @@ final connectivityProvider = Provider<Connectivity>((ref) {
 });
 
 /// Provider for connectivity status stream
-final connectivityStatusProvider = StreamProvider<List<ConnectivityResult>>((ref) {
+final connectivityStatusProvider = StreamProvider<ConnectivityResult>((ref) {
   final connectivity = ref.watch(connectivityProvider);
   return connectivity.onConnectivityChanged;
 });
@@ -16,6 +16,6 @@ final connectivityStatusProvider = StreamProvider<List<ConnectivityResult>>((ref
 final isOnlineProvider = StreamProvider<bool>((ref) {
   final connectivity = ref.watch(connectivityProvider);
   return connectivity.onConnectivityChanged.map(
-        (result) => !result.contains(ConnectivityResult.none),
+        (result) => result != ConnectivityResult.none,
       );
 });

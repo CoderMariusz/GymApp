@@ -56,7 +56,7 @@ class DailyPlanGenerator {
 
       // 1. Gather context
       final checkIn = await _checkInRepo.getCheckInForDate(date);
-      final goals = await _goalsRepo.getActiveGoals();
+      final goals = await _goalsRepo.getActiveGoals(userId ?? 'default');
       final events = await _fetchCalendarEvents(date);
       final prefs = await _prefsRepo.getUserPreferences();
 

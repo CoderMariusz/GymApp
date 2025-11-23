@@ -72,7 +72,7 @@ class BodyMeasurementModel with _$BodyMeasurementModel {
       photoUrl: Value(photoUrl),
       notes: Value(notes),
       createdAt: Value(createdAt),
-      updatedAt: Value(updatedAt),
+      updatedAt: updatedAt != null ? Value(updatedAt) : Value(DateTime.now()),
       isSynced: Value(isSynced),
     );
   }
