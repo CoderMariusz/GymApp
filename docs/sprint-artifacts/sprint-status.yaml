@@ -33,10 +33,12 @@
 # - Dev moves story to 'review', SM reviews, then Dev moves to 'done'
 
 generated: 2025-01-18
+last_updated: 2025-11-23  # Batch implementation plans created
 project: LifeOS
 project_key: lifeos
 tracking_system: file-system
 story_location: docs/sprint-artifacts
+implementation_approach: batch  # Token-efficient batch implementation
 
 development_status:
   # ============================================================================
@@ -173,11 +175,71 @@ summary:
   stories_done: 8  # Epic 1 (6) + Epic 3.2 (1) + Epic 4.1 (1)
 
 # ============================================================================
+# BATCH IMPLEMENTATION PLANS
+# ============================================================================
+batch_implementation:
+  approach: "Token-efficient batch grouping by architectural patterns"
+  location: "docs/implementation_plans/"
+  token_savings: "60K tokens (55% reduction)"
+  time_savings: "5 days (30% reduction)"
+
+  batches:
+    batch_1:
+      name: "Foundation - Forms & Input Flows"
+      stories: [2.1, 2.5, 3.3, 3.8]
+      token_budget: "8K (instead of 20K)"
+      status: "planned"
+      shared_components: ["DailyInputForm", "TimePicker", "SubmitButton"]
+
+    batch_2:
+      name: "Intelligence - AI Features"
+      stories: [2.2, 2.4, 2.9]
+      token_budget: "12K (instead of 24K)"
+      status: "implementation_guide_complete"
+      file: "01-batch-2-ai-features.md"
+      shared_components: ["AIService", "AIPromptBuilder", "AIStreamHandler"]
+
+    batch_3:
+      name: "Data - Tracking & CRUD"
+      stories: [2.3, 3.6, 3.7]
+      token_budget: "10K (instead of 21K)"
+      status: "planned"
+      shared_components: ["BaseRepository", "TrackingMixin", "HistoryRepository"]
+
+    batch_4:
+      name: "Visualization - Charts & Smart Features"
+      stories: [2.7, 3.5, 3.1, 2.8]
+      token_budget: "11K (instead of 24K)"
+      status: "implementation_guide_complete"
+      file: "02-batch-4-charts-smart-features.md"
+      shared_components: ["ReusableLineChart", "ReusableBarChart", "DataAggregator"]
+
+    batch_5:
+      name: "Polish - Lists, Reports & Integration"
+      stories: [3.4, 3.9, 2.10, 2.6, 3.10]
+      token_budget: "8K (instead of 20K)"
+      status: "planned"
+      shared_components: ["ListViewPattern", "DetailViewPattern"]
+
+  recommended_order:
+    week_1: ["batch_1", "batch_3"]  # Foundation + Data
+    week_2: ["batch_2", "batch_4"]  # AI + Charts
+    week_3: ["batch_5"]              # Polish + Testing
+
+  parallel_execution:
+    enabled: true
+    dev_1: ["batch_1", "batch_3"]
+    dev_2: ["batch_2", "batch_4"]
+    total_time: "7-8 days (instead of 15-20)"
+
+# ============================================================================
 # NOTES
 # ============================================================================
 notes:
   - "Sprint 0 completed - Database schema ready (7 tables, 2 Edge Functions)"
+  - "Epic 1 completed - Core Platform Foundation (6 stories DONE)"
   - "All 9 epics have tech-spec context files"
   - "All 66 stories have been drafted"
-  - "5 stories have detailed context and are ready-for-dev"
-  - "Next step: Begin implementation with Epic 1 (Core Platform Foundation)"
+  - "Batch implementation strategy created (2025-11-23)"
+  - "Batch 2 + 4 implementation guides complete (2197 lines of detailed code)"
+  - "Next step: Implement Batch 2 (AI Features) or Batch 4 (Charts)"
