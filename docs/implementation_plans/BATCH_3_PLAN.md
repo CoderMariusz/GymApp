@@ -346,7 +346,7 @@ class GoalsRepositoryImpl extends BaseRepository<GoalEntity, String>
       await database.into(database.goals).insert(model.toDrift());
       return Result.success(entity);
     } catch (e) {
-      return Result.failure(DatabaseException(e.toString()));
+      return Result.failure(DatabaseFailure('Failed to create goal: ${e.toString()}'));
     }
   }
 
@@ -364,7 +364,7 @@ class GoalsRepositoryImpl extends BaseRepository<GoalEntity, String>
 
       return Result.success(GoalModel.fromDrift(result).toEntity());
     } catch (e) {
-      return Result.failure(DatabaseException(e.toString()));
+      return Result.failure(DatabaseFailure(e.toString()));
     }
   }
 
@@ -384,7 +384,7 @@ class GoalsRepositoryImpl extends BaseRepository<GoalEntity, String>
         results.map((e) => GoalModel.fromDrift(e).toEntity()).toList(),
       );
     } catch (e) {
-      return Result.failure(DatabaseException(e.toString()));
+      return Result.failure(DatabaseFailure(e.toString()));
     }
   }
 
@@ -399,7 +399,7 @@ class GoalsRepositoryImpl extends BaseRepository<GoalEntity, String>
 
       return Result.success(entity);
     } catch (e) {
-      return Result.failure(DatabaseException(e.toString()));
+      return Result.failure(DatabaseFailure(e.toString()));
     }
   }
 
@@ -411,7 +411,7 @@ class GoalsRepositoryImpl extends BaseRepository<GoalEntity, String>
 
       return Result.success(null);
     } catch (e) {
-      return Result.failure(DatabaseException(e.toString()));
+      return Result.failure(DatabaseFailure(e.toString()));
     }
   }
 
@@ -457,7 +457,7 @@ class GoalsRepositoryImpl extends BaseRepository<GoalEntity, String>
         failure: (error) => Result.failure(error),
       );
     } catch (e) {
-      return Result.failure(DatabaseException(e.toString()));
+      return Result.failure(DatabaseFailure(e.toString()));
     }
   }
 
@@ -495,7 +495,7 @@ class GoalsRepositoryImpl extends BaseRepository<GoalEntity, String>
 
       return Result.success(null);
     } catch (e) {
-      return Result.failure(DatabaseException(e.toString()));
+      return Result.failure(DatabaseFailure(e.toString()));
     }
   }
 
@@ -526,7 +526,7 @@ class GoalsRepositoryImpl extends BaseRepository<GoalEntity, String>
         results.map((e) => GoalModel.fromDrift(e).toEntity()).toList(),
       );
     } catch (e) {
-      return Result.failure(DatabaseException(e.toString()));
+      return Result.failure(DatabaseFailure(e.toString()));
     }
   }
 
