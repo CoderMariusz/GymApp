@@ -31,7 +31,7 @@ dependencies:
   # UI & Design
   flutter_animate: ^4.3.0
   lottie: ^3.0.0
-  fl_chart: ^0.66.0
+  fl_chart: ^0.68.0
   shimmer: ^3.0.0
 
   # Game Engine
@@ -79,8 +79,13 @@ dependencies:
   # firebase_core: ^2.24.2  # Disabled for web compatibility
 
   # Networking
+  http: ^1.1.0
   dio: ^5.4.0
   connectivity_plus: ^5.0.0
+
+  # AI & Environment
+  flutter_dotenv: ^5.1.0
+  rxdart: ^0.28.0
 
   # Analytics
   posthog_flutter: ^4.0.0
@@ -112,3 +117,4 @@ flutter:
     - assets/images/
     - assets/audio/
     - assets/fonts/
+    - .env
