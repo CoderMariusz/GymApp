@@ -4,6 +4,7 @@ import '../../ai/providers/daily_plan_provider.dart';
 import '../../ai/models/daily_plan.dart';
 import '../widgets/ai_generating_animation.dart';
 import '../widgets/task_card.dart';
+import 'daily_plan_edit_page.dart';
 
 class DailyPlanPage extends ConsumerWidget {
   const DailyPlanPage({super.key});
@@ -16,6 +17,26 @@ class DailyPlanPage extends ConsumerWidget {
       appBar: AppBar(
         title: const Text('Today\'s Plan'),
         actions: [
+          // Edit button (only show when plan exists)
+          planAsync.maybeWhen(
+            data: (plan) {
+              if (plan != null) {
+                return IconButton(
+                  icon: const Icon(Icons.edit),
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => DailyPlanEditPage(plan: plan),
+                      ),
+                    );
+                  },
+                  tooltip: 'Edit Plan',
+                );
+              }
+              return const SizedBox.shrink();
+            },
+            orElse: () => const SizedBox.shrink(),
+          ),
           IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: () {
