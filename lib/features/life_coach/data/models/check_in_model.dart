@@ -5,11 +5,10 @@ import 'package:lifeos/features/life_coach/domain/entities/check_in_entity.dart'
 import 'package:lifeos/core/database/database.dart';
 
 part 'check_in_model.freezed.dart';
-part 'check_in_model.g.dart';
 
 /// Model for check-in data (mirrors CheckInEntity)
 @freezed
-class CheckInModel with _$CheckInModel {
+sealed class CheckInModel with _$CheckInModel {
   const factory CheckInModel({
     required String id,
     required String userId,
@@ -37,9 +36,6 @@ class CheckInModel with _$CheckInModel {
   }) = _CheckInModel;
 
   const CheckInModel._();
-
-  factory CheckInModel.fromJson(Map<String, dynamic> json) =>
-      _$CheckInModelFromJson(json);
 
   /// Create model from Drift database row
   factory CheckInModel.fromDrift(CheckIn row) {

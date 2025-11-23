@@ -35,10 +35,8 @@ class ExerciseDetailScreen extends ConsumerWidget {
             orElse: () => Exercise(
               id: exerciseId,
               name: 'Exercise not found',
-              category: 'Unknown',
-              primaryMuscles: [],
-              secondaryMuscles: [],
-              instructions: [],
+              equipment: EquipmentType.other,
+              difficulty: ExerciseDifficulty.beginner,
               isCustom: false,
             ),
           );
@@ -55,36 +53,38 @@ class ExerciseDetailScreen extends ConsumerWidget {
                 ),
                 const SizedBox(height: 8),
 
-                // Category
-                Chip(label: Text(exercise.category)),
+                // Category and Equipment
+                Wrap(
+                  spacing: 8,
+                  children: [
+                    Chip(label: Text(exercise.primaryCategory)),
+                    Chip(label: Text(exercise.equipmentName)),
+                    Chip(label: Text(exercise.difficultyName)),
+                  ],
+                ),
                 const SizedBox(height: 16),
 
-                // Primary muscles
-                if (exercise.primaryMuscles.isNotEmpty) ...[
+                // Description
+                if (exercise.description != null && exercise.description!.isNotEmpty) ...[
                   Text(
-                    'Primary Muscles',
+                    'Description',
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
                   const SizedBox(height: 8),
-                  Wrap(
-                    spacing: 8,
-                    children: exercise.primaryMuscles
-                        .map((muscle) => Chip(label: Text(muscle)))
-                        .toList(),
-                  ),
+                  Text(exercise.description!),
                   const SizedBox(height: 16),
                 ],
 
-                // Secondary muscles
-                if (exercise.secondaryMuscles.isNotEmpty) ...[
+                // Muscle groups
+                if (exercise.muscleGroups.isNotEmpty) ...[
                   Text(
-                    'Secondary Muscles',
+                    'Target Muscles',
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
                   const SizedBox(height: 8),
                   Wrap(
                     spacing: 8,
-                    children: exercise.secondaryMuscles
+                    children: exercise.muscleGroups
                         .map((muscle) => Chip(label: Text(muscle)))
                         .toList(),
                   ),
@@ -92,24 +92,14 @@ class ExerciseDetailScreen extends ConsumerWidget {
                 ],
 
                 // Instructions
-                if (exercise.instructions.isNotEmpty) ...[
+                if (exercise.instructions != null && exercise.instructions!.isNotEmpty) ...[
                   Text(
                     'Instructions',
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
                   const SizedBox(height: 8),
-                  ...exercise.instructions.asMap().entries.map(
-                        (entry) => Padding(
-                          padding: const EdgeInsets.only(bottom: 8.0),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text('${entry.key + 1}. '),
-                              Expanded(child: Text(entry.value)),
-                            ],
-                          ),
-                        ),
-                      ),
+                  Text(exercise.instructions!),
+                  const SizedBox(height: 16),
                 ],
               ],
             ),

@@ -11,18 +11,18 @@ import 'package:lifeos/features/fitness/domain/usecases/get_measurement_history_
 part 'measurements_provider.g.dart';
 
 @riverpod
-AppDatabase measurementsDatabase(MeasurementsDatabaseRef ref) => ref.watch(appDatabaseProvider);
+AppDatabase measurementsDatabase(Ref ref) => ref.watch(appDatabaseProvider);
 
 @riverpod
-MeasurementsRepository measurementsRepository(MeasurementsRepositoryRef ref) =>
+MeasurementsRepository measurementsRepository(Ref ref) =>
     MeasurementsRepositoryImpl(ref.watch(measurementsDatabaseProvider));
 
 @riverpod
-RecordMeasurementUseCase recordMeasurementUseCase(RecordMeasurementUseCaseRef ref) =>
+RecordMeasurementUseCase recordMeasurementUseCase(Ref ref) =>
     RecordMeasurementUseCase(ref.watch(measurementsRepositoryProvider));
 
 @riverpod
-GetMeasurementHistoryUseCase getMeasurementHistoryUseCase(GetMeasurementHistoryUseCaseRef ref) =>
+GetMeasurementHistoryUseCase getMeasurementHistoryUseCase(Ref ref) =>
     GetMeasurementHistoryUseCase(ref.watch(measurementsRepositoryProvider));
 
 class MeasurementsState {

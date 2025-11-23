@@ -5,10 +5,9 @@ import 'package:lifeos/features/fitness/domain/entities/workout_template_entity.
 import 'package:lifeos/core/database/database.dart';
 
 part 'workout_template_model.freezed.dart';
-part 'workout_template_model.g.dart';
 
 @freezed
-class WorkoutTemplateModel with _$WorkoutTemplateModel {
+sealed class WorkoutTemplateModel with _$WorkoutTemplateModel {
   const factory WorkoutTemplateModel({
     required String id,
     String? userId,
@@ -28,9 +27,6 @@ class WorkoutTemplateModel with _$WorkoutTemplateModel {
   }) = _WorkoutTemplateModel;
 
   const WorkoutTemplateModel._();
-
-  factory WorkoutTemplateModel.fromJson(Map<String, dynamic> json) =>
-      _$WorkoutTemplateModelFromJson(json);
 
   factory WorkoutTemplateModel.fromDrift(WorkoutTemplate row) {
     return WorkoutTemplateModel(

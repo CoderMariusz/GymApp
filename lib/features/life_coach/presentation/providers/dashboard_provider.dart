@@ -1,6 +1,7 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../../core/charts/models/chart_data.dart';
 import '../../../../core/charts/processors/data_aggregator.dart';
+import '../../../../core/error/result.dart';
 import '../../domain/repositories/check_in_repository.dart';
 import '../../domain/repositories/goals_repository.dart';
 import '../../domain/entities/dashboard_stats.dart';
@@ -10,11 +11,12 @@ import '../../ai/providers/daily_plan_provider.dart';
 part 'dashboard_provider.g.dart';
 
 @riverpod
-Future<DashboardStats> dashboardStats(DashboardStatsRef ref) async {
+Future<DashboardStats> dashboardStats(Ref ref) async {
   final goalsRepo = ref.watch(goalsRepositoryProvider);
   final checkInRepo = ref.watch(checkInRepositoryProvider);
 
-  final allGoals = await goalsRepo.getAllGoals();
+  final allGoalsResult = await goalsRepo.getAllGoals();
+  final allGoals = allGoalsResult.dataOrThrow;
   final activeGoals = allGoals.where((g) => g.status == GoalStatus.active).length;
   final completedGoals = allGoals.where((g) => g.status == GoalStatus.completed).length;
 
@@ -32,7 +34,7 @@ Future<DashboardStats> dashboardStats(DashboardStatsRef ref) async {
 }
 
 @riverpod
-Future<List<ChartDataPoint>> moodTrend(MoodTrendRef ref, {required int days}) async {
+Future<List<ChartDataPoint>> moodTrend(Ref ref, {required int days}) async {
   final checkInRepo = ref.watch(checkInRepositoryProvider);
   final checkIns = await checkInRepo.getRecentCheckIns(days: days);
 
@@ -47,7 +49,7 @@ Future<List<ChartDataPoint>> moodTrend(MoodTrendRef ref, {required int days}) as
 }
 
 @riverpod
-Future<List<ChartDataPoint>> energyTrend(EnergyTrendRef ref, {required int days}) async {
+Future<List<ChartDataPoint>> energyTrend(Ref ref, {required int days}) async {
   final checkInRepo = ref.watch(checkInRepositoryProvider);
   final checkIns = await checkInRepo.getRecentCheckIns(days: days);
 
@@ -62,11 +64,12 @@ Future<List<ChartDataPoint>> energyTrend(EnergyTrendRef ref, {required int days}
 
 @riverpod
 Future<List<ChartDataPoint>> goalCompletion(
-  GoalCompletionRef ref, {
+  Ref ref, {
   required int days,
 }) async {
   final goalsRepo = ref.watch(goalsRepositoryProvider);
-  final completedGoals = await goalsRepo.getCompletedGoals(days: days);
+  final completedGoalsResult = await goalsRepo.getCompletedGoals(days: days);
+  final completedGoals = completedGoalsResult.dataOrThrow;
 
   // Filter out goals without completedAt date before aggregation
   final goalsWithCompletedDate = completedGoals.where((goal) => goal.completedAt != null).toList();

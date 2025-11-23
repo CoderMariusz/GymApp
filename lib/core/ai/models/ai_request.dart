@@ -4,7 +4,7 @@ part 'ai_request.freezed.dart';
 part 'ai_request.g.dart';
 
 @freezed
-class AIRequest with _$AIRequest {
+sealed class AIRequest with _$AIRequest {
   const factory AIRequest({
     required String systemPrompt,
     required String userPrompt,

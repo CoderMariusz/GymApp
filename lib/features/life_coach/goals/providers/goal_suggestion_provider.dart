@@ -7,7 +7,7 @@ import '../models/goal_suggestion.dart';
 part 'goal_suggestion_provider.g.dart';
 
 @riverpod
-GoalSuggester goalSuggester(GoalSuggesterRef ref) {
+GoalSuggester goalSuggester(Ref ref) {
   return GoalSuggester(
     aiService: ref.watch(aiServiceProvider),
     goalsRepo: ref.watch(goalsRepositoryProvider),

@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lifeos/core/error/result.dart';
 import 'package:lifeos/features/mind_emotion/domain/entities/meditation_entity.dart';
 import 'package:lifeos/features/mind_emotion/presentation/providers/meditation_providers.dart';
 

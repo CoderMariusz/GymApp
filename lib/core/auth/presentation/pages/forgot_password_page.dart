@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/error/result.dart';
 import '../providers/auth_provider.dart';
 import '../widgets/email_text_field.dart';
 
@@ -55,17 +56,17 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
         _emailController.text.trim(),
       );
 
-      result.map(
-        success: (success) {
+      result.when(
+        success: (data) {
           setState(() {
             _emailSent = true;
             _isLoading = false;
           });
         },
-        failure: (failure) {
+        failure: (exception) {
           setState(() {
             _isLoading = false;
-            _emailError = failure.exception.toString();
+            _emailError = exception.toString();
           });
         },
       );

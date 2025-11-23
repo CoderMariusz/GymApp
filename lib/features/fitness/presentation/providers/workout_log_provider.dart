@@ -14,34 +14,34 @@ part 'workout_log_provider.g.dart';
 
 /// Database provider for workout logs
 @riverpod
-AppDatabase workoutLogDatabase(WorkoutLogDatabaseRef ref) {
+AppDatabase workoutLogDatabase(Ref ref) {
   return ref.watch(appDatabaseProvider);
 }
 
 /// Repository provider
 @riverpod
-WorkoutLogRepository workoutLogRepository(WorkoutLogRepositoryRef ref) {
+WorkoutLogRepository workoutLogRepository(Ref ref) {
   final database = ref.watch(workoutLogDatabaseProvider);
   return WorkoutLogRepositoryImpl(database);
 }
 
 /// Create workout log use case
 @riverpod
-CreateWorkoutLogUseCase createWorkoutLogUseCase(CreateWorkoutLogUseCaseRef ref) {
+CreateWorkoutLogUseCase createWorkoutLogUseCase(Ref ref) {
   final repository = ref.watch(workoutLogRepositoryProvider);
   return CreateWorkoutLogUseCase(repository);
 }
 
 /// Quick log workout use case
 @riverpod
-QuickLogWorkoutUseCase quickLogWorkoutUseCase(QuickLogWorkoutUseCaseRef ref) {
+QuickLogWorkoutUseCase quickLogWorkoutUseCase(Ref ref) {
   final repository = ref.watch(workoutLogRepositoryProvider);
   return QuickLogWorkoutUseCase(repository);
 }
 
 /// Get workout history use case
 @riverpod
-GetWorkoutHistoryUseCase getWorkoutHistoryUseCase(GetWorkoutHistoryUseCaseRef ref) {
+GetWorkoutHistoryUseCase getWorkoutHistoryUseCase(Ref ref) {
   final repository = ref.watch(workoutLogRepositoryProvider);
   return GetWorkoutHistoryUseCase(repository);
 }

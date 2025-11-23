@@ -13,34 +13,34 @@ part 'check_in_provider.g.dart';
 
 /// Database provider for check-ins
 @riverpod
-AppDatabase checkInDatabase(CheckInDatabaseRef ref) {
+AppDatabase checkInDatabase(Ref ref) {
   return ref.watch(appDatabaseProvider);
 }
 
 /// Repository provider
 @riverpod
-CheckInRepository checkInRepository(CheckInRepositoryRef ref) {
+CheckInRepository checkInRepository(Ref ref) {
   final database = ref.watch(checkInDatabaseProvider);
   return CheckInRepositoryImpl(database);
 }
 
 /// Create morning check-in use case
 @riverpod
-CreateMorningCheckInUseCase createMorningCheckInUseCase(CreateMorningCheckInUseCaseRef ref) {
+CreateMorningCheckInUseCase createMorningCheckInUseCase(Ref ref) {
   final repository = ref.watch(checkInRepositoryProvider);
   return CreateMorningCheckInUseCase(repository);
 }
 
 /// Create evening reflection use case
 @riverpod
-CreateEveningReflectionUseCase createEveningReflectionUseCase(CreateEveningReflectionUseCaseRef ref) {
+CreateEveningReflectionUseCase createEveningReflectionUseCase(Ref ref) {
   final repository = ref.watch(checkInRepositoryProvider);
   return CreateEveningReflectionUseCase(repository);
 }
 
 /// Get today's check-in use case
 @riverpod
-GetTodaysCheckInUseCase getTodaysCheckInUseCase(GetTodaysCheckInUseCaseRef ref) {
+GetTodaysCheckInUseCase getTodaysCheckInUseCase(Ref ref) {
   final repository = ref.watch(checkInRepositoryProvider);
   return GetTodaysCheckInUseCase(repository);
 }

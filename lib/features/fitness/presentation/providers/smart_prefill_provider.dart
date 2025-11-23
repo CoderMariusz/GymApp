@@ -7,7 +7,7 @@ part 'smart_prefill_provider.g.dart';
 
 /// Provider for SmartPrefillService instance
 @riverpod
-SmartPrefillService smartPrefillService(SmartPrefillServiceRef ref) {
+SmartPrefillService smartPrefillService(Ref ref) {
   final workoutRepo = ref.watch(workoutRepositoryProvider);
   return SmartPrefillService(workoutRepo);
 }
@@ -15,7 +15,7 @@ SmartPrefillService smartPrefillService(SmartPrefillServiceRef ref) {
 /// Generate workout suggestion for a specific exercise
 @riverpod
 Future<WorkoutSuggestion?> workoutSuggestion(
-  WorkoutSuggestionRef ref, {
+  Ref ref, {
   required String exerciseName,
 }) async {
   final service = ref.watch(smartPrefillServiceProvider);
@@ -25,7 +25,7 @@ Future<WorkoutSuggestion?> workoutSuggestion(
 /// Check if we have enough pattern data for an exercise
 @riverpod
 Future<bool> hasPatternData(
-  HasPatternDataRef ref, {
+  Ref ref, {
   required String exerciseName,
 }) async {
   final service = ref.watch(smartPrefillServiceProvider);

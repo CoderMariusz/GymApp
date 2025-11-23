@@ -7,13 +7,13 @@ import 'dart:math';
 part 'fitness_charts_provider.g.dart';
 
 @riverpod
-WorkoutRepository workoutRepository(WorkoutRepositoryRef ref) {
+WorkoutRepository workoutRepository(Ref ref) {
   return MockWorkoutRepository();
 }
 
 @riverpod
 Future<List<ChartDataPoint>> strengthProgress(
-  StrengthProgressRef ref, {
+  Ref ref, {
   required String exercise,
   int weeks = 12,
 }) async {
@@ -40,7 +40,7 @@ Future<List<ChartDataPoint>> strengthProgress(
 
 @riverpod
 Future<List<ChartDataPoint>> weeklyVolume(
-  WeeklyVolumeRef ref, {
+  Ref ref, {
   int weeks = 8,
 }) async {
   final workoutRepo = ref.watch(workoutRepositoryProvider);
@@ -62,7 +62,7 @@ Future<List<ChartDataPoint>> weeklyVolume(
 }
 
 @riverpod
-Future<List<ChartDataPoint>> personalRecords(PersonalRecordsRef ref) async {
+Future<List<ChartDataPoint>> personalRecords(Ref ref) async {
   final workoutRepo = ref.watch(workoutRepositoryProvider);
   final prs = await workoutRepo.getPersonalRecords();
 

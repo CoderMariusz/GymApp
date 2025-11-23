@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
+import 'package:lifeos/core/error/result.dart';
 import 'package:lifeos/core/widgets/daily_input_form.dart';
 import 'package:lifeos/core/auth/presentation/providers/auth_provider.dart';
+import 'package:lifeos/core/auth/presentation/providers/auth_state.dart';
 import 'package:lifeos/features/life_coach/presentation/providers/check_in_provider.dart';
 import 'package:lifeos/features/life_coach/domain/entities/check_in_entity.dart';
 

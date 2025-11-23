@@ -6,6 +6,6 @@ part 'database_providers.g.dart';
 /// Central database provider
 /// Used throughout the app to access the local database
 @riverpod
-AppDatabase appDatabase(AppDatabaseRef ref) {
+AppDatabase appDatabase(Ref ref) {
   return AppDatabase();
 }

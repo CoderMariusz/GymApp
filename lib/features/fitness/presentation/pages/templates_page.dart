@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lifeos/core/auth/presentation/providers/auth_provider.dart';
+import 'package:lifeos/core/auth/presentation/providers/auth_state.dart';
 import 'package:lifeos/features/fitness/presentation/providers/templates_provider.dart';
 
 class TemplatesPage extends ConsumerWidget {

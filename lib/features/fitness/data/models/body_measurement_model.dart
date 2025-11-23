@@ -4,10 +4,9 @@ import 'package:lifeos/features/fitness/domain/entities/body_measurement_entity.
 import 'package:lifeos/core/database/database.dart';
 
 part 'body_measurement_model.freezed.dart';
-part 'body_measurement_model.g.dart';
 
 @freezed
-class BodyMeasurementModel with _$BodyMeasurementModel {
+sealed class BodyMeasurementModel with _$BodyMeasurementModel {
   const factory BodyMeasurementModel({
     required String id,
     required String userId,
@@ -29,9 +28,6 @@ class BodyMeasurementModel with _$BodyMeasurementModel {
   }) = _BodyMeasurementModel;
 
   const BodyMeasurementModel._();
-
-  factory BodyMeasurementModel.fromJson(Map<String, dynamic> json) =>
-      _$BodyMeasurementModelFromJson(json);
 
   factory BodyMeasurementModel.fromDrift(BodyMeasurement row) {
     return BodyMeasurementModel(

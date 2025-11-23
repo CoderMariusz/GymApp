@@ -1,8 +1,24 @@
 {
   "permissions": {
     "allow": [
-      "Bash(ls \"C:\\Users\\Mariusz K\\Documents\\Programowanie\\GymAPP\\GymApp\\lib\\core\\error\"\" | grep -E \".freezed.dart)",
-      "Bash(.g.dart \")"
+      "Bash(flutter pub run build_runner build:*)",
+      "Bash(timeout 180 flutter pub run build_runner build:*)",
+      "Bash(flutter analyze:*)",
+      "Bash(analyze_output_latest.txt)",
+      "Bash(flutter pub get:*)",
+      "Bash(timeout 300 flutter pub run build_runner build:*)",
+      "Bash(tee:*)",
+      "Bash(flutter_analyze_full.txt)",
+      "mcp__context7__resolve-library-id",
+      "mcp__context7__get-library-docs",
+      "Bash(flutter pub run:*)",
+      "Bash(test:*)",
+      "Bash(flutter clean:*)",
+      "Bash(flutter devices:*)",
+      "Bash(flutter run:*)",
+      "Bash(timeout 5 cat:*)",
+      "Bash(timeout 10 echo:*)",
+      "Bash(flutter create:*)"
     ],
     "deny": [],
     "ask": []

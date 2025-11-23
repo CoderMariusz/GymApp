@@ -1,5 +1,6 @@
-import 'dart:io';
+import 'dart:io' show Platform;
 
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -156,7 +157,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                 const SizedBox(height: 12),
 
                 // Apple Sign-In (iOS only)
-                if (Platform.isIOS) ...[
+                if (!kIsWeb && Platform.isIOS) ...[
                   OAuthButton(
                     provider: 'Apple',
                     onPressed: _handleAppleSignIn,

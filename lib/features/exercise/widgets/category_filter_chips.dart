@@ -24,7 +24,7 @@ class CategoryFilterChips extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedCategory = ref.watch(selectedCategoryProvider);
-    final categoryCounts = ref.watch(categoryCountsProvider);
+    final categoryCountsAsync = ref.watch(categoryCountsProvider);
 
     return SizedBox(
       height: 50,
@@ -36,7 +36,13 @@ class CategoryFilterChips extends ConsumerWidget {
         itemBuilder: (context, index) {
           final category = categories[index];
           final isSelected = category == selectedCategory;
-          final count = category == 'All' ? null : categoryCounts[category] ?? 0;
+
+          // Handle AsyncValue for category counts
+          final count = categoryCountsAsync.when(
+            data: (counts) => category == 'All' ? null : counts[category] ?? 0,
+            loading: () => null,
+            error: (_, __) => null,
+          );
 
           return FilterChip(
             label: Row(

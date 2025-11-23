@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:lifeos/core/auth/presentation/providers/auth_provider.dart';
+import 'package:lifeos/core/auth/presentation/providers/auth_state.dart';
 import 'package:lifeos/features/life_coach/presentation/providers/goals_provider.dart';
 import 'package:lifeos/features/life_coach/presentation/pages/create_goal_page.dart';
 

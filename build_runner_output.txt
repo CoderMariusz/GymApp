@@ -1,0 +1,317 @@
+  Generating the build script.
+  Compiling the build script.
+  Reading the asset graph.
+  Creating the asset graph.
+  Doing initial build cleanup.
+  Deleting 76 declared outputs which already existed on disk.
+  Updating the asset graph.
+  Building, full build because builders changed.
+  0s riverpod_generator on 250 inputs; integration_test/auth/register_flow_test.dart
+W SDK language version 3.10.0 is newer than `analyzer` language version 3.9.0. Run `flutter packages upgrade`.
+  0s riverpod_generator on 250 inputs: 1 no-op; integration_test/features/mind_emotion/meditation_library_flow_test.dart
+  17s riverpod_generator on 250 inputs: 1 output, 6 no-op; spent 13s analyzing, 3s resolving; lib/core/ai/ai_service.dart
+  19s riverpod_generator on 250 inputs: 1 output, 15 no-op; spent 14s analyzing, 4s resolving; lib/core/auth/data/models/user_model.dart
+  20s riverpod_generator on 250 inputs: 1 output, 51 no-op; spent 15s analyzing, 4s resolving; lib/core/database/database_providers.dart
+  21s riverpod_generator on 250 inputs: 3 output, 106 no-op; spent 16s analyzing, 4s resolving; lib/features/fitness/data/models/exercise_set_model.dart
+  23s riverpod_generator on 250 inputs: 8 output, 144 no-op; spent 17s analyzing, 4s resolving; lib/features/life_coach/chat/conversational_coach.dart
+  24s riverpod_generator on 250 inputs: 13 output, 222 no-op; spent 18s analyzing, 4s resolving, 1s building; test/features/fitness/data/repositories/measurements_repository_impl_test.dart
+  24s riverpod_generator on 250 inputs: 13 output, 237 no-op; spent 18s analyzing, 4s resolving, 1s building
+  0s freezed on 250 inputs; integration_test/auth/register_flow_test.dart
+  1s freezed on 250 inputs: 19 same, 99 no-op; lib/features/fitness/domain/entities/workout_log_entity.dart
+  1s freezed on 250 inputs: 36 same, 214 no-op
+  0s json_serializable on 500 inputs; integration_test/auth/register_flow_test.dart
+  1s json_serializable on 500 inputs: 1 no-op; integration_test/auth/register_flow_test.freezed.dart
+W json_serializable on lib/core/ai/models/ai_request.dart:
+  The version constraint "^4.8.1" on json_annotation allows versions before 4.9.0 which is not allowed.
+  2s json_serializable on 500 inputs: 37 skipped, 6 output, 48 no-op; spent 1s analyzing; lib/core/charts/widgets/bar_chart_widget.freezed.dart
+  3s json_serializable on 500 inputs: 65 skipped, 6 output, 80 no-op; spent 2s analyzing; lib/core/sync/providers/connectivity_provider.freezed.dart
+W json_serializable on lib/features/fitness/data/models/body_measurement_model.dart:
+  An unexpected error was thrown trying to get location information on `bool isSynced` (FieldElementImpl2).
+  
+  Please file an issue at https://github.com/dart-lang/source_gen/issues/new
+  Include the contents of this warning and the stack trace along with
+  the version of `package:source_gen`, `package:analyzer` from `pubspec.lock`.
+  
+  RangeError: Index: 1, Size: 0
+  #0      NodeListImpl.[] (package:analyzer/src/dart/ast/ast.dart:13227:7)
+  #1      UnresolvedAnnotationException._findSpan (package:source_gen/src/type_checker.dart:404:34)
+  #2      new UnresolvedAnnotationException._from (package:source_gen/src/type_checker.dart:436:24)
+  #3      TypeChecker._computeConstantValue (package:source_gen/src/type_checker.dart:149:43)
+  #4      TypeChecker._annotationsWhere (package:source_gen/src/type_checker.dart:175:23)
+  #5      _SyncStarIterator.moveNext (dart:async-patch/async_patch.dart:597:13)
+  #6      Iterable.isEmpty (dart:core/iterable.dart:560:33)
+  #7      TypeChecker.firstAnnotationOf (package:source_gen/src/type_checker.dart:99:20)
+  #8      _jsonKeyAnnotation (package:json_serializable/src/utils.dart:24:21)
+  #9      hasJsonKeyAnnotation (package:json_serializable/src/utils.dart:34:5)
+  #10     ListBase.firstWhere (dart:collection/list.dart:126:15)
+  #11     new _FieldSet (package:json_serializable/src/field_helpers.dart:28:36)
+  #12     createSortedFieldSet.<anonymous closure> (package:json_serializable/src/field_helpers.dart:103:23)
+  #13     MappedIterator.moveNext (dart:_internal/iterable.dart:420:20)
+  #14     new _GrowableList._ofEfficientLengthIterable (dart:core-patch/growable_array.dart:194:27)
+  #15     new _GrowableList.of (dart:core-patch/growable_array.dart:154:28)
+  #16     new List.of (dart:core-patch/array_patch.dart:39:18)
+  #17     Iterable.toList (dart:core/iterable.dart:517:7)
+  #18     createSortedFieldSet (package:json_serializable/src/field_helpers.dart:104:12)
+  #19     GeneratorHelper.generate (package:json_serializable/src/generator_helper.dart:51:26)
+  #20     _SyncStarIterator.moveNext (dart:async-patch/async_patch.dart:597:13)
+  #21     WhereIterator.moveNext (dart:_internal/iterable.dart:467:22)
+  #22     MappedIterator.moveNext (dart:_internal/iterable.dart:419:19)
+  #23     WhereIterator.moveNext (dart:_internal/iterable.dart:467:22)
+  #24     _UnifiedGenerator.generate (package:json_serializable/src/json_part_builder.dart:70:27)
+  <asynchronous suspension>
+  #25     _generate (package:source_gen/src/builder.dart:373:23)
+  <asynchronous suspension>
+  #26     Stream.toList.<anonymous closure> (dart:async/stream.dart:1416:7)
+  <asynchronous suspension>
+  #27     _Builder._generateForLibrary (package:source_gen/src/builder.dart:118:9)
+  <asynchronous suspension>
+  #28     _Builder.build (package:source_gen/src/builder.dart:109:5)
+  <asynchronous suspension>
+  #29     runBuilder.buildForInput (package:build/src/generate/run_builder.dart:100:7)
+  <asynchronous suspension>
+  #30     Future.wait.<anonymous closure> (dart:async/future.dart:546:21)
+  <asynchronous suspension>
+  #31     BuildLogLogger.scopeLogAsync.<anonymous closure> (package:build_runner_core/src/logging/build_log_logger.dart:58:13)
+  <asynchronous suspension>
+  
+E json_serializable on lib/features/fitness/data/models/body_measurement_model.dart:
+  Could not resolve annotation for `bool isSynced`.
+E json_serializable on lib/features/fitness/data/models/exercise_set_model.dart:
+  line 1, column 9661 of package:lifeos/features/fitness/data/models/exercise_set_model.freezed.dart: Could not resolve annotation for `_$ExerciseSetModelCopyWith<_ExerciseSetModel> get copyWith`.
+    ╷
+  1 │ @JsonKey(includeFromJson: false, includeToJson: false)
+    │ ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ╵
+W json_serializable on lib/features/fitness/data/models/workout_log_model.dart:
+  An unexpected error was thrown trying to get location information on `int duration` (FieldElementImpl2).
+  
+  Please file an issue at https://github.com/dart-lang/source_gen/issues/new
+  Include the contents of this warning and the stack trace along with
+  the version of `package:source_gen`, `package:analyzer` from `pubspec.lock`.
+  
+  RangeError: Index: 1, Size: 0
+  #0      NodeListImpl.[] (package:analyzer/src/dart/ast/ast.dart:13227:7)
+  #1      UnresolvedAnnotationException._findSpan (package:source_gen/src/type_checker.dart:404:34)
+  #2      new UnresolvedAnnotationException._from (package:source_gen/src/type_checker.dart:436:24)
+  #3      TypeChecker._computeConstantValue (package:source_gen/src/type_checker.dart:149:43)
+  #4      TypeChecker._annotationsWhere (package:source_gen/src/type_checker.dart:175:23)
+  #5      _SyncStarIterator.moveNext (dart:async-patch/async_patch.dart:597:13)
+  #6      Iterable.isEmpty (dart:core/iterable.dart:560:33)
+  #7      TypeChecker.firstAnnotationOf (package:source_gen/src/type_checker.dart:99:20)
+  #8      _jsonKeyAnnotation (package:json_serializable/src/utils.dart:24:21)
+  #9      hasJsonKeyAnnotation (package:json_serializable/src/utils.dart:34:5)
+  #10     ListBase.firstWhere (dart:collection/list.dart:126:15)
+  #11     new _FieldSet (package:json_serializable/src/field_helpers.dart:28:36)
+  #12     createSortedFieldSet.<anonymous closure> (package:json_serializable/src/field_helpers.dart:103:23)
+  #13     MappedIterator.moveNext (dart:_internal/iterable.dart:420:20)
+  #14     new _GrowableList._ofEfficientLengthIterable (dart:core-patch/growable_array.dart:194:27)
+  #15     new _GrowableList.of (dart:core-patch/growable_array.dart:154:28)
+  #16     new List.of (dart:core-patch/array_patch.dart:39:18)
+  #17     Iterable.toList (dart:core/iterable.dart:517:7)
+  #18     createSortedFieldSet (package:json_serializable/src/field_helpers.dart:104:12)
+  #19     GeneratorHelper.generate (package:json_serializable/src/generator_helper.dart:51:26)
+  #20     _SyncStarIterator.moveNext (dart:async-patch/async_patch.dart:597:13)
+  #21     WhereIterator.moveNext (dart:_internal/iterable.dart:467:22)
+  #22     MappedIterator.moveNext (dart:_internal/iterable.dart:419:19)
+  #23     WhereIterator.moveNext (dart:_internal/iterable.dart:467:22)
+  #24     _UnifiedGenerator.generate (package:json_serializable/src/json_part_builder.dart:70:27)
+  <asynchronous suspension>
+  #25     _generate (package:source_gen/src/builder.dart:373:23)
+  <asynchronous suspension>
+  #26     Stream.toList.<anonymous closure> (dart:async/stream.dart:1416:7)
+  <asynchronous suspension>
+  #27     _Builder._generateForLibrary (package:source_gen/src/builder.dart:118:9)
+  <asynchronous suspension>
+  #28     _Builder.build (package:source_gen/src/builder.dart:109:5)
+  <asynchronous suspension>
+  #29     runBuilder.buildForInput (package:build/src/generate/run_builder.dart:100:7)
+  <asynchronous suspension>
+  #30     Future.wait.<anonymous closure> (dart:async/future.dart:546:21)
+  <asynchronous suspension>
+  #31     BuildLogLogger.scopeLogAsync.<anonymous closure> (package:build_runner_core/src/logging/build_log_logger.dart:58:13)
+  <asynchronous suspension>
+  
+E json_serializable on lib/features/fitness/data/models/workout_log_model.dart:
+  Could not resolve annotation for `int duration`.
+W json_serializable on lib/features/fitness/data/models/workout_template_model.dart:
+  An unexpected error was thrown trying to get location information on `bool isPreBuilt` (FieldElementImpl2).
+  
+  Please file an issue at https://github.com/dart-lang/source_gen/issues/new
+  Include the contents of this warning and the stack trace along with
+  the version of `package:source_gen`, `package:analyzer` from `pubspec.lock`.
+  
+  RangeError: Index: 1, Size: 0
+  #0      NodeListImpl.[] (package:analyzer/src/dart/ast/ast.dart:13227:7)
+  #1      UnresolvedAnnotationException._findSpan (package:source_gen/src/type_checker.dart:404:34)
+  #2      new UnresolvedAnnotationException._from (package:source_gen/src/type_checker.dart:436:24)
+  #3      TypeChecker._computeConstantValue (package:source_gen/src/type_checker.dart:149:43)
+  #4      TypeChecker._annotationsWhere (package:source_gen/src/type_checker.dart:175:23)
+  #5      _SyncStarIterator.moveNext (dart:async-patch/async_patch.dart:597:13)
+  #6      Iterable.isEmpty (dart:core/iterable.dart:560:33)
+  #7      TypeChecker.firstAnnotationOf (package:source_gen/src/type_checker.dart:99:20)
+  #8      _jsonKeyAnnotation (package:json_serializable/src/utils.dart:24:21)
+  #9      hasJsonKeyAnnotation (package:json_serializable/src/utils.dart:34:5)
+  #10     ListBase.firstWhere (dart:collection/list.dart:126:15)
+  #11     new _FieldSet (package:json_serializable/src/field_helpers.dart:28:36)
+  #12     createSortedFieldSet.<anonymous closure> (package:json_serializable/src/field_helpers.dart:103:23)
+  #13     MappedIterator.moveNext (dart:_internal/iterable.dart:420:20)
+  #14     new _GrowableList._ofEfficientLengthIterable (dart:core-patch/growable_array.dart:194:27)
+  #15     new _GrowableList.of (dart:core-patch/growable_array.dart:154:28)
+  #16     new List.of (dart:core-patch/array_patch.dart:39:18)
+  #17     Iterable.toList (dart:core/iterable.dart:517:7)
+  #18     createSortedFieldSet (package:json_serializable/src/field_helpers.dart:104:12)
+  #19     GeneratorHelper.generate (package:json_serializable/src/generator_helper.dart:51:26)
+  #20     _SyncStarIterator.moveNext (dart:async-patch/async_patch.dart:597:13)
+  #21     WhereIterator.moveNext (dart:_internal/iterable.dart:467:22)
+  #22     MappedIterator.moveNext (dart:_internal/iterable.dart:419:19)
+  #23     WhereIterator.moveNext (dart:_internal/iterable.dart:467:22)
+  #24     _UnifiedGenerator.generate (package:json_serializable/src/json_part_builder.dart:70:27)
+  <asynchronous suspension>
+  #25     _generate (package:source_gen/src/builder.dart:373:23)
+  <asynchronous suspension>
+  #26     Stream.toList.<anonymous closure> (dart:async/stream.dart:1416:7)
+  <asynchronous suspension>
+  #27     _Builder._generateForLibrary (package:source_gen/src/builder.dart:118:9)
+  <asynchronous suspension>
+  #28     _Builder.build (package:source_gen/src/builder.dart:109:5)
+  <asynchronous suspension>
+  #29     runBuilder.buildForInput (package:build/src/generate/run_builder.dart:100:7)
+  <asynchronous suspension>
+  #30     Future.wait.<anonymous closure> (dart:async/future.dart:546:21)
+  <asynchronous suspension>
+  #31     BuildLogLogger.scopeLogAsync.<anonymous closure> (package:build_runner_core/src/logging/build_log_logger.dart:58:13)
+  <asynchronous suspension>
+  
+E json_serializable on lib/features/fitness/data/models/workout_template_model.dart:
+  Could not resolve annotation for `bool isPreBuilt`.
+  4s json_serializable on 500 inputs: 99 skipped, 9 output, 127 no-op; spent 3s analyzing; lib/features/fitness/domain/entities/workout_log.freezed.dart
+  5s json_serializable on 500 inputs: 130 skipped, 13 output, 168 no-op; spent 4s analyzing; lib/features/life_coach/chat/presentation/pages/coach_chat_page.freezed.dart
+W json_serializable on lib/features/life_coach/data/models/check_in_model.dart:
+  An unexpected error was thrown trying to get location information on `bool isSynced` (FieldElementImpl2).
+  
+  Please file an issue at https://github.com/dart-lang/source_gen/issues/new
+  Include the contents of this warning and the stack trace along with
+  the version of `package:source_gen`, `package:analyzer` from `pubspec.lock`.
+  
+  RangeError: Index: 1, Size: 0
+  #0      NodeListImpl.[] (package:analyzer/src/dart/ast/ast.dart:13227:7)
+  #1      UnresolvedAnnotationException._findSpan (package:source_gen/src/type_checker.dart:404:34)
+  #2      new UnresolvedAnnotationException._from (package:source_gen/src/type_checker.dart:436:24)
+  #3      TypeChecker._computeConstantValue (package:source_gen/src/type_checker.dart:149:43)
+  #4      TypeChecker._annotationsWhere (package:source_gen/src/type_checker.dart:175:23)
+  #5      _SyncStarIterator.moveNext (dart:async-patch/async_patch.dart:597:13)
+  #6      Iterable.isEmpty (dart:core/iterable.dart:560:33)
+  #7      TypeChecker.firstAnnotationOf (package:source_gen/src/type_checker.dart:99:20)
+  #8      _jsonKeyAnnotation (package:json_serializable/src/utils.dart:24:21)
+  #9      hasJsonKeyAnnotation (package:json_serializable/src/utils.dart:34:5)
+  #10     ListBase.firstWhere (dart:collection/list.dart:126:15)
+  #11     new _FieldSet (package:json_serializable/src/field_helpers.dart:28:36)
+  #12     createSortedFieldSet.<anonymous closure> (package:json_serializable/src/field_helpers.dart:103:23)
+  #13     MappedIterator.moveNext (dart:_internal/iterable.dart:420:20)
+  #14     new _GrowableList._ofEfficientLengthIterable (dart:core-patch/growable_array.dart:194:27)
+  #15     new _GrowableList.of (dart:core-patch/growable_array.dart:154:28)
+  #16     new List.of (dart:core-patch/array_patch.dart:39:18)
+  #17     Iterable.toList (dart:core/iterable.dart:517:7)
+  #18     createSortedFieldSet (package:json_serializable/src/field_helpers.dart:104:12)
+  #19     GeneratorHelper.generate (package:json_serializable/src/generator_helper.dart:51:26)
+  #20     _SyncStarIterator.moveNext (dart:async-patch/async_patch.dart:597:13)
+  #21     WhereIterator.moveNext (dart:_internal/iterable.dart:467:22)
+  #22     MappedIterator.moveNext (dart:_internal/iterable.dart:419:19)
+  #23     WhereIterator.moveNext (dart:_internal/iterable.dart:467:22)
+  #24     _UnifiedGenerator.generate (package:json_serializable/src/json_part_builder.dart:70:27)
+  <asynchronous suspension>
+  #25     _generate (package:source_gen/src/builder.dart:373:23)
+  <asynchronous suspension>
+  #26     Stream.toList.<anonymous closure> (dart:async/stream.dart:1416:7)
+  <asynchronous suspension>
+  #27     _Builder._generateForLibrary (package:source_gen/src/builder.dart:118:9)
+  <asynchronous suspension>
+  #28     _Builder.build (package:source_gen/src/builder.dart:109:5)
+  <asynchronous suspension>
+  #29     runBuilder.buildForInput (package:build/src/generate/run_builder.dart:100:7)
+  <asynchronous suspension>
+  #30     Future.wait.<anonymous closure> (dart:async/future.dart:546:21)
+  <asynchronous suspension>
+  #31     BuildLogLogger.scopeLogAsync.<anonymous closure> (package:build_runner_core/src/logging/build_log_logger.dart:58:13)
+  <asynchronous suspension>
+  
+E json_serializable on lib/features/life_coach/data/models/check_in_model.dart:
+  Could not resolve annotation for `bool isSynced`.
+W json_serializable on lib/features/life_coach/data/models/goal_model.dart:
+  An unexpected error was thrown trying to get location information on `double currentValue` (FieldElementImpl2).
+  
+  Please file an issue at https://github.com/dart-lang/source_gen/issues/new
+  Include the contents of this warning and the stack trace along with
+  the version of `package:source_gen`, `package:analyzer` from `pubspec.lock`.
+  
+  RangeError: Index: 1, Size: 0
+  #0      NodeListImpl.[] (package:analyzer/src/dart/ast/ast.dart:13227:7)
+  #1      UnresolvedAnnotationException._findSpan (package:source_gen/src/type_checker.dart:404:34)
+  #2      new UnresolvedAnnotationException._from (package:source_gen/src/type_checker.dart:436:24)
+  #3      TypeChecker._computeConstantValue (package:source_gen/src/type_checker.dart:149:43)
+  #4      TypeChecker._annotationsWhere (package:source_gen/src/type_checker.dart:175:23)
+  #5      _SyncStarIterator.moveNext (dart:async-patch/async_patch.dart:597:13)
+  #6      Iterable.isEmpty (dart:core/iterable.dart:560:33)
+  #7      TypeChecker.firstAnnotationOf (package:source_gen/src/type_checker.dart:99:20)
+  #8      _jsonKeyAnnotation (package:json_serializable/src/utils.dart:24:21)
+  #9      hasJsonKeyAnnotation (package:json_serializable/src/utils.dart:34:5)
+  #10     ListBase.firstWhere (dart:collection/list.dart:126:15)
+  #11     new _FieldSet (package:json_serializable/src/field_helpers.dart:28:36)
+  #12     createSortedFieldSet.<anonymous closure> (package:json_serializable/src/field_helpers.dart:103:23)
+  #13     MappedIterator.moveNext (dart:_internal/iterable.dart:420:20)
+  #14     new _GrowableList._ofEfficientLengthIterable (dart:core-patch/growable_array.dart:194:27)
+  #15     new _GrowableList.of (dart:core-patch/growable_array.dart:154:28)
+  #16     new List.of (dart:core-patch/array_patch.dart:39:18)
+  #17     Iterable.toList (dart:core/iterable.dart:517:7)
+  #18     createSortedFieldSet (package:json_serializable/src/field_helpers.dart:104:12)
+  #19     GeneratorHelper.generate (package:json_serializable/src/generator_helper.dart:51:26)
+  #20     _SyncStarIterator.moveNext (dart:async-patch/async_patch.dart:597:13)
+  #21     WhereIterator.moveNext (dart:_internal/iterable.dart:467:22)
+  #22     MappedIterator.moveNext (dart:_internal/iterable.dart:419:19)
+  #23     WhereIterator.moveNext (dart:_internal/iterable.dart:467:22)
+  #24     _UnifiedGenerator.generate (package:json_serializable/src/json_part_builder.dart:70:27)
+  <asynchronous suspension>
+  #25     _generate (package:source_gen/src/builder.dart:373:23)
+  <asynchronous suspension>
+  #26     Stream.toList.<anonymous closure> (dart:async/stream.dart:1416:7)
+  <asynchronous suspension>
+  #27     _Builder._generateForLibrary (package:source_gen/src/builder.dart:118:9)
+  <asynchronous suspension>
+  #28     _Builder.build (package:source_gen/src/builder.dart:109:5)
+  <asynchronous suspension>
+  #29     runBuilder.buildForInput (package:build/src/generate/run_builder.dart:100:7)
+  <asynchronous suspension>
+  #30     Future.wait.<anonymous closure> (dart:async/future.dart:546:21)
+  <asynchronous suspension>
+  #31     BuildLogLogger.scopeLogAsync.<anonymous closure> (package:build_runner_core/src/logging/build_log_logger.dart:58:13)
+  <asynchronous suspension>
+  
+E json_serializable on lib/features/life_coach/data/models/goal_model.dart:
+  Could not resolve annotation for `double currentValue`.
+  6s json_serializable on 500 inputs: 168 skipped, 16 output, 223 no-op; spent 5s analyzing; lib/features/mind_emotion/data/repositories/meditation_repository_impl.freezed.dart
+  7s json_serializable on 500 inputs: 193 skipped, 16 output, 250 no-op; spent 5s analyzing; test/core/auth/domain/validators/password_validator_test.freezed.dart
+  7s json_serializable on 500 inputs: 214 skipped, 16 output, 270 no-op; spent 6s analyzing
+  0s drift_dev on 2000 inputs; integration_test/auth/register_flow_test.dart
+  1s drift_dev on 2000 inputs: 210 skipped, 283 output; test/features/settings/domain/usecases/delete_account_usecase_test.freezed.dart
+  4s drift_dev on 2000 inputs: 257 skipped, 334 output, 12 no-op; spent 4s analyzing; lib/core/database/database.freezed.dart
+W drift_dev on lib/core/database/tables.drift.dart:
+  line 65, column 18 of package:lifeos/core/database/tables.drift.dart: This getter must directly return a string literal with the `=>` syntax
+     ╷
+  65 │   TextColumn get tableName => text()(); // Name of table to sync
+     │                  ^^^^^^^^^
+     ╵
+  5s drift_dev on 2000 inputs: 261 skipped, 338 output, 12 no-op; spent 5s analyzing; lib/core/database/tables/batch3_tables.freezed.dart
+  8s drift_dev on 2000 inputs: 263 skipped, 340 output, 12 no-op; spent 7s analyzing; lib/core/database/tables/sprint0_tables.freezed.dart
+  9s drift_dev on 2000 inputs: 573 skipped, 521 output, 111 no-op; spent 8s analyzing, 1s building; lib/core/database/database.dart.types.temp.dart
+  10s drift_dev on 2000 inputs: 1142 skipped, 521 output, 337 no-op; spent 8s analyzing, 2s building
+  0s source_gen:combining_builder on 1000 inputs; integration_test/auth/register_flow_test.dart
+  0s source_gen:combining_builder on 1000 inputs: 105 skipped, 7 output, 37 no-op; lib/core/auth/presentation/providers/auth_notifier.dart.types.temp.dart
+  1s source_gen:combining_builder on 1000 inputs: 438 skipped, 22 output, 157 no-op; spent 1s building; lib/features/life_coach/chat/models/chat_message.dart.types.temp.dart
+  2s source_gen:combining_builder on 1000 inputs: 714 skipped, 30 output, 256 no-op; spent 2s building
+  0s mockito:mockBuilder on 184 inputs; test/core/auth/data/repositories/auth_repository_impl_test.dart
+  0s mockito:mockBuilder on 184 inputs: 1 no-op; test/core/auth/data/repositories/auth_repository_impl_test.dart.types.temp.dart
+  1s mockito:mockBuilder on 184 inputs: 161 skipped, 10 output, 13 no-op
+  Running the post build.
+  Writing the asset graph.
+  Failed to build with build_runner in 50s; wrote 626 outputs.
+Failed to update packages.

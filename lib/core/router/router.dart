@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../core/auth/presentation/pages/register_page.dart';
 import '../../core/auth/presentation/pages/login_page.dart';
 import '../auth/presentation/providers/auth_provider.dart';
+import '../auth/presentation/providers/auth_state.dart';
 
 /// Routes
 class AppRoutes {

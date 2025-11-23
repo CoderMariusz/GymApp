@@ -4,6 +4,6 @@ import 'ai_service.dart';
 part 'ai_provider.g.dart';
 
 @riverpod
-AIService aiService(AiServiceRef ref) {
+AIService aiService(Ref ref) {
   return AIService();
 }

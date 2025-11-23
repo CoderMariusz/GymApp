@@ -4,11 +4,10 @@ import 'package:lifeos/features/fitness/domain/entities/exercise_set_entity.dart
 import 'package:lifeos/core/database/database.dart';
 
 part 'exercise_set_model.freezed.dart';
-part 'exercise_set_model.g.dart';
 
 /// Model for exercise set data
 @freezed
-class ExerciseSetModel with _$ExerciseSetModel {
+sealed class ExerciseSetModel with _$ExerciseSetModel {
   const factory ExerciseSetModel({
     required String id,
     required String workoutLogId,
@@ -23,9 +22,6 @@ class ExerciseSetModel with _$ExerciseSetModel {
   }) = _ExerciseSetModel;
 
   const ExerciseSetModel._();
-
-  factory ExerciseSetModel.fromJson(Map<String, dynamic> json) =>
-      _$ExerciseSetModelFromJson(json);
 
   /// Create model from Drift database row
   factory ExerciseSetModel.fromDrift(ExerciseSet row) {

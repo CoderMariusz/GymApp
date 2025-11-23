@@ -2,6 +2,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:lifeos/core/ai/ai_provider.dart';
 import 'package:lifeos/core/database/database.dart';
 import 'package:lifeos/core/database/database_providers.dart';
+import 'package:lifeos/core/error/result.dart';
 import '../../domain/repositories/goals_repository.dart';
 import '../../domain/repositories/check_in_repository.dart';
 import '../../domain/repositories/preferences_repository.dart';
@@ -13,27 +14,27 @@ part 'daily_plan_provider.g.dart';
 
 // Repository providers (mocks for now - will be replaced when Epic 2 stories are implemented)
 @riverpod
-GoalsRepository goalsRepository(GoalsRepositoryRef ref) {
+GoalsRepository goalsRepository(Ref ref) {
   return MockGoalsRepository();
 }
 
 @riverpod
-CheckInRepository checkInRepository(CheckInRepositoryRef ref) {
+CheckInRepository checkInRepository(Ref ref) {
   return MockCheckInRepository();
 }
 
 @riverpod
-PreferencesRepository preferencesRepository(PreferencesRepositoryRef ref) {
+PreferencesRepository preferencesRepository(Ref ref) {
   return MockPreferencesRepository();
 }
 
 @riverpod
-DailyPlanRepository dailyPlanRepository(DailyPlanRepositoryRef ref) {
+DailyPlanRepository dailyPlanRepository(Ref ref) {
   return DailyPlanRepository(ref.watch(appDatabaseProvider));
 }
 
 @riverpod
-DailyPlanGenerator dailyPlanGenerator(DailyPlanGeneratorRef ref) {
+DailyPlanGenerator dailyPlanGenerator(Ref ref) {
   return DailyPlanGenerator(
     aiService: ref.watch(aiServiceProvider),
     goalsRepo: ref.watch(goalsRepositoryProvider),

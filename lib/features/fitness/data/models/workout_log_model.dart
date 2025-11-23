@@ -4,11 +4,10 @@ import 'package:lifeos/features/fitness/domain/entities/workout_log_entity.dart'
 import 'package:lifeos/core/database/database.dart';
 
 part 'workout_log_model.freezed.dart';
-part 'workout_log_model.g.dart';
 
 /// Model for workout log data
 @freezed
-class WorkoutLogModel with _$WorkoutLogModel {
+sealed class WorkoutLogModel with _$WorkoutLogModel {
   const factory WorkoutLogModel({
     required String id,
     required String userId,
@@ -23,9 +22,6 @@ class WorkoutLogModel with _$WorkoutLogModel {
   }) = _WorkoutLogModel;
 
   const WorkoutLogModel._();
-
-  factory WorkoutLogModel.fromJson(Map<String, dynamic> json) =>
-      _$WorkoutLogModelFromJson(json);
 
   /// Create model from Drift database row
   factory WorkoutLogModel.fromDrift(WorkoutLog row) {

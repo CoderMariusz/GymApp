@@ -1,6 +1,7 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:lifeos/core/ai/ai_provider.dart';
 import 'package:lifeos/core/database/database_providers.dart';
+import 'package:lifeos/core/error/result.dart';
 import '../../ai/providers/daily_plan_provider.dart';
 import '../conversational_coach.dart';
 import '../models/chat_message.dart';
@@ -9,12 +10,12 @@ import '../data/repositories/chat_repository.dart';
 part 'chat_provider.g.dart';
 
 @riverpod
-ChatRepository chatRepository(ChatRepositoryRef ref) {
+ChatRepository chatRepository(Ref ref) {
   return ChatRepository(ref.watch(appDatabaseProvider));
 }
 
 @riverpod
-ConversationalCoach conversationalCoach(ConversationalCoachRef ref) {
+ConversationalCoach conversationalCoach(Ref ref) {
   return ConversationalCoach(
     aiService: ref.watch(aiServiceProvider),
     goalsRepo: ref.watch(goalsRepositoryProvider),

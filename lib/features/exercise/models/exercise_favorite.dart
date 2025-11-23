@@ -10,7 +10,7 @@ part 'exercise_favorite.g.dart';
 ///
 /// Maps to the `exercise_favorites` table in Supabase
 @freezed
-class ExerciseFavorite with _$ExerciseFavorite {
+sealed class ExerciseFavorite with _$ExerciseFavorite {
   const factory ExerciseFavorite({
     /// Unique identifier for the favorite
     required String id,

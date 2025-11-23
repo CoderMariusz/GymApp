@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 import 'package:intl/intl.dart';
 import 'package:lifeos/core/auth/presentation/providers/auth_provider.dart';
+import 'package:lifeos/core/auth/presentation/providers/auth_state.dart';
+import 'package:lifeos/core/error/result.dart';
 import 'package:lifeos/core/widgets/daily_input_form.dart';
 import 'package:lifeos/features/fitness/presentation/providers/measurements_provider.dart';
 import 'package:lifeos/features/fitness/domain/entities/body_measurement_entity.dart';

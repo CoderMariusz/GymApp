@@ -14,42 +14,42 @@ import 'package:lifeos/features/life_coach/domain/usecases/record_goal_progress_
 part 'goals_provider.g.dart';
 
 @riverpod
-AppDatabase goalsDatabase(GoalsDatabaseRef ref) {
+AppDatabase goalsDatabase(Ref ref) {
   return ref.watch(appDatabaseProvider);
 }
 
 @riverpod
-GoalsRepository goalsRepository(GoalsRepositoryRef ref) {
+GoalsRepository goalsRepository(Ref ref) {
   final database = ref.watch(goalsDatabaseProvider);
   return GoalsRepositoryImpl(database);
 }
 
 @riverpod
-CreateGoalUseCase createGoalUseCase(CreateGoalUseCaseRef ref) {
+CreateGoalUseCase createGoalUseCase(Ref ref) {
   final repository = ref.watch(goalsRepositoryProvider);
   return CreateGoalUseCase(repository);
 }
 
 @riverpod
-GetGoalsUseCase getGoalsUseCase(GetGoalsUseCaseRef ref) {
+GetGoalsUseCase getGoalsUseCase(Ref ref) {
   final repository = ref.watch(goalsRepositoryProvider);
   return GetGoalsUseCase(repository);
 }
 
 @riverpod
-UpdateGoalUseCase updateGoalUseCase(UpdateGoalUseCaseRef ref) {
+UpdateGoalUseCase updateGoalUseCase(Ref ref) {
   final repository = ref.watch(goalsRepositoryProvider);
   return UpdateGoalUseCase(repository);
 }
 
 @riverpod
-DeleteGoalUseCase deleteGoalUseCase(DeleteGoalUseCaseRef ref) {
+DeleteGoalUseCase deleteGoalUseCase(Ref ref) {
   final repository = ref.watch(goalsRepositoryProvider);
   return DeleteGoalUseCase(repository);
 }
 
 @riverpod
-RecordGoalProgressUseCase recordGoalProgressUseCase(RecordGoalProgressUseCaseRef ref) {
+RecordGoalProgressUseCase recordGoalProgressUseCase(Ref ref) {
   final repository = ref.watch(goalsRepositoryProvider);
   return RecordGoalProgressUseCase(repository);
 }

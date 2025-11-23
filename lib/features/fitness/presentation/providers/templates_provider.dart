@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lifeos/core/database/database.dart';
 import 'package:lifeos/core/database/database_providers.dart';
+import 'package:lifeos/core/error/result.dart';
 import 'package:lifeos/features/fitness/data/repositories/templates_repository_impl.dart';
 import 'package:lifeos/features/fitness/domain/entities/workout_template_entity.dart';
 import 'package:lifeos/features/fitness/domain/repositories/templates_repository.dart';

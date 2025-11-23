@@ -39,7 +39,7 @@ enum EquipmentType {
 /// AC2: Categories: Chest, Back, Legs, Shoulders, Arms, Core, Cardio, Other
 /// AC4: Exercise details: Name, category, muscle groups, instructions
 @freezed
-class Exercise with _$Exercise {
+sealed class Exercise with _$Exercise {
   const Exercise._();
 
   const factory Exercise({

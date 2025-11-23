@@ -14,13 +14,13 @@ part 'exercise_providers.g.dart';
 
 /// Provider for Supabase client
 @riverpod
-SupabaseClient supabaseClient(SupabaseClientRef ref) {
+SupabaseClient supabaseClient(Ref ref) {
   return Supabase.instance.client;
 }
 
 /// Provider for ExerciseRepository
 @riverpod
-ExerciseRepository exerciseRepository(ExerciseRepositoryRef ref) {
+ExerciseRepository exerciseRepository(Ref ref) {
   final supabase = ref.watch(supabaseClientProvider);
   return ExerciseRepository(supabase: supabase);
 }
@@ -34,21 +34,21 @@ ExerciseRepository exerciseRepository(ExerciseRepositoryRef ref) {
 /// This loads all exercises from the database (system + custom)
 /// Cached automatically by Riverpod
 @riverpod
-Future<List<Exercise>> allExercises(AllExercisesRef ref) async {
+Future<List<Exercise>> allExercises(Ref ref) async {
   final repository = ref.watch(exerciseRepositoryProvider);
   return await repository.getAllExercises();
 }
 
 /// Provider for user's custom exercises (AC6: Custom exercises saved to user's library)
 @riverpod
-Future<List<Exercise>> customExercises(CustomExercisesRef ref) async {
+Future<List<Exercise>> customExercises(Ref ref) async {
   final repository = ref.watch(exerciseRepositoryProvider);
   return await repository.getUserCustomExercises();
 }
 
 /// Provider for favorite exercises (AC7: Favorite exercises → Quick access)
 @riverpod
-Future<List<Exercise>> favoriteExercises(FavoriteExercisesRef ref) async {
+Future<List<Exercise>> favoriteExercises(Ref ref) async {
   final repository = ref.watch(exerciseRepositoryProvider);
   return await repository.getFavoriteExercises();
 }
@@ -117,7 +117,7 @@ class ShowFavoritesOnly extends _$ShowFavoritesOnly {
 /// AC3: Search bar with real-time filtering (<200ms)
 /// Uses client-side filtering for optimal performance
 @riverpod
-Future<List<Exercise>> filteredExercises(FilteredExercisesRef ref) async {
+Future<List<Exercise>> filteredExercises(Ref ref) async {
   // Watch all filter states
   final searchQuery = ref.watch(searchQueryProvider);
   final selectedCategory = ref.watch(selectedCategoryProvider);
@@ -163,7 +163,7 @@ Future<List<Exercise>> filteredExercises(FilteredExercisesRef ref) async {
 ///
 /// Use like: ref.watch(exerciseDetailProvider(exerciseId))
 @riverpod
-Future<Exercise> exerciseDetail(ExerciseDetailRef ref, String exerciseId) async {
+Future<Exercise> exerciseDetail(Ref ref, String exerciseId) async {
   final repository = ref.watch(exerciseRepositoryProvider);
   return await repository.getExerciseById(exerciseId);
 }
@@ -176,14 +176,14 @@ Future<Exercise> exerciseDetail(ExerciseDetailRef ref, String exerciseId) async 
 ///
 /// Use like: ref.watch(isExerciseFavoritedProvider(exerciseId))
 @riverpod
-Future<bool> isExerciseFavorited(IsExerciseFavoritedRef ref, String exerciseId) async {
+Future<bool> isExerciseFavorited(Ref ref, String exerciseId) async {
   final repository = ref.watch(exerciseRepositoryProvider);
   return await repository.isExerciseFavorited(exerciseId);
 }
 
 /// Provider for favorites count
 @riverpod
-Future<int> favoritesCount(FavoritesCountRef ref) async {
+Future<int> favoritesCount(Ref ref) async {
   final repository = ref.watch(exerciseRepositoryProvider);
   return await repository.getFavoritesCount();
 }
@@ -194,7 +194,7 @@ Future<int> favoritesCount(FavoritesCountRef ref) async {
 
 /// Provider for exercise counts by category (for UI display)
 @riverpod
-Future<Map<String, int>> categoryCounts(CategoryCountsRef ref) async {
+Future<Map<String, int>> categoryCounts(Ref ref) async {
   final exercises = await ref.watch(allExercisesProvider.future);
 
   final counts = <String, int>{};

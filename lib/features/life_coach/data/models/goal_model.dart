@@ -5,10 +5,9 @@ import 'package:lifeos/features/life_coach/domain/entities/goal_entity.dart';
 import 'package:lifeos/core/database/database.dart';
 
 part 'goal_model.freezed.dart';
-part 'goal_model.g.dart';
 
 @freezed
-class GoalModel with _$GoalModel {
+sealed class GoalModel with _$GoalModel {
   const factory GoalModel({
     required String id,
     required String userId,
@@ -31,9 +30,6 @@ class GoalModel with _$GoalModel {
   }) = _GoalModel;
 
   const GoalModel._();
-
-  factory GoalModel.fromJson(Map<String, dynamic> json) =>
-      _$GoalModelFromJson(json);
 
   factory GoalModel.fromDrift(Goal row) {
     final tagsJson = row.tags;

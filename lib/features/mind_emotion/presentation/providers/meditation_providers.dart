@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lifeos/core/database/database.dart';
+import 'package:lifeos/core/error/result.dart';
 import 'package:lifeos/features/mind_emotion/data/datasources/meditation_local_datasource.dart';
 import 'package:lifeos/features/mind_emotion/data/datasources/meditation_remote_datasource.dart';
 import 'package:lifeos/features/mind_emotion/data/repositories/meditation_repository_impl.dart';

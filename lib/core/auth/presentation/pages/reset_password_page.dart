@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../error/result.dart';
 import '../../../router/router.dart';
 import '../providers/auth_provider.dart';
 import '../widgets/password_text_field.dart';
@@ -73,8 +74,8 @@ class _ResetPasswordPageState extends ConsumerState<ResetPasswordPage> {
         _passwordController.text,
       );
 
-      result.map(
-        success: (success) {
+      result.when(
+        success: (data) {
           // Show success message
           if (!mounted) return;
           ScaffoldMessenger.of(context).showSnackBar(
@@ -88,10 +89,10 @@ class _ResetPasswordPageState extends ConsumerState<ResetPasswordPage> {
           // Navigate to home (user is already authenticated via reset token)
           context.go(AppRoutes.home);
         },
-        failure: (failure) {
+        failure: (exception) {
           setState(() {
             _isLoading = false;
-            _passwordError = failure.exception.toString();
+            _passwordError = exception.toString();
           });
         },
       );

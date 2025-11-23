@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 import 'package:lifeos/core/auth/presentation/providers/auth_provider.dart';
+import 'package:lifeos/core/auth/presentation/providers/auth_state.dart';
+import 'package:lifeos/core/error/result.dart';
 import 'package:lifeos/features/fitness/presentation/providers/workout_log_provider.dart';
 import 'package:lifeos/features/fitness/presentation/widgets/rest_timer_widget.dart';
 import 'package:lifeos/features/fitness/presentation/widgets/exercise_set_input.dart';

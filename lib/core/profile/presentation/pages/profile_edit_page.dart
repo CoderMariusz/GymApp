@@ -6,7 +6,9 @@ import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../../auth/presentation/providers/auth_provider.dart';
+import '../../../auth/presentation/providers/auth_state.dart';
 import '../../../auth/presentation/widgets/email_text_field.dart';
+import '../../../error/result.dart';
 import '../../domain/entities/profile_update_request.dart';
 import '../providers/profile_provider.dart';
 
@@ -148,15 +150,15 @@ class _ProfileEditPageState extends ConsumerState<ProfileEditPage> {
         final uploadAvatarUseCase = ref.read(uploadAvatarUseCaseProvider);
         final uploadResult = await uploadAvatarUseCase.call(imageFile);
 
-        uploadResult.map(
-          success: (success) {
-            avatarUrl = success.data;
+        uploadResult.when(
+          success: (data) {
+            avatarUrl = data;
           },
-          failure: (failure) {
+          failure: (exception) {
             if (!mounted) return;
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text('Avatar upload failed: ${failure.exception.toString()}'),
+                content: Text('Avatar upload failed: ${exception.toString()}'),
                 backgroundColor: Colors.red,
                 behavior: SnackBarBehavior.floating,
               ),
@@ -191,8 +193,8 @@ class _ProfileEditPageState extends ConsumerState<ProfileEditPage> {
         final updateProfileUseCase = ref.read(updateProfileUseCaseProvider);
         final result = await updateProfileUseCase.call(request);
 
-        result.map(
-          success: (success) {
+        result.when(
+          success: (data) {
             if (!mounted) return;
 
             // Check if email was updated
@@ -223,10 +225,10 @@ class _ProfileEditPageState extends ConsumerState<ProfileEditPage> {
             // Navigate back
             context.pop();
           },
-          failure: (failure) {
+          failure: (exception) {
             setState(() {
               _isLoading = false;
-              _emailError = failure.exception.toString();
+              _emailError = exception.toString();
             });
           },
         );
@@ -329,8 +331,8 @@ class _ProfileEditPageState extends ConsumerState<ProfileEditPage> {
               if (!mounted) return;
               context.pop();
 
-              result.map(
-                success: (success) {
+              result.when(
+                success: (data) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
                       content: Text('Password changed successfully!'),
@@ -339,10 +341,10 @@ class _ProfileEditPageState extends ConsumerState<ProfileEditPage> {
                     ),
                   );
                 },
-                failure: (failure) {
+                failure: (exception) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text(failure.exception.toString()),
+                      content: Text(exception.toString()),
                       backgroundColor: Colors.red,
                       behavior: SnackBarBehavior.floating,
                     ),

@@ -4,7 +4,7 @@ part 'ai_response.freezed.dart';
 part 'ai_response.g.dart';
 
 @freezed
-class AIResponse with _$AIResponse {
+sealed class AIResponse with _$AIResponse {
   const factory AIResponse({
     required String content,
     required int tokensUsed,
