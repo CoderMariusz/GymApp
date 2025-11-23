@@ -62,9 +62,9 @@ Future<List<ChartDataPoint>> energyTrend(EnergyTrendRef ref, {required int days}
 
 @riverpod
 Future<List<ChartDataPoint>> goalCompletion(
-  GoalCompletionRef ref,
-  {required int days},
-) async {
+  GoalCompletionRef ref, {
+  required int days,
+}) async {
   final goalsRepo = ref.watch(goalsRepositoryProvider);
   final completedGoals = await goalsRepo.getCompletedGoals(days: days);
 

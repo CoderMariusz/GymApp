@@ -18,9 +18,8 @@ class UpdatePasswordUseCase {
       // Validate password
       final validation = PasswordValidator.validate(newPassword);
       if (!validation.isValid) {
-        return Result.failure(
-          const WeakPasswordException(),
-          validation.errors.join('\n'),
+        return const Result.failure(
+          WeakPasswordException(),
         );
       }
 
@@ -31,7 +30,6 @@ class UpdatePasswordUseCase {
     } catch (e) {
       return Result.failure(
         UnknownAuthException(e.toString()),
-        'Failed to update password',
       );
     }
   }

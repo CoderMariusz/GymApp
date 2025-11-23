@@ -6,7 +6,7 @@ part 'user_entity.g.dart';
 /// User entity - Domain layer
 /// Represents a user in the LifeOS system
 @freezed
-class UserEntity with _$UserEntity {
+sealed class UserEntity with _$UserEntity {
   const factory UserEntity({
     required String id,
     required String email,

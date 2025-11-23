@@ -9,7 +9,7 @@ part 'user_model.g.dart';
 /// User model - Data layer DTO
 /// Maps between Supabase User and UserEntity
 @freezed
-class UserModel with _$UserModel {
+sealed class UserModel with _$UserModel {
   const UserModel._();
 
   const factory UserModel({

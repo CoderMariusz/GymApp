@@ -7,7 +7,7 @@ part 'auth_session_entity.g.dart';
 /// Authentication session entity - Domain layer
 /// Represents an active user session with tokens and expiration
 @freezed
-class AuthSessionEntity with _$AuthSessionEntity {
+sealed class AuthSessionEntity with _$AuthSessionEntity {
   const factory AuthSessionEntity({
     required String accessToken,
     required String refreshToken,

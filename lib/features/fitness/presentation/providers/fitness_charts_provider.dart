@@ -40,9 +40,9 @@ Future<List<ChartDataPoint>> strengthProgress(
 
 @riverpod
 Future<List<ChartDataPoint>> weeklyVolume(
-  WeeklyVolumeRef ref,
-  {int weeks = 8},
-) async {
+  WeeklyVolumeRef ref, {
+  int weeks = 8,
+}) async {
   final workoutRepo = ref.watch(workoutRepositoryProvider);
   final workouts = await workoutRepo.getWorkoutHistory(days: weeks * 7);
 

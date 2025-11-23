@@ -11,7 +11,7 @@ part 'auth_session_model.g.dart';
 /// Auth session model - Data layer
 /// Maps between Supabase Session and AuthSessionEntity
 @freezed
-class AuthSessionModel with _$AuthSessionModel {
+sealed class AuthSessionModel with _$AuthSessionModel {
   const factory AuthSessionModel({
     required String accessToken,
     required String refreshToken,

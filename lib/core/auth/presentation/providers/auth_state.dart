@@ -7,7 +7,7 @@ part 'auth_state.freezed.dart';
 /// Authentication state
 /// Represents the current authentication status
 @freezed
-class AuthState with _$AuthState {
+sealed class AuthState with _$AuthState {
   /// Initial state
   const factory AuthState.initial() = _Initial;
 

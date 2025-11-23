@@ -4,7 +4,7 @@ part 'result.freezed.dart';
 
 /// Result type for handling success and failure cases
 @freezed
-class Result<T> with _$Result<T> {
+sealed class Result<T> with _$Result<T> {
   const factory Result.success(T data) = Success<T>;
   const factory Result.failure(Exception exception) = Failure<T>;
 

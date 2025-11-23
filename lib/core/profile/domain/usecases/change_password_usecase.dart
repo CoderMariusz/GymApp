@@ -22,16 +22,14 @@ class ChangePasswordUseCase {
       if (currentPassword.isEmpty) {
         return const Result.failure(
           InvalidCredentialsException(),
-          'Current password is required',
         );
       }
 
       // Validate new password
       final validation = PasswordValidator.validate(newPassword);
       if (!validation.isValid) {
-        return Result.failure(
-          const WeakPasswordException(),
-          validation.errors.join('\n'),
+        return const Result.failure(
+          WeakPasswordException(),
         );
       }
 
@@ -39,7 +37,6 @@ class ChangePasswordUseCase {
       if (currentPassword == newPassword) {
         return const Result.failure(
           WeakPasswordException(),
-          'New password must be different from current password',
         );
       }
 
@@ -53,7 +50,6 @@ class ChangePasswordUseCase {
     } catch (e) {
       return Result.failure(
         UnknownAuthException(e.toString()),
-        'Failed to change password',
       );
     }
   }

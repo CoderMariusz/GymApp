@@ -5,7 +5,7 @@ part 'workout_pattern.freezed.dart';
 
 /// Represents a detected workout pattern for an exercise
 @freezed
-class WorkoutPattern with _$WorkoutPattern {
+sealed class WorkoutPattern with _$WorkoutPattern {
   const factory WorkoutPattern({
     required String exerciseName,
     required int averageSets,
@@ -20,11 +20,9 @@ class WorkoutPattern with _$WorkoutPattern {
   }) = _WorkoutPattern;
 }
 
-const WorkoutPattern._();
-
 /// Represents a prefilled suggestion for a workout
 @freezed
-class WorkoutSuggestion with _$WorkoutSuggestion {
+sealed class WorkoutSuggestion with _$WorkoutSuggestion {
   const factory WorkoutSuggestion({
     required String exerciseName,
     required List<SuggestedSet> sets,
@@ -35,7 +33,7 @@ class WorkoutSuggestion with _$WorkoutSuggestion {
 
 /// Individual set suggestion
 @freezed
-class SuggestedSet with _$SuggestedSet {
+sealed class SuggestedSet with _$SuggestedSet {
   const factory SuggestedSet({
     required double weight,
     required int reps,

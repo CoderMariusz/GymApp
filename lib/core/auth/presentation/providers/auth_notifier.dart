@@ -7,6 +7,7 @@ import '../../domain/usecases/login_with_email_usecase.dart';
 import '../../domain/usecases/login_with_google_usecase.dart';
 import '../../domain/usecases/logout_usecase.dart';
 import '../../domain/usecases/register_user_usecase.dart';
+import 'auth_provider.dart';
 import 'auth_state.dart';
 
 /// Auth state notifier

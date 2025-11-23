@@ -5,7 +5,7 @@ part 'profile_update_request.freezed.dart';
 /// Profile update request entity
 /// Contains fields to update in user profile
 @freezed
-class ProfileUpdateRequest with _$ProfileUpdateRequest {
+sealed class ProfileUpdateRequest with _$ProfileUpdateRequest {
   const factory ProfileUpdateRequest({
     String? name,
     String? email,
