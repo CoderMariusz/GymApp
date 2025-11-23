@@ -28,7 +28,11 @@
       "Bash(perl:*)",
       "Bash(flutter devices:*)",
       "Bash(python fix_result_calls.py:*)",
-      "Bash(mkdir:*)"
+      "Bash(mkdir:*)",
+      "Bash(cat:*)",
+      "Bash(git log:*)",
+      "Bash(git branch:*)",
+      "Bash(git cherry-pick:*)"
     ],
     "deny": [],
     "ask": []

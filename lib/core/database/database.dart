@@ -4,6 +4,7 @@ import 'package:lifeos/core/database/tables.drift.dart';
 import 'package:lifeos/core/database/tables/sprint0_tables.dart';
 import 'package:lifeos/core/database/tables/batch1_tables.dart';
 import 'package:lifeos/core/database/tables/batch3_tables.dart';
+import 'package:lifeos/core/database/tables/life_coach_tables.dart';
 
 part 'database.g.dart';
 
@@ -31,6 +32,8 @@ part 'database.g.dart';
     Goals,
     GoalProgressTable,
     BodyMeasurements,
+    // Life Coach tables (Epic 2)
+    DailyPlans,
     // Sync infrastructure
     SyncQueue,
   ],
@@ -39,7 +42,11 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
+<<<<<<< HEAD
   int get schemaVersion => 4;
+=======
+  int get schemaVersion => 3;  // Incremented for DailyPlans table
+>>>>>>> 1258d09 (feat: Implement Story 2.2 - AI Daily Plan Generation (BATCH 2))
 
   static QueryExecutor _openConnection() {
     return driftDatabase(name: 'lifeos_db');
