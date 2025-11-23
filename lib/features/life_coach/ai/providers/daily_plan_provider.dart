@@ -96,6 +96,78 @@ class DailyPlanNotifier extends _$DailyPlanNotifier {
   Future<void> refresh() async {
     ref.invalidateSelf();
   }
+
+  /// Reorder tasks by dragging
+  Future<void> reorderTasks(int oldIndex, int newIndex) async {
+    final currentPlan = state.value;
+    if (currentPlan == null) return;
+
+    final tasks = List<PlanTask>.from(currentPlan.tasks);
+
+    // Handle drag & drop indices
+    if (newIndex > oldIndex) {
+      newIndex -= 1;
+    }
+
+    final task = tasks.removeAt(oldIndex);
+    tasks.insert(newIndex, task);
+
+    final updatedPlan = currentPlan.copyWith(
+      tasks: tasks,
+      source: PlanSource.manual, // Mark as manually edited
+    );
+
+    await ref.read(dailyPlanRepositoryProvider).savePlan(updatedPlan);
+    state = AsyncValue.data(updatedPlan);
+  }
+
+  /// Add a new task to the plan
+  Future<void> addTask(PlanTask task) async {
+    final currentPlan = state.value;
+    if (currentPlan == null) return;
+
+    final updatedTasks = [...currentPlan.tasks, task];
+    final updatedPlan = currentPlan.copyWith(
+      tasks: updatedTasks,
+      source: PlanSource.manual,
+    );
+
+    await ref.read(dailyPlanRepositoryProvider).savePlan(updatedPlan);
+    state = AsyncValue.data(updatedPlan);
+  }
+
+  /// Edit an existing task
+  Future<void> editTask(PlanTask updatedTask) async {
+    final currentPlan = state.value;
+    if (currentPlan == null) return;
+
+    final updatedTasks = currentPlan.tasks.map((task) {
+      return task.id == updatedTask.id ? updatedTask : task;
+    }).toList();
+
+    final updatedPlan = currentPlan.copyWith(
+      tasks: updatedTasks,
+      source: PlanSource.manual,
+    );
+
+    await ref.read(dailyPlanRepositoryProvider).savePlan(updatedPlan);
+    state = AsyncValue.data(updatedPlan);
+  }
+
+  /// Delete a task from the plan
+  Future<void> deleteTask(String taskId) async {
+    final currentPlan = state.value;
+    if (currentPlan == null) return;
+
+    final updatedTasks = currentPlan.tasks.where((t) => t.id != taskId).toList();
+    final updatedPlan = currentPlan.copyWith(
+      tasks: updatedTasks,
+      source: PlanSource.manual,
+    );
+
+    await ref.read(dailyPlanRepositoryProvider).savePlan(updatedPlan);
+    state = AsyncValue.data(updatedPlan);
+  }
 }
 
 // Migration note: Use existing appDatabaseProvider if available
