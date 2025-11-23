@@ -35,19 +35,22 @@ class WorkoutLogRepositoryImpl implements WorkoutLogRepository {
     List<ExerciseSetEntity> sets,
   ) async {
     try {
-      // Create workout log
-      final workoutModel = WorkoutLogModel.fromEntity(workoutLog);
-      await _database.into(_database.workoutLogs).insert(
-            workoutModel.toDriftCompanion(),
-          );
-
-      // Create exercise sets
-      for (final set in sets) {
-        final setModel = ExerciseSetModel.fromEntity(set);
-        await _database.into(_database.exerciseSets).insert(
-              setModel.toDriftCompanion(),
+      // Use transaction to ensure atomicity
+      await _database.transaction(() async {
+        // Create workout log
+        final workoutModel = WorkoutLogModel.fromEntity(workoutLog);
+        await _database.into(_database.workoutLogs).insert(
+              workoutModel.toDriftCompanion(),
             );
-      }
+
+        // Create exercise sets
+        for (final set in sets) {
+          final setModel = ExerciseSetModel.fromEntity(set);
+          await _database.into(_database.exerciseSets).insert(
+                setModel.toDriftCompanion(),
+              );
+        }
+      });
 
       // Return workout log with sets
       final result = workoutLog.copyWith(sets: sets);
@@ -104,18 +107,26 @@ class WorkoutLogRepositoryImpl implements WorkoutLogRepository {
             ]))
           .get();
 
-      final entities = <WorkoutLogEntity>[];
-      for (final row in rows) {
-        final setsResult = await getSetsForWorkout(row.id);
-        List<ExerciseSetEntity> sets = [];
-        setsResult.when(
-          success: (s) => sets = s,
-          failure: (_) => null,
-        );
+      // Fetch all sets in a single query to avoid N+1 problem
+      final workoutIds = rows.map((r) => r.id).toList();
+      final allSets = await (_database.select(_database.exerciseSets)
+            ..where((tbl) => tbl.workoutLogId.isIn(workoutIds))
+            ..orderBy([(tbl) => OrderingTerm(expression: tbl.setNumber)]))
+          .get();
 
-        final model = WorkoutLogModel.fromDrift(row);
-        entities.add(model.toEntity(sets: sets));
+      // Group sets by workout log ID
+      final setsByWorkoutId = <String, List<ExerciseSetEntity>>{};
+      for (final setRow in allSets) {
+        final entity = ExerciseSetModel.fromDrift(setRow).toEntity();
+        setsByWorkoutId.putIfAbsent(setRow.workoutLogId, () => []).add(entity);
       }
+
+      // Build workout log entities with their sets
+      final entities = rows.map((row) {
+        final model = WorkoutLogModel.fromDrift(row);
+        final sets = setsByWorkoutId[row.id] ?? [];
+        return model.toEntity(sets: sets);
+      }).toList();
 
       return Result.success(entities);
     } catch (e) {
@@ -141,18 +152,30 @@ class WorkoutLogRepositoryImpl implements WorkoutLogRepository {
                 tbl.timestamp.isSmallerThanValue(endOfDay)))
           .get();
 
-      final entities = <WorkoutLogEntity>[];
-      for (final row in rows) {
-        final setsResult = await getSetsForWorkout(row.id);
-        List<ExerciseSetEntity> sets = [];
-        setsResult.when(
-          success: (s) => sets = s,
-          failure: (_) => null,
-        );
-
-        final model = WorkoutLogModel.fromDrift(row);
-        entities.add(model.toEntity(sets: sets));
+      // Fetch all sets in a single query to avoid N+1 problem
+      final workoutIds = rows.map((r) => r.id).toList();
+      if (workoutIds.isEmpty) {
+        return const Result.success([]);
       }
+
+      final allSets = await (_database.select(_database.exerciseSets)
+            ..where((tbl) => tbl.workoutLogId.isIn(workoutIds))
+            ..orderBy([(tbl) => OrderingTerm(expression: tbl.setNumber)]))
+          .get();
+
+      // Group sets by workout log ID
+      final setsByWorkoutId = <String, List<ExerciseSetEntity>>{};
+      for (final setRow in allSets) {
+        final entity = ExerciseSetModel.fromDrift(setRow).toEntity();
+        setsByWorkoutId.putIfAbsent(setRow.workoutLogId, () => []).add(entity);
+      }
+
+      // Build workout log entities with their sets
+      final entities = rows.map((row) {
+        final model = WorkoutLogModel.fromDrift(row);
+        final sets = setsByWorkoutId[row.id] ?? [];
+        return model.toEntity(sets: sets);
+      }).toList();
 
       return Result.success(entities);
     } catch (e) {
@@ -182,18 +205,30 @@ class WorkoutLogRepositoryImpl implements WorkoutLogRepository {
             ]))
           .get();
 
-      final entities = <WorkoutLogEntity>[];
-      for (final row in rows) {
-        final setsResult = await getSetsForWorkout(row.id);
-        List<ExerciseSetEntity> sets = [];
-        setsResult.when(
-          success: (s) => sets = s,
-          failure: (_) => null,
-        );
-
-        final model = WorkoutLogModel.fromDrift(row);
-        entities.add(model.toEntity(sets: sets));
+      // Fetch all sets in a single query to avoid N+1 problem
+      final workoutIds = rows.map((r) => r.id).toList();
+      if (workoutIds.isEmpty) {
+        return const Result.success([]);
       }
+
+      final allSets = await (_database.select(_database.exerciseSets)
+            ..where((tbl) => tbl.workoutLogId.isIn(workoutIds))
+            ..orderBy([(tbl) => OrderingTerm(expression: tbl.setNumber)]))
+          .get();
+
+      // Group sets by workout log ID
+      final setsByWorkoutId = <String, List<ExerciseSetEntity>>{};
+      for (final setRow in allSets) {
+        final entity = ExerciseSetModel.fromDrift(setRow).toEntity();
+        setsByWorkoutId.putIfAbsent(setRow.workoutLogId, () => []).add(entity);
+      }
+
+      // Build workout log entities with their sets
+      final entities = rows.map((row) {
+        final model = WorkoutLogModel.fromDrift(row);
+        final sets = setsByWorkoutId[row.id] ?? [];
+        return model.toEntity(sets: sets);
+      }).toList();
 
       return Result.success(entities);
     } catch (e) {

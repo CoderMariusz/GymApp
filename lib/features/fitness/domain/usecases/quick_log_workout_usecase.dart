@@ -1,4 +1,5 @@
 import 'package:gymapp/core/error/result.dart';
+import 'package:gymapp/core/error/failures.dart';
 import 'package:gymapp/features/fitness/domain/entities/workout_log_entity.dart';
 import 'package:gymapp/features/fitness/domain/repositories/workout_log_repository.dart';
 
@@ -22,13 +23,4 @@ class QuickLogWorkoutUseCase {
       workoutLog.sets,
     );
   }
-}
-
-class ValidationFailure implements Failure {
-  final String message;
-
-  ValidationFailure(this.message);
-
-  @override
-  String toString() => message;
 }
