@@ -2,6 +2,7 @@ import 'package:drift/drift.dart';
 import 'package:drift_flutter/drift_flutter.dart';
 import 'package:lifeos/core/database/tables.drift.dart';
 import 'package:lifeos/core/database/tables/sprint0_tables.dart';
+import 'package:lifeos/core/database/tables/life_coach_tables.dart';
 import 'package:lifeos/core/database/tables/batch1_tables.dart';
 import 'package:lifeos/core/database/tables/batch3_tables.dart';
 
@@ -23,6 +24,9 @@ part 'database.g.dart';
     AiConversations,
     MoodLogs,
     UserDailyMetrics,
+    // Life Coach tables (Epic 2)
+    DailyPlans,
+    ChatSessions,
     // Batch 1 tables
     CheckIns,
     WorkoutLogs,
@@ -39,7 +43,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 4;
+  int get schemaVersion => 4;  // Incremented for ChatSessions table
 
   @override
   MigrationStrategy get migration => MigrationStrategy(

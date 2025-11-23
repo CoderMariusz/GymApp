@@ -1,17 +1,51 @@
-import 'package:gymapp/core/error/result.dart';
-import 'package:gymapp/features/life_coach/domain/entities/goal_entity.dart';
+import '../entities/goal.dart';
 
-/// Repository interface for goals operations
 abstract class GoalsRepository {
-  Future<Result<GoalEntity>> createGoal(GoalEntity goal);
-  Future<Result<GoalEntity>> getGoalById(String id);
-  Future<Result<List<GoalEntity>>> getAllGoals(String userId);
-  Future<Result<List<GoalEntity>>> getActiveGoals(String userId);
-  Future<Result<List<GoalEntity>>> getCompletedGoals(String userId);
-  Future<Result<List<GoalEntity>>> getGoalsByCategory(String userId, String category);
-  Future<Result<GoalEntity>> updateGoal(GoalEntity goal);
-  Future<Result<void>> deleteGoal(String id);
-  Future<Result<void>> archiveGoal(String id);
-  Future<Result<void>> recordProgress(String goalId, double value, String? notes);
-  Future<Result<double>> getProgressPercentage(String goalId);
+  Future<List<Goal>> getAllGoals();
+  Future<List<Goal>> getActiveGoals();
+  Future<int> getOverallProgress();
+  Future<List<Goal>> getCompletedGoals({required int days});
+}
+
+// Temporary mock implementation - will be replaced when Story 2.1/2.3 are implemented
+class MockGoalsRepository implements GoalsRepository {
+  @override
+  Future<List<Goal>> getAllGoals() async {
+    return [];
+  }
+
+  @override
+  Future<List<Goal>> getActiveGoals() async {
+    // Return sample goals for AI context
+    return [
+      Goal(
+        id: '1',
+        title: 'Lose 5kg weight',
+        description: 'Reduce weight through diet and exercise',
+        category: GoalCategory.fitness,
+        status: GoalStatus.active,
+        targetDate: DateTime.now().add(const Duration(days: 60)),
+        createdAt: DateTime.now().subtract(const Duration(days: 10)),
+      ),
+      Goal(
+        id: '2',
+        title: 'Run 5km without stopping',
+        description: 'Build cardio endurance',
+        category: GoalCategory.fitness,
+        status: GoalStatus.active,
+        targetDate: DateTime.now().add(const Duration(days: 30)),
+        createdAt: DateTime.now().subtract(const Duration(days: 5)),
+      ),
+    ];
+  }
+
+  @override
+  Future<int> getOverallProgress() async {
+    return 65; // 65% progress
+  }
+
+  @override
+  Future<List<Goal>> getCompletedGoals({required int days}) async {
+    return [];
+  }
 }
