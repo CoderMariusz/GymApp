@@ -24,6 +24,7 @@ part 'database.g.dart';
     UserDailyMetrics,
     // Life Coach tables (Epic 2)
     DailyPlans,
+    ChatSessions,
     // Sync infrastructure
     SyncQueue,
   ],
@@ -32,7 +33,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 3;  // Incremented for DailyPlans table
+  int get schemaVersion => 4;  // Incremented for ChatSessions table
 
   static QueryExecutor _openConnection() {
     return driftDatabase(name: 'lifeos_db');
