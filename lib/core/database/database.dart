@@ -2,6 +2,7 @@ import 'package:drift/drift.dart';
 import 'package:drift_flutter/drift_flutter.dart';
 import 'package:lifeos/core/database/tables.drift.dart';
 import 'package:lifeos/core/database/tables/sprint0_tables.dart';
+import 'package:lifeos/core/database/tables/life_coach_tables.dart';
 
 part 'database.g.dart';
 
@@ -21,6 +22,8 @@ part 'database.g.dart';
     AiConversations,
     MoodLogs,
     UserDailyMetrics,
+    // Life Coach tables (Epic 2)
+    DailyPlans,
     // Sync infrastructure
     SyncQueue,
   ],
@@ -29,7 +32,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;  // Incremented for DailyPlans table
 
   static QueryExecutor _openConnection() {
     return driftDatabase(name: 'lifeos_db');
