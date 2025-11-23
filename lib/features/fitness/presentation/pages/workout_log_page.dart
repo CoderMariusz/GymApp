@@ -117,12 +117,14 @@ class _WorkoutLogPageState extends ConsumerState<WorkoutLogPage> {
 
   @override
   Widget build(BuildContext context) {
-    final hasPatternAsync = selectedExercise != null
-        ? ref.watch(hasPatternDataProvider(exerciseName: selectedExercise!))
+    // Safe navigation: only watch providers when exercise is selected
+    final currentExercise = selectedExercise;
+    final hasPatternAsync = currentExercise != null
+        ? ref.watch(hasPatternDataProvider(exerciseName: currentExercise))
         : null;
 
-    final suggestionAsync = selectedExercise != null && showSuggestion
-        ? ref.watch(workoutSuggestionProvider(exerciseName: selectedExercise!))
+    final suggestionAsync = currentExercise != null && showSuggestion
+        ? ref.watch(workoutSuggestionProvider(exerciseName: currentExercise))
         : null;
 
     return Scaffold(

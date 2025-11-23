@@ -99,7 +99,7 @@ class SmartSuggestionCard extends StatelessWidget {
                     if (set.targetRpe != null) ...[
                       const SizedBox(width: 8),
                       Text(
-                        'RPE: ${set.targetRpe!.toStringAsFixed(1)}',
+                        'RPE: ${(set.targetRpe ?? 0.0).toStringAsFixed(1)}',
                         style: TextStyle(
                           color: Colors.grey.shade600,
                           fontSize: 12,

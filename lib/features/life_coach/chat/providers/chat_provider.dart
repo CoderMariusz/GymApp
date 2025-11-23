@@ -33,13 +33,20 @@ class ChatSessionNotifier extends _$ChatSessionNotifier {
   Future<void> sendMessage(String message) async {
     try {
       final coach = ref.read(conversationalCoachProvider);
-      await coach.sendMessage(
+      final result = await coach.sendMessage(
         sessionId: sessionId,
         userMessage: message,
       );
 
-      // Refresh state
-      ref.invalidateSelf();
+      result.when(
+        success: (_) {
+          // Refresh state to show new message
+          ref.invalidateSelf();
+        },
+        failure: (error) {
+          throw error; // Propagate error to UI
+        },
+      );
     } catch (e) {
       rethrow;
     }

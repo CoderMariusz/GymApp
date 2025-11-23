@@ -63,8 +63,16 @@ class DailyPlanNotifier extends _$DailyPlanNotifier {
 
     try {
       final generator = ref.read(dailyPlanGeneratorProvider);
-      final plan = await generator.generatePlan();
-      state = AsyncValue.data(plan);
+      final result = await generator.generatePlan();
+
+      result.when(
+        success: (plan) {
+          state = AsyncValue.data(plan);
+        },
+        failure: (error) {
+          state = AsyncValue.error(error, StackTrace.current);
+        },
+      );
     } catch (error, stackTrace) {
       state = AsyncValue.error(error, stackTrace);
     }

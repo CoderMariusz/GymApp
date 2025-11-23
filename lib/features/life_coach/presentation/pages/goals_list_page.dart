@@ -82,7 +82,7 @@ class _GoalsListPageState extends ConsumerState<GoalsListPage> {
                           children: [
                             if (goal.description != null) ...[
                               const SizedBox(height: 4),
-                              Text(goal.description!, maxLines: 2, overflow: TextOverflow.ellipsis),
+                              Text(goal.description ?? '', maxLines: 2, overflow: TextOverflow.ellipsis),
                             ],
                             const SizedBox(height: 8),
                             if (goal.hasTarget) ...[
@@ -108,7 +108,7 @@ class _GoalsListPageState extends ConsumerState<GoalsListPage> {
                                       color: goal.isOverdue ? Colors.red : Colors.grey),
                                   const SizedBox(width: 4),
                                   Text(
-                                    DateFormat.MMMd().format(goal.targetDate!),
+                                    DateFormat.MMMd().format(goal.targetDate ?? DateTime.now()),
                                     style: theme.textTheme.bodySmall?.copyWith(
                                       color: goal.isOverdue ? Colors.red : null,
                                     ),

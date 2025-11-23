@@ -180,8 +180,9 @@ class GoalsRepositoryImpl implements GoalsRepository {
       final goal = await getGoalById(goalId);
       await goal.when(
         success: (entity) async {
-          final percentage = entity.hasTarget
-              ? ((value / entity.targetValue!) * 100).clamp(0, 100).round()
+          final targetVal = entity.targetValue;
+          final percentage = entity.hasTarget && targetVal != null && targetVal > 0
+              ? ((value / targetVal) * 100).clamp(0, 100).round()
               : 0;
 
           await updateGoal(entity.copyWith(

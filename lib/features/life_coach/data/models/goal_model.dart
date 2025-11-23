@@ -35,6 +35,7 @@ class GoalModel with _$GoalModel {
       _$GoalModelFromJson(json);
 
   factory GoalModel.fromDrift(Goal row) {
+    final tagsJson = row.tags;
     return GoalModel(
       id: row.id,
       userId: row.userId,
@@ -48,7 +49,7 @@ class GoalModel with _$GoalModel {
       completionPercentage: row.completionPercentage,
       isCompleted: row.isCompleted,
       completedAt: row.completedAt,
-      tags: row.tags != null ? List<String>.from(jsonDecode(row.tags!)) : null,
+      tags: tagsJson != null ? List<String>.from(jsonDecode(tagsJson)) : null,
       priority: row.priority,
       isArchived: row.isArchived,
       createdAt: row.createdAt,

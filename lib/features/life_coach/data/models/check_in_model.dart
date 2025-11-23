@@ -42,6 +42,7 @@ class CheckInModel with _$CheckInModel {
 
   /// Create model from Drift database row
   factory CheckInModel.fromDrift(CheckIn row) {
+    final tagsJson = row.tags;
     return CheckInModel(
       id: row.id,
       userId: row.userId,
@@ -55,7 +56,7 @@ class CheckInModel with _$CheckInModel {
       wins: row.wins,
       improvements: row.improvements,
       tomorrowFocus: row.tomorrowFocus,
-      tags: row.tags != null ? List<String>.from(jsonDecode(row.tags!)) : null,
+      tags: tagsJson != null ? List<String>.from(jsonDecode(tagsJson)) : null,
       notes: row.notes,
       createdAt: row.createdAt,
       updatedAt: row.updatedAt,

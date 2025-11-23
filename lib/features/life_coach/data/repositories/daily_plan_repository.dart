@@ -53,6 +53,7 @@ class DailyPlanRepository {
   }
 
   DailyPlan _fromDto(DailyPlanData data) {
+    final metaJson = data.metadataJson;
     return DailyPlan(
       id: data.id,
       date: data.date,
@@ -63,7 +64,7 @@ class DailyPlanRepository {
       motivationalQuote: data.motivationalQuote,
       createdAt: data.createdAt,
       source: PlanSource.values[data.source],
-      metadata: data.metadataJson != null ? jsonDecode(data.metadataJson!) : null,
+      metadata: metaJson != null ? jsonDecode(metaJson) : null,
     );
   }
 }

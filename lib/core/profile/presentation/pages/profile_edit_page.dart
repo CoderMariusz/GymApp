@@ -143,9 +143,10 @@ class _ProfileEditPageState extends ConsumerState<ProfileEditPage> {
       String? avatarUrl = _currentAvatarUrl;
 
       // Upload avatar if new image selected
-      if (_selectedImage != null) {
+      final imageFile = _selectedImage;
+      if (imageFile != null) {
         final uploadAvatarUseCase = ref.read(uploadAvatarUseCaseProvider);
-        final uploadResult = await uploadAvatarUseCase.call(_selectedImage!);
+        final uploadResult = await uploadAvatarUseCase.call(imageFile);
 
         uploadResult.when(
           success: (url) {
@@ -395,7 +396,7 @@ class _ProfileEditPageState extends ConsumerState<ProfileEditPage> {
                         backgroundImage: _selectedImage != null
                             ? FileImage(_selectedImage!)
                             : _currentAvatarUrl != null
-                                ? NetworkImage(_currentAvatarUrl!)
+                                ? NetworkImage(_currentAvatarUrl ?? '')
                                 : null,
                         child: _selectedImage == null && _currentAvatarUrl == null
                             ? const Icon(Icons.person, size: 60)

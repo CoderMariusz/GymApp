@@ -68,9 +68,12 @@ Future<List<ChartDataPoint>> goalCompletion(
   final goalsRepo = ref.watch(goalsRepositoryProvider);
   final completedGoals = await goalsRepo.getCompletedGoals(days: days);
 
+  // Filter out goals without completedAt date before aggregation
+  final goalsWithCompletedDate = completedGoals.where((goal) => goal.completedAt != null).toList();
+
   return DataAggregator.aggregateByPeriod(
-    items: completedGoals,
-    getDate: (goal) => goal.completedAt!,
+    items: goalsWithCompletedDate,
+    getDate: (goal) => goal.completedAt!,  // Safe: filtered above
     getValue: (_) => 1.0,  // Count each goal as 1
     period: AggregationPeriod.weekly,
     type: AggregationType.sum,

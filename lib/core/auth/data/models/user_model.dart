@@ -67,9 +67,7 @@ sealed class UserModel with _$UserModel {
       avatarUrl: profileData?['avatar_url'] as String? ??
                  user.userMetadata?['avatar_url'] as String?,
       emailVerified: user.emailConfirmedAt != null,
-      createdAt: user.createdAt != null
-          ? DateTime.parse(user.createdAt!)
-          : now,
+      createdAt: DateTime.parse(user.createdAt),
       updatedAt: profileData?['updated_at'] != null
           ? DateTime.parse(profileData!['updated_at'] as String)
           : now,

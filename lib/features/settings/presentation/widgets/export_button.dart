@@ -51,16 +51,20 @@ class _ExportButtonState extends ConsumerState<ExportButton> {
 
   bool _canRequestExport() {
     if (_isLoading) return false;
-    if (_lastRequestTime == null) return true;
+    final lastRequest = _lastRequestTime;
+    if (lastRequest == null) return true;
 
     final hoursSinceLastRequest =
-        DateTime.now().difference(_lastRequestTime!).inHours;
+        DateTime.now().difference(lastRequest).inHours;
     return hoursSinceLastRequest >= 1;
   }
 
   String _getRateLimitMessage() {
+    final lastRequest = _lastRequestTime;
+    if (lastRequest == null) return '';
+
     final minutesLeft = 60 -
-        DateTime.now().difference(_lastRequestTime!).inMinutes;
+        DateTime.now().difference(lastRequest).inMinutes;
 
     if (minutesLeft > 0) {
       return 'You can request another export in $minutesLeft minutes (rate limit: 1 per hour)';
@@ -110,8 +114,11 @@ class _ExportButtonState extends ConsumerState<ExportButton> {
   }
 
   Widget _buildExportStatus() {
+    final requestId = _requestId;
+    if (requestId == null) return const SizedBox.shrink();
+
     return FutureBuilder<String?>(
-      future: ref.read(exportDataUseCaseProvider).checkStatus(_requestId!),
+      future: ref.read(exportDataUseCaseProvider).checkStatus(requestId),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Row(

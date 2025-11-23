@@ -91,7 +91,7 @@ class DailyPlanPage extends ConsumerWidget {
                     const SizedBox(width: 4),
                     Expanded(
                       child: Text(
-                        plan.motivationalQuote!,
+                        plan.motivationalQuote ?? '',
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                               fontStyle: FontStyle.italic,
                             ),
