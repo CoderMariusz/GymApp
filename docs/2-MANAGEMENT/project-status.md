@@ -2,115 +2,176 @@
 
 <!-- AI-INDEX: status, progress, implementation, completion, roadmap, current-state -->
 
-**Ostatnia aktualizacja:** 2025-12-02
+**Ostatnia aktualizacja:** 2025-12-02 (po audycie kodu)
 **Status:** 🔄 W trakcie implementacji
 
 ---
 
 ## Executive Summary
 
-| Metryka | Wartość |
-|---------|---------|
-| **Implementacja FRs** | ~66% (81/123) |
-| **Pliki Dart** | 287+ |
-| **Epiki** | 9 |
-| **Sprinty** | 9 zaplanowanych |
+| Metryka | Dokumentacja | Rzeczywistość |
+|---------|--------------|---------------|
+| **Overall Progress** | ~66% | **~45%** |
+| **Pliki Dart** | 287+ | 214+ |
+| **Epiki** | 9 | 9 |
+| **Stories gotowe** | 42/66 | **~25/66** |
+
+**UWAGA:** Po audycie kodu 2025-12-02 odkryto znaczące rozbieżności.
+Szczegóły: [MVP-AUDIT-REPORT.md](./MVP-AUDIT-REPORT.md)
 
 ---
 
-## Module Status
+## Module Status (Zweryfikowany)
 
-| Moduł | Status | Completion |
-|-------|--------|------------|
-| **Core Infrastructure** | ✅ Mostly Done | ~90% |
-| **Life Coach** | 🔄 In Progress | ~75% |
-| **Fitness Coach** | 🔄 In Progress | ~82% |
-| **Mind & Emotion** | 🔄 In Progress | ~40% |
-| **Cross-Module Intel** | 🔄 Started | ~25% |
-| **Gamification** | ✅ Mostly Done | ~83% |
-| **Subscriptions** | ✅ Mostly Done | ~86% |
-| **Notifications** | ❌ Not Started | 0% |
-| **Onboarding** | 🔄 In Progress | ~80% |
-
----
-
-## Epic Progress
-
-| Epic | Stories | Completed | Progress |
-|------|---------|-----------|----------|
-| Epic 1: Core Platform | 6 | 6 | ✅ 100% |
-| Epic 2: Life Coach | 10 | 7 | 🔄 70% |
-| Epic 3: Fitness | 10 | 8 | 🔄 80% |
-| Epic 4: Mind | 12 | 5 | 🔄 42% |
-| Epic 5: Cross-Module | 5 | 1 | 🔄 20% |
-| Epic 6: Gamification | 6 | 5 | 🔄 83% |
-| Epic 7: Onboarding/Subs | 7 | 6 | 🔄 86% |
-| Epic 8: Notifications | 5 | 0 | ❌ 0% |
-| Epic 9: Settings | 5 | 4 | 🔄 80% |
+| Moduł | Dokumentacja | Kod | Uwagi |
+|-------|-------------|-----|-------|
+| **Core Infrastructure** | 90% | **85%** | Password reset, sync logic |
+| **Life Coach** | 75% | **55%** | Mock repos, brak Chat UI |
+| **Fitness Coach** | 82% | **90%** | Najlepszy moduł! |
+| **Mind & Emotion** | 40% | **10%** | Brak playera, tylko UI scaffold |
+| **Cross-Module Intel** | 25% | **5%** | Tylko tabele DB |
+| **Gamification** | 83% | **5%** | Tylko Streaks table |
+| **Subscriptions** | 86% | **5%** | IAP nie zintegrowane |
+| **Notifications** | 0% | **0%** | Zgodne |
+| **Onboarding** | 80% | **5%** | Placeholder only |
 
 ---
 
-## Priority Queue
+## Epic Progress (Zweryfikowany)
 
-### P0 - Must Complete for MVP
+| Epic | Doc | Code | Delta |
+|------|-----|------|-------|
+| Epic 1: Core Platform | 100% | **70%** | -30% |
+| Epic 2: Life Coach | 70% | **55%** | -15% |
+| Epic 3: Fitness | 80% | **75%** | -5% |
+| Epic 4: Mind | 42% | **10%** | -32% |
+| Epic 5: Cross-Module | 20% | **5%** | -15% |
+| Epic 6: Gamification | 83% | **5%** | -78% |
+| Epic 7: Onboarding/Subs | 86% | **5%** | -81% |
+| Epic 8: Notifications | 0% | **0%** | 0% |
+| Epic 9: Settings | 80% | **25%** | -55% |
 
-| Task | Status | Owner |
-|------|--------|-------|
-| Cross-Module Intelligence (CMI) | 🔄 In Progress | - |
-| Mind module UI completion | 🔄 In Progress | - |
-| Push notifications (FCM) | ❌ Not Started | - |
-| Workout templates CRUD | 🔄 In Progress | - |
+---
 
-### P1 - Important
+## Co NAPRAWDĘ działa
+
+### DONE (potwierdzone w kodzie):
+- [x] **Auth:** Email login, registration, profile (Supabase)
+- [x] **Fitness:** Workout logging, rest timer, history
+- [x] **Fitness:** Smart Pattern Memory (pre-fill)
+- [x] **Fitness:** Progress charts (fl_chart)
+- [x] **Fitness:** Body measurements
+- [x] **Fitness:** Templates
+- [x] **Life Coach:** AI Daily Plan generation
+- [x] **Life Coach:** Morning/Evening check-ins
+- [x] **Life Coach:** Daily plan editing (drag & drop)
+- [x] **Database:** 23+ Drift tables defined
+- [x] **Database:** SyncQueue infrastructure
+
+### PARTIAL (wymaga pracy):
+- [ ] **Life Coach Goals:** UI jest, ale MockRepository
+- [ ] **Life Coach AI Chat:** Table jest, brak UI
+- [ ] **Mind Meditation:** Library UI jest, brak playera
+- [ ] **Password Reset:** TODO w kodzie
+- [ ] **Data Sync:** SyncQueue table, brak logic
+
+### NOT DONE (mimo dokumentacji):
+- [ ] **Meditation Player** - dokumentacja mówi "Done"
+- [ ] **Onboarding Flow** - dokumentacja mówi "Complete"
+- [ ] **IAP/Subscriptions** - dokumentacja mówi "Complete"
+- [ ] **Gamification Badges** - dokumentacja mówi "In Progress"
+
+---
+
+## Known Issues (Krytyczne)
+
+### 1. Mock Repositories
+```
+MockGoalsRepository         → throws UnimplementedError
+MockCheckInRepository       → throws UnimplementedError
+MockPreferencesRepository   → returns hardcoded data
+```
+**Impact:** App może crashować przy goal operations.
+
+### 2. Hardcoded IDs
+```dart
+userId: 'current_user_id'   // TODO in 4 places
+UserTier: UserTier.premium  // TODO
+```
+**Impact:** Brak personalizacji per user.
+
+### 3. Missing Critical Files
+```
+- meditation_player_screen.dart  → NOT EXISTS
+- coach_chat_page.dart           → NOT EXISTS
+- onboarding screens             → PLACEHOLDER only
+```
+
+---
+
+## Priority Queue (Zweryfikowane)
+
+### P0 - Blockers dla MVP
+
+| Task | Hours | Status |
+|------|-------|--------|
+| Replace MockGoalsRepository | 4h | ❌ |
+| Replace MockCheckInRepository | 2h | ❌ |
+| Fix hardcoded user IDs | 2h | ❌ |
+| Exercise Library persistence | 4h | ❌ |
+
+### P1 - Core MVP Features
+
+| Task | Hours | Status |
+|------|-------|--------|
+| Meditation Player | 8h | ❌ |
+| Mood Tracking UI | 4h | ❌ |
+| Breathing Exercises | 6h | ❌ |
+| AI Chat UI (Life Coach) | 8h | ❌ |
+
+### P2 - Post-MVP
 
 | Task | Status |
 |------|--------|
-| Exercise instructions & form tips | ⏳ Planned |
-| Weekly summary reports | ⏳ Planned |
-| CBT chat implementation | ⏳ Planned |
-| E2E encrypted journaling | ⏳ Planned |
-
-### P2 - Nice to Have
-
-| Task | Status |
-|------|--------|
-| AR form analysis | ⏳ Deferred |
-| Wearable integration | ⏳ Deferred |
-| Social features | ⏳ Deferred |
+| Onboarding flow | ❌ Deferred |
+| IAP/Subscriptions | ❌ Deferred |
+| Push notifications | ❌ Deferred |
+| Cross-Module Intelligence | ❌ Deferred |
+| Weekly reports | ❌ Deferred |
 
 ---
 
-## Technical Debt
+## MVP 1.0 Scope
 
-| Issue | Priority | Notes |
-|-------|----------|-------|
-| Firebase disabled | High | Re-enable for push notifications |
-| Test coverage | Medium | Target 80%, currently lower |
-| Documentation sync | Low | This reorganization addresses it |
+**Target:** Minimalna działająca aplikacja bez płatności
+
+### In Scope:
+- Auth (email only)
+- Fitness (full)
+- Life Coach (daily plan + check-ins + goals)
+- Mind (mood + meditation player + breathing)
+- Settings (basic profile)
+
+### Out of Scope (MVP 1.1):
+- Social login (Google, Apple)
+- Onboarding flow
+- IAP/Subscriptions
+- Push notifications
+- Cross-Module Intelligence
+- Gamification badges
+- Social sharing
 
 ---
 
-## What's Working
+## Estimated Hours to MVP 1.0
 
-✅ **Autentykacja** (Supabase Auth)
-✅ **Offline-first sync** (Drift + SyncQueue)
-✅ **Life Coach:** Daily plan, Goals, AI chat
-✅ **Fitness:** Workout logging, Exercise library
-✅ **Mind:** Mood tracking, Mental health screenings
-✅ **Database schema** (100% zgodny z dokumentacją)
-✅ **Gamification:** Streaks, Goals
-✅ **Subscriptions infrastructure**
-
----
-
-## What Needs Work
-
-⚠️ **Mind module UI** (backend gotowy, UI niekompletne)
-⚠️ **Progress charts** (istnieją, wymagają testów)
-⚠️ **Cross-Module Intelligence** (tylko agregacja, brak AI insights)
-❌ **Push notifications** (Firebase wyłączony)
-❌ **CBT journaling UI**
-❌ **Breathing exercises**
+| Category | Hours |
+|----------|-------|
+| Fix critical issues | 8h |
+| Life Coach completion | 12h |
+| Mind module basic | 18h |
+| Polish & testing | 10h |
+| **TOTAL** | **~48h** |
 
 ---
 
@@ -118,66 +179,41 @@
 
 ### 2025-12-02
 - Reorganizacja dokumentacji do BMAD framework
-- Podział dużych plików (epics.md 4624 → 9 plików)
-- Dodanie AI-INDEX dla szybszego wyszukiwania
-
-### Previous
-- Sprint 0 completed (database schema)
-- Core infrastructure setup
-- Life Coach MVP functional
-- Fitness logging working
+- **Audit kodu vs dokumentacji** - znaczące rozbieżności
+- Utworzono MVP-AUDIT-REPORT.md
+- Zaktualizowano project-status.md z rzeczywistym stanem
 
 ---
 
-## Next Steps
-
-1. **Complete Mind module UI**
-   - Meditation library loading
-   - Breathing exercises
-   - CBT chat
-
-2. **Re-enable Firebase**
-   - Push notifications for insights
-   - Streak alerts
-
-3. **Cross-Module Intelligence**
-   - Pattern detection algorithm
-   - AI insight generation
-   - Insight cards UI
-
-4. **Testing**
-   - Unit tests to 80%
-   - Integration tests for critical paths
-
----
-
-## Files Structure
+## Files Structure (Verified)
 
 ```
 lib/
-├── core/              # 15 podsystemów (~90% done)
-│   ├── auth/          ✅
-│   ├── database/      ✅
-│   ├── sync/          ✅
-│   ├── ai/            ✅
-│   └── ...
+├── core/              # Infrastructure (~85% done)
+│   ├── auth/          ✅ Working
+│   ├── database/      ✅ Tables defined
+│   ├── sync/          ⚠️  Queue only, no logic
+│   ├── ai/            ⚠️  Interface defined
+│   └── router/        ✅ Working
 │
 ├── features/
-│   ├── life_coach/    🔄 (~75%)
-│   ├── fitness/       🔄 (~82%)
-│   ├── mind_emotion/  🔄 (~40%)
-│   └── ...
+│   ├── fitness/       ✅ ~90% - Best module
+│   ├── life_coach/    ⚠️  ~55% - Mock repos issue
+│   ├── mind_emotion/  ❌ ~10% - UI scaffold only
+│   ├── exercise/      ❌ ~20% - No persistence
+│   ├── settings/      ⚠️  ~25% - Basic only
+│   └── onboarding/    ❌ ~5% - Placeholder
 ```
 
 ---
 
-## Contact
+## Links
 
-For questions about this project:
-- Check documentation in `docs/` (BMAD structure)
-- Review `1-BASELINE/` for requirements
-- Review `2-MANAGEMENT/epics/` for stories
+- [MVP-AUDIT-REPORT.md](./MVP-AUDIT-REPORT.md) - Szczegółowy audit
+- [MVP-TODO.md](./MVP-TODO.md) - Master TODO list
+- [epic-*.md](./epics/) - Stories per epic
 
 ---
 
-*Status updated: 2025-12-02 | Next review: Weekly*
+*Status zaktualizowany po audycie kodu: 2025-12-02*
+*Następna weryfikacja: Po implementacji P0 tasks*
