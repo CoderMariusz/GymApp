@@ -7,24 +7,30 @@ import '../../domain/repositories/goals_repository.dart';
 import '../../domain/repositories/check_in_repository.dart';
 import '../../domain/repositories/preferences_repository.dart';
 import '../../data/repositories/daily_plan_repository.dart';
+import '../../data/repositories/goals_repository_impl.dart';
+import '../../data/repositories/check_in_repository_impl.dart';
 import '../daily_plan_generator.dart';
 import '../models/daily_plan.dart';
 
 part 'daily_plan_provider.g.dart';
 
-// Repository providers (mocks for now - will be replaced when Epic 2 stories are implemented)
+// Repository providers - now using real implementations with database integration
 @riverpod
 GoalsRepository goalsRepository(Ref ref) {
-  return MockGoalsRepository();
+  final database = ref.watch(appDatabaseProvider);
+  return GoalsRepositoryImpl(database);
 }
 
 @riverpod
 CheckInRepository checkInRepository(Ref ref) {
-  return MockCheckInRepository();
+  final database = ref.watch(appDatabaseProvider);
+  return CheckInRepositoryImpl(database);
 }
 
 @riverpod
 PreferencesRepository preferencesRepository(Ref ref) {
+  // TODO: Implement real PreferencesRepository with user_settings table
+  // For now using mock, but this should read from user_settings Drift table
   return MockPreferencesRepository();
 }
 
