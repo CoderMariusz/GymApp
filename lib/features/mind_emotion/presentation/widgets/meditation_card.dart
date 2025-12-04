@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lifeos/core/auth/presentation/providers/auth_provider.dart';
 import 'package:lifeos/core/error/result.dart';
 import 'package:lifeos/features/mind_emotion/domain/entities/meditation_entity.dart';
+import 'package:lifeos/features/mind_emotion/presentation/pages/meditation_player_screen.dart';
 import 'package:lifeos/features/mind_emotion/presentation/providers/meditation_providers.dart';
 
 /// Card widget for displaying a meditation
@@ -339,9 +340,13 @@ class _MeditationCardState extends ConsumerState<MeditationCard>
   }
 
   void _onMeditationTap(BuildContext context) {
-    // TODO: Navigate to meditation player screen (Story 4.2)
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Playing ${widget.meditation.title}')),
+    // Navigate to meditation player screen
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => MeditationPlayerScreen(
+          meditation: widget.meditation,
+        ),
+      ),
     );
   }
 }
