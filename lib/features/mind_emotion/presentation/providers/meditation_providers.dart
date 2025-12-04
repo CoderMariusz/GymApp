@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lifeos/core/auth/presentation/providers/auth_provider.dart';
 import 'package:lifeos/core/database/database.dart';
 import 'package:lifeos/core/error/result.dart';
 import 'package:lifeos/features/mind_emotion/data/datasources/meditation_local_datasource.dart';
@@ -66,7 +67,9 @@ final downloadMeditationUseCaseProvider =
     Provider<DownloadMeditationUseCase>((ref) {
   return DownloadMeditationUseCase(
     repository: ref.watch(meditationRepositoryProvider),
-    getUserTier: () => UserTier.premium, // TODO: Implement actual tier check
+    // For MVP 1.0: All users get free tier (no IAP yet)
+    // TODO: Read from subscription provider when IAP is implemented
+    getUserTier: () => UserTier.free,
   );
 });
 
@@ -92,13 +95,20 @@ final filteredMeditationsProvider =
   final maxDuration = ref.watch(maxDurationProvider);
   final favoritesOnly = ref.watch(favoritesOnlyProvider);
 
+  // Get current user ID from auth provider
+  final authState = ref.watch(authStateProvider);
+  final userId = authState.maybeMap(
+    authenticated: (auth) => auth.user.id,
+    orElse: () => 'guest', // Fallback for unauthenticated users
+  );
+
   final result = await useCase(
     category: category,
     searchQuery: searchQuery,
     minDuration: minDuration,
     maxDuration: maxDuration,
     favoritesOnly: favoritesOnly,
-    userId: 'current_user_id', // TODO: Get from auth provider
+    userId: userId,
   );
 
   return result.map(

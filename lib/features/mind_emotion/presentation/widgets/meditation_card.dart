@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lifeos/core/auth/presentation/providers/auth_provider.dart';
 import 'package:lifeos/core/error/result.dart';
 import 'package:lifeos/features/mind_emotion/domain/entities/meditation_entity.dart';
 import 'package:lifeos/features/mind_emotion/presentation/providers/meditation_providers.dart';
@@ -289,9 +290,29 @@ class _MeditationCardState extends ConsumerState<MeditationCard>
 
     _favoriteController.forward().then((_) => _favoriteController.reverse());
 
+    // Get current user ID from auth provider
+    final authState = ref.read(authStateProvider);
+    final userId = authState.maybeMap(
+      authenticated: (auth) => auth.user.id,
+      orElse: () => null,
+    );
+
+    if (userId == null) {
+      // User not authenticated
+      setState(() {
+        _isFavorite = !_isFavorite;
+      });
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Please sign in to save favorites')),
+        );
+      }
+      return;
+    }
+
     final useCase = ref.read(toggleFavoriteUseCaseProvider);
     final result = await useCase(
-      userId: 'current_user_id', // TODO: Get from auth provider
+      userId: userId,
       meditationId: widget.meditation.id,
     );
 
@@ -308,9 +329,11 @@ class _MeditationCardState extends ConsumerState<MeditationCard>
         setState(() {
           _isFavorite = !_isFavorite;
         });
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to update favorite: ${failure.exception}')),
-        );
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Failed to update favorite: ${failure.exception}')),
+          );
+        }
       },
     );
   }
