@@ -16,6 +16,29 @@ Numeracja jest **per moduł** (`FIT-01`, `LC-01`, `EX-01`, `SET-01`, `MND-01`, `
 
 **Przyjęte założenia** są oznaczone `[Z-n]` i zebrane w §12. Każde zamyka pytanie, które w poprzednim podejściu pozostawało otwarte przez rok.
 
+**Rozróżnienie ważne dla recenzenta:** sekcja §0.1 zawiera decyzje **podjęte przez właściciela produktu** — te są ustalone i nie podlegają dyskusji bez jego udziału. Wszystko oznaczone `[Z-n]` to **założenia przyjęte przez autora dokumentu** w braku decyzji — te wolno i należy kwestionować. Sekcja §15 zbiera pytania, na które recenzja powinna odpowiedzieć.
+
+---
+
+## 0.1 Decyzje podjęte przez właściciela produktu
+
+| # | Decyzja | Data | Wpływ na dokument |
+|---|---|---|---|
+| **D-A** | **Forma produktu: PWA (aplikacja webowa), z przejściem do sklepów mobilnych przez Capacitor w v1.1** | 2026-08-11 | Cały dokument; wymagania niefunkcjonalne przepisane na metryki webowe |
+| **D-B** | **Stack: Next.js + React + TypeScript** | 2026-08-11 | Dokument architektury |
+| **D-C** | **Backend: Supabase** | 2026-08-11 | Dokument architektury |
+| **D-D** | **v1.0 offline tylko do odczytu; zapis offline dopiero w v1.1** | 2026-08-11 | §11.2 — z jawnie opisanym ryzykiem i działaniami łagodzącymi |
+| **D-E** | **Katalog ćwiczeń: import z `free-exercise-db` + własne opisy i tłumaczenia** | 2026-08-11 | §5.3, ścieżka treści w planie implementacji |
+| **D-F** | **Monetyzacja poza horyzontem dwunastu miesięcy — najpierw walidacja powrotów** | 2026-08-11 | §10; potwierdza `[Z-8]` |
+| **D-G** | **Oba języki (EN i PL) od v1.0** | 2026-08-11 | §11.6, ścieżka treści |
+| **D-H** | **Realizacja: jedna osoba pracująca w parze z asystentem AI** | 2026-08-11 | Harmonogram i sekcja ryzyk w planie implementacji |
+| **D-I** | **Tempo: około 20 godzin tygodniowo** | 2026-08-11 | Cały harmonogram przeliczony — patrz §4 planu implementacji |
+| **D-J** | **Nazwa LifeOS zostaje na stałe** | 2026-08-11 | Do sprawdzenia przed marketingiem: dostępność domeny i kolizje ze znakami towarowymi — nazwa jest rozpowszechniona |
+| **D-K** | **Nowy projekt Supabase od zera** | 2026-08-11 | Dokument architektury, decyzja D-14. Ze starego zabieramy wyłącznie reguły dostępu i funkcje RODO jako wzorce |
+| **D-L** | **Odbiorca dokumentów: model AI do przeglądu** | 2026-08-11 | §15 — jawne pytania do zakwestionowania i lista miejsc, gdzie autor wybrał jedną z kilku dróg |
+
+Brak twardego terminu wydania. Tempem sterują punkty kontrolne z §8 planu implementacji, nie kalendarz.
+
 ---
 
 ## 1. Dlaczego budujemy od nowa
@@ -147,11 +170,29 @@ W poprzedniej wersji kategoria była **wyliczana** z pierwszego elementu listy m
 
 ### 5.3 Treść katalogu
 
-`[Z-2]` **200–250 ćwiczeń, dołączonych do aplikacji jako dane statyczne, w dwóch językach.**
+**Decyzja D-E: import z `free-exercise-db`, wzbogacony własnymi opisami i przetłumaczony na polski.**
 
-Poprzednia wersja deklarowała „500+" we wszystkich dokumentach, w komentarzach kodu i w nagłówku ekranu. Faktycznie było ich **105**, a sam plik z danymi przyznawał to w komentarzu na końcu. Nowa liczba jest realna. Jakość opisu — instrukcja, wskazówki techniczne, typowe błędy, w dwóch językach — jest ważniejsza niż liczba pozycji.
+Poprzednia wersja deklarowała „500+" we wszystkich dokumentach, w komentarzach kodu i w nagłówku ekranu. Faktycznie było ich **105**, a sam plik z danymi przyznawał to w komentarzu na końcu.
 
-**Decyzja do podjęcia przed startem:** produkcja własna czy import z otwartej bazy (`free-exercise-db`, wger). Obie są na licencjach otwartych, ale wymagają weryfikacji zgodności i tłumaczenia na polski. To jest **zadanie contentowe, nie programistyczne** — musi mieć osobnego właściciela i biec równolegle od pierwszego dnia, inaczej stanie się ścieżką krytyczną.
+**Źródło:** `free-exercise-db` — około ośmiuset ćwiczeń w **domenie publicznej** (licencja Unlicense), ze zdjęciami pozycji startowej i końcowej. Domena publiczna oznacza brak wymogu podania źródła i brak zobowiązania do udostępniania pochodnych — w przeciwieństwie do wger, gdzie licencja CC-BY-SA mogłaby wymuszać otwarcie naszych opisów.
+
+`[Z-2]` **Z bazy źródłowej wybieramy 200–250 pozycji.** Kryterium doboru: pokrycie wszystkich grup mięśniowych i typów sprzętu, priorytet dla ćwiczeń podstawowych i najczęściej wykonywanych. Reszta bazy pozostaje jako rezerwuar do rozbudowy w kolejnych wersjach.
+
+**Co dostajemy ze źródła:** nazwa (EN), grupy mięśniowe główne i pomocnicze, sprzęt, poziom trudności, kroki instrukcji, zdjęcia.
+
+**Co musimy dorobić:**
+
+| Element | Nakład |
+|---|---|
+| Mapowanie na naszą taksonomię (`category`, `exercise_type`, `movement_pattern`, `tracks`, `default_rest_seconds`, `is_compound`, `is_unilateral`) | Częściowo skryptem, częściowo ręcznie — pola `movement_pattern` i `tracks` nie istnieją w źródle |
+| Tłumaczenie nazw i instrukcji na polski | Wstępnie maszynowo, obowiązkowa korekta przez osobę znającą terminologię treningową |
+| 3–5 wskazówek technicznych per ćwiczenie | Brak w źródle — do napisania |
+| 3–5 typowych błędów per ćwiczenie | Brak w źródle — do napisania |
+| Optymalizacja zdjęć pod rozmiar aplikacji | Skryptem |
+
+**Konsekwencja dla harmonogramu:** ścieżka treści skraca się z około sześciu tygodni (produkcja od zera) do **dwóch–trzech tygodni**. Nadal jest to **zadanie contentowe, nie programistyczne**, i nadal musi biec równolegle od pierwszego dnia — ale przestaje być najdłuższym elementem projektu.
+
+**Do zweryfikowania przed importem:** aktualny stan licencji repozytorium źródłowego oraz to, czy licencja zdjęć jest tożsama z licencją danych. Weryfikacja licencji obrazów jest osobnym punktem, bo w bazach tego typu bywa, że dane są otwarte, a media nie.
 
 ---
 
@@ -459,13 +500,13 @@ Każde zamyka pytanie, które w poprzednim podejściu pozostawało otwarte. Zmia
 | ID | Założenie | Konsekwencja, jeśli błędne |
 |---|---|---|
 | **Z-1** | v1.0 offline tylko do odczytu; zapis offline w v1.1 | Jeśli testy pokażą, że blokuje główny scenariusz — priorytet rośnie natychmiast, koszt około dwóch tygodni |
-| **Z-2** | Katalog 200–250 ćwiczeń, dane statyczne, EN i PL | Import z otwartej bazy skraca produkcję, ale wymaga weryfikacji licencji i tłumaczenia |
+| **Z-2** | Z bazy źródłowej wybieramy 200–250 pozycji (decyzja D-E przesądziła źródło) | Zbyt mało pozycji oznacza, że użytkownik szybko trafi na brak swojego ćwiczenia; zbyt wiele wydłuża produkcję opisów |
 | **Z-3** | 1RM liczone wzorem Epleya | Zmiana wzoru unieważnia historyczne rekordy — decyzja musi zapaść przed pierwszym zapisem |
 | **Z-4** | Jednostki przechowywane w SI, przeliczane przy wyświetlaniu | — |
 | **Z-5** | Oceny subiektywne w skali 1–5, RPE 1–10 | Zmiana po starcie unieważnia dane historyczne i korelacje |
 | **Z-6** | Seria: dowolna aktywność dziennie, przerywa się po dwóch dniach, bez mechaniki zamrożenia | — |
 | **Z-7** | Insighty najpierw regułowe, statystyczne w v2.0 | — |
-| **Z-8** | Monetyzacja poza v1.x; Stripe w web, natywne zakupy w sklepach | Jeśli przychód jest potrzebny w pół roku, płatności wchodzą do v1.2 |
+| **Z-8** | ~~Monetyzacja poza v1.x~~ → **potwierdzone decyzją D-F: poza horyzontem dwunastu miesięcy** | Ryzyko przyjęte świadomie: bez płacących użytkowników nie wiadomo, czy produkt jest wart pieniędzy. Walidujemy powroty, nie gotowość do zapłaty |
 | **Z-9** | Szyfrowanie end-to-end i dziennik do v2.0; model z opakowaniem klucza i kodem odzyskiwania | — |
 | **Z-10** | PWA jako podstawa, Capacitor w v1.1; wsparcie iOS 16.4+ dla powiadomień | — |
 | **Z-11** | AI wchodzi w v1.1, zawsze przez funkcję serwerową | Jeśli AI ma być w v1.0, warstwa pośrednicząca staje się zadaniem o najwyższym priorytecie |
@@ -504,3 +545,37 @@ Pozostałe: **mediana czasu logowania treningu poniżej 60 sekund** (to metryka 
 Pełna lista, żeby nie wróciło tylnymi drzwiami: onboarding z wyborem ścieżki · osobowości AI · odznaki, konfetti i karty do udostępniania · raporty tygodniowe · integracja z kalendarzem · biblioteka medytacji audio · historie na sen i dźwięki otoczenia · rozmowa terapeutyczna z AI · prywatny dziennik z szyfrowaniem · korelacje statystyczne · supersety i obwody · zdjęcia postępu · integracje zdrowotne · liczenie kalorii · monetyzacja · uwierzytelnianie dwuskładnikowe.
 
 Każda z tych pozycji miała w poprzedniej wersji dokumentację, a część miała status „ukończone". Żadna nie działała.
+
+---
+
+## 15. Dla recenzenta — co zakwestionować
+
+Ten dokument trafia do niezależnego przeglądu. Poniżej miejsca, w których autor **świadomie wybrał jedną z kilku dróg** i w których przegląd ma największą wartość. Nie są to pytania retoryczne — jeśli któraś odpowiedź jest błędna, dokument wymaga zmiany.
+
+### 15.1 Rozstrzygnięcia najbardziej ryzykowne
+
+| # | Rozstrzygnięcie | Odrzucona alternatywa | Pytanie do przeglądu |
+|---|---|---|---|
+| R-1 | **Zapis offline dopiero w v1.1** (`[Z-1]`, D-D) | Pełny offline-first od v1.0, koszt około dwóch tygodni | Główny scenariusz persony P1 to siłownia bez zasięgu. Czy produkt, który tam nie zapisuje, ma sens w testach z użytkownikami? Czy zabezpieczenie z §11.2 wystarcza, czy tylko maskuje problem? |
+| R-2 | **v1.0 to sam fitness, bez AI** | Wersja przekrojowa z jedną funkcją z każdego modułu | Czy sam moduł fitness wystarczy, żeby ktokolwiek wrócił po trzydziestu dniach, skoro to najbardziej nasycony segment rynku? Czy wyróżnik (moduły rozmawiające ze sobą) nie powinien pojawić się wcześniej? |
+| R-3 | **Monetyzacja poza dwunastoma miesiącami** (D-F) | Płatności w v1.2 | Czy walidacja powrotów bez walidacji gotowości do zapłaty nie prowadzi do produktu, który ludzie lubią, ale za który nie zapłacą? |
+| R-4 | **Skala 1–5 dla ocen subiektywnych** (`[Z-5]`) | Skala 1–10 | Czy 1–5 wystarczy do wykrycia korelacji w warstwie statystycznej (v2.0)? Mniejsza rozdzielczość oznacza słabszy sygnał przy tej samej liczbie obserwacji |
+| R-5 | **Insighty najpierw regułowe, korelacje w v2.0** (`[Z-7]`) | Od razu korelacje statystyczne | Czy cztery sztywne reguły to wystarczający wyróżnik, czy użytkownik odbierze je jako oczywistości? |
+| R-6 | **Statyczny eksport zamiast renderowania serwerowego** (D-02 w dok. architektury) | Pełny Next.js z SSR, Capacitor wskazujący na zdalny adres | Czy utrata renderowania serwerowego nie zaboli przy stronie marketingowej i udostępnianiu linków? Czy rozdzielenie na dwa projekty to nie jest niepotrzebna komplikacja na tym etapie? |
+| R-7 | **Podwójna progresja zamiast progresji opartej na RPE** (§6.3) | Drzewo decyzyjne na RPE, jak w poprzedniej wersji | Czy podwójna progresja jest wystarczająco użyteczna dla średniozaawansowanego użytkownika, czy to zbytnie uproszczenie? |
+| R-8 | **200–250 ćwiczeń** (`[Z-2]`) | 30–50 na start, albo pełne 800 z bazy źródłowej | Czy to właściwy punkt na krzywej między czasem produkcji a kompletnością katalogu? |
+
+### 15.2 Miejsca, gdzie brakuje danych
+
+Autor nie miał podstaw, żeby to rozstrzygnąć. Przegląd powinien wskazać, czy któreś z tych braków blokuje realizację.
+
+1. **Brak badań z użytkownikami.** Persony P1–P3 są konstruktem opartym na analizie rynku i na tym, co produkt ma robić — nie na wywiadach. Cały zakres v1.0 opiera się na założeniu, że P1 istnieje i ma opisane bóle.
+2. **Brak walidacji metryki kluczowej.** „Poniżej 60 sekund na trening" jest celem wziętym z porównania z konkurencją, nie ze zmierzonego punktu odniesienia.
+3. **Brak analizy konkurencji na poziomie funkcji.** Wiadomo, że Strong i FitBod pobierają opłatę za wykresy postępu. Nie wiadomo, jak wypada nasze szybkie logowanie względem ich rozwiązań.
+4. **Cel powrotów 5% w trzydziestym dniu** (`[Z-12]`) jest ustawiony względem średniej branżowej, nie względem czegokolwiek zmierzonego w tym produkcie.
+
+### 15.3 Czego przegląd nie powinien podważać
+
+Decyzje z §0.1 są podjęte przez właściciela produktu i wymagają jego udziału, żeby je zmienić. Przegląd może wskazać ich konsekwencje — powinien to robić — ale nie powinien przebudowywać dokumentu wokół innego wyboru.
+
+Wnioski z analizy poprzedniej wersji (§1) są ustaleniami faktycznymi z konkretnego kodu, nie opiniami. Trzy zasady wynikające z §1 są nienegocjowalne — to one są głównym powodem, dla którego ten dokument w ogóle powstał.

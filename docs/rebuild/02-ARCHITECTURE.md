@@ -26,6 +26,8 @@ Każda decyzja ma status. W poprzedniej wersji projektu istniało trzynaście de
 | **D-11** | **Wywołania AI wyłącznie przez funkcję brzegową** | Accepted (wdrożenie v1.1) | Bez tego nie da się chronić klucza, egzekwować limitów ani mierzyć kosztów |
 | **D-12** | **Szyfrowanie end-to-end odłożone do v2.0** | Accepted | Model z opakowaniem klucza i kodem odzyskiwania. Poprzednia wersja miała klucz pochodzący wprost z hasła, co oznaczało utratę danych przy resecie hasła |
 | **D-13** | **Monorepo jednopakietowe na start** | Accepted | Podział na pakiety dopiero gdy pojawi się drugi konsument logiki (aplikacja mobilna w React Native). Przedwczesny podział to koszt bez korzyści |
+| **D-14** | **Nowy projekt Supabase od zera** | Accepted | Stary projekt niesie 36 tabel nieużywanego schematu, historię migracji, której nie chcemy, i wycieknięte klucze. Czyszczenie kosztowałoby tyle co założenie nowego. Ze starego zabieramy **wyłącznie reguły dostępu i pięć funkcji zgodności RODO jako wzorce**, potem go usuwamy |
+| **D-15** | **Katalog ćwiczeń importowany z `free-exercise-db`** | Accepted | Około ośmiuset pozycji w domenie publicznej (Unlicense) ze zdjęciami. Domena publiczna, w przeciwieństwie do CC-BY-SA w bazie wger, nie wymusza otwarcia naszych opisów. Warstwa importu i mapowania opisana w §6.4 |
 
 ---
 
@@ -242,7 +244,44 @@ W poprzedniej wersji istniały trzy niezgodne opisy schematu: 36 tabel w bazie s
 
 **Kompromis dla szybkiego logowania:** dopuszczamy pusty `exercise_id` z zapisaną nazwą surową dla ćwiczeń wpisanych doraźnie, z późniejszym scaleniem. Ale ścieżka domyślna to wybór z katalogu.
 
-### 6.3 Tabele dokładane później
+### 6.4 Warstwa importu katalogu (decyzja D-15)
+
+Import jest **jednorazowym procesem budowania danych**, nie częścią aplikacji. Jego wynik — plik z katalogiem i zoptymalizowane obrazy — trafia do repozytorium jako dane statyczne.
+
+```
+scripts/catalog/
+├── 1-fetch.ts       ← pobranie źródła, zapis surowej kopii do repozytorium
+├── 2-select.ts      ← wybór 200–250 pozycji wg kryteriów pokrycia
+├── 3-map.ts         ← mapowanie na naszą taksonomię
+├── 4-enrich.ts      ← scalenie z ręcznie pisanymi wskazówkami i błędami
+├── 5-images.ts      ← zmiana rozmiaru, konwersja do WebP, budowa nazw plików
+└── 6-build.ts       ← wynikowy katalog z wersją i sumą kontrolną
+```
+
+**Mapowanie na taksonomię — co da się automatycznie, a co nie:**
+
+| Pole | Źródło |
+|---|---|
+| `name`, `primary_muscles`, `secondary_muscles`, `equipment`, `difficulty`, `instructions` | Bezpośrednio ze źródła, z normalizacją słownika |
+| `category` | Wyprowadzone z mięśni głównych, regułą **jawną i przetestowaną** — nie dopasowaniem fragmentu tekstu, jak w poprzedniej wersji |
+| `exercise_type` | Reguła na podstawie sprzętu i mięśni, z ręczną weryfikacją odstających przypadków |
+| `is_compound` | Reguła: więcej niż jedna grupa mięśniowa główna |
+| `tracks` | **Ręcznie** — źródło nie zawiera tej informacji, a od niej zależy, które pola widzi użytkownik przy logowaniu |
+| `movement_pattern` | **Ręcznie** — nie istnieje w źródle |
+| `default_rest_seconds` | Reguła: złożone 180 s, izolowane 90 s, z ręczną korektą |
+| `is_unilateral` | Reguła na nazwie plus ręczna weryfikacja |
+| Tłumaczenia PL | Maszynowo, z **obowiązkową korektą** przez osobę znającą terminologię treningową |
+| `form_tips`, `common_mistakes` | **Ręcznie** — nie istnieją w źródle |
+
+**Wymagania dla procesu importu:**
+- Powtarzalny i idempotentny — ponowne uruchomienie na tym samym źródle daje identyczny wynik.
+- Ręcznie napisane treści leżą w **osobnym pliku**, scalanym po identyfikatorze. Ponowny import ze źródła nigdy ich nie nadpisuje.
+- Test sprawdzający, że każda pozycja w katalogu ma komplet pól wymaganych i tłumaczenie w obu językach — uruchamiany w procesie budowania.
+- Surowa kopia źródła zapisana w repozytorium, żeby import był odtwarzalny niezależnie od dostępności zewnętrznego repozytorium.
+
+**Do zweryfikowania przed importem:** aktualny stan licencji repozytorium źródłowego oraz to, czy licencja obrazów jest tożsama z licencją danych. To osobny punkt, bo w bazach tego typu bywa, że dane są otwarte, a media nie.
+
+### 6.5 Tabele dokładane później
 
 **v1.1:** `check_ins`, `goals`, `goal_progress`, `daily_plans`, `plan_tasks`, `streaks`, `user_daily_metrics`, `sync_outbox`
 **v1.2:** `mood_logs`, `breathing_sessions`, `mental_health_screenings`, `insights`
@@ -369,10 +408,10 @@ Hosting: Vercel albo Cloudflare Pages — przy statycznym eksporcie różnica je
 
 | # | Zadanie | Powód |
 |---|---|---|
-| 1 | **Rotacja klucza administracyjnego i publicznego Supabase** | Klucz omijający wszystkie reguły dostępu znajduje się w historii repozytorium poprzedniej wersji |
-| 2 | **Rotacja klucza OpenAI** | Był dołączany do paczki aplikacji |
-| 3 | Decyzja: import katalogu ćwiczeń z otwartej bazy czy produkcja własna | Ścieżka krytyczna; wymaga weryfikacji licencji |
-| 4 | Wyznaczenie właściciela produkcji treści | W poprzedniej wersji zadania contentowe wisiały sprintami bez właściciela |
+| 1 | **Założenie nowego projektu Supabase** (D-14) i **usunięcie starego** po zabraniu z niego reguł dostępu i funkcji RODO jako wzorców | Stary projekt niesie wycieknięte klucze i 36 tabel nieużywanego schematu |
+| 2 | **Rotacja klucza OpenAI** | Był dołączany do paczki aplikacji poprzedniej wersji |
+| 3 | **Weryfikacja licencji `free-exercise-db`** — osobno dla danych i osobno dla obrazów | Warunek wykonania decyzji D-15 |
+| 4 | Sprawdzenie dostępności domeny i kolizji znaku towarowego dla nazwy **LifeOS** | Decyzja D-J utrwala nazwę; kolizja wykryta później kosztuje przebudowę marki |
 | 5 | Potwierdzenie założeń `[Z-1]`…`[Z-12]` z PRD | Zmiana teraz kosztuje akapit, później migrację danych |
 | 6 | Rejestracja domeny i rozdzielenie `app.` od strony marketingowej | Wynika z decyzji D-02 |
 

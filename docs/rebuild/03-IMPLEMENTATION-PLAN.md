@@ -37,11 +37,13 @@ W poprzedniej wersji „ukończone" oznaczało istnienie pliku. To jedyna przycz
 
 ## 3. Etapy
 
-Estymaty w tygodniach pracy jednej osoby na pełen etat. Nie zawierają produkcji treści (biegnie równolegle) ani bufora.
+**Estymaty podane są w godzinach roboczych**, nie w tygodniach kalendarzowych. Powód: tryb pracy to około dwudziestu godzin tygodniowo (decyzja D-I), więc tydzień kalendarzowy to pół tygodnia pracy. Przeliczenie na kalendarz jest w §4.
+
+Estymaty nie zawierają produkcji treści (biegnie równolegle, §5) ani bufora na nieprzewidziane.
 
 ---
 
-### M0 — Walking skeleton · 1,5 tyg. · BLOKUJE WSZYSTKO
+### M0 — Walking skeleton · 60 h · BLOKUJE WSZYSTKO
 
 **Cel:** działająca, wdrożona, instalowalna aplikacja z jedną prawdziwą funkcją.
 
@@ -67,13 +69,15 @@ Estymaty w tygodniach pracy jednej osoby na pełen etat. Nie zawierają produkcj
 
 ---
 
-### M1 — Katalog ćwiczeń · 2 tyg.
+### M1 — Katalog ćwiczeń · 80 h
 
 **Zależności:** M0. **Równolegle:** produkcja treści (patrz §5).
 
 | # | Zadanie |
 |---|---|
 | 1.1 | Schemat `exercises` i `exercise_translations` z pełną taksonomią wg §5.2 PRD |
+| 1.1a | **Skrypty importu katalogu** wg §6.4 architektury: pobranie źródła, wybór pozycji, mapowanie na taksonomię, scalenie z treścią ręczną, optymalizacja obrazów |
+| 1.1b | Test walidacyjny katalogu: każda pozycja ma komplet pól wymaganych i tłumaczenie w obu językach — uruchamiany w procesie budowania |
 | 1.2 | Dexie: przechowywanie katalogu z wersjonowaniem |
 | 1.3 | Zasilanie katalogu z danych statycznych przy pierwszym uruchomieniu, z ekranem postępu |
 | 1.4 | Aktualizacja przyrostowa z serwera, gdy dostępna nowsza wersja katalogu |
@@ -90,7 +94,7 @@ Estymaty w tygodniach pracy jednej osoby na pełen etat. Nie zawierają produkcj
 
 ---
 
-### M2 — Logowanie treningu · 3 tyg. · SERCE PRODUKTU
+### M2 — Logowanie treningu · 120 h · SERCE PRODUKTU
 
 **Zależności:** M1.
 
@@ -119,7 +123,7 @@ Estymaty w tygodniach pracy jednej osoby na pełen etat. Nie zawierają produkcj
 
 ---
 
-### M3 — Historia i postęp · 2 tyg.
+### M3 — Historia i postęp · 80 h
 
 **Zależności:** M2.
 
@@ -142,7 +146,7 @@ Estymaty w tygodniach pracy jednej osoby na pełen etat. Nie zawierają produkcj
 
 ---
 
-### M4 — Domknięcie v1.0 · 2 tyg.
+### M4 — Domknięcie v1.0 · 80 h
 
 **Zależności:** M3.
 
@@ -161,11 +165,11 @@ Estymaty w tygodniach pracy jednej osoby na pełen etat. Nie zawierają produkcj
 | 4.11 | Testy end-to-end dla wszystkich ścieżek krytycznych |
 | 4.12 | Testy beta z użytkownikami |
 
-**v1.0 = 8,5 tygodnia.**
+**v1.0 = 420 h pracy** (z zapasem na integrację). Przy 20 h/tydzień: około 17 tygodni kalendarzowych — patrz §4.
 
 ---
 
-### M5 — Zapis offline + Capacitor · 3 tyg. · v1.1
+### M5 — Zapis offline + Capacitor · 120 h · v1.1
 
 **Zależności:** M4. **To jest spłata świadomie zaciągniętego długu z `[Z-1]`.**
 
@@ -187,7 +191,7 @@ Estymaty w tygodniach pracy jednej osoby na pełen etat. Nie zawierają produkcj
 
 ---
 
-### M6 — Life Coach · 4 tyg. · v1.1
+### M6 — Life Coach · 160 h · v1.1
 
 **Zależności:** M5.
 
@@ -212,7 +216,7 @@ Estymaty w tygodniach pracy jednej osoby na pełen etat. Nie zawierają produkcj
 
 ---
 
-### M7 — Mind i insighty · 3 tyg. · v1.2
+### M7 — Mind i insighty · 120 h · v1.2
 
 **Zależności:** M6.
 
@@ -235,29 +239,57 @@ Estymaty w tygodniach pracy jednej osoby na pełen etat. Nie zawierają produkcj
 
 ## 4. Harmonogram
 
-| Wersja | Etapy | Czas | Skumulowany |
-|---|---|---|---|
-| **v1.0** | M0–M4 | 8,5 tyg. | 8,5 tyg. |
-| **v1.1** | M5–M6 | 7 tyg. | 15,5 tyg. |
-| **v1.2** | M7 | 3 tyg. | 18,5 tyg. |
+Przy tempie **20 godzin tygodniowo** (decyzja D-I).
 
-Nie zawiera produkcji treści (równolegle), bufora na nieprzewidziane (zalecane 20%) ani procesu wydawniczego w sklepach.
+| Wersja | Etapy | Nakład | Kalendarz nominalny | Realnie z asystentem AI |
+|---|---|---|---|---|
+| **v1.0** | M0–M4 | 420 h | 21 tyg. | **16–18 tyg.** (~4 miesiące) |
+| **v1.1** | M5–M6 | 280 h | 14 tyg. | 11–12 tyg. |
+| **v1.2** | M7 | 120 h | 6 tyg. | 5 tyg. |
+| **Razem** | | 820 h | 41 tyg. | **32–35 tyg.** (~8 miesięcy) |
+
+**Skąd kolumna „realnie".** Praca w parze z asystentem AI kompresuje zadania rutynowe — komponenty, formularze, testy jednostkowe, migracje, skrypty importu, tłumaczenia — o rząd 40–50%. Nie kompresuje natomiast decyzji projektowych, integracji, debugowania na realnych urządzeniach ani testów z użytkownikami. Ponieważ rutyna to około połowy nakładu, oszczędność na całości wynosi 15–25%. **To jest oszacowanie, nie obietnica** — pierwszy punkt kontrolny po M0 pokaże realny współczynnik i wtedy warto przeliczyć resztę.
+
+Harmonogram nie zawiera produkcji treści (biegnie równolegle, §5), bufora na nieprzewidziane (zalecane 20%) ani procesu wydawniczego w sklepach (M5).
 
 ---
 
 ## 5. Ścieżka równoległa: produkcja treści
 
-**Zaczyna się w M0, nie w M1.** Produkcja 200–250 ćwiczeń w dwóch językach to zadanie contentowe, nie programistyczne, i musi mieć **osobnego właściciela**. W poprzedniej wersji „20+ szablonów" figurowało jako „w trakcie" przez trzy sprinty przy zerowym postępie, właśnie dlatego, że nikt nie był za to odpowiedzialny.
+**Zaczyna się w M0, nie w M1.**
 
-| Etap | Rezultat |
-|---|---|
-| Tydzień 1 | Decyzja: import z otwartej bazy czy produkcja własna. Weryfikacja licencji |
-| Tydzień 2 | Struktura danych uzgodniona z zespołem, 20 ćwiczeń wzorcowych w obu językach |
-| Tygodnie 3–5 | Pozostałe ćwiczenia partiami po 50 |
-| Tygodnie 4–6 | Ilustracje lub diagramy mięśni |
-| Tydzień 6 | Korekta językowa obu wersji |
+Decyzja D-E przesądziła źródło: import z `free-exercise-db` (domena publiczna, około ośmiuset pozycji ze zdjęciami), wzbogacony własnymi opisami i przetłumaczony na polski. To skraca ścieżkę treści z około sześciu tygodni pracy pełnoetatowej do **około 60–80 godzin**, ale nie eliminuje jej.
 
-**Ryzyko:** jeśli treść nie będzie gotowa do końca M1, etap M2 może ruszyć na dwudziestu ćwiczeniach wzorcowych — struktura danych jest wtedy przetestowana, a reszta dochodzi później. **Treść nie może blokować kodu.**
+| Faza | Zakres | Nakład |
+|---|---|---|
+| F1 | Weryfikacja licencji **osobno dla danych i osobno dla obrazów** | 2 h |
+| F2 | Wybór 200–250 pozycji z bazy źródłowej wg kryteriów pokrycia | 6 h |
+| F3 | Reguły mapowania na taksonomię plus ręczne uzupełnienie `movement_pattern` i `tracks` (nie istnieją w źródle) | 16 h |
+| F4 | Tłumaczenie maszynowe nazw i instrukcji plus **obowiązkowa korekta** przez osobę znającą terminologię treningową | 20 h |
+| F5 | Wskazówki techniczne i typowe błędy, 3–5 pozycji każdego rodzaju na ćwiczenie | 24 h |
+| F6 | Optymalizacja obrazów (skryptem) i kontrola jakości | 6 h |
+
+**Kolejność wykonania ma znaczenie.** F1 do F3 muszą być gotowe **przed M1**, bo od nich zależy kształt schematu bazy. F4 do F6 mogą biec równolegle z M1 i M2.
+
+**Zawór bezpieczeństwa:** jeśli treść nie będzie gotowa do końca M1, etap M2 rusza na **dwudziestu ćwiczeniach wzorcowych** przerobionych w całości. Struktura danych jest wtedy przetestowana end-to-end, a reszta katalogu dochodzi partiami. **Treść nie może blokować kodu.**
+
+**Uwaga o właścicielu.** Przy pracy jednoosobowej „osobny właściciel treści" oznacza **osobny blok czasu**, a nie osobną osobę. Praktycznie: treść w innych sesjach niż kod, bo przełączanie kontekstu między pisaniem opisów ćwiczeń a debugowaniem jest kosztowne. W poprzedniej wersji projektu zadania contentowe wisiały trzy sprinty przy zerowym postępie właśnie dlatego, że nie miały wydzielonego czasu.
+
+---
+
+## 5a. Praca solo z asystentem AI
+
+Decyzja D-H oznacza brak drugiej pary oczu przy decyzjach architektonicznych. To jest główne ryzyko tego trybu pracy i wymaga rekompensaty proceduralnej.
+
+**Co delegować bez wahania:** komponenty interfejsu z gotowej specyfikacji · formularze i walidacja · testy jednostkowe czystej logiki · migracje bazy · skrypty importu i mapowania · tłumaczenia · konfiguracja narzędzi · uzupełnianie powtarzalnych wzorców.
+
+**Czego nie delegować bez własnej weryfikacji:** kształt modelu danych · granice modułów · cokolwiek dotykającego bramy zapisu z §5.2 architektury · reguły dostępu do danych · obliczenia wpływające na dane użytkownika (1RM, wykrywanie rekordów, agregacja objętości) · obsługa błędów w ścieżkach zapisu.
+
+Wzór jest prosty: **im trudniej cofnąć skutek, tym mniej delegować**. Błąd w komponencie widać od razu. Błąd w modelu danych albo w wykrywaniu rekordów ujawnia się po miesiącu, gdy dane są już zepsute.
+
+**Rekompensata za brak recenzenta — reguły egzekwowane automatycznie zastępują przegląd kodu.** Lista z §4 dokumentu architektury (zero danych testowych w kodzie produkcyjnym, zero błędów typów, granice modułów, budżet rozmiaru paczki, skanowanie sekretów) nie jest formalnością — przy pracy solo to jedyna instancja, która powie „nie". Wyłączenie którejkolwiek reguły „na chwilę" jest dokładnie tym mechanizmem, który w poprzedniej wersji doprowadził do 728 błędów, których nikt nie zauważył.
+
+**Zasada dodatkowa:** decyzja architektoniczna trafia do rejestru decyzji **zanim** powstanie kod, który ją realizuje. Zapisanie uzasadnienia na piśmie jest przy pracy solo namiastką rozmowy z drugim developerem i wyłapuje zaskakująco dużo.
 
 ---
 
@@ -266,7 +298,10 @@ Nie zawiera produkcji treści (równolegle), bufora na nieprzewidziane (zalecane
 | Ryzyko | Prawdopodobieństwo | Skutek | Reakcja |
 |---|---|---|---|
 | **Brak zapisu offline blokuje główny scenariusz w v1.0** | Wysokie | Wysoki | Zabezpieczenie z §5.3 architektury łagodzi najgorszy przypadek. Jeśli testy beta w M4 to potwierdzą — M5 przesuwa się przed M6 (już tak zaplanowane) |
-| Produkcja treści staje się ścieżką krytyczną | Średnie | Wysoki | Osobny właściciel od M0, dwadzieścia ćwiczeń wzorcowych odblokowuje M2 |
+| Produkcja treści staje się ścieżką krytyczną | **Niskie** po decyzji D-E | Wysoki | Import ze źródła skraca ścieżkę do 60–80 h. Fazy F1–F3 przed M1, reszta równolegle. Dwadzieścia ćwiczeń wzorcowych odblokowuje M2 |
+| **Licencja obrazów w bazie źródłowej okazuje się inna niż licencja danych** | Średnie | Średni | Weryfikacja w fazie F1, przed jakąkolwiek pracą. Zapas: katalog bez zdjęć, z samymi diagramami grup mięśniowych |
+| **Brak drugiej pary oczu przy decyzjach architektonicznych** (praca solo) | **Wysokie** | Wysoki | Reguły egzekwowane automatycznie zamiast przeglądu kodu (§5a). Rejestr decyzji wypełniany przed napisaniem kodu. Zewnętrzny przegląd dokumentów przed startem |
+| **Utrata tempa przy pracy 20 h/tydzień** | Średnie | Średni | Zadania w planie są samodzielnie zamykalne. Punkty kontrolne z §8 wymuszają weryfikację co kilka tygodni, a nie dopiero na końcu |
 | Safari na iOS usuwa dane lokalne | Średnie | Średni | Prośba o trwałe przechowywanie, agresywna synchronizacja, widoczny wskaźnik. Znika po Capacitorze |
 | Odrzucenie w App Store jako „opakowana strona" | Niskie | Średni | Capacitor z realnie natywnymi funkcjami: powiadomienia, biometria, dane offline |
 | Rozjazd między schematem bazy a typami | Niskie | Wysoki | Typy **generowane**, nie pisane. Weryfikacja w procesie budowania |
@@ -311,15 +346,53 @@ docs/CONTENT.md        ← produkcja katalogu: standard, postęp, właściciel
 
 ---
 
-## 9. Pierwszy tydzień — konkretnie
+## 9. Pierwsze trzy tygodnie — konkretnie
 
-| Dzień | Działanie |
+Etap M0 to 60 godzin, czyli przy 20 h tygodniowo **trzy tygodnie kalendarzowe**. Bloki są tak dobrane, żeby każdy dało się domknąć w jednej sesji i żeby po każdym repozytorium było w stanie działającym.
+
+**Tydzień 1 — fundament (20 h)**
+
+| Blok | Działanie |
 |---|---|
-| 1 | Rotacja kluczy. Projekt Next.js z TypeScriptem, Tailwindem i statycznym eksportem. Repozytorium, lint, formatowanie, `gitleaks` |
-| 2 | Projekt Supabase, migracja początkowa, reguły dostępu, generowanie typów. Autoryzacja e-mailem |
-| 3 | Logowanie społecznościowe, reset hasła, strażnik tras. Powłoka aplikacji z nawigacją dolną |
-| 4 | `next-intl` z EN i PL. Ustawienia: motyw i język, utrwalone |
-| 5 | `lib/mutations/`, TanStack Query z zapisem do IndexedDB. Serwis roboczy, manifest, ikony |
-| 6 | Proces budowania, wdrożenie, Sentry, test end-to-end. **Instalacja aplikacji na telefonie i sprawdzenie, że działa** |
+| A (4 h) | **Założenie nowego projektu Supabase** (D-14), rotacja klucza OpenAI, usunięcie starego projektu po zabraniu reguł dostępu i funkcji RODO jako wzorców |
+| B (6 h) | Projekt Next.js: TypeScript w trybie ścisłym, statyczny eksport, Tailwind, shadcn/ui. Repozytorium, lint z regułami granic, formatowanie, `gitleaks` |
+| C (6 h) | Migracja początkowa, reguły dostępu, generowanie typów ze schematu |
+| D (4 h) | Autoryzacja e-mailem, strażnik tras |
 
-Równolegle od pierwszego dnia: decyzja o źródle katalogu ćwiczeń i wyznaczenie właściciela treści.
+**Tydzień 2 — powłoka (20 h)**
+
+| Blok | Działanie |
+|---|---|
+| E (5 h) | Logowanie przez Google i Apple, reset hasła |
+| F (5 h) | Powłoka aplikacji: nawigacja dolna z pięcioma zakładkami, wszystkie osiągalne |
+| G (5 h) | `next-intl` z EN i PL, przełącznik języka |
+| H (5 h) | Ustawienia: motyw i język, utrwalone po odświeżeniu |
+
+**Tydzień 3 — dane i wdrożenie (20 h)**
+
+| Blok | Działanie |
+|---|---|
+| I (6 h) | `lib/mutations/` — brama zapisu z identyfikatorami po stronie klienta. **Nie skracać tego bloku** — od niego zależy, czy offline w v1.1 będzie podmianą modułu, czy przebudową |
+| J (4 h) | TanStack Query z zapisem cache do IndexedDB |
+| K (4 h) | Serwis roboczy, manifest, ikony, ekran startowy |
+| L (4 h) | Proces budowania (trzy zadania), wdrożenie, Sentry |
+| M (2 h) | Test end-to-end i **instalacja aplikacji na własnym telefonie z realnym sprawdzeniem, że działa** |
+
+**Równolegle, poza tymi godzinami:** faza F1 ścieżki treści — weryfikacja licencji `free-exercise-db` osobno dla danych i osobno dla obrazów. To dwie godziny, ale warunkuje całą resztę katalogu.
+
+---
+
+## 10. Dla recenzenta — co zakwestionować w tym planie
+
+Dokument trafia do niezależnego przeglądu. Miejsca o największej wartości dla recenzji:
+
+| # | Zagadnienie | Pytanie |
+|---|---|---|
+| P-1 | **Kolejność M5 przed M6** — zapis offline i Capacitor przed Life Coachem | Czy spłata długu offline powinna wyprzedzić funkcję, która buduje codzienne powroty? Argument przeciwny: Life Coach jest tym, co sprowadza użytkownika codziennie, a offline dotyczy trzech sesji w tygodniu |
+| P-2 | **420 h na v1.0** | Czy rozkład nakładu między etapami jest wiarygodny? Podejrzane w szczególności: 60 h na M0 (dużo konfiguracji naraz) i 80 h na M4 (zawiera szablony, RODO, dostępność i wydajność) |
+| P-3 | **Kompresja 15–25% dzięki asystentowi AI** | Czy to oszacowanie jest realistyczne, czy optymistyczne? Jeśli optymistyczne, kalendarz v1.0 wraca do 21 tygodni |
+| P-4 | **Brak bufora w harmonogramie** | Zalecane 20% nie jest wliczone w tabelę. Czy powinno być, skoro to plan jednoosobowy bez zastępowalności? |
+| P-5 | **Punkt kontrolny „poniżej 3% powrotów oznacza zmianę produktu"** | Czy po ośmiu miesiącach pracy taka decyzja jest realistyczna psychologicznie? Czy nie potrzeba wcześniejszego, tańszego testu tezy produktowej? |
+| P-6 | **Reguły automatyczne zamiast przeglądu kodu** (§5a) | Czy zestaw z §4 architektury faktycznie wyłapuje klasy błędów, które w poprzedniej wersji przeszły niezauważone? Czego w nim brakuje? |
+
+**Czego nie podważać:** decyzji z §0.1 PRD (należą do właściciela produktu) oraz Definition of Done z §2 (to bezpośredni wniosek z analizy poprzedniej wersji, gdzie „ukończone" oznaczało istnienie pliku).
