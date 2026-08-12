@@ -19,7 +19,10 @@
       "Bash(timeout 5 cat:*)",
       "Bash(timeout 10 echo:*)",
       "Bash(flutter create:*)",
-      "Bash(tree:*)"
+      "Bash(tree:*)",
+      "Bash(cp /root/.claude/uploads/0d9c7013-28bf-52fa-abb8-3d56d2c035e2/ee001355-01PRD_REVIEWED.md 01-PRD.md)",
+      "Bash(cp /root/.claude/uploads/0d9c7013-28bf-52fa-abb8-3d56d2c035e2/b21bd4e6-02ARCHITECTURE_REVIEWED.md 02-ARCHITECTURE.md)",
+      "Bash(cp /root/.claude/uploads/0d9c7013-28bf-52fa-abb8-3d56d2c035e2/d04c2985-03IMPLEMENTATIONPLAN_REVIEWED.md 03-IMPLEMENTATION-PLAN.md)"
     ],
     "deny": [],
     "ask": []
