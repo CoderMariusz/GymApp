@@ -5,8 +5,10 @@
 **Version:** 1.0
 **Date:** 2026-08-12
 **Audience:** the design tool producing the v1.0 interface
-**Status:** complete for v1.0 scope — satisfies `G-DESIGN`
-**Related:** `01-PRD.md` (what must work), `02-ARCHITECTURE.md` (system boundaries), `03-IMPLEMENTATION-PLAN.md` (build order)
+**Status:** READY FOR DESIGN — **input contract for `G-DESIGN`, not its completion**
+**Related:** `PRD.md` (what must work), `ARCHITECTURE.md` (system boundaries), `PLAN.md` (build order)
+
+> **This brief does not satisfy `G-DESIGN`. It enables it.** `G-DESIGN` passes only when the produced and accepted design package exists — frames, tokens, both themes, all states from §7, `DESIGN_ID` per tested frame, accessibility annotations. A text brief is not a design. Do not treat this document as a design artefact when deciding whether scored feature work may begin.
 
 > This document is self-contained. Do not infer product behaviour, routing or data states from elsewhere — everything needed to design v1.0 is here. Where a constraint is non-negotiable it says so, and the reason is given. Constraints without reasons get quietly dropped later, so every one of them is justified.
 
@@ -163,11 +165,16 @@ The user's second-worst pain is not knowing whether the session saved. These fiv
 
 | State | Meaning | Emotional job |
 |---|---|---|
+| `draft_local` | **The workout is in progress and safely stored on this device. It has not been sent to the server yet — and should not be.** | Quiet confidence. The user must never suspect their in-progress session is at risk, but this state should not shout |
 | `saved` | On the server, confirmed | Reassure and get out of the way |
 | `queued` | On the device, waiting for connectivity | Reassure — this is normal and the data is safe |
 | `syncing` | In transit | Show progress without demanding attention |
 | `failed` | Attempt failed, will retry | Inform without alarming; the data is still safe |
 | `conflict` | Needs a decision (v1.1, design the slot now) | Demand attention; this is the only one that should interrupt |
+
+**The full progression is:** `draft_local` → *(user completes workout)* → `queued` → `syncing` → `saved`, with `failed` and `conflict` as exceptional branches.
+
+`draft_local` is distinct from `queued` and confusing them is a real design failure. `draft_local` means the user is *still training* — nothing has been submitted because nothing is finished. `queued` means the user *has finished* and the completed session is waiting for a connection. Showing "waiting to sync" during an active workout would suggest something is stuck when the system is behaving exactly as intended.
 
 `queued` deserves particular care. It is the **normal, expected state** for a user in a gym basement — it must read as "everything is fine" rather than as a warning. Treating it like an error would undermine the exact trust the product is built on.
 

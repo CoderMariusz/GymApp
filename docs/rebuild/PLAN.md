@@ -2,9 +2,9 @@
 
 **Wersja:** 1.2 — po decyzjach właściciela z 2026-08-12  
 **Data:** 2026-08-12  
-**Status:** READY — G-PROD zamknięte decyzjami, G-DESIGN ma właściciela i specyfikację (`05-DESIGN-BRIEF.md`)  
+**Status:** **GO dla M0** · **NO-GO dla mierzonych `LIFE-Txx`** — otwarte O-01 (offline), `G-DESIGN` (design nie istnieje), `G-BACKUP`. Stan bramek: `DECISIONS.md`  
 **Tryb pracy:** greenfield · jedna osoba + Agent OS/AI · ok. 20 h/tydzień czasu właściciela  
-**Powiązane:** `01PRD_REVIEWED.md`, `02ARCHITECTURE_REVIEWED.md`, `plan-testow-v2.md`
+**Powiązane:** `PRD.md`, `ARCHITECTURE.md`, `DESIGN-BRIEF.md`, `DECISIONS.md`
 
 > Ten plan nie zakłada, że obecna koncepcja jest poprawna tylko dlatego, że jest opisana. Najpierw usuwa ryzyka, które mogą unieważnić test, potem buduje walking skeleton, a dopiero potem osiem pionowych feature packages używanych jako benchmark Agent OS.
 
@@ -91,7 +91,9 @@ Część tych prac może biec równolegle z M0, ale nie wolno ignorować ich prz
 | P0.7 | Nowy projekt Supabase + rotacja sekretów. **Plan darmowy (D-T)** — rozstrzygnąć O-09: wstrzymanie po 7 dniach bezczynności | Human gate | M0 |
 | P0.8 | Confirm eval infrastructure: test user, sandbox secrets, Supabase test environment | AgentOS owner | B6 feature battery |
 | P0.9 | Dependency/version spike against current Next/Supabase/Serwist/next-intl docs | Architecture | M0 |
-| P0.10 | Create `DECISIONS.md` and record accepted ADRs/product deltas | Architecture | first code |
+| P0.10 | ~~Create `DECISIONS.md`~~ — **ZROBIONE**, zawiera też hierarchię precedencji dokumentów | Architecture | first code |
+| **P0.11** | **`G-BACKUP`: `supabase db dump` poza platformą, retencja 7–14, kopia przed migracją oraz udokumentowana próba odtworzenia do pustej bazy.** Darmowy plan nie ma automatycznych kopii | Architecture | **pierwszy zewnętrzny tester** |
+| **P0.12** | Wybór nazwy z krótkiej listy + badanie UK IPO klasy 9 i 42 | Product owner | BRAND-01 |
 
 ### Exit G-PROD
 
@@ -107,7 +109,9 @@ Część tych prac może biec równolegle z M0, ale nie wolno ignorować ich prz
 ## 2. Design track — właściciel wyznaczony (decyzja D-O)
 
 **Właściciel:** właściciel produktu, pracujący w narzędziu projektowym na podstawie specyfikacji.
-**Wejście:** `05-DESIGN-BRIEF.md` — dokument samowystarczalny, nie wymaga czytania PRD ani architektury.
+**Wejście:** `DESIGN-BRIEF.md` — dokument samowystarczalny, nie wymaga czytania PRD ani architektury.
+
+> **`G-DESIGN` jest obecnie NO-GO.** Brief nie jest designem — jest kontraktem wejściowym do jego wykonania. Bramka przechodzi dopiero, gdy istnieje i został zaakceptowany pakiet graficzny. Żadne mierzone zadanie `LIFE-Txx` nie startuje wcześniej.
 **Nakład:** 25–40 h pracy właściciela, poza budżetem inżynierskim.
 
 Specyfikacja zawiera inwentarz ekranów i stanów, ograniczenia twarde z uzasadnieniem, przypadki testowe długich polskich napisów oraz jawną listę tego, co pozostawiono decyzji projektanta. Kryterium odbioru to **kompletność inwentarza stanów z §7 specyfikacji**, nie estetyka klatek.
@@ -124,7 +128,6 @@ Specyfikacja zawiera inwentarz ekranów i stanów, ograniczenia twarde z uzasadn
 - 5-tab shell,
 - full active workout flow,
 - Exercise selector/detail,
-- Templates,
 - History,
 - Progress,
 - Settings,
@@ -191,7 +194,7 @@ Initial migrations:
 
 Auth:
 - email/password and recovery in code,
-- Google/Apple adapters in code,
+- Google/Apple adapters **poza v1.0** (ADR-26); warstwa adapterów powstaje z jedną implementacją,
 - provider dashboard provisioning human-gated,
 - PKCE callback works.
 
@@ -542,8 +545,8 @@ If FIT-13 deferred, benchmark task still passes with strength/volume/PR progress
 **Co przechodzi do v1.0.1:** eksport CSV historii z udokumentowanymi kolumnami i jednostkami.
 
 **Hard AC:**
-1. workout CSV contains documented stable columns/units,
-2. full data export includes owned domain data in JSON and relevant CSV files,
+1. *(CSV historii — v1.0.1)*
+2. full data export includes owned domain data in JSON,
 3. user A cannot export B,
 4. server-side throttling,
 5. file generation failure gives retryable error,
@@ -615,7 +618,9 @@ After T01–T08:
 ### R1.1 End-to-end product flow
 
 Fresh user:
-sign in → settings basics → choose/start template → workout → offline completion → reconnect → history → progress → export.
+sign in → settings basics → start workout *(blank lub „repeat last", jeśli O-10 przyjęte)* → workout → offline completion *(zależne od O-01)* → reconnect → history → progress.
+
+*Bez szablonów i eksportu CSV — v1.0.1.*
 
 ### R1.2 Performance
 
@@ -756,7 +761,15 @@ Report actual hours/agent cost/iterations vs baseline.
 
 ---
 
-## 9. v1.1 — generic sync + Capacitor + Life Coach
+## 9. v1.1
+
+> **Otwarta decyzja O-12 — kolejność v1.1.** Obecny ciąg to generic sync (80–120 h) → Capacitor (50–90 h) → Life Coach (120–180 h). Alternatywa zgłoszona w recenzji: **Life Coach jako PWA online-first zaraz po becie v1.0**, a infrastruktura później.
+>
+> Argument za odwróceniem jest mocny. Wersja 1.0 ma już trwały szkic, kolejkę wysyłkową, bramkę mutacji i atomowy zapis treningu, więc generic sync nie jest warunkiem działania Life Coacha w trybie online-first. Odwrócenie kolejności sprawdza **właściwą długoterminową tezę produktu o 130–210 h wcześniej** — a to jest teza, na której stoi cały sens projektu, skoro wyróżnik v1.0 jest cienki i zajęty (PRD §1.2).
+>
+> Argument przeciw jest jeden, ale realny: **Life Coach wymaga API modelu językowego, które kosztuje**, co koliduje z decyzją D-T o wyłącznie darmowych progach. Przy dziesięciu testerach to rząd kilku funtów miesięcznie — niewiele, ale to pierwszy stały koszt w projekcie.
+>
+> Decyzja należy do właściciela. Do jej podjęcia poniższa kolejność pozostaje zapisana bez zmian. — generic sync + Capacitor + Life Coach
 
 Starts only if v1.0 value checkpoint does not demand a product reset.
 
@@ -1097,15 +1110,19 @@ Autonomy fails if eight agents create eight incompatible branches.
 
 ### 14.2 Dependency order
 
-Recommended:
-`T01 → T02 → T03 → T04 → T07 → T05 → T06 → T08`
+**Product v1.0 — sześć zadań:**
+`T01 → T02 → T04 → T07 → T05 → T06`
+
+**AgentOS GO-A — kontynuacja w v1.0.1, do ośmiu próbek:**
+`… → T03 → T08`
 
 Why:
 - settings/shell first,
 - catalog before any workout references,
-- template exercises test relational model before core logging,
 - logging creates truth for timer/history/progress,
-- export last uses stable schema.
+- templates and export land last on a schema that is already stable.
+
+Ta kolejność jest jedynym obowiązującym źródłem. Wcześniejsza wersja tego dokumentu podawała w tym miejscu ciąg ośmioelementowy z T03 i T08 wewnątrz v1.0 — jest nieaktualna po decyzji D-S.
 
 For benchmark comparability freeze this order before first measured run.
 

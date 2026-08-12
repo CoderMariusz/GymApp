@@ -22,7 +22,7 @@
 8. `@supabase/ssr` usunięte z browser-only app. Auth klienta używa `@supabase/supabase-js`, PKCE i jawnych redirect adapters.
 9. `free-exercise-db` ma stabilne ID mapowane do tych samych rekordów w static catalog i PostgreSQL; source photos są wyłączone do potwierdzenia praw.
 10. PR/volume nie są drugim niezależnym źródłem prawdy; są wyprowadzane z setów.
-11. Dodano missing `workout_template_exercises`.
+11. Dodano missing `workout_template_exercises` — **projekt dla v1.0.1; tabela nie powstaje w v1.0** (ADR-27).
 12. RLS ze starego projektu może być **referencją**, nigdy copy-paste bez testu A/B/anon.
 13. Sentry/logging ma redaction health/mental content.
 14. AgentOS Evaluation Profile izoluje external provisioning od capability score.
@@ -59,6 +59,9 @@
 | ADR-24 | Exact store/payment policy rechecked at implementation time | **New** | rules are region/version dependent and v2 is far away |
 | ADR-25 | **Wyłącznie darmowe progi usług w v1.0** | **New** | decyzja D-T. Konsekwencje: katalog ćwiczeń jest częścią paczki statycznej, nie Supabase Storage; maksymalnie dwa projekty Supabase (produkcja + środowisko benchmarku); **projekt wstrzymuje się po 7 dniach bez zapytań do bazy** i wymaga obsługi — patrz §24 |
 | ADR-26 | **Logowanie wyłącznie e-mailem z hasłem w v1.0** | **New** | decyzja D-S. Google i Apple przeniesione do v1.0.1. `lib/auth/` zachowuje warstwę adapterów z §12.3, żeby dołożenie providerów było podmianą, nie przebudową |
+| ADR-28 | **Każda operacja zmieniająca strukturę kompletnego agregatu treningu jest atomowa** — nie tylko tworzenie | **New/required** | `CommitWorkout` rozwiązywał wyłącznie zapis nowego treningu. FIT-11 pozwala jednak edytować i usuwać trening już zapisany. Wykonane jako osobne żądania — zmień trening, usuń serię, dodaj serię, zmień kolejność — odtwarzają dokładnie tę klasę częściowego zapisu, którą `CommitWorkout` miał wyeliminować. Patrz §7.4 |
+| ADR-29 | **Dzieci agregatu nie powielają `user_id` ani `version`** | **New/required** | autoryzacja i współbieżność egzekwowane przez korzeń agregatu. Patrz §7.5 |
+| ADR-30 | **Funkcje RPC domyślnie `SECURITY INVOKER`**; `SECURITY DEFINER` tylko gdy konieczne, zawsze z ustawionym `search_path` i `EXECUTE` ograniczonym do konkretnych ról | **New/required** | zgodne z bieżącą rekomendacją Supabase; `SECURITY DEFINER` bez ustawionego `search_path` jest klasycznym wektorem eskalacji |
 | ADR-27 | **Szablony treningów poza v1.0** | **New** | decyzja D-S. Tabele `workout_templates` i `workout_template_exercises` **nie powstają w v1.0**. `workouts.template_id` pozostaje w schemacie jako pole opcjonalne bez klucza obcego do czasu v1.0.1 — dzięki temu migracja nie wymaga przebudowy tabeli treningów |
 
 **Change control:** ADR change is committed before code that depends on it. Status: `proposed → accepted → implemented → superseded`.
@@ -381,7 +384,73 @@ Any failure rolls back everything.
 
 `mutation_receipts(user_id, mutation_id)` unique. Replayed `CommitWorkout` returns prior committed result or deterministic lookup instead of creating duplicates.
 
-### 7.4 Why aggregate command
+### 7.4 Mutacje agregatu po zapisie — edycja i usunięcie (ADR-28)
+
+`CommitWorkout` obejmuje wyłącznie **utworzenie** treningu. FIT-11 pozwala jednak edytować i usuwać trening już zapisany, a rekordy życiowe i objętość są z niego wyprowadzane. Bez równie twardego kontraktu dla edycji autonomiczny agent najprawdopodobniej zaimplementuje osobne żądania — `update workout`, `delete set`, `insert set`, `update order_index` — i **odtworzy dokładnie tę klasę częściowego zapisu, którą `CommitWorkout` miał wyeliminować.**
+
+**Inwariant:** *każda operacja zmieniająca strukturę kompletnego agregatu treningu jest atomowa.*
+
+#### `UpdateWorkoutAggregate`
+
+```text
+{
+  mutation_id,          // idempotencja, jak w CommitWorkout
+  workout_id,
+  base_version,         // optimistic concurrency; nie timestamp
+  workout: { started_at, completed_at, notes },
+  exercises: [ { id, exercise_id, order_index,
+                 sets: [ { id, set_index, kind, weight, reps, duration, distance, rpe, note } ] } ]
+}
+```
+
+Semantyka: **pełne zastąpienie dzieci agregatu w jednej transakcji.** Klient przysyła docelowy stan całego treningu, nie różnicę. Serwer w jednej transakcji weryfikuje własność i `base_version`, zastępuje `workout_exercises` i `workout_sets`, podnosi `version`, przelicza pochodne i zapisuje pokwitowanie mutacji.
+
+Powód wyboru zastąpienia zamiast różnicy: różnica wymaga od klienta poprawnego wyliczenia zbioru zmian, a od serwera zaufania temu wyliczeniu. Zastąpienie jest odporne na niekompletną implementację po stronie klienta, a treningi są na tyle małe (rzędu kilkudziesięciu serii), że przesłanie całości nie jest kosztowne.
+
+**Konflikt:** niezgodność `base_version` zwraca `409` z aktualnym stanem serwera. Klient **nie nadpisuje po cichu** — to jest ten sam zakaz, co w ADR-20.
+
+#### `DeleteWorkout`
+
+```text
+{ mutation_id, workout_id, base_version }
+```
+
+Kontrolowane usunięcie miękkie w jednej transakcji: oznaczenie `deleted_at` na korzeniu, wyłączenie treningu z pochodnych, przeliczenie rekordów życiowych, które z niego wynikały.
+
+Usunięcie miękkie, nie twarde, z konkretnego powodu: **rekord życiowy wyprowadzony z usuwanego treningu musi zostać przeliczony**, a przy twardym usunięciu tracimy możliwość zdiagnozowania, dlaczego rekord zniknął. Twarde usunięcie następuje przy usunięciu konta (SET-06).
+
+#### Wymagane testy
+
+1. Powtórzenie tej samej mutacji pięciokrotnie daje jeden skutek.
+2. Wymuszony błąd przy zapisie dziecka pozostawia agregat w stanie sprzed operacji — zero wierszy częściowych.
+3. Nieaktualne `base_version` zwraca `409`, a stan serwera pozostaje nietknięty.
+4. Użytkownik B nie może zmienić ani usunąć treningu użytkownika A — również przez bezpośrednie wywołanie RPC z poprawnym `workout_id`.
+5. Usunięcie treningu zawierającego rekord życiowy przelicza rekord dla pozostałych treningów.
+
+### 7.5 Własność i współbieżność w dzieciach agregatu (ADR-29)
+
+Reguła ogólna z §6 mówi, że tabele użytkownika mają `user_id`, znaczniki czasu i `version`. **`workout_exercises` i `workout_sets` świadomie tego nie mają** i nie jest to przeoczenie w modelu.
+
+> Dzieci agregatu (`workout_exercises`, `workout_sets`) **nie powielają `user_id` ani `version`**. Autoryzacja i kontrola współbieżności są egzekwowane wyłącznie przez korzeń agregatu (`workouts`) oraz transakcyjne RPC. Polityki RLS na dzieciach sprawdzają własność przez złączenie z korzeniem, nie przez własną kolumnę.
+
+Powód: powielony `user_id` w dziecku może rozjechać się z rodzicem i tworzy drugie, słabsze źródło prawdy o własności. Powielona `version` w dziecku sugeruje, że serię można wersjonować niezależnie od treningu — czego ADR-28 właśnie zakazuje.
+
+Bez tego zdania wprost autonomiczny agent ma dwie równie sensowne interpretacje modelu i wybierze jedną z nich losowo.
+
+### 7.6 Bezpieczeństwo funkcji RPC (ADR-30)
+
+Domyślnie `SECURITY INVOKER` — zgodnie z bieżącą rekomendacją Supabase — dzięki czemu RLS wywołującego nadal obowiązuje.
+
+Gdy `CommitWorkout`, `UpdateWorkoutAggregate` lub `DeleteWorkout` wymagają `SECURITY DEFINER` do wykonania operacji przekraczających RLS, obowiązkowo:
+
+- jawnie ustawiony `search_path` w definicji funkcji (`SET search_path = ''` i pełne kwalifikowanie nazw),
+- `REVOKE EXECUTE ... FROM PUBLIC` i nadanie wyłącznie roli `authenticated`,
+- weryfikacja własności **wewnątrz** funkcji, nie w oparciu o dane z klienta,
+- test A/B/anon dla każdej takiej funkcji.
+
+`SECURITY DEFINER` bez ustawionego `search_path` jest klasycznym wektorem eskalacji uprawnień i musi być wychwycony w przeglądzie, a nie w produkcji.
+
+### 7.7 Why aggregate command
 
 The old failure class “workout exists but sets lost/unlinked” becomes impossible under a successful transaction. Offline queue also carries one logical action instead of coordinating dozens of row mutations.
 
@@ -493,7 +562,11 @@ System translations seeded. Custom translations can initially use one user-enter
 #### `exercise_favorites`
 `user_id, exercise_id`, unique pair.
 
-#### `workout_templates`
+#### `workout_templates` — **NIE POWSTAJE W v1.0** (ADR-27)
+
+Poniższy kształt jest zapisany wyłącznie jako projekt dla v1.0.1. Migracja tworząca te tabele nie wchodzi do v1.0.
+
+
 `id, user_id, name, description?, category?, source(system|custom), estimated_duration?`
 
 Built-in templates can be seeded with system owner semantics or shipped as local presets converted to user template on edit.
@@ -518,7 +591,11 @@ Do **not** store canonical `total_volume`/PR/current duration if they are safely
 
 Check constraints enforce valid combinations/ranges as far as DB can.
 
-#### `body_measurements`
+#### `body_measurements` — **NIE POWSTAJE W v1.0** (decyzja D-S)
+
+Projekt dla v1.0.1.
+
+
 Optional v1.0 depending product decision. Canonical SI fields.
 
 #### `mutation_receipts`
@@ -1028,9 +1105,42 @@ Decyzja D-T (wyłącznie darmowe progi) nakłada twarde ograniczenia. Nie są to
 | Pliki 1 GB | **Katalog ćwiczeń i wszelkie ilustracje idą w paczce statycznej**, nie przez Supabase Storage. Storage służy wyłącznie awatarom |
 | Transfer z bazy 5 GB miesięcznie | Wzmacnia decyzję o katalogu offline w Dexie: przeglądanie katalogu nie generuje ruchu do bazy |
 | Dwa aktywne projekty | Produkcja plus jedno środowisko dla benchmarku AgentOS. **Nie ma trzeciego środowiska** — testy bazy w procesie budowania używają lokalnego Supabase, nie zdalnego |
-| **Wstrzymanie po 7 dniach bez zapytań** | Wymaga decyzji w M0. Dane są zachowane, ale wznowienie jest ręczne. Podczas bety oznacza to, że pierwszy tester po tygodniowej przerwie trafia na aplikację, która nie odpowiada. Opcje: lekkie zapytanie cykliczne z zewnętrznego zadania czasowego, albo świadoma akceptacja z komunikatem w interfejsie. **Otwarte: O-09** |
+| **Wstrzymanie po 7 dniach bez zapytań** | **Rozstrzygnięte — nie budujemy systemu podtrzymującego.** Patrz niżej |
 
-**Próg opłacalności.** Pierwszym powodem przejścia na plan płatny nie będzie rozmiar danych ani liczba użytkowników, tylko **wstrzymywanie projektu** i brak automatycznych kopii zapasowych. Warto to zaplanować na moment rozpoczęcia bety zewnętrznej, a nie odkryć w jej trakcie.
+### 24.1 Wstrzymywanie projektu — rozstrzygnięcie O-09
+
+Wcześniejsza wersja rozważała cykliczne zapytania podtrzymujące projekt przy życiu. **Odrzucone**, z dwóch powodów.
+
+Po pierwsze, przy aktywnej becie problem nie występuje: wstrzymanie następuje po siedmiu dniach *bez zapytań do bazy*, a dziesięciu testerów generuje ruch codziennie. Ryzyko dotyczy wyłącznie przerw w pracy nad projektem między sesjami dewelopera — gdzie ręczne wznowienie jest w pełni wystarczające.
+
+Po drugie, mechanizm istniejący **wyłącznie po to, by obejść politykę darmowego planu dostawcy**, nie jest funkcją produktu i nie powinien trafić do kodu. Jeśli dostępność stanie się istotna, właściwą odpowiedzią jest płatny plan, a nie sztuczny ruch.
+
+Zamiast tego:
+
+- udokumentowana procedura wznowienia w `PLAN.md`,
+- stan `backend-unavailable` w interfejsie z sensownym komunikatem (i tak potrzebny przy awarii sieci),
+- ostrzeżenie w monitoringu, gdy projekt zostanie wstrzymany,
+- rozważenie planu płatnego przed becie szerszą niż dziesięć osób.
+
+### 24.2 Kopie zapasowe — bramka `G-BACKUP`
+
+**To jest luka, nie niedogodność.** Automatyczne codzienne kopie i odtwarzanie do punktu w czasie są funkcją planów płatnych. **Darmowy projekt nie ma automatycznych kopii zapasowych** — Supabase zaleca w tym wypadku samodzielne, regularne `supabase db dump` i przechowywanie wyniku poza platformą.
+
+Przy jednoosobowym zespole bez recenzenta migracja psująca dane produkcyjne jest realnym scenariuszem, a nie teoretycznym.
+
+**`G-BACKUP` musi być zielone przed pierwszym zewnętrznym testerem:**
+
+| Wymóg | Wartość |
+|---|---|
+| Dopuszczalna utrata danych (RPO) | 24 h |
+| Liczba przechowywanych kopii | 7–14 |
+| Miejsce przechowywania | **poza Supabase** |
+| Kopia przed ryzykowną migracją | obowiązkowa |
+| **Próba odtworzenia** | **obowiązkowa, udokumentowana** |
+
+Próba odtworzenia jest ważniejsza niż samo posiadanie kopii: pusta baza → odtworzenie → użytkownik, trening, serie i historia istnieją i są spójne. Kopia, której nigdy nie odtworzono, jest założeniem, nie zabezpieczeniem.
+
+**Próg opłacalności.** Pierwszym powodem przejścia na plan płatny nie będzie rozmiar danych ani liczba użytkowników, tylko **brak automatycznych kopii i wstrzymywanie projektu**. Warto to zaplanować na moment rozpoczęcia bety zewnętrznej, a nie odkryć w jej trakcie.
 
 ---
 
@@ -1041,9 +1151,8 @@ Decyzja D-T (wyłącznie darmowe progi) nakłada twarde ograniczenia. Nie są to
 | dashboard | core/workouts | Query + local draft status | start/resume |
 | workout | workouts | Dexie draft + catalog | Dexie draft → CommitWorkout |
 | exercises | exercises | Dexie catalog + Query favorites/custom | mutation gateway |
-| templates | templates | Query | mutation gateway |
 | history | history | Query | mutation gateway (online v1.0 edit/delete) |
-| progress | progress | Query/derived DB | measurements if shipped |
+| progress | progress | Query/derived DB | bez pomiarów ciała (v1.0.1) |
 | settings | settings | Query/local display prefs | mutation gateway/local theme |
 | auth | auth | Supabase session | Supabase Auth adapter |
 

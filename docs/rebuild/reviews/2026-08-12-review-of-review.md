@@ -1,4 +1,13 @@
-<!-- AI-INDEX: weryfikacja recenzji, research, sprzeczności, otwarte decyzje, runda 2 -->
+<!-- AI-INDEX: NIEWIĄŻĄCE, archiwum, weryfikacja recenzji, audit trail -->
+
+> # ⚠️ NON-NORMATIVE / HISTORICAL REVIEW
+>
+> **Ten dokument nie jest źródłem wymagań i nie rozstrzyga żadnego konfliktu.**
+>
+> Jest zapisem weryfikacji z 12 sierpnia 2026 i służy wyłącznie jako ślad audytowy — pokazuje, co sprawdzono u źródeł i dlaczego podjęto ówczesne decyzje. **Znaczna część opisanych tu problemów została już rozwiązana** w `PRD.md`, `ARCHITECTURE.md` i `PLAN.md`; otwarte pytania z §8 zostały zadane i częściowo rozstrzygnięte.
+>
+> Jeśli cokolwiek w tym pliku jest sprzeczne z dokumentami normatywnymi, **obowiązują dokumenty normatywne**. Nie implementuj niczego na podstawie tego pliku.
+
 
 # Weryfikacja recenzji v1.1 — przed drugą rundą
 
