@@ -1,427 +1,1065 @@
-# LifeOS — Architektura (PWA, Next.js + Supabase)
+# LifeOS — Architecture
 
-**Wersja dokumentu:** 1.0
-**Data:** 2026-08-11
-**Status:** Draft do przeglądu
-**Powiązane:** `01-PRD.md` (co budujemy) · `03-IMPLEMENTATION-PLAN.md` (w jakiej kolejności)
+**Wersja:** 1.2 — po decyzjach właściciela z 2026-08-12  
+**Data:** 2026-08-12  
+**Status:** READY — po `G-LIC` i spike'ach M0  
+**Stack:** Next.js + React + TypeScript · Supabase · PWA-first · Capacitor v1.1  
+**Powiązane:** `01PRD_REVIEWED.md`, `03IMPLEMENTATIONPLAN_REVIEWED.md`
+
+> Architektura jest kontraktem implementacyjnym. PRD mówi *co* ma działać; ten dokument określa granice systemu i invariants, których Agent OS/developer nie może lokalnie „uprościć”.
 
 ---
 
-## 1. Decyzje architektoniczne
+## 0. Najważniejsze korekty po red-team review
 
-Każda decyzja ma status. W poprzedniej wersji projektu istniało trzynaście decyzji architektonicznych bez statusu, przez co sześć z nich latami figurowało jako zatwierdzone, nie istniejąc w kodzie.
+1. **Offline workout completion jest v1.0**, ale nie budujemy jeszcze uniwersalnego silnika synchronizacji wszystkich tabel.
+2. Aktywny trening i kolejka zapisu są w **IndexedDB/Dexie**, nie w `localStorage`.
+3. Workout zapisuje się na serwer **atomowo** jednym command/RPC, z client-generated IDs i idempotency key.
+4. `navigator.onLine` jest tylko wskazówką. Nie jest źródłem prawdy o dostępności serwera.
+5. Generic v1.1 sync **nie używa LWW po server `updated_at`**. Używa optimistic concurrency (`version`/`base_version`) i polityki konfliktu per encja.
+6. TanStack Query cache jest cache'em, nie „źródłem prawdy”.
+7. Static export **nie oznacza braku Server Components**; mogą wykonać się w buildzie. Zakazane są funkcje wymagające request-time Next server/runtime.
+8. `@supabase/ssr` usunięte z browser-only app. Auth klienta używa `@supabase/supabase-js`, PKCE i jawnych redirect adapters.
+9. `free-exercise-db` ma stabilne ID mapowane do tych samych rekordów w static catalog i PostgreSQL; source photos są wyłączone do potwierdzenia praw.
+10. PR/volume nie są drugim niezależnym źródłem prawdy; są wyprowadzane z setów.
+11. Dodano missing `workout_template_exercises`.
+12. RLS ze starego projektu może być **referencją**, nigdy copy-paste bez testu A/B/anon.
+13. Sentry/logging ma redaction health/mental content.
+14. AgentOS Evaluation Profile izoluje external provisioning od capability score.
 
-| ID | Decyzja | Status | Uzasadnienie |
+---
+
+## 1. Architecture Decision Records
+
+| ID | Decyzja | Status | Uzasadnienie / skutek |
 |---|---|---|---|
-| **D-01** | **Next.js (App Router) + React + TypeScript** | Accepted | Najdojrzalszy ekosystem PWA, najlepsze biblioteki do pracy offline, największa pula developerów i materiałów. Otwiera obie ścieżki na mobile: Capacitor i React Native |
-| **D-02** | **Statyczny eksport (`output: 'export'`), pobieranie danych po stronie klienta** | Accepted | Patrz §2 — to najważniejsza decyzja techniczna tego projektu |
-| **D-03** | **Supabase: Auth, PostgreSQL, reguły dostępu, funkcje brzegowe** | Accepted | Auth, baza i autoryzacja w jednym. Z poprzedniej wersji da się przenieść 66 reguł dostępu i pięć funkcji zgodności RODO — to realny dorobek. **Wymaga rotacji kluczy przed startem** |
-| **D-04** | **Capacitor jako ścieżka na mobile, wdrożenie w v1.1** | Accepted | Ten sam kod trafia do sklepów. Odblokowuje powiadomienia, trwałe przechowywanie danych i biometrię. Koszt liczony w dniach |
-| **D-05** | **TanStack Query jako warstwa danych, z zapisem cache w IndexedDB** | Accepted | Daje odczyt offline bez pisania własnego cache. Kluczowe: **wszystkie zapisy przechodzą przez jedną warstwę mutacji**, którą w v1.1 podmienimy na kolejkę offline |
-| **D-06** | **Serwer jest źródłem prawdy; przeglądarka trzyma cache** | Accepted | W v1.1 to się zmienia dla danych treningowych — patrz §5 |
-| **D-07** | **Tailwind CSS + shadcn/ui** | Accepted | Komponenty jako kod w repozytorium, nie zależność. Pełna kontrola nad dostępnością i motywem. Zero narzutu w czasie wykonania |
-| **D-08** | **Zod jako jedno źródło definicji kształtu danych** | Accepted | Walidacja formularzy, walidacja odpowiedzi API i typy TypeScript z jednej definicji. Eliminuje rozjazd typów, który w poprzedniej wersji dał 728 błędów kompilacji |
-| **D-09** | **Serwis roboczy: Serwist** | Accepted | Aktywnie utrzymywany następca `next-pwa`, dobra integracja z App Routerem |
-| **D-10** | **next-intl dla EN i PL, od pierwszego commita** | Accepted | Dołożenie tłumaczeń później do katalogu dwustu ćwiczeń jest wielokrotnie droższe |
-| **D-11** | **Wywołania AI wyłącznie przez funkcję brzegową** | Accepted (wdrożenie v1.1) | Bez tego nie da się chronić klucza, egzekwować limitów ani mierzyć kosztów |
-| **D-12** | **Szyfrowanie end-to-end odłożone do v2.0** | Accepted | Model z opakowaniem klucza i kodem odzyskiwania. Poprzednia wersja miała klucz pochodzący wprost z hasła, co oznaczało utratę danych przy resecie hasła |
-| **D-13** | **Monorepo jednopakietowe na start** | Accepted | Podział na pakiety dopiero gdy pojawi się drugi konsument logiki (aplikacja mobilna w React Native). Przedwczesny podział to koszt bez korzyści |
-| **D-14** | **Nowy projekt Supabase od zera** | Accepted | Stary projekt niesie 36 tabel nieużywanego schematu, historię migracji, której nie chcemy, i wycieknięte klucze. Czyszczenie kosztowałoby tyle co założenie nowego. Ze starego zabieramy **wyłącznie reguły dostępu i pięć funkcji zgodności RODO jako wzorce**, potem go usuwamy |
-| **D-15** | **Katalog ćwiczeń importowany z `free-exercise-db`** | Accepted | Około ośmiuset pozycji w domenie publicznej (Unlicense) ze zdjęciami. Domena publiczna, w przeciwieństwie do CC-BY-SA w bazie wger, nie wymusza otwarcia naszych opisów. Warstwa importu i mapowania opisana w §6.4 |
+| ADR-01 | Next.js App Router + React + strict TypeScript | Accepted | dojrzały web stack, static export, wspólna baza dla PWA/Capacitor |
+| ADR-02 | `output: 'export'` dla aplikacji | Accepted | Capacitor może pakować static assets; brak zależności od Node request runtime |
+| ADR-03 | Supabase Auth + PostgreSQL + RLS + Edge Functions/RPC | Accepted | jeden backend; silne granice danych użytkownika |
+| ADR-04 | Capacitor w v1.1 | Accepted | native shell, notifications/haptics/storage/store distribution |
+| ADR-05 | TanStack Query dla remote server state | Accepted | fetch/cache/retry; persisted cache jako convenience |
+| ADR-06 | Dexie/IndexedDB dla durable local domain state | **Changed** | active workout + outbox + catalog; localStorage nie jest wystarczającym durable store |
+| ADR-07 | Server canonical for synced records; local draft/outbox canonical only while unsynced | **Clarified** | eliminuje niejasne „cache jako źródło prawdy” |
+| ADR-08 | Tailwind + shadcn/ui | Accepted | source-owned components, design tokens, accessibility control |
+| ADR-09 | Zod at app boundaries | Accepted | runtime validation formularzy, importów, edge output; DB schema nadal canonical dla persistence |
+| ADR-10 | Serwist service worker | Accepted, verify at M0 | precache/app-shell/runtime caching; pinned supported version |
+| ADR-11 | next-intl, locale prefix, static-compatible routing | Accepted | EN/PL bez middleware dependence |
+| ADR-12 | AI only through Supabase Edge Function | Accepted v1.1 | secret/rate/cost/schema boundary |
+| ADR-13 | End-to-end encryption postponed | Accepted | poza v1.x |
+| ADR-14 | Single app repository/package | Accepted | nie dzielimy bez drugiego realnego consumer |
+| ADR-15 | New Supabase project | Accepted | zero inherited schema/history/secrets |
+| ADR-16 | `free-exercise-db` for base data; media independently gated | **Changed** | repo/data license != proven photo provenance |
+| ADR-17 | **Offline workout commit in v1.0** | Proposed-required | primary P1 use case |
+| ADR-18 | Aggregate `CommitWorkout` command + atomic server transaction | **New/required** | eliminuje orphan sets i częściowy zapis |
+| ADR-19 | Client UUIDv7 for user records; deterministic UUIDv5 for system catalog | **New/required** | offline creation + identical catalog IDs local/server |
+| ADR-20 | Generic sync uses row version / base_version, not timestamp LWW | **New/required v1.1** | delayed offline mutation nie może nadpisać nowszego stanu tylko dlatego, że dotarła później |
+| ADR-21 | `@supabase/supabase-js` browser client; no `@supabase/ssr` in app runtime | **Changed** | static browser app nie ma SSR auth layer |
+| ADR-22 | Product auth and AgentOS eval auth are separate concerns | **New** | provider provisioning does not contaminate benchmark |
+| ADR-23 | First-party minimal product metrics derived primarily from functional data | **New** | avoid unnecessary sensitive analytics payloads |
+| ADR-24 | Exact store/payment policy rechecked at implementation time | **New** | rules are region/version dependent and v2 is far away |
+| ADR-25 | **Wyłącznie darmowe progi usług w v1.0** | **New** | decyzja D-T. Konsekwencje: katalog ćwiczeń jest częścią paczki statycznej, nie Supabase Storage; maksymalnie dwa projekty Supabase (produkcja + środowisko benchmarku); **projekt wstrzymuje się po 7 dniach bez zapytań do bazy** i wymaga obsługi — patrz §24 |
+| ADR-26 | **Logowanie wyłącznie e-mailem z hasłem w v1.0** | **New** | decyzja D-S. Google i Apple przeniesione do v1.0.1. `lib/auth/` zachowuje warstwę adapterów z §12.3, żeby dołożenie providerów było podmianą, nie przebudową |
+| ADR-27 | **Szablony treningów poza v1.0** | **New** | decyzja D-S. Tabele `workout_templates` i `workout_template_exercises` **nie powstają w v1.0**. `workouts.template_id` pozostaje w schemacie jako pole opcjonalne bez klucza obcego do czasu v1.0.1 — dzięki temu migracja nie wymaga przebudowy tabeli treningów |
+
+**Change control:** ADR change is committed before code that depends on it. Status: `proposed → accepted → implemented → superseded`.
 
 ---
 
-## 2. Kluczowa decyzja: statyczny eksport zamiast renderowania serwerowego
+## 2. Runtime topology
 
-To jest decyzja, która determinuje resztę architektury, więc wymaga osobnego uzasadnienia.
-
-**Problem.** Capacitor pakuje aplikację jako **statyczne zasoby** ładowane z urządzenia. Next.js z renderowaniem serwerowym i komponentami serwerowymi wymaga działającego serwera Node. Te dwie rzeczy są w konflikcie. Można wskazać Capacitorowi zdalny adres, ale wtedy aplikacja nie działa offline i ryzykuje odrzuceniem w App Store jako „cienka nakładka na stronę".
-
-**Decyzja.** Budujemy w trybie `output: 'export'`. Cała aplikacja to statyczne pliki, dane pobierane po stronie klienta bezpośrednio z Supabase, autoryzacja przez sesję w przeglądarce.
-
-**Co tracimy:** renderowanie serwerowe, komponenty serwerowe, optymalizację obrazów Next.js (zastąpiona statycznymi zasobami), trasy API (zastąpione funkcjami brzegowymi Supabase).
-
-**Dlaczego to nie boli.** Cała aplikacja jest za logowaniem. Renderowanie serwerowe służy przede wszystkim indeksowaniu w wyszukiwarkach i szybkiemu pierwszemu wyświetleniu treści publicznej — tutaj nie ma treści publicznej. Powłoka aplikacji jest cache'owana przez serwis roboczy, więc ponowne wejście jest szybsze niż przy renderowaniu serwerowym.
-
-**Konsekwencja praktyczna:** strona marketingowa (landing, cennik, polityka prywatności) to **osobny projekt** — może być statyczna, może być renderowana serwerowo, nie ma znaczenia. Aplikacja żyje pod adresem `app.domena` i jest w całości statyczna.
-
-**Warunek brzegowy:** jeśli zapadnie decyzja o rezygnacji z Capacitora i pozostaniu przy samej PWA, decyzję D-02 można odwrócić — ale wtedy trzeba to zrobić **przed** M2, nie po.
-
----
-
-## 3. Stack
-
-### 3.1 Zależności produkcyjne
-
-| Obszar | Wybór | Rola |
-|---|---|---|
-| Framework | `next` | App Router, tryb statycznego eksportu |
-| Język | `typescript` | Tryb ścisły, `noUncheckedIndexedAccess` włączone |
-| UI | `react`, `tailwindcss`, `shadcn/ui`, `lucide-react` | Komponenty jako kod w repozytorium |
-| Dane serwerowe | `@tanstack/react-query` + `@tanstack/query-sync-storage-persister` | Cache, ponawianie, zapis do IndexedDB |
-| Przechowywanie lokalne | `dexie` | Katalog ćwiczeń i cache zapytań |
-| Backend | `@supabase/supabase-js`, `@supabase/ssr` | Baza, autoryzacja, funkcje brzegowe |
-| Formularze | `react-hook-form` + `zod` + `@hookform/resolvers` | |
-| Schematy | `zod` | Jedno źródło typów i walidacji |
-| Wykresy | `recharts` | Prostsze niż visx, wystarczające dla trzech typów wykresów |
-| Tłumaczenia | `next-intl` | EN i PL |
-| Daty | `date-fns` | Lżejsze niż alternatywy, obsługa lokalizacji |
-| Stan klienta | `zustand` | Wyłącznie stan interfejsu (aktywny trening, otwarte panele). Stan serwerowy należy do TanStack Query |
-| Serwis roboczy | `@serwist/next` | Cache powłoki i zasobów |
-| Monitoring | `@sentry/nextjs` | Błędy w czasie wykonania |
-
-**Zasada:** zależność wchodzi do projektu w tej wersji, w której powstaje funkcja jej używająca. W poprzedniej wersji pięć bibliotek produkcyjnych miało **zero użyć w kodzie**, powiększając paczkę i powierzchnię ataku.
-
-### 3.2 Narzędzia deweloperskie
-
-`vitest` + `@testing-library/react` (testy jednostkowe i komponentów) · `playwright` (testy end-to-end) · `msw` (mockowanie sieci **wyłącznie w testach**) · `eslint` + `@typescript-eslint` · `prettier` · `supabase` CLI (migracje lokalne) · `gitleaks` (skanowanie sekretów).
-
----
-
-## 4. Struktura projektu
-
+```text
+                    ┌─────────────────────────────┐
+                    │ Static host / CDN           │
+                    │ HTML + JS + CSS + catalog   │
+                    └──────────────┬──────────────┘
+                                   │
+                         install / fetch assets
+                                   │
+┌──────────────────────────────────▼─────────────────────────────────┐
+│ Browser / Capacitor WebView                                        │
+│                                                                    │
+│ Next/React UI                                                      │
+│ ├─ TanStack Query ── remote query cache                            │
+│ ├─ Zustand ───────── ephemeral UI state only                       │
+│ ├─ Dexie/IndexedDB                                                 │
+│ │  ├─ catalog                                                      │
+│ │  ├─ active_workout_draft                                         │
+│ │  ├─ sync_outbox                                                  │
+│ │  └─ optional query persister                                     │
+│ └─ lib/mutations ─── only domain-write gateway                     │
+└───────────────┬──────────────────────────┬─────────────────────────┘
+                │ Supabase client          │ AI / privileged ops
+                │                          │
+        ┌───────▼──────────┐       ┌───────▼────────────┐
+        │ Supabase Auth    │       │ Edge Functions     │
+        │ PostgREST / RPC  │       │ ai-orchestrator    │
+        └───────┬──────────┘       │ account/export     │
+                │                  └────────┬───────────┘
+                └──────────────┬────────────┘
+                               ▼
+                      PostgreSQL + RLS
 ```
+
+### 2.1 Trust boundaries
+
+- **Client is untrusted.** It may propose IDs/payloads; server validates auth, ownership, constraints and schema.
+- RLS is authorization. Route guards are UX.
+- Service-role/API provider keys exist only in server-side secrets.
+- Local IndexedDB protects against accidental connectivity/reload loss, **not against a malicious device owner**.
+- Mental/health raw text never enters ordinary telemetry.
+
+---
+
+## 3. Static export — exact constraints
+
+`output: 'export'` produces static assets. Next.js Server Components may be executed at **build time** if they do not require request-time dynamic server features.
+
+**Allowed:**
+- file-based routes known at build,
+- build-time data/constants,
+- Client Components,
+- static Server Components,
+- static metadata/manifest,
+- browser calls to Supabase,
+- external Edge Functions.
+
+**Do not depend on:**
+- Next API routes requiring Node at runtime,
+- middleware/proxy for locale/auth,
+- request cookies/headers in a server-rendered route,
+- dynamic server actions,
+- request-time image optimization,
+- rewrite-dependent localized pathnames.
+
+### 3.1 Internationalization
+
+Use locale-prefixed static paths: `/en/...`, `/pl/...`.
+
+Because static export has no middleware locale detection:
+- first landing can use a tiny client redirect/chooser at root or explicit locale links,
+- supported locales are generated statically,
+- `next-intl` config must stay compatible with static rendering,
+- no critical business routing depends on middleware.
+
+### 3.2 Images
+
+Next request-time image optimizer is unavailable in static export. Project-owned images are preprocessed at build:
+- deterministic filenames,
+- WebP/AVIF where supported by pipeline,
+- explicit width/height,
+- responsive `<picture>`/static image strategy.
+
+---
+
+## 4. Repository structure
+
+```text
 /
-├── app/                          ← Next.js App Router
+├── app/
 │   ├── [locale]/
-│   │   ├── (auth)/               ← logowanie, rejestracja, reset hasła
-│   │   ├── (app)/                ← aplikacja za logowaniem
-│   │   │   ├── layout.tsx        ← nawigacja dolna, wspólna powłoka
+│   │   ├── (auth)/
+│   │   ├── (app)/
+│   │   │   ├── layout.tsx
 │   │   │   ├── dashboard/
 │   │   │   ├── workout/
 │   │   │   ├── exercises/
+│   │   │   ├── templates/
 │   │   │   ├── history/
 │   │   │   ├── progress/
 │   │   │   └── settings/
 │   │   └── layout.tsx
-│   └── manifest.ts               ← manifest PWA
+│   └── manifest.ts
 │
-├── features/                     ← logika biznesowa, jedna konwencja
+├── features/
+│   ├── auth/
 │   ├── exercises/
-│   │   ├── api/                  ← zapytania i mutacje (TanStack Query)
-│   │   ├── components/
-│   │   ├── hooks/
-│   │   ├── schemas/              ← Zod
-│   │   └── lib/                  ← czysta logika, testowalna bez Reacta
 │   ├── workouts/
-│   │   └── lib/
-│   │       ├── one-rep-max.ts    ← wzór Epleya
-│   │       ├── pattern-memory.ts ← pamięć wzorca
-│   │       ├── pr-detection.ts   ← wykrywanie rekordów
-│   │       └── progression.ts    ← podwójna progresja (v1.1)
+│   ├── templates/
+│   ├── history/
+│   ├── progress/
 │   ├── measurements/
 │   ├── settings/
-│   ├── life-coach/               ← v1.1
-│   └── mind/                     ← v1.2
+│   ├── life-coach/          # v1.1
+│   └── mind/                # v1.2
 │
 ├── lib/
-│   ├── supabase/                 ← klient, typy generowane ze schematu
-│   ├── db/                       ← Dexie: katalog, cache
-│   ├── mutations/                ← ⚠ JEDNA WARSTWA ZAPISU — patrz §5
-│   ├── format/                   ← jednostki, daty, liczby
+│   ├── supabase/
+│   ├── local-db/
+│   ├── mutations/
+│   ├── sync/
+│   ├── auth/
 │   ├── i18n/
+│   ├── format/
+│   ├── analytics/
 │   └── errors/
 │
-├── components/ui/                ← shadcn/ui
-├── messages/                     ← en.json, pl.json
-├── data/exercises/               ← katalog jako dane statyczne + wersja
+├── components/
+│   ├── ui/
+│   └── system/
+├── messages/
+├── data/
+│   └── catalog/
+├── scripts/
+│   └── catalog/
 ├── supabase/
-│   ├── migrations/               ← JEDNO źródło prawdy o schemacie
-│   └── functions/                ← funkcje brzegowe
-├── e2e/                          ← Playwright
+│   ├── migrations/
+│   ├── seed/
+│   ├── tests/
+│   └── functions/
+├── e2e/
+├── eval/
+│   ├── task-specs/
+│   ├── fixtures/
+│   └── design-baselines/
 └── docs/
 ```
 
-**Zasady egzekwowane automatycznie, nie w przeglądzie kodu:**
+### 4.1 Feature boundary
 
-| Reguła | Kontrola |
+Public imports cross feature boundaries through `features/<feature>/index.ts` or an explicit `api/` contract. A component in `history` nie importuje plików wewnętrznych `workouts/components/*`.
+
+Enforce with ESLint boundaries.
+
+### 4.2 State ownership
+
+- **TanStack Query:** remote server state and read cache.
+- **Dexie:** durable local domain state (catalog, active workout, outbox).
+- **Zustand:** transient interaction state (open sheet, selected tab, in-memory view state); it may mirror a draft but is never its only durable copy.
+- **React local state:** component-only state.
+- **PostgreSQL:** canonical synced domain records.
+
+---
+
+## 5. Local data architecture
+
+### 5.1 Dexie schema v1.0
+
+```text
+catalog_exercises
+catalog_translations
+catalog_meta
+
+active_workout_drafts
+  id
+  user_id
+  started_at
+  template_id?
+  payload
+  revision
+  updated_at_local
+
+sync_outbox
+  mutation_id
+  user_id
+  mutation_type
+  payload
+  status           queued | sending | failed | attention
+  attempt_count
+  next_attempt_at
+  created_at_local
+  last_error_code?
+
+local_meta
+  key
+  value
+```
+
+`active_workout_drafts.payload` może być nested JSON, bo lokalnie jest agregatem odtwarzanym jako całość i nie wykonujemy po nim analitycznych zapytań. Server schema pozostaje znormalizowany.
+
+### 5.2 Draft write contract
+
+Każda zmiana set/exercise:
+1. update UI,
+2. write draft transactionally to Dexie,
+3. only then show durable-local save state.
+
+Debounce może łączyć bardzo szybkie zmiany, ale:
+- flush on `visibilitychange`,
+- flush on workout complete,
+- deterministic recovery test kills page between edits.
+
+### 5.3 No `localStorage` for workout data
+
+`localStorage` pozostaje dopuszczalne dla małych non-sensitive UI hints, nie dla aktywnego treningu ani outbox.
+
+---
+
+## 6. Mutation gateway
+
+**Żaden feature nie zapisuje bezpośrednio do Supabase.**
+
+```ts
+type MutationEnvelope<TPayload> = {
+  mutationId: string;
+  type: string;
+  entityId?: string;
+  baseVersion?: number;
+  payload: TPayload;
+  clientCreatedAt: string;
+};
+
+type MutationResult<T> =
+  | { status: 'committed'; data: T }
+  | { status: 'queued'; localId: string }
+  | { status: 'conflict'; conflict: unknown }
+  | { status: 'failed'; code: string; retryable: boolean };
+```
+
+### 6.1 Rules
+
+- serializable payload only,
+- stable mutation ID,
+- validation before queue,
+- network error classification,
+- exact same mutation can be retried without duplicate side effect,
+- rollback only if local operation itself is invalid; network failure queues where feature supports offline,
+- UI status comes from mutation state, not assumptions.
+
+### 6.2 `navigator.onLine`
+
+May influence immediate UX, **never** decide that server definitely exists/doesn't. Online browsers may have captive portals, broken DNS, blocked Supabase, expired sessions.
+
+Algorithm:
+1. if feature has offline queue, persist command first;
+2. attempt send if reasonable;
+3. on retryable network error keep queued;
+4. on auth/validation error mark attention and surface action.
+
+---
+
+## 7. Workout transaction — v1.0 critical path
+
+### 7.1 Aggregate command
+
+On completion client creates one `CommitWorkout`:
+
+```text
+mutation_id
+workout:
+  id
+  started_at
+  completed_at
+  notes?
+  template_id?
+exercises[]:
+  id
+  exercise_id
+  order_index
+  notes?
+  sets[]:
+    id
+    set_number
+    weight_kg?
+    reps?
+    duration_seconds?
+    distance_m?
+    rpe?
+    is_warmup
+    rest_seconds?
+```
+
+No `user_id` from payload is trusted. Server derives user from auth context.
+
+### 7.2 Server operation
+
+Use a Postgres function/RPC (or Edge Function delegating to one DB transaction) that:
+
+1. authenticates user,
+2. validates envelope/schema,
+3. checks `mutation_receipts` for `mutation_id`,
+4. validates referenced system/custom exercise access,
+5. inserts `workouts`,
+6. inserts ordered `workout_exercises`,
+7. inserts `workout_sets`,
+8. records mutation receipt,
+9. computes summary/new PR response,
+10. commits atomically.
+
+Any failure rolls back everything.
+
+### 7.3 Idempotency
+
+`mutation_receipts(user_id, mutation_id)` unique. Replayed `CommitWorkout` returns prior committed result or deterministic lookup instead of creating duplicates.
+
+### 7.4 Why aggregate command
+
+The old failure class “workout exists but sets lost/unlinked” becomes impossible under a successful transaction. Offline queue also carries one logical action instead of coordinating dozens of row mutations.
+
+---
+
+## 8. Generic sync v1.1
+
+### 8.1 Timestamp LWW is forbidden as generic policy
+
+If an offline edit made yesterday reaches server today, assigning a new server `updated_at` would make it appear “newer” than an actual edit from this morning. Therefore server arrival time cannot choose business truth.
+
+### 8.2 Version contract
+
+Every mutable syncable record:
+- `version bigint not null default 1`,
+- client mutation sends `base_version`,
+- update executes `WHERE id = ? AND user_id = auth.uid() AND version = base_version`,
+- success increments version,
+- zero affected rows => conflict.
+
+### 8.3 Per-entity policy
+
+| Type | Policy |
 |---|---|
-| Zero danych testowych w kodzie produkcyjnym | `msw` i `*.mock.ts` dozwolone wyłącznie w `**/__tests__/**` i `e2e/` — reguła ESLint |
-| Zero `TODO` w ścieżkach zapisu | Lista wyjątków w pliku; reszta blokuje scalenie |
-| Import między modułami tylko przez `features/<x>/api` | `eslint-plugin-boundaries` |
-| Zero sekretów | `gitleaks` |
-| Zero błędów typów | `tsc --noEmit` jako warunek scalenia |
-| Rozmiar paczki | Budżet w `size-limit`, przekroczenie blokuje |
+| new workouts / append-only events | idempotent insert; no content conflict |
+| user settings/preferences | optimistic concurrency; field-level/user-choice merge where useful |
+| goals / plan tasks | version conflict surfaced; never silent overwrite |
+| delete | tombstone + version |
+| generated daily plan | immutable generation revision + explicit user edits |
+| catalog system data | server/build versioning; no user conflict |
 
-Ostatnia reguła o zerowej liczbie błędów typów jest kluczowa: poprzednia wersja projektu osiągnęła **728 błędów analizatora** i nikt tego nie zauważył, bo proces budowania i tak był czerwony, więc przestano na niego patrzeć.
+### 8.4 Sync worker
 
----
+- queue order preserves dependencies,
+- exponential backoff + jitter,
+- max attempts before attention,
+- lease/lock prevents two tabs/workers replaying same command concurrently,
+- `BroadcastChannel` or equivalent coordinates tabs,
+- sync events are observable without logging raw payload.
 
-## 5. Warstwa danych — najważniejszy szczegół implementacyjny
-
-`[Z-1]` w PRD przesądza, że v1.0 ma offline tylko do odczytu, a zapis offline wchodzi w v1.1. **Cała ta sekcja istnieje po to, żeby ta zmiana kosztowała podmianę jednego modułu, a nie przebudowę aplikacji.**
-
-### 5.1 Odczyt
-
-```
-Komponent → useQuery (TanStack Query) → Supabase
-                    ↓
-            cache w pamięci
-                    ↓
-            zapis do IndexedDB (persister)
-```
-
-Cache przeżywa odświeżenie strony i zamknięcie karty. Przy braku sieci zapytania zwracają dane z cache i oznaczają je jako nieaktualne. Katalog ćwiczeń jest osobnym przypadkiem — leży w Dexie na stałe, nie w cache zapytań, bo jest duży i praktycznie niezmienny.
-
-### 5.2 Zapis — jedna brama
-
-**Każdy zapis w aplikacji przechodzi przez `lib/mutations/`. Żaden komponent i żaden hook nie wywołuje Supabase bezpośrednio w celu zapisu.** To jest reguła egzekwowana lintem.
-
-```ts
-// lib/mutations/index.ts — v1.0
-export async function executeMutation<T>(m: Mutation<T>): Promise<Result<T>> {
-  if (!navigator.onLine) {
-    // v1.0: odmowa z zachowaniem danych w szkicu (patrz 5.3)
-    return { ok: false, error: 'offline' }
-  }
-  return runOnServer(m)
-}
-```
-
-```ts
-// lib/mutations/index.ts — v1.1, po podmianie
-export async function executeMutation<T>(m: Mutation<T>): Promise<Result<T>> {
-  await writeLocal(m)          // zapis lokalny natychmiast
-  await outbox.enqueue(m)      // kolejka do wysyłki
-  return { ok: true, data: optimistic(m) }
-}
-```
-
-Reszta aplikacji nie zmienia się ani o linijkę. To jest cała różnica między „dołożymy offline w v1.1" a „przepiszemy aplikację w v1.1".
-
-**Wymagania dla mutacji od pierwszego dnia:**
-- Każda mutacja jest **idempotentna** i ma identyfikator generowany po stronie klienta (UUID v7 — sortowalny po czasie). Bez tego kolejka w v1.1 będzie duplikować rekordy przy ponowieniach.
-- Każda mutacja jest **serializowalna** (zwykły obiekt, bez domknięć i referencji). Bez tego nie da się jej zapisać w kolejce.
-- Aktualizacje optymistyczne z wycofaniem przy błędzie — to daje odczucie zapisu poniżej 100 ms.
-
-### 5.3 Zabezpieczenie przed utratą pracy w v1.0
-
-Aktywny trening jest trzymany w Zustand z zapisem do `localStorage` przy każdej zmianie. Przy braku sieci:
-1. Użytkownik widzi wyraźny baner „Brak połączenia — trening zapisany lokalnie, wyślemy go automatycznie".
-2. Dane pozostają w przeglądarce po zamknięciu karty.
-3. Po powrocie sieci aplikacja proponuje wysłanie.
-
-To nie jest pełna kolejka synchronizacji — nie obsługuje konfliktów ani wielu urządzeń. To zabezpieczenie przed najgorszym scenariuszem: użytkownik traci godzinę pracy, bo w siłowni nie było zasięgu.
-
-### 5.4 Konflikty
-
-W v1.1, gdy wchodzi zapis offline: **wygrywa ostatni zapis, porównanie po `updated_at` ustawianym przez serwer**. Każda synchronizowana tabela ma `updated_at`, `deleted_at` — bez wyjątków. W poprzedniej wersji jedna z tabel nie miała `updated_at`, przez co mechanizm rozstrzygania konfliktów zawsze przegrywał po pierwszej edycji lokalnej.
+Capacitor may later substitute a native-aware scheduling trigger; domain queue contract remains.
 
 ---
 
-## 6. Model danych
+## 9. Server data model
 
-**PostgreSQL (migracje SQL) jest jedynym źródłem prawdy.** Typy TypeScript są **generowane** ze schematu (`supabase gen types`), nigdy pisane ręcznie. Dokumentacja schematu jest generowana, nie pisana.
+PostgreSQL migrations are the **only source of truth**. `docs/SCHEMA.md` is generated.
 
-W poprzedniej wersji istniały trzy niezgodne opisy schematu: 36 tabel w bazie serwerowej, 20 w lokalnej o innych nazwach i kształcie, plus trzecia wersja w dokumentacji.
+### 9.1 Global conventions
 
-### 6.1 Zasady
+Mutable user-owned tables:
+- `id uuid`,
+- `user_id uuid not null`,
+- `created_at timestamptz not null`,
+- `updated_at timestamptz not null`,
+- `deleted_at timestamptz null` where soft delete applies,
+- `version bigint not null default 1`.
 
-1. **Prawdziwe klucze obce.** Ćwiczenie w serii jest referencją do katalogu, nie tekstem.
-2. **Identyfikator użytkownika obowiązkowo** na każdej tabeli użytkownika. W poprzedniej wersji brakowało go w tabeli planów dnia, przez co była niesynchronizowalna z regułami dostępu.
-3. **Jednolite metadane** na każdej tabeli: `created_at`, `updated_at`, `deleted_at`. Bez wyjątków.
-4. **Koniec z JSON-em w polu tekstowym** dla danych, po których się filtruje. JSON wyłącznie dla treści dopisywanej (historia wiadomości).
-5. **Jedna migracja początkowa.** Reguły dostępu przenoszone z poprzedniej wersji — to najcenniejszy istniejący artefakt techniczny.
-6. **Identyfikatory generowane po stronie klienta** (UUID v7), nie przez bazę. Warunek konieczny dla aktualizacji optymistycznych i dla kolejki offline.
+IDs:
+- imported system exercise: deterministic UUIDv5 from stable namespace + source key,
+- user-created entities: UUIDv7 client-side,
+- no business entity depends on server-generated sequence to be created offline.
 
-### 6.2 Tabele v1.0
+### 9.2 v1.0 tables
 
-| Tabela | Rola | Kluczowe pola |
-|---|---|---|
-| `user_profiles` | profil | full_name, avatar_url, date_of_birth, gender |
-| `user_settings` | **wszystkie ustawienia w jednym miejscu** | jednostki, motyw, język, prywatność, preferencje coachingowe |
-| `exercises` | katalog | category, exercise_type, primary_muscles[], secondary_muscles[], equipment[], movement_pattern, difficulty, tracks, default_rest_seconds, is_custom, created_by |
-| `exercise_translations` | tłumaczenia | exercise_id, locale, name, description, instructions, form_tips[], common_mistakes[] |
-| `exercise_favorites` | ulubione | unikalne (user_id, exercise_id) |
-| `workouts` | sesja treningowa | started_at, completed_at, duration, total_volume, template_id |
-| `workout_exercises` | ćwiczenie w sesji | workout_id, **exercise_id (klucz obcy)**, order_index, notes |
-| `workout_sets` | seria | workout_exercise_id, set_number, weight, reps, duration, rpe, is_warmup, rest_seconds |
-| `personal_records` | rekordy | user_id, exercise_id, estimated_1rm, achieved_at, workout_id |
-| `body_measurements` | pomiary | dziesięć pól plus notatka |
-| `workout_templates` | szablony | name, category, difficulty, estimated_duration |
+#### `user_profiles`
+`id/user_id, full_name, avatar_path, date_of_birth?, gender?`
 
-**Kluczowa zmiana:** trójpoziomowa struktura `workouts → workout_exercises → workout_sets` z **kluczem obcym do katalogu**. Poprzednia wersja miała płaską strukturę z nazwą ćwiczenia jako wolnym tekstem. To była przyczyna źródłowa co najmniej sześciu osobnych problemów: rozbita historia, niedziałająca pamięć wzorca, niemożliwe wykrywanie rekordów, brak statystyk per partia mięśniowa, brak filtrowania historii, kruche szablony.
+DOB/gender remain nullable until a real feature uses them.
 
-**Kompromis dla szybkiego logowania:** dopuszczamy pusty `exercise_id` z zapisaną nazwą surową dla ćwiczeń wpisanych doraźnie, z późniejszym scaleniem. Ale ścieżka domyślna to wybór z katalogu.
+#### `user_settings`
+`user_id, locale, weight_unit, length_unit, distance_unit, theme`
 
-### 6.4 Warstwa importu katalogu (decyzja D-15)
+v1.1 adds coaching preferences or splits them if lifecycle/security warrants.
 
-Import jest **jednorazowym procesem budowania danych**, nie częścią aplikacji. Jego wynik — plik z katalogiem i zoptymalizowane obrazy — trafia do repozytorium jako dane statyczne.
+#### `consents`
+`user_id, purpose, status, policy_version, granted_at?, withdrawn_at?`
 
+Introduced no later than first cross-module/AI health processing. May be created in v1.0 if privacy flow needs it.
+
+#### `exercises`
+```text
+id
+kind               system | custom
+owner_id?           null for system, user for custom
+source_key?
+category
+exercise_type
+primary_muscles[]
+secondary_muscles[]
+equipment[]
+movement_pattern
+difficulty
+is_compound
+is_unilateral
+tracks[]
+default_rest_seconds
 ```
+
+RLS:
+- system: read all authenticated, no client write,
+- custom: owner CRUD.
+
+#### `exercise_translations`
+`exercise_id, locale, name, description?, instructions[], form_tips[], common_mistakes[]`
+
+System translations seeded. Custom translations can initially use one user-entered locale + fallback.
+
+#### `exercise_favorites`
+`user_id, exercise_id`, unique pair.
+
+#### `workout_templates`
+`id, user_id, name, description?, category?, source(system|custom), estimated_duration?`
+
+Built-in templates can be seeded with system owner semantics or shipped as local presets converted to user template on edit.
+
+#### `workout_template_exercises`
+`id, template_id, exercise_id, order_index, target_sets?, target_rep_min?, target_rep_max?, target_rpe?, rest_seconds_override?`
+
+Unique `(template_id, order_index)`.
+
+#### `workouts`
+`id, user_id, started_at, completed_at, template_id?, notes?`
+
+Do **not** store canonical `total_volume`/PR/current duration if they are safely derivable. If a summary cache is later added, it is explicitly denormalized and rebuildable.
+
+#### `workout_exercises`
+`id, workout_id, exercise_id NOT NULL, order_index, notes?`
+
+**No raw-name/null-FK escape hatch.** A custom exercise is created as a real exercise record before use.
+
+#### `workout_sets`
+`id, workout_exercise_id, set_number, weight_kg?, reps?, duration_seconds?, distance_m?, rpe?, is_warmup, rest_seconds?`
+
+Check constraints enforce valid combinations/ranges as far as DB can.
+
+#### `body_measurements`
+Optional v1.0 depending product decision. Canonical SI fields.
+
+#### `mutation_receipts`
+`user_id, mutation_id, mutation_type, entity_id?, committed_at`, unique `(user_id, mutation_id)`.
+
+#### `catalog_versions`
+`version, checksum, created_at, source_snapshot_id`.
+
+### 9.3 Derived views/queries
+
+- workout volume,
+- per-exercise estimated 1RM,
+- current PR,
+- weekly volume,
+- recent/frequent exercises,
+- workout duration.
+
+If query performance later requires snapshots/materialization, architecture records invalidation/rebuild semantics first.
+
+### 9.4 v1.1
+
+`check_ins`, `goals`, `goal_progress`, `daily_plans`, `plan_tasks`, `daily_reflections`, `streaks`, `user_daily_metrics`, AI usage/audit tables.
+
+### 9.5 v1.2
+
+`mood_logs`, `breathing_sessions`, optional `mental_health_screenings` only after G-MH, `insights`, privacy/consent extensions.
+
+---
+
+## 10. Catalog build pipeline
+
+```text
 scripts/catalog/
-├── 1-fetch.ts       ← pobranie źródła, zapis surowej kopii do repozytorium
-├── 2-select.ts      ← wybór 200–250 pozycji wg kryteriów pokrycia
-├── 3-map.ts         ← mapowanie na naszą taksonomię
-├── 4-enrich.ts      ← scalenie z ręcznie pisanymi wskazówkami i błędami
-├── 5-images.ts      ← zmiana rozmiaru, konwersja do WebP, budowa nazw plików
-└── 6-build.ts       ← wynikowy katalog z wersją i sumą kontrolną
+├── 0-snapshot.ts
+├── 1-select.ts
+├── 2-normalize.ts
+├── 3-map-taxonomy.ts
+├── 4-merge-curated.ts
+├── 5-translate.ts
+├── 6-media.ts
+├── 7-build.ts
+└── 8-validate.ts
 ```
 
-**Mapowanie na taksonomię — co da się automatycznie, a co nie:**
+### 10.1 Provenance manifest
 
-| Pole | Źródło |
-|---|---|
-| `name`, `primary_muscles`, `secondary_muscles`, `equipment`, `difficulty`, `instructions` | Bezpośrednio ze źródła, z normalizacją słownika |
-| `category` | Wyprowadzone z mięśni głównych, regułą **jawną i przetestowaną** — nie dopasowaniem fragmentu tekstu, jak w poprzedniej wersji |
-| `exercise_type` | Reguła na podstawie sprzętu i mięśni, z ręczną weryfikacją odstających przypadków |
-| `is_compound` | Reguła: więcej niż jedna grupa mięśniowa główna |
-| `tracks` | **Ręcznie** — źródło nie zawiera tej informacji, a od niej zależy, które pola widzi użytkownik przy logowaniu |
-| `movement_pattern` | **Ręcznie** — nie istnieje w źródle |
-| `default_rest_seconds` | Reguła: złożone 180 s, izolowane 90 s, z ręczną korektą |
-| `is_unilateral` | Reguła na nazwie plus ręczna weryfikacja |
-| Tłumaczenia PL | Maszynowo, z **obowiązkową korektą** przez osobę znającą terminologię treningową |
-| `form_tips`, `common_mistakes` | **Ręcznie** — nie istnieją w źródle |
+Each release records:
+- upstream repository/snapshot commit,
+- upstream license file checksum,
+- selected source keys,
+- transformation version,
+- manual content version,
+- translation version,
+- media provenance status,
+- output checksum.
 
-**Wymagania dla procesu importu:**
-- Powtarzalny i idempotentny — ponowne uruchomienie na tym samym źródle daje identyczny wynik.
-- Ręcznie napisane treści leżą w **osobnym pliku**, scalanym po identyfikatorze. Ponowny import ze źródła nigdy ich nie nadpisuje.
-- Test sprawdzający, że każda pozycja w katalogu ma komplet pól wymaganych i tłumaczenie w obu językach — uruchamiany w procesie budowania.
-- Surowa kopia źródła zapisana w repozytorium, żeby import był odtwarzalny niezależnie od dostępności zewnętrznego repozytorium.
+### 10.2 Mapping
 
-**Do zweryfikowania przed importem:** aktualny stan licencji repozytorium źródłowego oraz to, czy licencja obrazów jest tożsama z licencją danych. To osobny punkt, bo w bazach tego typu bywa, że dane są otwarte, a media nie.
+Use source values when available:
+- muscles/equipment/level/instructions directly normalized,
+- source `category` and `mechanic` inform our mapping,
+- `movement_pattern` and `tracks` manually/rule-mapped with review,
+- `default_rest_seconds` rule + review,
+- no brittle substring categorization.
 
-### 6.5 Tabele dokładane później
+### 10.3 Media gate
 
-**v1.1:** `check_ins`, `goals`, `goal_progress`, `daily_plans`, `plan_tasks`, `streaks`, `user_daily_metrics`, `sync_outbox`
-**v1.2:** `mood_logs`, `breathing_sessions`, `mental_health_screenings`, `insights`
+`6-media.ts` refuses to package source photos unless a machine-readable `media-approved` provenance artifact exists.
 
-Tabela powstaje w wersji, w której powstaje funkcja jej używająca. Poprzednia wersja miała 36 tabel, z których większość nigdy nie została ani zapisana, ani odczytana.
+This turns legal/content uncertainty into a build gate, not a note people forget.
+
+### 10.4 Identical IDs
+
+The build emits:
+1. static client catalog,
+2. SQL/seed payload for PostgreSQL,
+
+from the **same normalized source object**, guaranteeing identical exercise UUIDs.
 
 ---
 
-## 7. Autoryzacja i bezpieczeństwo
+## 11. TanStack Query persistence
 
-### 7.1 Sesja
+Use:
+- `@tanstack/react-query`,
+- persistence client,
+- an **actual IndexedDB persister** (small custom adapter using IndexedDB/idb-keyval or Dexie).
 
-Supabase Auth z sesją po stronie klienta (`localStorage`), automatyczne odświeżanie tokenu. Trasy chronione przez komponent-strażnik w układzie `(app)` — przy statycznym eksporcie nie ma pośrednika serwerowego, więc ochrona jest po stronie klienta **plus reguły dostępu w bazie**. To jest bezpieczne, bo prawdziwa autoryzacja dzieje się w bazie, a nie w interfejsie.
+Do not claim `query-sync-storage-persister` itself is IndexedDB.
 
-Metody: e-mail z hasłem, Google, Apple. Ostatnia jest wymagana, jeśli aplikacja trafi do App Store z logowaniem społecznościowym.
+### 11.1 Cache rules
 
-### 7.2 Reguły niepodlegające negocjacji
+- persisted query cache is versioned/buster-tagged by app/schema version,
+- sensitive cache entries are explicitly reviewed; not every query must persist,
+- cache can be discarded and rebuilt from server,
+- catalog uses dedicated Dexie tables instead of query cache,
+- active workout never lives only in query cache.
 
-1. **Żaden klucz z uprawnieniami administracyjnymi nie może istnieć w kodzie klienta.** Wyłącznie jako sekret funkcji brzegowej. W poprzedniej wersji taki klucz — omijający wszystkie reguły dostępu — znajdował się w kodzie i w historii repozytorium.
-2. **Żaden klucz API dostawcy AI nie może istnieć w kodzie klienta.** W poprzedniej wersji klucz był dołączany do paczki aplikacji.
-3. **Konfiguracja wyłącznie przez zmienne środowiskowe.** Klucz publiczny Supabase może być w kliencie — taka jest jego rola, chroni go warstwa reguł dostępu.
-4. **Reguły dostępu włączone na każdej tabeli użytkownika**, bez wyjątku, weryfikowane testem.
-5. **Skanowanie sekretów** jako blokujący krok procesu budowania.
+---
 
-### 7.3 Warstwa AI (v1.1)
+## 12. Authentication
 
-Funkcja brzegowa `ai-orchestrator`, około stu linii:
+### 12.1 Browser PWA
 
+`@supabase/supabase-js`, `persistSession`, auto refresh, PKCE.
+
+Flows w v1.0 (decyzja D-S / ADR-26):
+- email/password,
+- reset/recovery.
+
+Przeniesione do v1.0.1:
+- Google OAuth,
+- Apple OAuth where required by product/store policy.
+
+Warstwa adapterów z §12.3 powstaje jednak **od razu w v1.0**, mimo że ma tylko jedną implementację. Powód: jej brak oznacza rozsianie założeń o przekierowaniach przeglądarki po całym kodzie funkcji, co przy dokładaniu providerów i Capacitora w v1.1 wymusiłoby zmiany w wielu miejscach naraz.
+
+Use a static callback route that completes PKCE client-side and then returns to locale/app route.
+
+### 12.2 Production auth gates
+
+Before external beta:
+- custom SMTP for password/recovery mail,
+- redirect allowlist narrowed to real environments,
+- CAPTCHA/abuse controls evaluated,
+- password policy configured; avoid bespoke “uppercase+special character” rules as the only security control,
+- leaked-password protection/provider features enabled where available,
+- OAuth credentials and consent screens validated.
+
+### 12.3 Capacitor adapter
+
+Do not scatter browser redirect assumptions through features. `lib/auth/` exposes platform-neutral methods:
+- `signIn`,
+- `signInWithProvider`,
+- `signOut`,
+- `getSession`,
+- `handleCallback`.
+
+v1.1 can implement native/deep-link specifics behind this adapter.
+
+### 12.4 AgentOS eval
+
+The benchmark starts from a pre-authenticated, isolated test account/storage state. The task being scored does not provision Google/Apple/SMTP.
+
+No production auth bypass is compiled into a release build. CI asserts absence of eval-only routes/flags.
+
+---
+
+## 13. RLS and database security
+
+### 13.1 Non-negotiable
+
+- RLS enabled on every user table.
+- Client never receives service-role key.
+- `user_id` in mutation payload is ignored/derived where possible.
+- Edge Functions validate JWT.
+- DB constraints backstop app validation.
+- generated TypeScript DB types come from schema.
+
+### 13.2 RLS test matrix
+
+For every user-owned table:
+
+| Actor | Own row | Other user's row | System row |
+|---|---:|---:|---:|
+| anon | no | no | as explicitly allowed |
+| user A | allowed operation | **denied** | read where intended |
+| user B | own only | denied | read where intended |
+| service role | server-only expected behavior | server-only | server-only |
+
+Automated tests cover SELECT/INSERT/UPDATE/DELETE separately. Migrating an old policy without passing this matrix is forbidden.
+
+### 13.3 Secret scanning
+
+`gitleaks` blocks merge. Repository history containing prior compromised secrets is not imported into fresh repo.
+
+---
+
+## 14. Privacy and observability
+
+### 14.1 Error telemetry
+
+Sentry before-send hook removes:
+- auth tokens,
+- email/name where not essential,
+- workout notes,
+- mood/reflection/screening content,
+- AI prompts/responses,
+- raw IndexedDB payloads.
+
+Breadcrumb allowlist, not blacklist.
+
+### 14.2 Product measurement
+
+Prefer deriving:
+- activation/retention from `workouts.completed_at`,
+- recent/frequent exercise from functional data,
+- sync success from non-content mutation status.
+
+Logging-interaction benchmark can use beta instrumentation:
+`workout_id pseudonymous`, interaction durations, device class, app version — no set weights/reps or notes unless necessary and approved.
+
+### 14.3 Privacy gates
+
+Before Life Coach/Mind:
+- data-flow map,
+- purpose + lawful basis/Article 9 condition documented,
+- consent enforcement where chosen,
+- DPIA updated as required,
+- AI provider/data retention reviewed,
+- deletion/export coverage tests updated.
+
+---
+
+## 15. AI architecture v1.1
+
+```text
+client
+  → ai-orchestrator Edge Function
+    → validate JWT
+    → privacy/consent check
+    → per-user quota/rate policy
+    → build versioned context
+    → call provider
+    → validate structured output
+    → optional bounded repair
+    → persist approved domain result
+    → record provider/model/token/cost metadata
+  ← structured plan OR typed fallback error
 ```
-weryfikacja tokenu → sprawdzenie dziennego limitu → wywołanie modelu
-   → zapis zużycia i kosztu → zwiększenie licznika → zwrot odpowiedzi
-```
 
-**Konsekwencje:**
-- Klucze API wyłącznie jako sekrety funkcji.
-- Limity dzienne (biznesowe) po stronie serwera; ograniczanie częstotliwości (przeciw nadużyciom) po stronie klienta. Poprzednia wersja miała tylko to drugie, myląc je z pierwszym.
-- **Definicje kontekstu w bazie danych, nie w kodzie.** W poprzedniej wersji były stałą w kodzie — zmiana wymagała wydania nowej wersji aplikacji.
-- Wymuszony format odpowiedzi JSON. Poprzednia wersja polegała wyłącznie na instrukcji tekstowej, co było głównym źródłem błędów przetwarzania.
-- Jeden dostawca na start. Routing między modelami dopiero gdy istnieje monetyzacja, która to uzasadnia.
+### 15.1 Context definition
+
+Versioned server-side config, not hardcoded UI constants. Context builder retrieves only allowed fields.
+
+### 15.2 Structured output
+
+Zod/JSON schema validates:
+- task count,
+- categories,
+- duration bounds,
+- required rationale/reason codes,
+- no unknown enum values.
+
+Invalid output does not enter database.
+
+### 15.3 Deterministic fallback
+
+Fallback is local/server deterministic from user goals/preferences/capacity. AI outage never returns an empty day.
+
+### 15.4 Safety
+
+No mental-health diagnosis/treatment. System prompt alone is **not** a safety mechanism; feature scope, data contracts, output validation, UI copy and G-MH are also required.
 
 ---
 
-## 8. PWA
+## 16. PWA and browser storage
 
-### 8.1 Manifest i instalacja
+### 16.1 Cache strategy
 
-Tryb pełnoekranowy, orientacja pionowa, ikony w wymaganych rozmiarach, ekran startowy. **Zachęta do instalacji pojawia się kontekstowo — po pierwszym zapisanym treningu, nie przy pierwszym wejściu.** Prośba o instalację, zanim użytkownik zobaczył wartość, obniża konwersję.
-
-### 8.2 Strategie cache'owania
-
-| Zasób | Strategia |
+| Resource | Strategy |
 |---|---|
-| Powłoka aplikacji (HTML, JS, CSS) | Precache przy instalacji, aktualizacja przy nowej wersji |
-| Katalog ćwiczeń (dane statyczne) | Precache, wersjonowany |
-| Ilustracje ćwiczeń | Cache-first z limitem rozmiaru |
-| Dane użytkownika z Supabase | Network-first, cache jako zapas; źródłem prawdy jest cache TanStack Query w IndexedDB |
-| Czcionki | Cache-first, hostowane lokalnie (nie z zewnętrznego CDN — prywatność i niezawodność) |
+| versioned app shell/static JS/CSS | precache/versioned |
+| catalog data | dedicated versioned local store |
+| approved exercise media | cache-first with explicit quota/eviction policy |
+| server query data | network-first/query cache; persistence only for selected queries |
+| fonts | self-hosted/cache-first |
+| active workout/outbox | IndexedDB domain store; never generic runtime cache |
 
-### 8.3 Aktualizacje
+### 16.2 Update
 
-Wykrycie nowej wersji pokazuje nienachalny pasek „Dostępna nowa wersja — odśwież". Nigdy automatyczne przeładowanie w trakcie pracy — użytkownik może być w środku logowania treningu.
+Service worker detects new release and displays “update available”. Update activation/reload waits until:
+- no active workout, or
+- user explicitly accepts after durable draft flush.
 
-### 8.4 Ograniczenia iOS do odnotowania
+### 16.3 iOS correction
 
-Safari na iOS może usunąć dane lokalne po około siedmiu dniach nieużywania. `navigator.storage.persist()` jest przyznawany wybiórczo — wywołujemy go po instalacji i po pierwszym treningu. Powiadomienia web push wymagają iOS 16.4+ **i** dodania do ekranu głównego. Wszystkie te ograniczenia znikają po przejściu na Capacitora w v1.1.
+Do not encode “installed PWA loses storage after seven days” as a platform fact. Safari's browser storage behavior and Home Screen web-app storage are not identical; installed Home Screen apps have separate storage semantics.
 
----
+Architecture consequence:
+- test **Safari → Add to Home Screen → first standalone launch**,
+- expect storage/session separation behavior to require explicit verification,
+- design re-auth/recovery rather than assuming browser tab storage is inherited,
+- server-synced records recover after auth,
+- unsynced draft must be tested under actual installed PWA lifecycle/storage pressure.
 
-## 9. Ścieżka na mobile (Capacitor, v1.1)
-
-Warunki, które trzeba respektować **od pierwszego dnia**, żeby ta ścieżka pozostała otwarta:
-
-| Warunek | Dlaczego |
-|---|---|
-| Statyczny eksport (D-02) | Capacitor ładuje pliki z urządzenia |
-| Zero zależności od tras API Next.js | Nie istnieją w trybie statycznym; logika serwerowa idzie do funkcji brzegowych |
-| Nawigacja bez `next/navigation` w warstwie krytycznej | Routing oparty na plikach działa, ale ścieżki muszą być względne |
-| Odwołania do `window` i `document` zabezpieczone | Kod musi znieść środowisko bez DOM podczas budowania |
-| Bezpieczne obszary ekranu w układzie | Wycięcia i pasek gestów na iOS |
-| Cele dotykowe minimum 44 px | Wymóg wytycznych obu platform |
-
-Co Capacitor dodaje w v1.1: trwałe przechowywanie danych bez ryzyka usunięcia · powiadomienia lokalne i push · biometria · dostęp do danych zdrowotnych (v2.0) · obecność w sklepach.
-
-Co dochodzi jako koszt: proces wydawniczy w dwóch sklepach · natywne zakupy zamiast płatności webowych w wersji sklepowej · testy na realnych urządzeniach.
+`navigator.storage.persist()` may be requested where supported but never treated as guarantee.
 
 ---
 
-## 10. Testy
+## 17. Capacitor v1.1
 
-| Poziom | Narzędzie | Zakres |
+### 17.1 Keep path open from day one
+
+- relative/static-compatible navigation,
+- safe-area tokens in design,
+- touch targets ≥44 px,
+- no request-time Next backend dependency,
+- platform adapters for auth/haptics/notifications/storage,
+- no direct browser-only API deep inside business logic.
+
+### 17.2 Native value
+
+Store wrapper must provide actual app-like utility and robust offline behavior. Candidate native features:
+- local notifications,
+- haptics,
+- deep links/auth callback,
+- secure storage for auth-sensitive platform data where appropriate,
+- background-aware sync triggers where platform allows.
+
+This supports quality/store review, but **does not guarantee approval**.
+
+### 17.3 Mobile gate
+
+Before submission:
+- real iOS + Android device regression,
+- offline/restart/upgrade tests,
+- privacy labels/declarations,
+- health-app declaration where required,
+- current App Store/Google Play review/payment policy re-check,
+- no stale web-only install UI in native shell.
+
+---
+
+## 18. Testing architecture
+
+### 18.1 Test pyramid by failure class
+
+| Layer | Tool | Must cover |
 |---|---|---|
-| Czysta logika | Vitest | **Obowiązkowo:** wzór 1RM, wykrywanie rekordów, pamięć wzorca, przeliczanie jednostek, agregacja objętości. To są funkcje bez zależności — testy są tanie, a błąd tutaj psuje dane użytkownika |
-| Komponenty | Vitest + Testing Library | Formularze, walidacja, stany błędów i pustych list |
-| Integracja danych | Vitest + MSW | Zapytania i mutacje, zachowanie przy braku sieci |
-| End-to-end | Playwright | Ścieżki krytyczne, w tym **jedna z wyłączoną siecią** |
-| Dostępność | axe w testach Playwright | Automatyczne wykrywanie naruszeń |
+| pure domain | Vitest | Epley, volume, pattern selection, PR, unit conversions, sync conflict functions |
+| schema/contracts | Vitest/Zod | mutation payloads, catalog, AI output |
+| DB | Supabase local + SQL tests | constraints, RPC atomicity, idempotency, RLS matrix |
+| components | Testing Library | forms, errors, empty/offline/queued states |
+| integration | Vitest/MSW + real local DB where needed | Query/mutation gateway/retry |
+| E2E | Playwright | critical user flows |
+| visual | screenshot/VLM gate | frozen `DESIGN_ID` frames |
+| accessibility | axe + manual | critical routes |
+| PWA/device | browser/device smoke | install/update/offline lifecycle |
 
-**Zamiast progu pokrycia od pierwszego dnia** (poprzednia wersja miała próg 75% przy realnych 12%, przez co proces budowania był stale czerwony i przestano na niego patrzeć):
+### 18.2 Critical deterministic tests
 
-| Etap | Wymaganie |
-|---|---|
-| Od M0 | **Zielony proces budowania.** Zero błędów typów, testy przechodzą |
-| M0 | Jeden test end-to-end: logowanie → nawigacja → zapis → odświeżenie → odczyt |
-| Od M2 | 100% pokrycia dla czystej logiki w `features/*/lib/` |
-| Od M3 | Próg pokrycia 50%, podnoszony co wersję |
+1. kill/reload active workout → exact draft recovered;
+2. complete offline → one queued command;
+3. replay same mutation 5× → one server workout;
+4. force failure between workout/exercises/sets → transaction rolls back all;
+5. edit/delete historical PR workout → derived PR becomes correct;
+6. user A cannot read/write user B data;
+7. service worker update during active workout → no forced reload;
+8. catalog static ID equals server ID;
+9. production bundle contains no provider/service key;
+10. production build contains no eval bypass.
+
+### 18.3 Coverage policy
+
+No global vanity target that keeps CI permanently red.
+
+- 100% branch coverage for small pure functions where corruption risk is high.
+- Critical RPC/sync/RLS has explicit scenario coverage.
+- Overall coverage is tracked as ratchet after baseline, not as substitute for behavior tests.
 
 ---
 
-## 11. Proces budowania i wdrożenia
+## 19. Build / verification pipeline
 
-Trzy zadania zamiast dziesięciu. Poprzednia wersja miała pipeline droższy niż projekt, który i tak nie przechodził.
+### 19.1 `verify`
 
-| Zadanie | Zawartość |
-|---|---|
-| `verify` | Formatowanie · lint z regułami granic modułów · `tsc --noEmit` (**zero błędów jako warunek scalenia**) · testy jednostkowe · `gitleaks` · budżet rozmiaru paczki |
-| `e2e` | Playwright na wersji podglądowej, w tym scenariusz offline |
-| `deploy` | Wersja podglądowa dla każdej gałęzi, produkcja z gałęzi głównej |
+- format check,
+- lint/boundaries/forbidden imports,
+- `tsc --noEmit`,
+- unit + component tests,
+- DB schema/RLS tests where environment available,
+- catalog validation/provenance gate,
+- secret scan,
+- production bundle scan for eval-only markers,
+- dependency audit policy,
+- route bundle budgets.
 
-Hosting: Vercel albo Cloudflare Pages — przy statycznym eksporcie różnica jest kosmetyczna. Migracje bazy przez Supabase CLI w osobnym, ręcznie zatwierdzanym kroku.
+### 19.2 `e2e`
+
+Preview deployment or local static server:
+- authenticated test state,
+- critical flows,
+- offline workout,
+- retry/idempotency,
+- axe,
+- visual critical frames.
+
+### 19.3 `device-smoke`
+
+Human/automated where tooling permits:
+- iOS installed PWA,
+- Android installed PWA,
+- update,
+- offline/reopen,
+- auth after install.
+
+### 19.4 `deploy`
+
+- preview per branch/task,
+- production from protected main,
+- DB migrations are separate controlled step,
+- migration forward/backward compatibility checked before app deploy where necessary.
 
 ---
 
-## 12. Zadania do wykonania przed pierwszym commitem
+## 20. AgentOS implementation contract
 
-| # | Zadanie | Powód |
+Every autonomous task receives:
+
+```yaml
+task_id:
+prd_ids: []
+design_ids: []
+architecture_refs: []
+preconditions: []
+scope:
+forbidden_paths: []
+schema_contract:
+acceptance_criteria: []
+required_tests: []
+expected_artifacts: []
+human_gates: []
+budget:
+```
+
+### 20.1 Monotonicity rules
+
+Agent may not:
+- weaken tests to pass,
+- remove RLS,
+- disable lint/type/secret gates,
+- change PRD priority,
+- change ADR status,
+- replace real persistence with fixtures,
+- add production mock data,
+- bypass mutation gateway,
+- add new dependency without reason recorded in result.
+
+### 20.2 Eval classification
+
+External/provider failure → `infra_fail/provider_fail`.  
+Acceptance criteria not met → `task_fail`.  
+Deterministic gate fails after agent changes → `gate_fail`.  
+Security zero violation → benchmark STOP per AgentOS test plan.
+
+---
+
+## 21. Design-facing technical constraints
+
+Designer should assume:
+
+- mobile primary, desktop fully usable,
+- offline/sync status is a first-class component, not toast-only,
+- active-workout screen must survive long sessions and one-handed use,
+- bottom nav exactly 5 destinations,
+- Settings not in bottom nav,
+- all destructive actions need explicit recovery/confirmation semantics,
+- timer must remain visible but not block set entry,
+- long Polish strings are reference stress case,
+- safe areas for future Capacitor from v1 design,
+- charts need accessible tabular/summary alternative,
+- color cannot be the only carrier of PR/error/sync state.
+
+---
+
+## 22. Pre-implementation spikes / gates
+
+| ID | Task | Pass condition |
 |---|---|---|
-| 1 | **Założenie nowego projektu Supabase** (D-14) i **usunięcie starego** po zabraniu z niego reguł dostępu i funkcji RODO jako wzorców | Stary projekt niesie wycieknięte klucze i 36 tabel nieużywanego schematu |
-| 2 | **Rotacja klucza OpenAI** | Był dołączany do paczki aplikacji poprzedniej wersji |
-| 3 | **Weryfikacja licencji `free-exercise-db`** — osobno dla danych i osobno dla obrazów | Warunek wykonania decyzji D-15 |
-| 4 | Sprawdzenie dostępności domeny i kolizji znaku towarowego dla nazwy **LifeOS** | Decyzja D-J utrwala nazwę; kolizja wykryta później kosztuje przebudowę marki |
-| 5 | Potwierdzenie założeń `[Z-1]`…`[Z-12]` z PRD | Zmiana teraz kosztuje akapit, później migrację danych |
-| 6 | Rejestracja domeny i rozdzielenie `app.` od strony marketingowej | Wynika z decyzji D-02 |
+| SPIKE-01 | Static export + next-intl + Supabase auth callback | EN/PL static routes + PKCE sign-in/recovery work on preview |
+| SPIKE-02 | Serwist + installed PWA | offline shell + controlled update works |
+| SPIKE-03 | Dexie active workout | reload/kill recovery deterministic |
+| SPIKE-04 | Atomic workout RPC | partial insert impossible; idempotent replay passes |
+| SPIKE-05 | iOS add-to-home auth/storage | documented behavior on real device; recovery flow accepted |
+| SPIKE-06 | Catalog identity | same deterministic IDs in static JSON and Supabase seed |
+| SPIKE-07 | Source content/media | G-LIC result written; build blocks unapproved media |
+| SPIKE-08 | Bundle/route baseline | budgets set from measured M0, not guessed |
+
+M0 is not complete until SPIKE-01…06 pass. SPIKE-07 blocks catalog media release; SPIKE-08 sets ratchet.
 
 ---
 
-## 13. Czego świadomie nie robimy
+## 23. Explicitly forbidden shortcuts
 
-**Renderowania serwerowego i komponentów serwerowych** — konflikt z Capacitorem, zerowa korzyść dla aplikacji za logowaniem.
-**Własnej warstwy synchronizacji w v1.0** — poprzednia próba dała osiemset linii martwego kodu obsługującego jedną tabelę z sześciu.
-**Podziału na pakiety monorepo** — dopóki nie ma drugiego konsumenta logiki, to koszt bez korzyści.
-**Biblioteki komponentów jako zależności** — shadcn/ui daje kod w repozytorium, więc dostępność i motyw są pod pełną kontrolą.
-**Własnego systemu tłumaczeń** — `next-intl` wystarcza i jest utrzymywany.
-**Analityki w v1.0** — poza jedną metryką: mediana czasu logowania treningu. To metryka funkcji kluczowej i musi być mierzona od pierwszego dnia. Reszta dochodzi, gdy będzie co analizować.
+- direct Supabase writes from components/hooks outside mutation adapter,
+- workout data only in Zustand/localStorage,
+- separate row-by-row offline queue for workout aggregate in v1.0,
+- generic LWW by `updated_at`,
+- nullable `exercise_id` + raw name in `workout_exercises`,
+- hand-maintained duplicate TypeScript DB types,
+- source exercise photos without provenance gate,
+- health/mental raw payload in Sentry,
+- production auth bypass for benchmark,
+- middleware-dependent locale/auth behavior under static export,
+- calling query cache “source of truth”,
+- declaring store/payment rules immutable years before implementation.
+
+---
+
+## 24. Ograniczenia darmowych progów — konsekwencje architektoniczne
+
+Decyzja D-T (wyłącznie darmowe progi) nakłada twarde ograniczenia. Nie są to preferencje — złamanie któregoś kończy się rachunkiem albo przestojem.
+
+| Ograniczenie | Konsekwencja architektoniczna |
+|---|---|
+| Baza 500 MB | Bez znaczenia w tej skali. Trening z osiemnastoma seriami to kilka kilobajtów |
+| Pliki 1 GB | **Katalog ćwiczeń i wszelkie ilustracje idą w paczce statycznej**, nie przez Supabase Storage. Storage służy wyłącznie awatarom |
+| Transfer z bazy 5 GB miesięcznie | Wzmacnia decyzję o katalogu offline w Dexie: przeglądanie katalogu nie generuje ruchu do bazy |
+| Dwa aktywne projekty | Produkcja plus jedno środowisko dla benchmarku AgentOS. **Nie ma trzeciego środowiska** — testy bazy w procesie budowania używają lokalnego Supabase, nie zdalnego |
+| **Wstrzymanie po 7 dniach bez zapytań** | Wymaga decyzji w M0. Dane są zachowane, ale wznowienie jest ręczne. Podczas bety oznacza to, że pierwszy tester po tygodniowej przerwie trafia na aplikację, która nie odpowiada. Opcje: lekkie zapytanie cykliczne z zewnętrznego zadania czasowego, albo świadoma akceptacja z komunikatem w interfejsie. **Otwarte: O-09** |
+
+**Próg opłacalności.** Pierwszym powodem przejścia na plan płatny nie będzie rozmiar danych ani liczba użytkowników, tylko **wstrzymywanie projektu** i brak automatycznych kopii zapasowych. Warto to zaplanować na moment rozpoczęcia bety zewnętrznej, a nie odkryć w jej trakcie.
+
+---
+
+## Appendix A — v1.0 route/data ownership
+
+| Route | Feature | Read | Write |
+|---|---|---|---|
+| dashboard | core/workouts | Query + local draft status | start/resume |
+| workout | workouts | Dexie draft + catalog | Dexie draft → CommitWorkout |
+| exercises | exercises | Dexie catalog + Query favorites/custom | mutation gateway |
+| templates | templates | Query | mutation gateway |
+| history | history | Query | mutation gateway (online v1.0 edit/delete) |
+| progress | progress | Query/derived DB | measurements if shipped |
+| settings | settings | Query/local display prefs | mutation gateway/local theme |
+| auth | auth | Supabase session | Supabase Auth adapter |
+
+**Offline v1.0 write scope is deliberately narrow:** complete/new workout aggregate. Offline edit/delete of old history, custom exercise creation and settings sync may require network until generic sync v1.1 unless separately promoted by PRD.
+
+---
+
+## Appendix B — implementation research basis
+
+Architecture corrections were checked against current official documentation for:
+- Next.js static export,
+- next-intl static routing constraints,
+- Supabase browser auth/PKCE/production auth guidance,
+- TanStack Query persistence,
+- WebKit website/Home Screen storage behavior,
+- Chrome Lighthouse/PWA tooling,
+- Apple/Google store policies.
+
+Pin exact dependency versions in lockfile at M0 and verify APIs against current docs then; this document intentionally specifies contracts rather than assuming a future minor-version API.

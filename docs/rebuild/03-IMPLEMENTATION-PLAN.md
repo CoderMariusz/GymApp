@@ -1,398 +1,1271 @@
-# LifeOS — Plan implementacji (PWA)
+# LifeOS — Implementation Plan
 
-**Wersja dokumentu:** 1.0
-**Data:** 2026-08-11
-**Status:** Draft do przeglądu
-**Powiązane:** `01-PRD.md` (co budujemy) · `02-ARCHITECTURE.md` (jak jest zbudowane)
+**Wersja:** 1.2 — po decyzjach właściciela z 2026-08-12  
+**Data:** 2026-08-12  
+**Status:** READY — G-PROD zamknięte decyzjami, G-DESIGN ma właściciela i specyfikację (`05-DESIGN-BRIEF.md`)  
+**Tryb pracy:** greenfield · jedna osoba + Agent OS/AI · ok. 20 h/tydzień czasu właściciela  
+**Powiązane:** `01PRD_REVIEWED.md`, `02ARCHITECTURE_REVIEWED.md`, `plan-testow-v2.md`
+
+> Ten plan nie zakłada, że obecna koncepcja jest poprawna tylko dlatego, że jest opisana. Najpierw usuwa ryzyka, które mogą unieważnić test, potem buduje walking skeleton, a dopiero potem osiem pionowych feature packages używanych jako benchmark Agent OS.
 
 ---
 
-## 1. Zasada nadrzędna
+## 0. Zasady nadrzędne
 
-**Etap M0 blokuje wszystko pozostałe.** Zanim powstanie druga funkcja, musi działać pełna ścieżka:
+### 0.1 Dwie miary sukcesu
 
+**Product success** i **AgentOS success** są oddzielne.
+
+Product:
+- użytkownik potrafi zalogować realny trening szybko i bez utraty danych,
+- działa offline w głównym use case,
+- wraca do produktu,
+- rozumie dane i ufa stanowi sync.
+
+AgentOS:
+- dostaje zamrożony feature contract,
+- implementuje UI + persistence + wiring + tests,
+- przechodzi critic/gates,
+- oddaje `READY_FOR_HUMAN`,
+- nie narusza sandbox/forbidden/security.
+
+Awaria OAuth providera albo store review **nie jest** dowodem, że builder nie umie implementować feature'u.
+
+### 0.2 Walking skeleton przed szerokością
+
+M0 musi udowodnić:
+
+```text
+static build
+→ real Supabase session
+→ protected app shell
+→ one real DB read/write
+→ Dexie durable draft
+→ atomic CommitWorkout proof
+→ reload/reopen
+→ preview deploy
+→ green verify/e2e
 ```
-uruchomienie → logowanie → nawigacja → zapis treningu → odświeżenie strony
-            → trening widoczny z kompletem serii → zielony proces budowania
-```
 
-Poprzednia wersja projektu zbudowała trzynaście decyzji architektonicznych, 206 dokumentów, 36 tabel i pipeline CI na 380 linii, po czym okazało się, że około dwustu z 217 plików jest nieosiągalnych z interfejsu. Kolejność „funkcje najpierw, integracja później" była głównym mechanizmem porażki. Ten plan ją odwraca.
+Dopiero wtedy rusza bateria feature'ów.
 
----
+### 0.3 Vertical slice Definition of Done
 
-## 2. Definition of Done
+Każdy feature task jest DONE tylko gdy:
 
-Obowiązuje dla **każdego** zadania w tym planie. Zadanie jest ukończone, gdy:
+1. ma `prd_ids` i `design_ids`,
+2. jest osiągalny z normalnej nawigacji,
+3. używa realnego modelu danych / approved test DB,
+4. persistence przeżywa reload zgodnie z wymaganiem,
+5. offline state działa, jeśli feature go deklaruje,
+6. UI ma loading/empty/error/disabled/offline/queued states tam, gdzie potrzebne,
+7. wymagane unit/component/DB/E2E przechodzą,
+8. visual gate przechodzi na zamrożonych frame'ach,
+9. accessibility gate przechodzi,
+10. nie ma production mock data,
+11. `verify` i `e2e` są zielone,
+12. result.json uczciwie raportuje ograniczenia.
 
-1. Funkcja jest **osiągalna z nawigacji** — istnieje trasa i jest z niej wejście.
-2. Działa na **realnych danych** — zero danych testowych w kodzie produkcyjnym, weryfikowane automatycznie.
-3. Zapis i odczyt są **symetryczne** — po odświeżeniu strony odczyt zwraca dokładnie to, co zapisano.
-4. Jest **pokryta testem** na poziomie właściwym dla swojej warstwy.
-5. **Działa offline**, jeśli tak deklaruje w PRD.
-6. **Ma tłumaczenia** w obu językach.
+### 0.4 Nie liczymy „AI speedup” w baseline
 
-W poprzedniej wersji „ukończone" oznaczało istnienie pliku. To jedyna przyczyna raportowania 45–66% gotowości przy zerowej liczbie funkcji osiągalnych z interfejsu.
+Estymaty są **human-equivalent engineering effort ranges**, nie obietnicą kalendarzową. Agent OS może je skompresować, ale współczynnik wyliczamy dopiero po M0 + pierwszych 3 feature'ach. Nie odejmujemy z góry 25%, żeby harmonogram wyglądał lepiej.
 
----
+### 0.5 Buffer jest jawny
 
-## 3. Etapy
-
-**Estymaty podane są w godzinach roboczych**, nie w tygodniach kalendarzowych. Powód: tryb pracy to około dwudziestu godzin tygodniowo (decyzja D-I), więc tydzień kalendarzowy to pół tygodnia pracy. Przeliczenie na kalendarz jest w §4.
-
-Estymaty nie zawierają produkcji treści (biegnie równolegle, §5) ani bufora na nieprzewidziane.
-
----
-
-### M0 — Walking skeleton · 60 h · BLOKUJE WSZYSTKO
-
-**Cel:** działająca, wdrożona, instalowalna aplikacja z jedną prawdziwą funkcją.
-
-| # | Zadanie |
-|---|---|
-| 0.1 | **Rotacja kluczy Supabase i OpenAI** przed czymkolwiek innym |
-| 0.2 | Projekt Next.js, TypeScript w trybie ścisłym, tryb statycznego eksportu, Tailwind, shadcn/ui |
-| 0.3 | ESLint z regułami granic modułów i zakazem danych testowych w kodzie produkcyjnym; Prettier; `gitleaks` |
-| 0.4 | `next-intl` z EN i PL, przełącznik języka, jeden przetłumaczony ekran na dowód działania |
-| 0.5 | Projekt Supabase, migracja początkowa z trzema tabelami, reguły dostępu, generowanie typów |
-| 0.6 | Autoryzacja: e-mail z hasłem, Google, Apple; reset hasła; strażnik tras |
-| 0.7 | **Powłoka aplikacji: nawigacja dolna z pięcioma zakładkami**, wszystkie osiągalne |
-| 0.8 | Ustawienia: motyw i język, utrwalone po odświeżeniu |
-| 0.9 | `lib/mutations/` — brama zapisu wg §5.2 dokumentu architektury, z identyfikatorami po stronie klienta |
-| 0.10 | TanStack Query z zapisem cache do IndexedDB |
-| 0.11 | Serwis roboczy, manifest, ikony, ekran startowy |
-| 0.12 | Proces budowania: trzy zadania wg §11 architektury |
-| 0.13 | Wdrożenie na produkcję pod `app.domena` |
-| 0.14 | Jeden test end-to-end: logowanie → nawigacja → zapis → odświeżenie → odczyt |
-| 0.15 | Sentry |
-
-**Wyjście:** aplikacja pod publicznym adresem, instalowalna na telefonie, logowanie działa, zmiana motywu przeżywa odświeżenie, Lighthouse PWA równy 100, proces budowania zielony.
+Baseline nie zawiera 20% contingency. Release forecast pokazuje również zakres z buforem.
 
 ---
 
-### M1 — Katalog ćwiczeń · 80 h
+## 1. P0 — decision/research gates przed pełnym startem
 
-**Zależności:** M0. **Równolegle:** produkcja treści (patrz §5).
+Część tych prac może biec równolegle z M0, ale nie wolno ignorować ich przed odpowiadającym gate'em.
 
-| # | Zadanie |
-|---|---|
-| 1.1 | Schemat `exercises` i `exercise_translations` z pełną taksonomią wg §5.2 PRD |
-| 1.1a | **Skrypty importu katalogu** wg §6.4 architektury: pobranie źródła, wybór pozycji, mapowanie na taksonomię, scalenie z treścią ręczną, optymalizacja obrazów |
-| 1.1b | Test walidacyjny katalogu: każda pozycja ma komplet pól wymaganych i tłumaczenie w obu językach — uruchamiany w procesie budowania |
-| 1.2 | Dexie: przechowywanie katalogu z wersjonowaniem |
-| 1.3 | Zasilanie katalogu z danych statycznych przy pierwszym uruchomieniu, z ekranem postępu |
-| 1.4 | Aktualizacja przyrostowa z serwera, gdy dostępna nowsza wersja katalogu |
-| 1.5 | Wyszukiwanie pełnotekstowe w Dexie, opóźnienie 150 ms, wyszukiwanie na aktywnym języku |
-| 1.6 | Filtry: kategoria, sprzęt, typ, poziom — **wszystkie z interfejsem** |
-| 1.7 | Lista z wirtualizacją (250 pozycji z ilustracjami) |
-| 1.8 | Widok szczegółów: mięśnie, sprzęt, instrukcja, wskazówki, typowe błędy |
-| 1.9 | Ulubione, z synchronizacją |
-| 1.10 | Ćwiczenia własne: pełny cykl tworzenia, edycji i usuwania |
-| 1.11 | Tryb wyboru ćwiczenia — ten sam komponent, inny tryb |
-| 1.12 | Testy: wyszukiwanie, filtry, zasilanie katalogu, praca bez sieci |
-
-**Wyjście:** katalog przeszukiwalny **z wyłączonym internetem**, wynik poniżej 200 ms, obsługa dwóch języków.
-
----
-
-### M2 — Logowanie treningu · 120 h · SERCE PRODUKTU
-
-**Zależności:** M1.
-
-| # | Zadanie |
-|---|---|
-| 2.1 | Schemat: `workouts`, `workout_exercises`, `workout_sets`, `personal_records` |
-| 2.2 | Stan aktywnego treningu w Zustand, utrwalany w `localStorage` przy każdej zmianie |
-| 2.3 | Ekran treningu: dodawanie ćwiczeń z katalogu, kolejność, usuwanie |
-| 2.4 | Wprowadzanie serii z polami zależnymi od `tracks` ćwiczenia |
-| 2.5 | **Pamięć wzorca:** automatyczne wypełnienie z ostatniej sesji plus informacja „ostatnio: N dni temu". Cel poniżej 500 ms |
-| 2.6 | Serie rozgrzewkowe, wykluczane z objętości i rekordów |
-| 2.7 | Timer przerwy: automatyczny start, wartość z ćwiczenia, warianty, pominięcie, wibracja i dźwięk |
-| 2.8 | Pomiar czasu sesji |
-| 2.9 | **Wykrywanie rekordów** przy zapisie, wzorem Epleya |
-| 2.10 | Zapis przez `lib/mutations/` z aktualizacją optymistyczną |
-| 2.11 | **Obsługa braku sieci:** baner, zachowanie danych, propozycja ponowienia po powrocie |
-| 2.12 | Ekran podsumowania z wyróżnionymi rekordami |
-| 2.13 | Szybkie logowanie |
-| 2.14 | Testy jednostkowe: 1RM, wykrywanie rekordów, pamięć wzorca, agregacja objętości — **100% pokrycia** |
-| 2.15 | Test end-to-end: pełny trening od startu do podsumowania |
-| 2.16 | Test end-to-end: zachowanie przy zerwanym połączeniu |
-
-**Wyjście:** trening zalogowany w poniżej 60 sekund, po odświeżeniu widoczny **z kompletem serii**.
-
-> W poprzedniej wersji serie zapisywano z pustym powiązaniem do treningu. Trening był formalnie zapisany, a jego zawartość nieodzyskiwalna. Punkt 2.16 istnieje po to, żeby to wykryć automatycznie, a nie po miesiącu.
-
----
-
-### M3 — Historia i postęp · 80 h
-
-**Zależności:** M2.
-
-| # | Zadanie |
-|---|---|
-| 3.1 | Lista historii z podziałem na strony i filtrem po ćwiczeniu |
-| 3.2 | Widok szczegółów treningu |
-| 3.3 | Edycja i usuwanie miękkie |
-| 3.4 | Wykres siły: szacowane 1RM w czasie, per ćwiczenie |
-| 3.5 | Wykres objętości tygodniowej |
-| 3.6 | Oś rekordów |
-| 3.7 | Zakresy czasu: 30 dni, 90 dni, 6 miesięcy, rok, całość |
-| 3.8 | Pomiary ciała: pełny formularz (dziesięć pól) |
-| 3.9 | Wykresy trendów pomiarów |
-| 3.10 | Przeliczanie jednostek wpięte we wszystkie miejsca wyświetlania |
-| 3.11 | Eksport CSV |
-| 3.12 | Testy: agregacje, zakresy czasu, przeliczanie jednostek |
-
-**Wyjście:** wykresy na **realnych danych użytkownika**. Weryfikacja automatyczna: zero danych testowych w kodzie produkcyjnym.
-
----
-
-### M4 — Domknięcie v1.0 · 80 h
-
-**Zależności:** M3.
-
-| # | Zadanie |
-|---|---|
-| 4.1 | Szablony: gotowe zestawy, tworzenie z zakończonego treningu, start treningu z szablonu |
-| 4.2 | Pełny ekran ustawień wg §8 PRD |
-| 4.3 | Profil: imię, e-mail z weryfikacją, hasło, awatar |
-| 4.4 | Zgodność RODO: eksport danych, usunięcie konta z limitem po stronie serwera |
-| 4.5 | Disclaimer i zasoby kryzysowe |
-| 4.6 | Kontekstowa zachęta do instalacji PWA — po pierwszym zapisanym treningu |
-| 4.7 | Przegląd dostępności: klawiatura, czytniki ekranu, kontrast, skalowanie do 200% |
-| 4.8 | Optymalizacja wydajności do progów z §11.1 PRD |
-| 4.9 | Uzupełnienie tłumaczeń, przegląd tekstów |
-| 4.10 | Metryka: mediana czasu logowania treningu |
-| 4.11 | Testy end-to-end dla wszystkich ścieżek krytycznych |
-| 4.12 | Testy beta z użytkownikami |
-
-**v1.0 = 420 h pracy** (z zapasem na integrację). Przy 20 h/tydzień: około 17 tygodni kalendarzowych — patrz §4.
-
----
-
-### M5 — Zapis offline + Capacitor · 120 h · v1.1
-
-**Zależności:** M4. **To jest spłata świadomie zaciągniętego długu z `[Z-1]`.**
-
-| # | Zadanie |
-|---|---|
-| 5.1 | Schemat `sync_outbox`, `updated_at` po stronie serwera na wszystkich tabelach |
-| 5.2 | **Podmiana `lib/mutations/`** na wersję z kolejką — reszta aplikacji bez zmian |
-| 5.3 | Kolejka: priorytety, narastające opóźnienie, limit ponowień, stan „wymaga uwagi" |
-| 5.4 | Rozstrzyganie konfliktów: wygrywa ostatni zapis po `updated_at` |
-| 5.5 | Widoczny stan synchronizacji plus ręczne wymuszenie |
-| 5.6 | Prośba o trwałe przechowywanie danych, obsługa odmowy |
-| 5.7 | Testy: **jeden test integracyjny na każdą synchronizowaną tabelę** |
-| 5.8 | Test end-to-end: pełny trening offline, potem synchronizacja |
-| 5.9 | Capacitor: projekty iOS i Android, ikony, ekrany startowe, bezpieczne obszary |
-| 5.10 | Powiadomienia lokalne przez Capacitor |
-| 5.11 | Zgłoszenie do App Store i Google Play |
-
-**Wyjście:** trening zalogowany bez zasięgu, zsynchronizowany po powrocie sieci; aplikacja przyjęta w obu sklepach.
-
----
-
-### M6 — Life Coach · 160 h · v1.1
-
-**Zależności:** M5.
-
-| # | Zadanie |
-|---|---|
-| 6.1 | **Funkcja brzegowa `ai-orchestrator` — przed czymkolwiek innym w tym etapie** |
-| 6.2 | Definicje kontekstu w bazie danych, wersjonowane |
-| 6.3 | Schemat: `check_ins`, `goals`, `goal_progress`, `daily_plans`, `plan_tasks`, `streaks`, `user_daily_metrics` |
-| 6.4 | Poranny check-in: nastrój, energia, jakość snu, godziny snu, notatka. Cel poniżej 60 s |
-| 6.5 | Generowanie planu z pełnym kontekstem wg §7.3 PRD |
-| 6.6 | **Deterministyczny plan awaryjny** budowany lokalnie |
-| 6.7 | Widok planu, statusy zadań, ręczna edycja |
-| 6.8 | Cele: pełny cykl edycji plus **interfejs wpisywania postępu** |
-| 6.9 | Wieczorna refleksja z przeglądem realizacji planu |
-| 6.10 | Preferencje coachingowe w bazie |
-| 6.11 | Seria check-inów |
-| 6.12 | Zapis metryk dziennych |
-| 6.13 | Testy: przetwarzanie odpowiedzi modelu, plan awaryjny, obliczanie serii |
-| 6.14 | **Weryfikacja: rozpakowanie paczki aplikacji i potwierdzenie braku kluczy API** |
-
-**Wyjście:** pełna pętla działa siedem dni z rzędu; plan awaryjny działa przy odciętym API.
-
----
-
-### M7 — Mind i insighty · 120 h · v1.2
-
-**Zależności:** M6.
-
-| # | Zadanie |
-|---|---|
-| 7.1 | Schemat: `mood_logs`, `breathing_sessions`, `mental_health_screenings`, `insights` |
-| 7.2 | Śledzenie nastroju i stresu w skali 1–5 z emoji |
-| 7.3 | Wykres trendu nastroju |
-| 7.4 | Pięć technik oddechowych z animacją i wibracją |
-| 7.5 | Kwestionariusze GAD-7 i PHQ-9 z punktacją |
-| 7.6 | **Progi kryzysowe i zasoby pomocowe** |
-| 7.7 | Cztery reguły cross-module wg §9.3 PRD |
-| 7.8 | Karta insightu, maksymalnie jeden dziennie, z akcjami |
-| 7.9 | **Przełącznik prywatności realnie blokujący zapis metryk** |
-| 7.10 | Testy: punktacja kwestionariuszy, progi kryzysowe, reguły insightów |
-
-**Wyjście:** insight pojawia się po siedmiu dniach danych z dwóch modułów.
-
----
-
-## 4. Harmonogram
-
-Przy tempie **20 godzin tygodniowo** (decyzja D-I).
-
-| Wersja | Etapy | Nakład | Kalendarz nominalny | Realnie z asystentem AI |
-|---|---|---|---|---|
-| **v1.0** | M0–M4 | 420 h | 21 tyg. | **16–18 tyg.** (~4 miesiące) |
-| **v1.1** | M5–M6 | 280 h | 14 tyg. | 11–12 tyg. |
-| **v1.2** | M7 | 120 h | 6 tyg. | 5 tyg. |
-| **Razem** | | 820 h | 41 tyg. | **32–35 tyg.** (~8 miesięcy) |
-
-**Skąd kolumna „realnie".** Praca w parze z asystentem AI kompresuje zadania rutynowe — komponenty, formularze, testy jednostkowe, migracje, skrypty importu, tłumaczenia — o rząd 40–50%. Nie kompresuje natomiast decyzji projektowych, integracji, debugowania na realnych urządzeniach ani testów z użytkownikami. Ponieważ rutyna to około połowy nakładu, oszczędność na całości wynosi 15–25%. **To jest oszacowanie, nie obietnica** — pierwszy punkt kontrolny po M0 pokaże realny współczynnik i wtedy warto przeliczyć resztę.
-
-Harmonogram nie zawiera produkcji treści (biegnie równolegle, §5), bufora na nieprzewidziane (zalecane 20%) ani procesu wydawniczego w sklepach (M5).
-
----
-
-## 5. Ścieżka równoległa: produkcja treści
-
-**Zaczyna się w M0, nie w M1.**
-
-Decyzja D-E przesądziła źródło: import z `free-exercise-db` (domena publiczna, około ośmiuset pozycji ze zdjęciami), wzbogacony własnymi opisami i przetłumaczony na polski. To skraca ścieżkę treści z około sześciu tygodni pracy pełnoetatowej do **około 60–80 godzin**, ale nie eliminuje jej.
-
-| Faza | Zakres | Nakład |
-|---|---|---|
-| F1 | Weryfikacja licencji **osobno dla danych i osobno dla obrazów** | 2 h |
-| F2 | Wybór 200–250 pozycji z bazy źródłowej wg kryteriów pokrycia | 6 h |
-| F3 | Reguły mapowania na taksonomię plus ręczne uzupełnienie `movement_pattern` i `tracks` (nie istnieją w źródle) | 16 h |
-| F4 | Tłumaczenie maszynowe nazw i instrukcji plus **obowiązkowa korekta** przez osobę znającą terminologię treningową | 20 h |
-| F5 | Wskazówki techniczne i typowe błędy, 3–5 pozycji każdego rodzaju na ćwiczenie | 24 h |
-| F6 | Optymalizacja obrazów (skryptem) i kontrola jakości | 6 h |
-
-**Kolejność wykonania ma znaczenie.** F1 do F3 muszą być gotowe **przed M1**, bo od nich zależy kształt schematu bazy. F4 do F6 mogą biec równolegle z M1 i M2.
-
-**Zawór bezpieczeństwa:** jeśli treść nie będzie gotowa do końca M1, etap M2 rusza na **dwudziestu ćwiczeniach wzorcowych** przerobionych w całości. Struktura danych jest wtedy przetestowana end-to-end, a reszta katalogu dochodzi partiami. **Treść nie może blokować kodu.**
-
-**Uwaga o właścicielu.** Przy pracy jednoosobowej „osobny właściciel treści" oznacza **osobny blok czasu**, a nie osobną osobę. Praktycznie: treść w innych sesjach niż kod, bo przełączanie kontekstu między pisaniem opisów ćwiczeń a debugowaniem jest kosztowne. W poprzedniej wersji projektu zadania contentowe wisiały trzy sprinty przy zerowym postępie właśnie dlatego, że nie miały wydzielonego czasu.
-
----
-
-## 5a. Praca solo z asystentem AI
-
-Decyzja D-H oznacza brak drugiej pary oczu przy decyzjach architektonicznych. To jest główne ryzyko tego trybu pracy i wymaga rekompensaty proceduralnej.
-
-**Co delegować bez wahania:** komponenty interfejsu z gotowej specyfikacji · formularze i walidacja · testy jednostkowe czystej logiki · migracje bazy · skrypty importu i mapowania · tłumaczenia · konfiguracja narzędzi · uzupełnianie powtarzalnych wzorców.
-
-**Czego nie delegować bez własnej weryfikacji:** kształt modelu danych · granice modułów · cokolwiek dotykającego bramy zapisu z §5.2 architektury · reguły dostępu do danych · obliczenia wpływające na dane użytkownika (1RM, wykrywanie rekordów, agregacja objętości) · obsługa błędów w ścieżkach zapisu.
-
-Wzór jest prosty: **im trudniej cofnąć skutek, tym mniej delegować**. Błąd w komponencie widać od razu. Błąd w modelu danych albo w wykrywaniu rekordów ujawnia się po miesiącu, gdy dane są już zepsute.
-
-**Rekompensata za brak recenzenta — reguły egzekwowane automatycznie zastępują przegląd kodu.** Lista z §4 dokumentu architektury (zero danych testowych w kodzie produkcyjnym, zero błędów typów, granice modułów, budżet rozmiaru paczki, skanowanie sekretów) nie jest formalnością — przy pracy solo to jedyna instancja, która powie „nie". Wyłączenie którejkolwiek reguły „na chwilę" jest dokładnie tym mechanizmem, który w poprzedniej wersji doprowadził do 728 błędów, których nikt nie zauważył.
-
-**Zasada dodatkowa:** decyzja architektoniczna trafia do rejestru decyzji **zanim** powstanie kod, który ją realizuje. Zapisanie uzasadnienia na piśmie jest przy pracy solo namiastką rozmowy z drugim developerem i wyłapuje zaskakująco dużo.
-
----
-
-## 6. Ryzyka i reakcje
-
-| Ryzyko | Prawdopodobieństwo | Skutek | Reakcja |
+| ID | Zadanie | Owner | Blocking |
 |---|---|---|---|
-| **Brak zapisu offline blokuje główny scenariusz w v1.0** | Wysokie | Wysoki | Zabezpieczenie z §5.3 architektury łagodzi najgorszy przypadek. Jeśli testy beta w M4 to potwierdzą — M5 przesuwa się przed M6 (już tak zaplanowane) |
-| Produkcja treści staje się ścieżką krytyczną | **Niskie** po decyzji D-E | Wysoki | Import ze źródła skraca ścieżkę do 60–80 h. Fazy F1–F3 przed M1, reszta równolegle. Dwadzieścia ćwiczeń wzorcowych odblokowuje M2 |
-| **Licencja obrazów w bazie źródłowej okazuje się inna niż licencja danych** | Średnie | Średni | Weryfikacja w fazie F1, przed jakąkolwiek pracą. Zapas: katalog bez zdjęć, z samymi diagramami grup mięśniowych |
-| **Brak drugiej pary oczu przy decyzjach architektonicznych** (praca solo) | **Wysokie** | Wysoki | Reguły egzekwowane automatycznie zamiast przeglądu kodu (§5a). Rejestr decyzji wypełniany przed napisaniem kodu. Zewnętrzny przegląd dokumentów przed startem |
-| **Utrata tempa przy pracy 20 h/tydzień** | Średnie | Średni | Zadania w planie są samodzielnie zamykalne. Punkty kontrolne z §8 wymuszają weryfikację co kilka tygodni, a nie dopiero na końcu |
-| Safari na iOS usuwa dane lokalne | Średnie | Średni | Prośba o trwałe przechowywanie, agresywna synchronizacja, widoczny wskaźnik. Znika po Capacitorze |
-| Odrzucenie w App Store jako „opakowana strona" | Niskie | Średni | Capacitor z realnie natywnymi funkcjami: powiadomienia, biometria, dane offline |
-| Rozjazd między schematem bazy a typami | Niskie | Wysoki | Typy **generowane**, nie pisane. Weryfikacja w procesie budowania |
-| Rozrost zakresu | **Wysokie** | Wysoki | Lista z §14 PRD jest zamknięta. Każde nowe wymaganie wchodzi przez zmianę PRD, nie przez rozmowę |
+| ~~P0.1~~ | Offline completion — **otwarte ponownie jako O-08** po zmianie wyróżnika (D-N). Nie blokuje M0 | Product owner | przed LIFE-T04 |
+| P0.2 | Ratify adult 18+ v1.x + provisional screening policy | Product owner | G-PROD |
+| P0.3 | **ZAMKNIĘTE decyzją D-Q** — „LifeOS" porzucone. Pozostaje wybór nazwy z §1.4 PRD + badanie UK IPO klasy 9 i 42 | Product + brand/legal | BRAND-01 |
+| P0.4 | Verify `free-exercise-db` data license + separate media provenance | Content/legal review | **catalog media** |
+| P0.5 | 5–8 interviews/observations z P1; zmierzyć obecny logging workflow. **Dostęp do testerów potwierdzony (D-R)** | Product | G-UXR before F4 beta |
+| P0.6 | Zdefiniować referencyjny 6-exercise/18-set benchmark | Product/testing | before F4 |
+| P0.7 | Nowy projekt Supabase + rotacja sekretów. **Plan darmowy (D-T)** — rozstrzygnąć O-09: wstrzymanie po 7 dniach bezczynności | Human gate | M0 |
+| P0.8 | Confirm eval infrastructure: test user, sandbox secrets, Supabase test environment | AgentOS owner | B6 feature battery |
+| P0.9 | Dependency/version spike against current Next/Supabase/Serwist/next-intl docs | Architecture | M0 |
+| P0.10 | Create `DECISIONS.md` and record accepted ADRs/product deltas | Architecture | first code |
 
-Ostatnie ryzyko jest w tym projekcie najpoważniejsze i ma historię: poprzednia wersja miała 123 wymagania funkcjonalne i 37 niefunkcjonalnych, opisując produkt trzykrotnie większy niż to, co dało się zbudować.
+### Exit G-PROD
+
+- R-01 ratified or explicitly rejected with PRD rewritten consistently.
+- Adult target ratified.
+- No unresolved contradiction between PRD and architecture.
+- Brand risk has an owner (does not need final trademark registration to build UX).
+
+**If R-01 is rejected:** F4 must be rewritten and the project loses the current P1 positioning. Do not quietly implement old v1.0 behavior while keeping „offline trust” in the PRD.
 
 ---
 
-## 7. Dokumentacja projektu
+## 2. Design track — właściciel wyznaczony (decyzja D-O)
 
-Osiem plików zamiast dwustu sześciu.
+**Właściciel:** właściciel produktu, pracujący w narzędziu projektowym na podstawie specyfikacji.
+**Wejście:** `05-DESIGN-BRIEF.md` — dokument samowystarczalny, nie wymaga czytania PRD ani architektury.
+**Nakład:** 25–40 h pracy właściciela, poza budżetem inżynierskim.
 
+Specyfikacja zawiera inwentarz ekranów i stanów, ograniczenia twarde z uzasadnieniem, przypadki testowe długich polskich napisów oraz jawną listę tego, co pozostawiono decyzji projektanta. Kryterium odbioru to **kompletność inwentarza stanów z §7 specyfikacji**, nie estetyka klatek.
+
+**Zmiana względem wersji 1.1 tego planu:** `G-DESIGN` nie wymaga już niezmiennych, hashowalnych plików referencyjnych dla wszystkich ekranów — tylko dla klatek używanych w bramce wizualnej benchmarku (ścieżka aktywnego treningu, katalog, historia). Wymóg zamrożenia wszystkiego był kosztem bez pokrycia przy jednoosobowym zespole projektowym.
+
+### 2.1 Required design package
+
+`G-DESIGN` requires:
+
+- mobile 390×844 reference,
+- desktop 1440 reference,
+- design tokens,
+- 5-tab shell,
+- full active workout flow,
+- Exercise selector/detail,
+- Templates,
+- History,
+- Progress,
+- Settings,
+- light/dark,
+- PL long-string pass,
+- offline/queued/sync-failed states,
+- loading/empty/error,
+- destructive dialogs,
+- focus/accessibility annotations for critical paths,
+- stable `DESIGN_ID` per tested frame,
+- exportable assets rules.
+
+### 2.2 No fake design freeze
+
+A screenshot labeled „final” is not enough. `G-DESIGN` is green only when:
+- every LIFE-T01…T08 has at least one mapped frame or an explicit `design-not-required`,
+- component states are defined,
+- visual reference files are immutable/hashable for the benchmark.
+
+### 2.3 Brand can remain neutral
+
+If BRAND-01 is unresolved, designer uses `LifeOS` as **project label** but does not spend irreversible effort on logo/trademark-dependent identity. UX/design system can proceed.
+
+---
+
+## 3. M0 — engineering substrate / walking skeleton
+
+**Reference effort:** 55–80 h  
+**AgentOS benchmark score:** foundation may be agent-built, but external/provider failures are **not** scored as B6 feature capability.
+
+### M0.1 Repository and policy
+
+- Next.js/TS strict.
+- `output: 'export'`.
+- Tailwind + shadcn.
+- lockfile committed.
+- lint/boundaries.
+- Prettier.
+- Vitest/Testing Library/Playwright.
+- gitleaks.
+- no production fixture rule.
+- `DECISIONS.md`.
+
+**AC:** empty app builds statically; `verify` green.
+
+### M0.2 Static i18n spike — SPIKE-01 part A
+
+- `[locale]` routes EN/PL.
+- no middleware dependency.
+- fallback strategy.
+- one screen fully translated.
+- production root behavior documented.
+
+**AC:** `/en/...` and `/pl/...` work from static preview and direct reload.
+
+### M0.3 Supabase schema/Auth — SPIKE-01 part B
+
+Initial migrations:
+- profiles/settings,
+- minimal exercise seed,
+- minimal workout aggregate tables,
+- mutation receipts.
+- RLS matrix.
+
+Auth:
+- email/password and recovery in code,
+- Google/Apple adapters in code,
+- provider dashboard provisioning human-gated,
+- PKCE callback works.
+
+**AC:** test user sign-in → protected route → sign-out; user A/B isolation tests pass.
+
+### M0.4 App shell
+
+Mobile bottom nav:
+Home · Workout · Exercises · History · Progress.  
+Settings via avatar/gear.
+
+All destinations exist and show real empty states.
+
+**AC:** no orphan routes needed for critical navigation.
+
+### M0.5 Durable local DB — SPIKE-03
+
+Dexie:
+- active_workout_drafts,
+- sync_outbox,
+- catalog/meta.
+
+Proof UI writes a minimal draft.
+
+**AC:** change → hard reload → exact value recovers.
+
+### M0.6 Atomic workout RPC — SPIKE-04
+
+Minimal `CommitWorkout` with one exercise/set:
+- client IDs,
+- mutation ID,
+- transaction,
+- idempotency receipt,
+- rollback.
+
+**AC:**
+- replay same command 5× = one workout,
+- induced child insert failure = zero parent/child rows,
+- user B cannot reference user A custom exercise.
+
+### M0.7 Query persistence
+
+TanStack Query + actual IndexedDB persister for selected cache entries. Version buster.
+
+**AC:** cached safe query survives reload/offline; clearing cache does not destroy active draft.
+
+### M0.8 PWA shell — SPIKE-02
+
+- manifest,
+- icons,
+- service worker,
+- install smoke,
+- offline shell,
+- update notification.
+
+**AC:** no Lighthouse PWA score. Manual/automated capability checklist passes.
+
+### M0.9 iOS lifecycle — SPIKE-05
+
+Real device:
+Safari auth → add Home Screen → standalone launch → auth/session/draft behavior.
+
+**AC:** behavior documented; any re-auth/recovery UX is designed before F4.
+
+### M0.10 Catalog identity — SPIKE-06
+
+One source record transformed into:
+- static catalog row,
+- Supabase seed row,
+
+with identical deterministic ID.
+
+**AC:** automated equality test.
+
+### M0.11 Observability / redaction
+
+Sentry or equivalent error telemetry.
+- scrubber allowlist,
+- no raw draft/notes/auth token.
+
+**AC:** seeded sensitive string does not appear in captured test event.
+
+### M0.12 CI/deploy
+
+Jobs:
+- `verify`,
+- `e2e`,
+- preview deploy.
+Device smoke can remain a separate manually triggered gate.
+
+**M0 exit:**
+- public/preview URL works,
+- app shell installable,
+- auth test state works,
+- durable draft survives,
+- atomic mutation proof works,
+- green pipeline.
+
+**STOP RULE:** if M0 cannot stay green for 48 h / repeated clean builds, feature battery does not start.
+
+---
+
+## 4. Content track
+
+Runs in parallel but has its own gates. **Reference effort:** 60–100 h owner/content work, not included in engineering total.
+
+### C0 — source/legal
+
+- snapshot upstream repo/commit,
+- verify Unlicense/data terms,
+- separately resolve media provenance,
+- provenance manifest.
+
+If media unresolved: `media-approved=false`; build excludes source images.
+
+### C1 — select 200–250
+
+Selection criteria:
+- common strength movements,
+- equipment coverage,
+- muscle coverage,
+- reduce near-duplicates,
+- custom exercise fills gaps.
+
+### C2 — normalize/map
+
+Automated normalization + review:
+- category,
+- mechanic/source hints,
+- movement pattern,
+- tracks,
+- rest default,
+- equipment.
+
+### C3 — bilingual base
+
+- EN source cleaned,
+- PL translation,
+- terminology review.
+
+### C4 — curated top 50
+
+Only launch-critical top 50 require reviewed:
+- form tips,
+- common mistakes.
+
+Expansion beyond top 50 is post-launch content backlog, not code blocker.
+
+### C5 — validate/build
+
+Build gate checks:
+- IDs stable,
+- required fields,
+- both locales,
+- no unapproved media,
+- checksum/version.
+
+---
+
+## 5. AgentOS feature battery — LIFE-T01…T08
+
+### 5.0 Zakres baterii po przycięciu (decyzja D-S)
+
+**Bateria v1.0 liczy sześć zadań, nie osiem.** LIFE-T03 (szablony) i LIFE-T08 (eksport CSV) przechodzą do v1.0.1.
+
+To jest **świadomy koszt dla benchmarku**: sześć prób zamiast ośmiu daje słabszą podstawę statystyczną. Rozstrzygnięcie: T03 i T08 pozostają w baterii jako **kontynuacja w v1.0.1**, więc docelowo prób jest osiem — tylko rozłożonych w czasie. Porównywalność wymaga, żeby oba zadania używały tej samej wersji schematu `TASK_SPEC` co pierwsza szóstka; zmiana schematu między turami unieważnia porównanie.
+
+**Kolejność zamrożona przed pierwszym mierzonym przebiegiem:**
+`T01 → T02 → T04 → T07 → T05 → T06` *(następnie w v1.0.1: T03 → T08)*
+
+Uwaga do kolejności: T01 przed T04 to **kolejność benchmarku, nie kolejność redukcji ryzyka produktowego**. Ryzyko produktowe skupia się w T04, a rozgrzewka na ustawieniach je odracza. Łagodzi to M0, które udowadnia trwały zapis roboczy i atomowy zapis na serwer, zanim T01 w ogóle ruszy. Właściciel akceptuje tę kolejność świadomie, wybierając porównywalność (decyzja D-M).
+
+### 5.0.1 Preconditions
+
+Before B6-style execution:
+- M0 green,
+- G-DESIGN green,
+- eval test user/database fixture ready,
+- TASK_SPEC schema frozen,
+- task order frozen,
+- each task has PRD IDs + design IDs + acceptance tests,
+- reference baseline commit/tag created.
+
+External OAuth/DNS/store work is outside task scope.
+
+---
+
+### LIFE-T01 — Profile & Settings
+
+**PRD:** CORE-03, SET-01, SET-02, SET-03, SET-04, SET-05, SET-06, SET-07, SET-08, SET-09  
+**Reference effort:** 30–45 h
+
+**Scope:**
+- Settings sections,
+- units/theme/language,
+- profile,
+- data/privacy entry points,
+- about/version,
+- logout.
+
+**Hard AC:**
+1. settings reachable from shell,
+2. theme/language survive reload,
+3. unit conversion changes display only, canonical data unchanged,
+4. profile mutation persists real DB,
+5. logout invalidates protected UI,
+6. export/delete actions have real wired command or explicitly staged server handler — no fake success toast,
+7. EN/PL design frames pass,
+8. E2E reload symmetry.
+
+**Not in scored task:** configure Apple/Google console, custom SMTP.
+
+---
+
+### LIFE-T02 — Exercise Catalog
+
+**PRD:** EX-01, EX-02, EX-03, EX-04, EX-05, EX-06, EX-07, EX-08, EX-09, EX-10  
+**Reference effort:** 55–80 h engineering + content track
+
+**Hard AC:**
+1. catalog browsable/searchable with network disabled after bootstrap,
+2. p95 search <200 ms reference profile,
+3. all four filters settable from UI,
+4. browse/select reuse same feature contract,
+5. favorite persists and reloads,
+6. custom exercise real CRUD,
+7. system exercise immutable,
+8. EN/PL search + fallback,
+9. no source photo packages unless media gate passes,
+10. static exercise ID matches server FK seed.
+
+**Negative control:** typo/substring must not recategorize exercise.
+
+---
+
+### LIFE-T03 — Workout Template Builder — **PRZENIESIONE DO v1.0.1**
+
+**PRD:** FIT-15  
+**Reference effort:** 25–40 h · *poza v1.0 decyzją D-S; pozostaje w baterii jako kontynuacja*
+
+**Hard AC:**
+1. built-in preset can start a user-editable copy or workout,
+2. create/edit/delete custom template,
+3. add/remove/reorder exercises,
+4. target set/reps/rest fields persist,
+5. template survives reload,
+6. create template from completed workout,
+7. start workout from template produces durable draft,
+8. no duplicate exercise/order corruption after reorder.
+
+---
+
+### LIFE-T04 — Workout Logging + Offline Durable Completion
+
+**PRD:** CORE-06, CORE-07, CORE-08, FIT-01, FIT-02, FIT-03, FIT-04, FIT-05, FIT-07, FIT-08, FIT-23  
+**Reference effort:** 75–110 h  
+**THIS IS THE PRODUCT HEART.**
+
+**Hard AC:**
+1. start blank/from template,
+2. add/reorder/remove exercise,
+3. fields reflect `tracks`,
+4. pattern memory fills from last completed workout,
+5. bodyweight/timed/warmup cases correct,
+6. every edit durable in Dexie,
+7. hard reload/reopen restores exact active draft,
+8. complete with network OFF creates exactly one queued CommitWorkout,
+9. reconnect syncs exactly once,
+10. replay/retry does not duplicate,
+11. summary distinguishes local queued vs server committed,
+12. server workout returns with all exercises/sets after fresh login,
+13. active interaction timer emits benchmark measurement without raw workout content.
+
+**Failure injection required:**
+- kill page after set edit,
+- network drop on commit,
+- server 500,
+- expired session,
+- duplicate replay.
+
+**STOP RULE:** any unrecoverable workout loss blocks all later product feature work.
+
+---
+
+### LIFE-T05 — Workout History
+
+**PRD:** FIT-10, FIT-11  
+**Reference effort:** 25–40 h
+
+**Hard AC:**
+1. list uses real server data,
+2. filter by exercise,
+3. detail shows exact sets/order,
+4. edit persists,
+5. soft delete removes from normal history,
+6. editing/deleting affects derived progress,
+7. 90-day p95 <1 s on seeded reference volume,
+8. no access to other user data.
+
+Offline read allowed for previously cached data; offline edit/delete is not v1.0 MUST.
+
+---
+
+### LIFE-T06 — Progress Dashboard
+
+**PRD:** FIT-12 (FIT-13 zamknięte decyzją D-S: v1.0.1)  
+**Reference effort:** **28–45 h** po wyjęciu pomiarów ciała
+
+**Hard AC:**
+1. estimated 1RM per exercise uses Epley,
+2. weekly volume excludes warmups,
+3. time ranges work,
+4. PR timeline derived from valid history,
+5. deleting old best set changes current PR correctly,
+6. charts have accessible summary/table alternative,
+7. empty/insufficient-data state designed,
+8. no hard-coded demo series in production.
+
+If FIT-13 deferred, benchmark task still passes with strength/volume/PR progress only.
+
+---
+
+### LIFE-T07 — Rest Timer + PR Detection
+
+**PRD:** FIT-06, FIT-09  
+**Reference effort:** 30–45 h
+
+**Hard AC:**
+1. timer auto-starts after working/warmup set per accepted UX,
+2. default from exercise; user can change/skip,
+3. background/tab lifecycle does not make elapsed time drift materially,
+4. haptic/audio is capability-aware and non-blocking,
+5. PR uses eligible working sets,
+6. `reps=1` exact weight,
+7. warmup excluded,
+8. new PR highlighted on summary,
+9. retrying workout commit does not duplicate PR signal/event,
+10. edit/delete recomputation remains correct.
+
+---
+
+### LIFE-T08 — CSV / User Data Export — **CZĘŚCIOWO PRZENIESIONE DO v1.0.1**
+
+**PRD:** FIT-16 (v1.0.1), SET-06 (**pozostaje v1.0**)  
+**Reference effort:** 15–25 h, z czego **8–14 h pozostaje w v1.0** i jest realizowane w ramach LIFE-T01.
+
+**Co zostaje w v1.0:** eksport pełnych danych użytkownika i usunięcie konta — wymóg UK GDPR, nie funkcja produktowa. Bez wygodnego eksportu CSV historii treningów, bez oddzielnego ekranu.
+**Co przechodzi do v1.0.1:** eksport CSV historii z udokumentowanymi kolumnami i jednostkami.
+
+**Hard AC:**
+1. workout CSV contains documented stable columns/units,
+2. full data export includes owned domain data in JSON and relevant CSV files,
+3. user A cannot export B,
+4. server-side throttling,
+5. file generation failure gives retryable error,
+6. no secret/internal fields,
+7. EN/PL UI,
+8. E2E validates non-empty export after seeded workout.
+
+---
+
+## 6. Benchmark execution rules
+
+These extend, not replace, `plan-testow-v2.md`.
+
+### 6.1 Every TASK_SPEC contains
+
+```yaml
+task_id: LIFE-T0X
+prd_ids: [...]
+design_ids: [...]
+architecture_refs: [...]
+base_sha:
+preconditions:
+scope:
+non_goals:
+forbidden_paths:
+allowed_migrations:
+schema_contract:
+acceptance_criteria:
+required_tests:
+visual_checks:
+accessibility_checks:
+failure_injection:
+expected_artifacts:
+human_gates:
+budget:
 ```
-README.md              ← uruchomienie, komendy, konfiguracja
-docs/PRD.md            ← 01-PRD.md
-docs/ARCHITECTURE.md   ← 02-ARCHITECTURE.md
-docs/PLAN.md           ← ten dokument
-docs/DECISIONS.md      ← rejestr decyzji: data, kontekst, decyzja, skutki, status
-docs/SCHEMA.md         ← generowany z migracji, nie pisany ręcznie
-docs/BACKLOG.md        ← jedna lista, jeden status na pozycję
-docs/CONTENT.md        ← produkcja katalogu: standard, postęp, właściciel
+
+### 6.2 Critic ground truth
+
+For capability benchmarking:
+- seeded defect trials remain in Poligon-A as defined by AgentOS test plan,
+- LifeOS evaluates feature delivery/acceptance, not critic precision ground truth by itself,
+- do not turn subjective product feedback into fake critic recall statistic.
+
+### 6.3 Scored vs not scored
+
+**Scored:** feature implementation, wiring, tests, regression, design parity, DB correctness, offline behavior.  
+**Not scored:** provider outage, unavailable Apple console, DNS, store review, legal approval. Logged separately.
+
+### 6.4 Frozen task semantics
+
+Agent may not change:
+- PRD priority,
+- design meaning,
+- Definition of Done,
+- safety/integrity gates,
+- forbidden paths.
+
+If task is impossible because docs conflict, expected outcome is `blocked_spec_conflict`, not silently rewriting architecture.
+
+---
+
+## 7. R1 — v1.0 integration/hardening/release
+
+**Reference effort:** 50–80 h
+
+After T01–T08:
+
+### R1.1 End-to-end product flow
+
+Fresh user:
+sign in → settings basics → choose/start template → workout → offline completion → reconnect → history → progress → export.
+
+### R1.2 Performance
+
+Measure, then optimize:
+- Core Web Vitals lab/field where possible,
+- route bundle budgets,
+- catalog bootstrap,
+- pattern memory,
+- history query.
+
+### R1.3 Accessibility
+
+- axe,
+- keyboard,
+- screen reader critical flow,
+- 200% zoom,
+- long Polish strings,
+- touch targets.
+
+### R1.4 PWA/device
+
+- Android install/launch/offline/update,
+- iOS Home Screen install/launch/auth/offline/update,
+- desktop.
+
+### R1.5 Security/privacy
+
+- RLS matrix,
+- export/delete,
+- secret scan,
+- Sentry redaction,
+- production eval-marker scan,
+- dependency review,
+- no unapproved media.
+
+### R1.6 Beta instrumentation
+
+Logging benchmark and product behavior with approved minimal instrumentation.
+
+### R1.7 Beta
+
+Start with **10 target P1 testers** before broad launch.
+
+Early value checkpoint:
+- ≥7/10 complete first workout,
+- ≥5/10 complete at least 3 workouts in 14 days,
+- median benchmark interaction <60 s among users with prior-session data,
+- **0 unrecoverable workout losses**.
+
+These are **early product hypotheses**, not universal benchmarks. Failure triggers interviews and workflow correction before v1.1.
+
+---
+
+## 8. v1.0 effort / calendar
+
+### 8.1 Engineering
+
+| Praca | Zakres | Zmiana po D-S |
+|---|---:|---|
+| M0 substrate | 55–80 h | — |
+| LIFE-T01 (z minimalnym eksportem RODO) | 38–59 h | +8–14 h przeniesione z T08 |
+| LIFE-T02 | 55–80 h | — |
+| ~~LIFE-T03~~ | ~~25–40 h~~ | **przeniesione do v1.0.1** |
+| LIFE-T04 | 75–110 h | — |
+| LIFE-T05 | 25–40 h | — |
+| LIFE-T06 | 28–45 h | −7–10 h (bez pomiarów ciała) |
+| LIFE-T07 | 30–45 h | — |
+| ~~LIFE-T08~~ | ~~15–25 h~~ | **częściowo przeniesione**, reszta w T01 |
+| R1 hardening | 42–68 h | −8–12 h (mniejsza powierzchnia) |
+| **Suma inżynierii** | **348–527 h** | |
+| +20% rezerwy | **418–632 h** | |
+
+Przy 20 h tygodniowo: **21–32 tygodnie z rezerwą**, czyli około pięciu do ośmiu miesięcy.
+
+### 8.1.1 Uczciwa uwaga o skali oszczędności
+
+Przycięcie zakresu (D-S) oszczędza **47–73 h bazowo**, czyli mniej więcej trzy do czterech tygodni kalendarzowych. To znacznie mniej, niż sugerowano przy podejmowaniu decyzji.
+
+Powód jest strukturalny i wart odnotowania: **dwie trzecie nakładu leży w czterech pozycjach — M0, katalog, logowanie i utwardzanie przed wydaniem — których nie da się wyciąć, nie wycinając produktu.** Szablony, eksport CSV, pomiary ciała i logowanie społecznościowe były w sumie mniejsze niż sam etap M0.
+
+Jeśli celem jest kalendarz rzędu piętnastu tygodni, musi paść jedna z czterech dużych pozycji. Możliwości, w kolejności od najmniej bolesnej:
+
+| Cięcie | Oszczędność | Koszt |
+|---|---:|---|
+| Katalog 50 ćwiczeń zamiast 200–250, bez własnych ćwiczeń użytkownika | 20–30 h | Użytkownik szybko trafi na brak swojego ćwiczenia i nie będzie mógł go dodać. **Prawdopodobnie zabija test wedge** |
+| Rezygnacja z kolejki offline (FIT-23), zostawiając trwały zapis roboczy i atomowy zapis serwerowy | 20–30 h | Trening trzeba dokończyć przy zasięgu. Traci się główny ból persony P1 — patrz otwarta decyzja O-08 |
+| LIFE-T06 tylko jeden wykres siły, bez objętości i osi rekordów | 15–25 h | Postęp staje się szczątkowy; to jedna z rzeczy, po które ludzie wracają |
+| Skrócenie R1 do testów krytycznych, bez pełnego przeglądu dostępności | 15–25 h | **Odradzam.** Dostępność dołożona po fakcie kosztuje wielokrotnie więcej |
+
+**Rekomendacja:** nie tnij dalej. Pięć do ośmiu miesięcy przy dwudziestu godzinach tygodniowo jest uczciwą ceną tego zakresu, a każde z powyższych cięć uderza w coś, co decyduje o tym, czy ktokolwiek użyje produktu drugi raz.
+
+### 8.1.2 Koszt infrastruktury pomiarowej AgentOS (decyzja D-M)
+
+Właściciel zaakceptował narzut równorzędnej roli benchmarku. Poniżej jego cena, wyliczona jawnie, żeby była widoczna przy każdym przeglądzie:
+
+| Pozycja | Nakład |
+|---|---:|
+| Pisanie `TASK_SPEC` dla sześciu zadań | 12–18 h |
+| Środowisko ewaluacyjne: użytkownik testowy, dane wejściowe, izolowana baza | 8–12 h |
+| Infrastruktura bramki wizualnej | 10–16 h |
+| Zamrażanie i hashowanie klatek referencyjnych | 6–10 h |
+| Przechwytywanie wyników, klasyfikacja, raportowanie | 8–12 h |
+| Dyscyplina `base_sha`, polityka WIP, rebasing przy nieaktualnych zadaniach | 6–10 h |
+| Niemierzony przebieg próbny | 4–6 h |
+| **Razem** | **54–84 h** |
+
+To jest **15–24% ponad nakład inżynierii produktowej**, czyli około trzech do czterech tygodni kalendarzowych. Nie jest wliczone w 348–527 h powyżej.
+
+**Łączny nakład v1.0 razem z benchmarkiem: 402–611 h bazowo, 482–733 h z rezerwą — czyli 24–37 tygodni.**
+
+### 8.2 Poza budżetem inżynierskim — rachunek pełny
+
+Wszystko poniżej wykonuje **ta sama osoba**, więc nie biegnie równolegle w sensie kalendarzowym.
+
+| Pozycja | Nakład | Uwaga |
+|---|---:|---|
+| Projekt graficzny (D-O) | 25–40 h | Właściciel w narzędziu projektowym wg `05-DESIGN-BRIEF.md` |
+| Treść katalogu | 60–100 h | Faza F1–F3 przed LIFE-T02 |
+| Wywiady z użytkownikami i obserwacja (D-R) | 15–25 h | Pięć do ośmiu osób, plus opracowanie |
+| Rekrutacja i prowadzenie bety | 10–20 h | Dziesięciu testerów |
+| Przeglądy prawne, marki i prywatności | 10–20 h | Badanie znaków towarowych, G-PRIV |
+| **Razem poza inżynierią** | **120–205 h** | |
+
+**Całkowity rachunek v1.0: 522–816 h bazowo, 602–938 h z rezerwą.**
+Przy 20 h tygodniowo: **30–47 tygodni, czyli siedem do jedenastu miesięcy do bety z dziesięcioma użytkownikami.**
+
+Ta liczba nigdzie się już nie chowa. Jest większa niż w wersji 1.1 tego planu nie dlatego, że zakres urósł — zakres zmalał — tylko dlatego, że po raz pierwszy zsumowano wszystko, co wykonuje ta sama osoba.
+
+### 8.3 Re-estimation points
+
+Re-estimate after:
+1. M0,
+2. T01–T03,
+3. T04,
+4. first 10-user beta.
+
+Report actual hours/agent cost/iterations vs baseline.
+
+---
+
+## 9. v1.1 — generic sync + Capacitor + Life Coach
+
+Starts only if v1.0 value checkpoint does not demand a product reset.
+
+### M5 — Generic multi-entity sync
+
+**80–120 h**
+
+PRD: CORE-07, SET-14 plus sync requirements supporting v1.1 entities.
+
+Tasks:
+- version/base_version,
+- conflict objects/UI,
+- local queue dependencies,
+- multi-tab lock/lease,
+- tombstones,
+- settings/goals/task sync policies,
+- conflict tests,
+- instrumentation.
+
+**AC:** no generic timestamp LWW; deterministic conflict test passes.
+
+### M6 — Capacitor
+
+**50–90 h + store external time**
+
+- iOS/Android projects,
+- auth deep-link/platform adapter,
+- safe areas,
+- local notifications,
+- haptics,
+- storage lifecycle,
+- native build CI where possible,
+- real-device matrix,
+- current store declarations/review.
+
+**AC:** not merely „website in wrapper”; primary flows work offline/restart and native-specific features are integrated.
+
+### M7 — Life Coach
+
+**120–180 h**
+
+Mapping:
+- LC-01, LC-02, LC-03, LC-04, LC-05,
+- LC-06, LC-07, LC-08, LC-09, LC-10,
+- LC-11, LC-12, LC-13,
+- SET-11, SET-12.
+
+Order:
+1. DB/consent/context contracts,
+2. manual check-in and plan data model,
+3. deterministic fallback plan,
+4. AI broker,
+5. structured generation,
+6. edit/outcomes,
+7. reflection,
+8. 7-day loop test.
+
+**No chat before closed loop.**
+
+### v1.1 exit
+
+- new workout offline and generic sync coexist,
+- no unresolved sync conflicts hidden,
+- 7 consecutive day loop succeeds,
+- AI outage returns fallback,
+- Capacitor builds pass device smoke,
+- privacy/DPIA/store gates updated.
+
+---
+
+## 10. v1.2 — Mind + rule insights
+
+### M8 — Mind base
+
+**60–90 h**
+- MND-01 mood/stress,
+- MND-02 breathing,
+- MND-04 trends,
+- MND-09 resource registry,
+- SET-13 enforced privacy.
+
+### M9 — Rule insights
+
+**30–50 h**
+- cross-module rule engine,
+- reason codes,
+- max 1/day,
+- privacy source checks,
+- dismiss/save/action.
+
+### M10 — Screening, only if G-MH passes
+
+**30–60 h engineering + external review time**
+- MND-03,
+- MND-10,
+- exact validated questionnaire versions,
+- separate safety flow,
+- copy/resource tests.
+
+If G-MH fails or is delayed, M10 is omitted. **v1.2 does not wait for it** unless product owner explicitly redefines scope.
+
+### v1.2 baseline
+
+**90–200 h engineering** depending on screening inclusion, plus clinical/regulatory/privacy review.
+
+---
+
+## 11. Traceability matrix
+
+This is the machine-readable planning spine. No requirement may be considered implemented if it has no task/milestone.
+
+### CORE
+
+| Requirement | Task |
+|---|---|
+| CORE-01 | M0.4 |
+| CORE-02 | M0.3 + production human gates |
+| CORE-03 | M0.2 + LIFE-T01 |
+| CORE-04 | M0.8 + R1.4 |
+| CORE-05 | M0.8 + R1.4 |
+| CORE-06 | M0.5 + LIFE-T04 |
+| CORE-07 | LIFE-T04; expanded M5 |
+| CORE-08 | M0.6 + LIFE-T04 |
+| CORE-09 | M0.8 + R1.4 |
+| CORE-10 | M0.12 + LIFE-T01/About |
+| CORE-11 | all tasks + R1.3 |
+| CORE-12 | M0.11 + R1.5 |
+
+### EXERCISE
+
+| Requirement | Task |
+|---|---|
+| EX-01 | C1–C5 + LIFE-T02 |
+| EX-02 | M0.10 + C5 + LIFE-T02 |
+| EX-03 | LIFE-T02 |
+| EX-04 | LIFE-T02 |
+| EX-05 | C3–C4 + LIFE-T02 |
+| EX-06 | LIFE-T02 |
+| EX-07 | LIFE-T02 |
+| EX-08 | LIFE-T02 |
+| EX-09 | LIFE-T02 |
+| EX-10 | C3 + LIFE-T02 |
+| EX-11 | G-LIC/design/content; SHOULD |
+| EX-12 | post-v1.0 v1.1 backlog |
+| EX-13 | WON'T |
+
+### FITNESS
+
+| Requirement | Task |
+|---|---|
+| FIT-01 | LIFE-T04 |
+| FIT-02 | LIFE-T04 |
+| FIT-03 | LIFE-T04 |
+| FIT-04 | LIFE-T04 |
+| FIT-05 | LIFE-T04 |
+| FIT-06 | LIFE-T07 |
+| FIT-07 | LIFE-T04 |
+| FIT-08 | LIFE-T04 |
+| FIT-09 | LIFE-T07 |
+| FIT-10 | LIFE-T05 |
+| FIT-11 | LIFE-T05 |
+| FIT-12 | LIFE-T06 |
+| FIT-13 | LIFE-T06 if O-04; otherwise v1.0.1 |
+| FIT-14 | WON'T — core logging is fast path |
+| FIT-15 | LIFE-T03 |
+| FIT-16 | LIFE-T08 |
+| FIT-17 | v1.1 follow-up after M7 core |
+| FIT-18 | v1.1 |
+| FIT-19 | WON'T |
+| FIT-20 | WON'T |
+| FIT-21 | WON'T |
+| FIT-22 | WON'T |
+| FIT-23 | M0.5/M0.6 + LIFE-T04 |
+
+### SETTINGS
+
+| Requirement | Task |
+|---|---|
+| SET-01 | LIFE-T01 |
+| SET-02 | LIFE-T01 |
+| SET-03 | LIFE-T01 |
+| SET-04 | M0.2 + LIFE-T01 |
+| SET-05 | LIFE-T01 |
+| SET-06 | LIFE-T01 + LIFE-T08 |
+| SET-07 | LIFE-T01; region registry expanded M8 |
+| SET-08 | LIFE-T01 |
+| SET-09 | LIFE-T01 |
+| SET-10 | R1.4 |
+| SET-11 | M6/M7 |
+| SET-12 | M7 |
+| SET-13 | M8 |
+| SET-14 | M5 |
+| SET-15 | WON'T v1.x |
+
+### LIFE COACH
+
+| Requirement | Task |
+|---|---|
+| LC-01 | M7 |
+| LC-02 | M7 |
+| LC-03 | M7 |
+| LC-04 | M7 SHOULD |
+| LC-05 | M7 |
+| LC-06 | M7 |
+| LC-07 | M7 |
+| LC-08 | M7 |
+| LC-09 | M7 |
+| LC-10 | M7 |
+| LC-11 | M7 |
+| LC-12 | M7 |
+| LC-13 | M7 SHOULD |
+| LC-14 | v1.2 backlog after separate safety scope |
+| LC-15 | v1.2 backlog |
+| LC-16 | v1.2 COULD |
+| LC-17 | WON'T |
+| LC-18 | WON'T |
+| LC-19 | WON'T |
+| LC-20 | WON'T |
+
+### MIND
+
+| Requirement | Task |
+|---|---|
+| MND-01 | M8 |
+| MND-02 | M8 |
+| MND-03 | M10 only after G-MH |
+| MND-04 | M8 |
+| MND-05 | WON'T |
+| MND-06 | WON'T |
+| MND-07 | WON'T |
+| MND-08 | WON'T |
+| MND-09 | M8 |
+| MND-10 | M10 / safety gate |
+
+---
+
+## 12. Release and product gates
+
+### G0 — M0 engineering
+
+PASS:
+- walking skeleton,
+- durable draft,
+- atomic idempotent commit,
+- static i18n/auth proof,
+- installed PWA smoke,
+- green CI.
+
+### G1 — Design / benchmark readiness
+
+PASS:
+- `G-DESIGN`,
+- task specs frozen,
+- visual baselines hashable,
+- eval test env isolated.
+
+### G2 — Core product after LIFE-T04
+
+PASS:
+- standard benchmark <60 s median in controlled user test or clearly trending after UX learning,
+- zero deterministic data-loss scenarios,
+- offline completion/reconnect works.
+
+If fail: **optimize logging before History/Progress polish**.
+
+### G3 — v1.0 beta
+
+PASS for expansion:
+- 10 P1 users,
+- ≥7 activate,
+- ≥5 complete 3 workouts/14d,
+- 0 unrecoverable data-loss,
+- critical user feedback triaged.
+
+If fail: product review before v1.1.
+
+### G4 — D30 interpretation
+
+D30 is not judged from 10 people. Report:
+- activated cohort denominator,
+- confidence interval,
+- activation rate,
+- repeated cohort behavior.
+
+Do not trigger a major pivot from a single-digit sample. Use D30 target ≥5% once sample is meaningful (preferably ≥100 activated or repeated cohorts).
+
+### G5 — v1.1
+
+PASS:
+- generic sync conflicts safe,
+- 7-day coach loop,
+- Capacitor device gate,
+- privacy review updated.
+
+### G6 — v1.2
+
+PASS:
+- rule insight traceable,
+- privacy enforcement,
+- G-MH passed for any screeners included.
+
+---
+
+## 13. Risks — challenged version
+
+| Risk | P | Impact | Mitigation / gate |
+|---|---|---|---|
+| v1.0 wedge still too similar to Hevy/Strong | High | High | user interviews + logging benchmark + offline reliability as wedge |
+| LifeOS naming collision | High | High for public brand | BRAND-01 before irreversible brand spend |
+| source image rights unclear | High enough to block | Medium/High | build excludes media until G-LIC |
+| content enrichment becomes critical path | Medium | High | top-50 curated only; base 200–250 can ship without full tips |
+| offline queue corrupts/duplicates workouts | Medium | Critical | aggregate command + idempotency + failure injection |
+| generic sync silently overwrites | Medium | High | version/base_version, no LWW |
+| PWA iOS behavior differs from browser assumptions | Medium | High | M0 real-device spike |
+| auth provider/setup contaminates AgentOS score | High | Medium | pre-provision; classify infra/human gate separately |
+| Agent optimizes for green test by weakening test | Medium | Critical for benchmark | monotonicity/forbidden rules |
+| design arrives incomplete for edge states | High | Medium | G-DESIGN state inventory |
+| solo owner becomes bottleneck despite autonomous agents | High | High | acceptance batches, frozen specs, max WIP |
+| mental-health feature crosses regulatory boundary | Medium | Critical | MND-03 provisional + G-MH |
+| health data leaks through logs | Medium | Critical | allowlist telemetry/redaction tests |
+| over-optimistic timeline due AI assumptions | High | Medium | range baseline + actual re-estimation |
+| scope creep returns | High | High | PRD ID + traceability + tradeoff required |
+
+---
+
+## 14. Work-in-progress policy for autonomous execution
+
+Autonomy fails if eight agents create eight incompatible branches.
+
+### 14.1 WIP
+
+- one schema-changing feature at a time unless migrations proven independent,
+- max 2 implementation tasks in parallel,
+- single writer/merge owner per shared integration branch,
+- critic/verifier may run parallel read-only,
+- every task begins from recorded base SHA,
+- stale task rebases/re-provisions; it does not freestyle merge.
+
+### 14.2 Dependency order
+
+Recommended:
+`T01 → T02 → T03 → T04 → T07 → T05 → T06 → T08`
+
+Why:
+- settings/shell first,
+- catalog before any workout references,
+- template exercises test relational model before core logging,
+- logging creates truth for timer/history/progress,
+- export last uses stable schema.
+
+For benchmark comparability freeze this order before first measured run.
+
+### 14.3 Migration rule
+
+TASK_SPEC explicitly states `allowed_migrations`. A task without migration permission cannot modify DB schema to make its implementation easier.
+
+---
+
+## 15. Documentation set
+
+Keep documentation small but sufficient:
+
+```text
+README.md
+docs/
+  PRD.md
+  ARCHITECTURE.md
+  PLAN.md
+  DECISIONS.md
+  BACKLOG.md
+  CONTENT.md
+  DESIGN-HANDOFF.md
+  SCHEMA.md          # generated
+eval/
+  task-specs/
+  design-baselines/
+  manifests/
 ```
 
-**Zasady:**
-- **Każda decyzja architektoniczna ma status:** proponowana, zaakceptowana, wdrożona, zastąpiona. W poprzedniej wersji trzynaście decyzji nie miało statusu, więc sześć z nich latami figurowało jako zatwierdzone, nie istniejąc w kodzie.
-- **Status wywodzi się z kodu.** Pozycja w backlogu jest odhaczana przy scaleniu, nie przy planowaniu.
-- **Zero plików dokumentacji w katalogu głównym** poza README.
-- **Nie archiwizujemy — usuwamy.** System kontroli wersji pamięta. Poprzedni katalog archiwum miał 163 pliki bez żadnej wartości.
-- **Nie piszemy dokumentu opisującego kod, którego nie ma.** W poprzedniej wersji dokument na 439 linii opisywał szczegółowo warstwę serwerową, która nigdy nie powstała — i przez rok wyglądała jak zrealizowana architektura.
+### Rules
+
+- no duplicate handwritten schema,
+- no status claimed from documentation alone,
+- backlog status changes at accepted merge,
+- superseded decision remains as one small ADR entry, not copied archive trees,
+- implementation result links `task_id`, commit SHA, PRD IDs, design IDs, tests/gates.
 
 ---
 
-## 8. Punkty kontrolne
+## 16. Backlog item schema
 
-| Po etapie | Pytanie | Reakcja przy odpowiedzi negatywnej |
-|---|---|---|
-| M2 | Czy logowanie treningu trwa poniżej 60 sekund na realnym telefonie w realnej siłowni? | Optymalizacja przed dalszymi funkcjami. To jest cały produkt |
-| M4 | Czy testerzy beta wracają po tygodniu? | Zatrzymanie i rozmowy z użytkownikami przed budowaniem Life Coacha |
-| v1.0 | Czy powroty w trzydziestym dniu przekraczają 3%? | **Poniżej 3% oznacza zmianę produktu, nie dokładanie funkcji** |
-| M5 | Czy zapis offline działa w realnych warunkach, nie tylko w teście? | Zatrzymanie przed M6 |
+```yaml
+id: LIFE-T04
+title: Workout logging + offline completion
+version: v1.0
+prd_ids:
+  - FIT-01
+  - FIT-02
+  - FIT-03
+  - FIT-04
+  - FIT-05
+  - FIT-07
+  - FIT-08
+  - FIT-23
+status: ready
+depends_on:
+  - M0
+  - LIFE-T02
+design_ids: []
+architecture_refs:
+  - ADR-17
+  - ADR-18
+risk: critical
+owner: agent-os
+human_gate:
+acceptance_ref:
+base_sha:
+result_sha:
+```
 
----
+Allowed statuses:
+`blocked · ready · in_progress · verify · ready_for_human · accepted · rejected`.
 
-## 9. Pierwsze trzy tygodnie — konkretnie
-
-Etap M0 to 60 godzin, czyli przy 20 h tygodniowo **trzy tygodnie kalendarzowe**. Bloki są tak dobrane, żeby każdy dało się domknąć w jednej sesji i żeby po każdym repozytorium było w stanie działającym.
-
-**Tydzień 1 — fundament (20 h)**
-
-| Blok | Działanie |
-|---|---|
-| A (4 h) | **Założenie nowego projektu Supabase** (D-14), rotacja klucza OpenAI, usunięcie starego projektu po zabraniu reguł dostępu i funkcji RODO jako wzorców |
-| B (6 h) | Projekt Next.js: TypeScript w trybie ścisłym, statyczny eksport, Tailwind, shadcn/ui. Repozytorium, lint z regułami granic, formatowanie, `gitleaks` |
-| C (6 h) | Migracja początkowa, reguły dostępu, generowanie typów ze schematu |
-| D (4 h) | Autoryzacja e-mailem, strażnik tras |
-
-**Tydzień 2 — powłoka (20 h)**
-
-| Blok | Działanie |
-|---|---|
-| E (5 h) | Logowanie przez Google i Apple, reset hasła |
-| F (5 h) | Powłoka aplikacji: nawigacja dolna z pięcioma zakładkami, wszystkie osiągalne |
-| G (5 h) | `next-intl` z EN i PL, przełącznik języka |
-| H (5 h) | Ustawienia: motyw i język, utrwalone po odświeżeniu |
-
-**Tydzień 3 — dane i wdrożenie (20 h)**
-
-| Blok | Działanie |
-|---|---|
-| I (6 h) | `lib/mutations/` — brama zapisu z identyfikatorami po stronie klienta. **Nie skracać tego bloku** — od niego zależy, czy offline w v1.1 będzie podmianą modułu, czy przebudową |
-| J (4 h) | TanStack Query z zapisem cache do IndexedDB |
-| K (4 h) | Serwis roboczy, manifest, ikony, ekran startowy |
-| L (4 h) | Proces budowania (trzy zadania), wdrożenie, Sentry |
-| M (2 h) | Test end-to-end i **instalacja aplikacji na własnym telefonie z realnym sprawdzeniem, że działa** |
-
-**Równolegle, poza tymi godzinami:** faza F1 ścieżki treści — weryfikacja licencji `free-exercise-db` osobno dla danych i osobno dla obrazów. To dwie godziny, ale warunkuje całą resztę katalogu.
+No percentage-complete field.
 
 ---
 
-## 10. Dla recenzenta — co zakwestionować w tym planie
+## 17. First practical execution sequence
 
-Dokument trafia do niezależnego przeglądu. Miejsca o największej wartości dla recenzji:
+### Block A — freeze and provision
 
-| # | Zagadnienie | Pytanie |
-|---|---|---|
-| P-1 | **Kolejność M5 przed M6** — zapis offline i Capacitor przed Life Coachem | Czy spłata długu offline powinna wyprzedzić funkcję, która buduje codzienne powroty? Argument przeciwny: Life Coach jest tym, co sprowadza użytkownika codziennie, a offline dotyczy trzech sesji w tygodniu |
-| P-2 | **420 h na v1.0** | Czy rozkład nakładu między etapami jest wiarygodny? Podejrzane w szczególności: 60 h na M0 (dużo konfiguracji naraz) i 80 h na M4 (zawiera szablony, RODO, dostępność i wydajność) |
-| P-3 | **Kompresja 15–25% dzięki asystentowi AI** | Czy to oszacowanie jest realistyczne, czy optymistyczne? Jeśli optymistyczne, kalendarz v1.0 wraca do 21 tygodni |
-| P-4 | **Brak bufora w harmonogramie** | Zalecane 20% nie jest wliczone w tabelę. Czy powinno być, skoro to plan jednoosobowy bez zastępowalności? |
-| P-5 | **Punkt kontrolny „poniżej 3% powrotów oznacza zmianę produktu"** | Czy po ośmiu miesiącach pracy taka decyzja jest realistyczna psychologicznie? Czy nie potrzeba wcześniejszego, tańszego testu tezy produktowej? |
-| P-6 | **Reguły automatyczne zamiast przeglądu kodu** (§5a) | Czy zestaw z §4 architektury faktycznie wyłapuje klasy błędów, które w poprzedniej wersji przeszły niezauważone? Czego w nim brakuje? |
+1. owner reviews R-01/R-04/age/name gates,
+2. create clean repo,
+3. new Supabase,
+4. secret rotation,
+5. freeze dependency versions,
+6. create docs/decisions.
 
-**Czego nie podważać:** decyzji z §0.1 PRD (należą do właściciela produktu) oraz Definition of Done z §2 (to bezpośredni wniosek z analizy poprzedniej wersji, gdzie „ukończone" oznaczało istnienie pliku).
+### Block B — M0
+
+Execute SPIKE-01…06 and green pipeline.
+
+### Block C — design
+
+While M0 runs, designer builds v1.0 UX. Do not start scored feature battery until design state inventory is frozen.
+
+### Block D — benchmark preflight
+
+- eval user,
+- DB fixture,
+- base SHA,
+- TASK_SPEC validation,
+- visual hashes,
+- forbidden paths,
+- one non-scored dry run.
+
+### Block E — LIFE-T01…T08
+
+Run according to AgentOS B6 rules, preserving:
+- per-task result,
+- cost,
+- iterations,
+- critic/gate outcome,
+- human acceptance,
+- regression status.
+
+### Block F — R1
+
+Integrated app/device/beta hardening.
+
+### Block G — product decision
+
+Only after real beta decide:
+- continue v1.1,
+- revise wedge,
+- cut scope,
+- stop.
+
+---
+
+## 18. What this plan explicitly does NOT promise
+
+- App Store/Play approval by a date.
+- A fixed 4-month v1.0.
+- 25% productivity improvement from AI.
+- That 200–250 source images are legally reusable.
+- That „LifeOS” is clear as a public brand.
+- That PHQ/GAD can ship safely just because questionnaires are available.
+- That static export removes all Server Components.
+- That PWA storage behaves identically in Safari tab and installed Home Screen app.
+- That one generic timestamp conflict rule can solve offline sync.
+- That a green autonomous benchmark equals product-market fit.
+
+---
+
+## 19. Readiness verdict encoded in the plan
+
+### Documentation readiness after this review
+
+- **PRD:** implementation-grade after G-PROD decisions.
+- **Architecture:** implementation-grade after M0 spikes validate current library/platform assumptions.
+- **Implementation plan:** taskable and traceable; AgentOS feature battery has explicit boundaries.
+- **Visual design:** still missing; **G-DESIGN blocks scored feature implementation.**
+
+### Overall
+
+**CONDITIONAL GO to M0.**  
+**NO-GO to full feature implementation until G-PROD + G-DESIGN.**  
+**NO-GO to public mental-health screening until G-MH.**  
+**NO-GO to source photos until G-LIC.**
+
+This is deliberate. „Ready to build foundation” and „ready to autonomously implement the full product” are different states.
