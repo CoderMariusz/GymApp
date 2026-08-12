@@ -2,7 +2,7 @@
 
 **Wersja:** 1.2 — po decyzjach właściciela z 2026-08-12  
 **Data:** 2026-08-12  
-**Status:** READY FOR M0 — **nie** ready do zamrożenia `TASK_SPEC`. Otwarte: **O-01** (offline, blokuje G-PROD), G-LIC, BRAND-01, G-DESIGN (design jeszcze nie istnieje)  
+**Status:** **G-PROD zamknięte** (D-U…D-X, 2026-08-12). Otwarte pozostają: `G-DESIGN` (design nie istnieje), `G-BACKUP`, G-LIC, BRAND-01 — mierzone `LIFE-Txx` nadal NO-GO  
 **Produkt:** greenfield, PWA-first, docelowo Capacitor  
 **Odbiorcy dokumentu:** właściciel produktu, designer, Agent OS, developer/recenzent  
 **Dokumenty powiązane:** `02ARCHITECTURE_REVIEWED.md`, `03IMPLEMENTATIONPLAN_REVIEWED.md`, `plan-testow-v2.md`
@@ -30,7 +30,7 @@ Każde wymaganie ma trwały identyfikator: `CORE-*`, `EX-*`, `FIT-*`, `LC-*`, `S
 
 | ID | Zmiana | Powód | Status do ratyfikacji |
 |---|---|---|---|
-| R-01 | **Zapis pełnego treningu offline wchodzi do v1.0.** Generic multi-entity sync pozostaje v1.1 | Główny ból P1 to siłownia bez zasięgu | **OPEN — patrz O-01.** Jedyne miejsce, w którym ta decyzja żyje |
+| R-01 | **Zapis pełnego treningu offline wchodzi do v1.0.** Generic multi-entity sync pozostaje v1.1 | Główny ból P1 to siłownia bez zasięgu | **ACCEPTED (D-U, 2026-08-12)** |
 | R-02 | „Lighthouse PWA = 100” usunięte | Lighthouse 12 usunął kategorię PWA. Zastępują ją konkretne testy instalowalności, manifestu, service workera i offline shell | **REQUIRED** |
 | R-03 | `LifeOS` pozostaje nazwą roboczą, ale **publiczny brand wymaga hard gate przed brandingiem/sklepami** | W 2026 istnieje kilka aplikacji i usług o dokładnej lub bardzo zbliżonej nazwie LifeOS | **REQUIRED** |
 | R-04 | PHQ-9/GAD-7 w v1.2 są **PROVISIONAL**, nie bezwarunkowe MUST | Wynik całkowity nie jest „progiem kryzysowym”; moduł wymaga osobnej walidacji kliniczno-regulacyjnej i bezpiecznej obsługi odpowiedzi o samouszkodzeniu | **REQUIRED** |
@@ -47,7 +47,7 @@ Każde wymaganie ma trwały identyfikator: `CORE-*`, `EX-*`, `FIT-*`, `LC-*`, `S
 | D-A | PWA jako wejście, Capacitor jako ścieżka sklepowa | KEEP |
 | D-B | Next.js + React + TypeScript | KEEP |
 | D-C | Supabase | KEEP |
-| D-D | v1.0 read-only offline | **Zastąpione przez O-01** — jedna otwarta decyzja, nie trzy |
+| D-D | v1.0 read-only offline | **Uchylone przez D-U.** Offline commit jest MUST v1.0 |
 | D-E | `free-exercise-db` jako źródło bazowego katalogu | KEEP, ale fotografie zablokowane do potwierdzenia praw |
 | D-F | Monetyzacja poza horyzontem 12 miesięcy | KEEP; politykę sklepów weryfikujemy ponownie przy wdrożeniu v2 |
 | D-G | EN + PL od v1.0 | KEEP |
@@ -96,7 +96,7 @@ Każde wymaganie ma trwały identyfikator: `CORE-*`, `EX-*`, `FIT-*`, `LC-*`, `S
 
 **Co darmowy Hevy realnie ogranicza** (stan na 2026-08-12): cztery rutyny, siedem własnych ćwiczeń, około trzech miesięcy historii analitycznej. Plan Pro zdejmuje dokładnie te trzy limity plus reklamy — których w darmowym i tak nie ma.
 
-Po usunięciu szablonów z v1.0 **zostają nam dwa z tych trzech limitów**: własne ćwiczenia bez ograniczeń i pełna historia wykresów. Trzeci — rutyny — wraca dopiero w v1.0.1.
+Po usunięciu szablonów z v1.0 **zostają nam dwa z tych trzech limitów**: własne ćwiczenia bez ograniczeń i pełna historia wykresów. Trzeci — rutyny — wraca dopiero w v1.0.1, przy czym FIT-24 („powtórz ostatni trening", D-V) pokrywa najczęstszy przypadek użycia rutyny bez budowania szablonów.
 
 **Ryzyko tego wyboru, udokumentowane przed podjęciem pracy.** Badanie z 2026-08-12 pokazuje, że w tej samej niszy działają już co najmniej trzy produkty:
 
@@ -207,8 +207,8 @@ Cztery obszary wypadają z v1.0 i wracają w v1.0.1. Powód: harmonogram pełneg
 
 **Co zostaje mimo cięcia i dlaczego:**
 
-- **SET-06, eksport i usunięcie konta, pozostaje MUST v1.0** — ale nie dlatego, że „RODO wymaga przycisku". Wymogiem prawnym jest *proces* obsługi żądania w terminie, który przy dziesięciu testerach spełnia udokumentowana procedura i polecenie administracyjne. Samoobsługa zostaje z powodów produktowych i dlatego, że będzie wymagana przy dystrybucji przez sklepy. Patrz O-11.
-- **FIT-23, zapis treningu offline, pozostaje MUST v1.0.** Nie jest już wyróżnikiem po decyzji D-N, ale trwały zapis lokalny i atomowy zapis na serwer są potrzebne niezależnie — pierwszy chroni przed utratą treningu przy przeładowaniu strony, drugi przed osieroconymi seriami. Skoro obie maszynerie i tak powstają, dołożenie kolejki wysyłkowej jest przyrostem małym względem wartości, jaką daje działanie bez zasięgu. **To jest założenie autora dokumentu, nie decyzja właściciela** — do zakwestionowania w drugiej rundzie.
+- **SET-06, eksport i usunięcie konta, pozostaje MUST v1.0** — ale nie dlatego, że „RODO wymaga przycisku". Wymogiem prawnym jest *proces* obsługi żądania w terminie, który przy dziesięciu testerach spełnia udokumentowana procedura i polecenie administracyjne. Samoobsługa zostaje z powodów produktowych i dlatego, że będzie wymagana przy dystrybucji przez sklepy — potwierdzone decyzją D-W.
+- **FIT-23, zapis treningu offline, pozostaje MUST v1.0 — ratyfikowane przez właściciela (D-U, 2026-08-12).** Nie jest już wyróżnikiem po decyzji D-N, ale trwały zapis lokalny i atomowy zapis na serwer są potrzebne niezależnie — pierwszy chroni przed utratą treningu przy przeładowaniu strony, drugi przed osieroconymi seriami. Skoro obie maszynerie i tak powstają, dołożenie kolejki wysyłkowej jest przyrostem małym względem wartości, jaką daje działanie bez zasięgu.
 
 ### 3.1 Wprost poza v1.x
 
@@ -350,6 +350,7 @@ Fallback dla zdjęć: **ship without source photos** + własne/licencjonowane di
 | FIT-20 | WON'T v1.x | Progress photos. |
 | FIT-21 | WON'T v1.x | Apple Health / Health Connect. |
 | FIT-22 | WON'T | Calories burned. |
+| FIT-24 | **MUST v1.0** | **Repeat last workout (D-V).** Jednym gestem tworzy nowy szkic o strukturze ostatniego zakończonego treningu: te same ćwiczenia, ta sama kolejność, ta sama liczba serii, z wartościami ostatniej sesji jako wstępnie wypełnionymi. **Zakres celowo wąski** — brak tabel szablonów, brak edytora, brak nazw, brak zapisywania rutyn na później. To kopia struktury, nie szablon. Powód: po wycięciu szablonów (D-S) każdy trening zaczynał się od pustego, co samo w sobie przekraczało budżet 60 s z §7.3. |
 | FIT-23 | **MUST v1.0** | **Offline workout completion:** cały trening można zakończyć bez sieci; po powrocie jest automatycznie/idempotentnie wysłany. Reload/kill/reopen przed sync nie gubi danych. |
 
 ### 7.2 Reguły obliczeniowe
@@ -368,10 +369,10 @@ Standard benchmark:
 - 18 working sets,
 - istnieje poprzednia sesja dla każdego ćwiczenia,
 - timer fizycznego odpoczynku **nie jest liczony**,
-- **granice pomiaru są jawne:** START w momencie naciśnięcia „Start workout" (lub „Repeat last workout", jeśli O-10 przyjęte), STOP w momencie pojawienia się podsumowania treningu. Do wyniku wchodzi więc rozpoczęcie sesji, wybór ćwiczeń, korekty wartości, potwierdzanie serii i zakończenie treningu — **nie tylko najwygodniejszy fragment interfejsu**,
+- **granice pomiaru są jawne:** START w momencie naciśnięcia „Start workout" albo „Repeat last workout" (FIT-24), STOP w momencie pojawienia się podsumowania treningu. Do wyniku wchodzi więc rozpoczęcie sesji, wybór ćwiczeń, korekty wartości, potwierdzanie serii i zakończenie treningu — **nie tylko najwygodniejszy fragment interfejsu**,
 - liczony jest **cumulative active interaction time** w tych granicach: od focus/touch rozpoczęcia operacji do zakończenia każdej interakcji z logging UI,
 - **równolegle mierzymy ten sam scenariusz w Hevy na tych samych osobach.** Wynik względem konkurenta niesie więcej informacji niż przekroczenie progu ustalonego przy biurku,
-- mediana dla testerów P1 po pierwszym treningu treningowym: **<60 s**,
+- **mierzone są obie ścieżki osobno**, bo mają różne budżety: powtórzenie ostatniego treningu (FIT-24) — mediana **<60 s**; trening budowany od pustego — mediana **<120 s**. Podawanie jednej liczby dla obu maskowałoby, że to zupełnie inny nakład interakcji,
 - mediana confirm/prefill flow na set: **<2 s aktywnej interakcji**.
 
 Instrumentacja benchmarku nie może rejestrować treści notatek ani danych mental-health.
@@ -446,7 +447,7 @@ Fallback generuje 3–5 zadań deterministycznie z goals/preferences/capacity.
 | SET-03 | MUST v1.0 | Theme light/dark/system. |
 | SET-04 | MUST v1.0 | Language EN/PL. |
 | SET-05 | MUST v1.0 | Profile: name, email, password/reset, avatar; DOB/gender opcjonalne i zbierane tylko jeśli mają realny use case. |
-| SET-06 | MUST v1.0 | Data/privacy: full export, account deletion workflow, policy links. **Uzasadnienie poprawione:** to nie jest bezpośredni wymóg UK GDPR. ICO wymaga *procesu* obsługi żądań dostępu, przenoszenia i usunięcia w terminie — nie samoobsługowego przycisku w aplikacji. Powodem utrzymania w v1.0 jest prywatność od projektu, zaufanie użytkownika oraz to, że Apple wymaga usuwania konta w aplikacji, więc praca i tak będzie potrzebna przy Capacitorze. **Patrz O-11.** |
+| SET-06 | MUST v1.0 | Data/privacy: full export, account deletion workflow, policy links. **Uzasadnienie poprawione:** to nie jest bezpośredni wymóg UK GDPR. ICO wymaga *procesu* obsługi żądań dostępu, przenoszenia i usunięcia w terminie — nie samoobsługowego przycisku w aplikacji. Powodem utrzymania w v1.0 jest prywatność od projektu, zaufanie użytkownika oraz to, że Apple wymaga usuwania konta w aplikacji, więc praca i tak będzie potrzebna przy Capacitorze. **Rozstrzygnięte (D-W): samoobsługa zostaje w v1.0.** |
 | SET-07 | MUST v1.0 | **Fitness/health disclaimer, safety notice, terms.** Nic o zdrowiu psychicznym. |
 | SET-07b | **MUST v1.2** | **Mental-health disclaimer + region-aware crisis resources registry.** Przeniesione z v1.0 po recenzji: wersja 1.0 jest czystym dziennikiem siłowym, a pokazanie materiałów kryzysowych w aplikacji, która nie robi niczego z obszaru zdrowia psychicznego, jest mylące dla użytkownika i nieuzasadnione. Wchodzi razem z MND-09 i bramką G-MH. |
 | SET-08 | MUST v1.0 | About: app version, OSS licenses, contact. |
@@ -692,7 +693,7 @@ Designer otrzymuje **ten PRD + Architecture v1.1**. Nie powinien zgadywać archi
 
 - Auth: sign in, sign up, reset, callback/recovery.
 - Home: new user, returning user, active workout resume, queued-sync warning.
-- Workout: start blank *(oraz „powtórz ostatni trening", jeśli O-10 zostanie przyjęte)*, active session, exercise selector, set editor, rest timer, `draft_local`/offline/queued state, complete confirmation, summary.
+- Workout: start blank **oraz „powtórz ostatni trening" (FIT-24)**, active session, exercise selector, set editor, rest timer, `draft_local`/offline/queued state, complete confirmation, summary.
 - Exercises: list/search/filter, detail, custom create/edit.
 - History: list/filter, workout detail, edit/delete.
 - Progress: overview, per-exercise chart/ranges, PR timeline. *(Bez pomiarów ciała — v1.0.1.)*
@@ -723,7 +724,7 @@ Before feature implementation:
 
 | Gate | When | PASS |
 |---|---|---|
-| G-PROD | before implementation freeze | **O-01**, R-04, Z-AGE ratified. **Obecnie OPEN** — O-01 nierozstrzygnięte. M0 może iść naprzód, bo trwały szkic i atomowy zapis są potrzebne w obu wariantach |
+| G-PROD | before implementation freeze | R-01/D-U, R-04, Z-AGE ratified — **🟢 CLOSED 2026-08-12** |
 | G-UXR | before M2 completion | ≥5 target-user interviews + baseline logging observation; findings incorporated or explicitly rejected |
 | G-LIC | before source content/media ships | data license verified; media provenance separately verified; source snapshot/hash recorded |
 | BRAND-01 | before logo/domain/store metadata spend | UK/EU/target-market name clearance or explicit owner risk acceptance |
@@ -752,16 +753,16 @@ Nowe wymaganie może wejść tylko przez:
 
 | ID | Pytanie | Owner | Deadline/Gate |
 |---|---|---|---|
-| **O-01** | **Czy FIT-23 (pełny zapis treningu offline) pozostaje MUST v1.0?** Jedyne miejsce tej decyzji — zastępuje dawne R-01, D-D i O-08. **Przyjęte** → ADR-17 Accepted, FIT-23 MUST, LIFE-T04 dostaje kryteria offline. **Odrzucone** → trwały szkic i atomowy zapis zostają, ale zakończenie treningu wymaga sieci; oszczędność 20–30 h | Product owner | **G-PROD** |
+| ~~O-01~~ | ~~Offline MUST v1.0?~~ **ZAMKNIĘTE — TAK (D-U).** ADR-17 Accepted, FIT-23 MUST, G-PROD zielone | Product owner | ✅ |
 | O-02 | Wybór nazwy z krótkiej listy w §1.4 + badanie znaków towarowych UK IPO w klasach 9 i 42 | Product owner + brand/legal review | BRAND-01 |
 | O-03 | Exact v1.0 catalog subset | Product/content | before LIFE-T02 |
 | ~~O-04~~ | ~~Body measurements v1.0 czy v1.0.1?~~ | **ZAMKNIĘTE** decyzją D-S: v1.0.1 | — |
 | O-05 | PHQ/GAD included at all in v1.2? | Product + clinical/regulatory | G-MH |
 | O-06 | Target iOS baseline after capability spike | Architecture owner | M0 |
 | O-07 | Analytics consent/instrumentation approach for beta logging-time metric | Product/privacy | G-PRIV |
-| **O-10** | **Czy dodać FIT-24 „Repeat last workout" do v1.0?** Po wycięciu szablonów każdy trening zaczyna się od pustego, co dokłada kilkanaście interakcji poza budżet 60 s. Propozycja kopiuje samą strukturę ostatniego treningu do nowego szkicu — bez tabel szablonów, edytora i nazw. Szacunek 8–14 h | Product owner | przed LIFE-T04 |
-| **O-11** | **Czy SET-06 zostaje samoobsługowy w v1.0**, czy do v1.0.1 wystarczy udokumentowany proces? Patrz §9 | Product owner | przed LIFE-T01 |
-| **O-12** | **Kolejność v1.1: Life Coach przed generic sync i Capacitorem?** Patrz PLAN §9. Przesuwa test głównej tezy produktu o 130–210 h wcześniej, ale koliduje z D-T, bo API modelu językowego kosztuje | Product owner | po becie v1.0 |
+| ~~O-10~~ | ~~Repeat last workout?~~ **ZAMKNIĘTE — TAK (D-V).** FIT-24 MUST v1.0, +8–14 h w LIFE-T04 | Product owner | ✅ |
+| ~~O-11~~ | ~~SET-06 samoobsługa czy proces?~~ **ZAMKNIĘTE — samoobsługa (D-W).** Zakres SET-06 bez zmian | Product owner | ✅ |
+| ~~O-12~~ | ~~Kolejność v1.1?~~ **ZAMKNIĘTE — Life Coach najpierw (D-X).** Patrz PLAN §9; uchyla część D-T | Product owner | ✅ |
 | O-09 | **Jak utrzymać projekt Supabase przy życiu** mimo wstrzymania po 7 dniach bezczynności. Patrz §13.6 | Architecture | M0 |
 
 ---

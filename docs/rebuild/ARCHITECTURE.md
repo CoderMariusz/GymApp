@@ -49,7 +49,8 @@
 | ADR-14 | Single app repository/package | Accepted | nie dzielimy bez drugiego realnego consumer |
 | ADR-15 | New Supabase project | Accepted | zero inherited schema/history/secrets |
 | ADR-16 | `free-exercise-db` for base data; media independently gated | **Changed** | repo/data license != proven photo provenance |
-| ADR-17 | **Offline workout commit in v1.0** | Proposed-required | primary P1 use case |
+| ADR-17 | **Offline workout commit in v1.0** | **✅ Accepted (D-U, 2026-08-12)** | ratyfikowane przez właściciela; G-PROD zamknięte |
+| ADR-31 | **„Repeat last workout" (FIT-24) nie wprowadza żadnej encji szablonu** | **New/required** | decyzja D-V. Realizacja: zapytanie o ostatni zakończony trening → kopia struktury do nowego `draft_local` po stronie klienta. Zero migracji, zero tabel, zero encji wielokrotnego użytku. Ten ADR istnieje po to, by autonomiczny agent nie „pomógł" wprowadzając `workout_templates` tylnymi drzwiami |
 | ADR-18 | Aggregate `CommitWorkout` command + atomic server transaction | **New/required** | eliminuje orphan sets i częściowy zapis |
 | ADR-19 | Client UUIDv7 for user records; deterministic UUIDv5 for system catalog | **New/required** | offline creation + identical catalog IDs local/server |
 | ADR-20 | Generic sync uses row version / base_version, not timestamp LWW | **New/required v1.1** | delayed offline mutation nie może nadpisać nowszego stanu tylko dlatego, że dotarła później |
@@ -57,7 +58,7 @@
 | ADR-22 | Product auth and AgentOS eval auth are separate concerns | **New** | provider provisioning does not contaminate benchmark |
 | ADR-23 | First-party minimal product metrics derived primarily from functional data | **New** | avoid unnecessary sensitive analytics payloads |
 | ADR-24 | Exact store/payment policy rechecked at implementation time | **New** | rules are region/version dependent and v2 is far away |
-| ADR-25 | **Wyłącznie darmowe progi usług w v1.0** | **New** | decyzja D-T. Konsekwencje: katalog ćwiczeń jest częścią paczki statycznej, nie Supabase Storage; maksymalnie dwa projekty Supabase (produkcja + środowisko benchmarku); **projekt wstrzymuje się po 7 dniach bez zapytań do bazy** i wymaga obsługi — patrz §24 |
+| ADR-25 | **Wyłącznie darmowe progi usług w v1.0** — **od M5 (v1.1) uchylone w części dotyczącej API modelu językowego (D-X)**; wymagany twardy limit wydatków, alert budżetowy i deterministyczny plan zapasowy | **New** | decyzja D-T. Konsekwencje: katalog ćwiczeń jest częścią paczki statycznej, nie Supabase Storage; maksymalnie dwa projekty Supabase (produkcja + środowisko benchmarku); **projekt wstrzymuje się po 7 dniach bez zapytań do bazy** i wymaga obsługi — patrz §24 |
 | ADR-26 | **Logowanie wyłącznie e-mailem z hasłem w v1.0** | **New** | decyzja D-S. Google i Apple przeniesione do v1.0.1. `lib/auth/` zachowuje warstwę adapterów z §12.3, żeby dołożenie providerów było podmianą, nie przebudową |
 | ADR-28 | **Każda operacja zmieniająca strukturę kompletnego agregatu treningu jest atomowa** — nie tylko tworzenie | **New/required** | `CommitWorkout` rozwiązywał wyłącznie zapis nowego treningu. FIT-11 pozwala jednak edytować i usuwać trening już zapisany. Wykonane jako osobne żądania — zmień trening, usuń serię, dodaj serię, zmień kolejność — odtwarzają dokładnie tę klasę częściowego zapisu, którą `CommitWorkout` miał wyeliminować. Patrz §7.4 |
 | ADR-29 | **Dzieci agregatu nie powielają `user_id` ani `version`** | **New/required** | autoryzacja i współbieżność egzekwowane przez korzeń agregatu. Patrz §7.5 |

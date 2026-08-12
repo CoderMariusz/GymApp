@@ -43,22 +43,26 @@ Zasady dodatkowe:
 | D-Q | Nazwa „LifeOS" porzucona | 2026-08-12 | Krótka lista w `PRD.md` §1.4; `lifeos` tylko jako nazwa repozytorium |
 | D-R | Testerzy dostępni | 2026-08-12 | G-UXR, G2, G3 bez zmian |
 | D-S | Zakres v1.0 przycięty: bez szablonów, CSV, pomiarów ciała, logowania społecznościowego | 2026-08-12 | Wszystko wraca w v1.0.1 |
-| D-T | Wyłącznie darmowe progi usług | 2026-08-12 | ADR-25; konsekwencje w `ARCHITECTURE.md` §24 |
+| D-T | Wyłącznie darmowe progi usług | 2026-08-12 | ADR-25. **Obowiązuje dla v1.0; od M5 uchylone w części dotyczącej API modelu — patrz D-X** |
+| **D-U** | **Offline workout commit jest MUST v1.0** | 2026-08-12 | ADR-17 Accepted, FIT-23 MUST, **G-PROD zamknięte**. Uchyla D-D |
+| **D-V** | **FIT-24 „Repeat last workout" wchodzi do v1.0** | 2026-08-12 | ADR-31 (bez encji szablonu), LIFE-T04 +8–14 h, `DESIGN-BRIEF.md` §6.9. Benchmark rozdzielony: powtórzenie <60 s, od pustego <120 s |
+| **D-W** | **SET-06 pozostaje samoobsługowy w v1.0** | 2026-08-12 | Zakres bez zmian; uzasadnienie produktowe, nie prawne |
+| **D-X** | **Kolejność v1.1: Life Coach → generic sync → Capacitor** | 2026-08-12 | `PLAN.md` §9. Teza produktu testowana 130–210 h wcześniej. **Koszt: pierwszy stały wydatek na API modelu przesunięty wcześniej; częściowo uchyla D-T** |
 
 ---
 
-## 3. Decyzje otwarte — blokujące
+## 3. Decyzje otwarte
 
-**Żadne mierzone zadanie `LIFE-Txx` nie startuje, dopóki O-01 i `G-DESIGN` są otwarte.**
+**Wszystkie decyzje produktowe są rozstrzygnięte.** Blokady, które pozostały, są wykonawcze — brakuje wykonanej pracy, nie odpowiedzi właściciela.
 
-| ID | Pytanie | Blokuje | Skutek każdej odpowiedzi |
-|---|---|---|---|
-| **O-01** | Czy pełny zapis treningu offline (FIT-23) pozostaje MUST v1.0? | **G-PROD**, LIFE-T04 | **Tak** → ADR-17 Accepted, FIT-23 MUST, T04 z kryteriami offline. **Nie** → trwały szkic i atomowy zapis zostają, ale zakończenie treningu wymaga sieci; oszczędność 20–30 h |
-| **O-10** | Czy dodać FIT-24 „Repeat last workout" do v1.0? | LIFE-T04, benchmark 60 s | **Tak** → +8–14 h, budżet 60 s realny. **Nie** → cel 60 s wymaga rewizji, bo sześć ćwiczeń wybieranych ręcznie co sesję go przekracza |
-| **O-11** | Czy SET-06 jest samoobsługowy w v1.0, czy wystarczy udokumentowany proces? | LIFE-T01 | **Samoobsługa** → bez zmian. **Proces** → T01 lżejsze o kilka godzin, praca wraca przed sklepami |
-| **O-12** | Kolejność v1.1: Life Coach przed generic sync i Capacitorem? | po becie v1.0 | **Tak** → teza produktu sprawdzona 130–210 h wcześniej, ale pierwszy stały koszt API. **Nie** → infrastruktura najpierw, teza sprawdzona pół roku później |
+| Blokada | Czego brakuje |
+|---|---|
+| `G-DESIGN` | Pakiet graficzny nie istnieje. Brief to wejście, nie wynik |
+| `G-BACKUP` | Kopie poza platformą + udokumentowana próba odtworzenia |
+| `G-LIC` | Licencja zdjęć w `free-exercise-db` — planuj własne diagramy |
+| `BRAND-01` | Wybór nazwy + badanie UK IPO klasy 9 i 42 |
 
-**Zamknięte w tej rundzie:** ~~O-04~~ (pomiary ciała → v1.0.1, D-S) · ~~O-08~~ (scalone w O-01) · ~~O-09~~ (podtrzymywanie projektu Supabase — odrzucone, `ARCHITECTURE.md` §24.1)
+**Zamknięte:** ~~O-01~~ (D-U) · ~~O-04~~ (D-S) · ~~O-08~~ (scalone w O-01) · ~~O-09~~ (keepalive odrzucony) · ~~O-10~~ (D-V) · ~~O-11~~ (D-W) · ~~O-12~~ (D-X)
 
 ---
 
@@ -66,13 +70,13 @@ Zasady dodatkowe:
 
 | Bramka | Stan | Czego brakuje |
 |---|---|---|
-| G-PROD | 🔴 **OPEN** | O-01 nierozstrzygnięte |
+| G-PROD | 🟢 **CLOSED** | D-U…D-X, 2026-08-12 |
 | G-DESIGN | 🔴 **OPEN** | Design nie istnieje. Brief to wejście, nie wynik |
 | G-LIC | 🔴 **OPEN** | Licencja zdjęć w `free-exercise-db` — trzy zgłoszenia bez odpowiedzi od marca 2024. Planuj własne diagramy |
 | BRAND-01 | 🔴 **OPEN** | Wybór nazwy + badanie UK IPO, klasy 9 i 42 |
 | **G-BACKUP** | 🔴 **OPEN** | **Nowa.** Darmowy plan Supabase nie ma automatycznych kopii. Wymagana udokumentowana próba odtworzenia przed pierwszym zewnętrznym testerem |
 | G-UXR | 🟡 gotowa do wykonania | Testerzy dostępni (D-R) |
-| M0 | 🟢 **GO** | Trwały szkic i atomowy zapis są potrzebne niezależnie od O-01 |
+| M0 | 🟢 **GO** | Bez zastrzeżeń |
 
 ---
 

@@ -184,6 +184,18 @@ A new version can be installed. It must **never** interrupt an active workout. D
 
 ---
 
+## 6.9 „Powtórz ostatni trening" (FIT-24, decyzja D-V)
+
+Po wycięciu szablonów to jest **główna droga rozpoczęcia treningu** dla powracającego użytkownika, a nie funkcja poboczna. Prowadzi ścieżkę mierzoną progiem 60 s.
+
+| Wymóg | Uzasadnienie |
+|---|---|
+| Widoczna na ekranie startowym **bez wchodzenia w podmenu** | Każde dodatkowe dotknięcie zjada budżet, który ta funkcja ma chronić |
+| Musi pokazywać **co zostanie powtórzone** przed potwierdzeniem | Nazwa ostatniego treningu i data to za mało; użytkownik potrzebuje wiedzieć, że to właściwa sesja |
+| Wartości poprzedniej sesji jako **wstępnie wypełnione, jawnie edytowalne** | Progresja obciążenia to normalny przypadek, nie wyjątek — zmiana ciężaru nie może przypominać poprawiania błędu |
+| **Nie może wyglądać jak zapisywanie szablonu** | Nie powstaje żaden obiekt wielokrotnego użytku; obietnica trwałej rutyny byłaby kłamstwem interfejsu do v1.0.1 |
+| Stan pusty przy pierwszym treningu | Nowy użytkownik nie ma czego powtórzyć — ta ścieżka musi mieć sensowny stan zerowy |
+
 ## 7. Screen inventory
 
 Each screen lists states requiring a frame. This is the checklist `G-DESIGN` verifies against.

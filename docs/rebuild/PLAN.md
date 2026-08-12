@@ -2,7 +2,7 @@
 
 **Wersja:** 1.2 — po decyzjach właściciela z 2026-08-12  
 **Data:** 2026-08-12  
-**Status:** **GO dla M0** · **NO-GO dla mierzonych `LIFE-Txx`** — otwarte O-01 (offline), `G-DESIGN` (design nie istnieje), `G-BACKUP`. Stan bramek: `DECISIONS.md`  
+**Status:** **G-PROD zamknięte** (D-U…D-X). **GO dla M0** · **NO-GO dla mierzonych `LIFE-Txx`** — pozostają `G-DESIGN` (design nie istnieje) i `G-BACKUP`. Stan bramek: `DECISIONS.md`  
 **Tryb pracy:** greenfield · jedna osoba + Agent OS/AI · ok. 20 h/tydzień czasu właściciela  
 **Powiązane:** `PRD.md`, `ARCHITECTURE.md`, `DESIGN-BRIEF.md`, `DECISIONS.md`
 
@@ -82,7 +82,7 @@ Część tych prac może biec równolegle z M0, ale nie wolno ignorować ich prz
 
 | ID | Zadanie | Owner | Blocking |
 |---|---|---|---|
-| ~~P0.1~~ | Offline completion — **otwarte ponownie jako O-08** po zmianie wyróżnika (D-N). Nie blokuje M0 | Product owner | przed LIFE-T04 |
+| ~~P0.1~~ | ~~Offline completion~~ — **ZAMKNIĘTE 2026-08-12 (D-U): TAK.** FIT-23 MUST v1.0, ADR-17 Accepted, G-PROD zielone | Product owner | ✅ |
 | P0.2 | Ratify adult 18+ v1.x + provisional screening policy | Product owner | G-PROD |
 | P0.3 | **ZAMKNIĘTE decyzją D-Q** — „LifeOS" porzucone. Pozostaje wybór nazwy z §1.4 PRD + badanie UK IPO klasy 9 i 42 | Product + brand/legal | BRAND-01 |
 | P0.4 | Verify `free-exercise-db` data license + separate media provenance | Content/legal review | **catalog media** |
@@ -449,12 +449,12 @@ External OAuth/DNS/store work is outside task scope.
 
 ### LIFE-T04 — Workout Logging + Offline Durable Completion
 
-**PRD:** CORE-06, CORE-07, CORE-08, FIT-01, FIT-02, FIT-03, FIT-04, FIT-05, FIT-07, FIT-08, FIT-23  
-**Reference effort:** 75–110 h  
+**PRD:** CORE-06, CORE-07, CORE-08, FIT-01, FIT-02, FIT-03, FIT-04, FIT-05, FIT-07, FIT-08, FIT-23, **FIT-24**  
+**Reference effort:** **83–124 h** (75–110 h + 8–14 h za FIT-24, decyzja D-V)  
 **THIS IS THE PRODUCT HEART.**
 
 **Hard AC:**
-1. start blank/from template,
+1. start blank **lub „repeat last workout" (FIT-24)**,
 2. add/reorder/remove exercise,
 3. fields reflect `tracks`,
 4. pattern memory fills from last completed workout,
@@ -466,7 +466,11 @@ External OAuth/DNS/store work is outside task scope.
 10. replay/retry does not duplicate,
 11. summary distinguishes local queued vs server committed,
 12. server workout returns with all exercises/sets after fresh login,
-13. active interaction timer emits benchmark measurement without raw workout content.
+13. active interaction timer emits benchmark measurement without raw workout content,
+14. **„repeat last workout" tworzy nowy szkic o strukturze ostatniego zakończonego treningu** — te same ćwiczenia, kolejność i liczba serii, z wartościami poprzedniej sesji jako wstępnie wypełnionymi,
+15. **powtórzenie nie tworzy żadnej encji szablonu** i nie zapisuje niczego wielokrotnego użytku; efektem jest zwykły `draft_local`,
+16. **powtórzenie działa bez sieci**, jeśli ostatni trening jest w lokalnym magazynie,
+17. **obie ścieżki startu mierzone osobno** wobec progów z PRD §7.3 (powtórzenie <60 s, od pustego <120 s).
 
 **Failure injection required:**
 - kill page after set edit,
@@ -684,20 +688,20 @@ These are **early product hypotheses**, not universal benchmarks. Failure trigge
 | LIFE-T01 (z minimalnym eksportem RODO) | 38–59 h | +8–14 h przeniesione z T08 |
 | LIFE-T02 | 55–80 h | — |
 | ~~LIFE-T03~~ | ~~25–40 h~~ | **przeniesione do v1.0.1** |
-| LIFE-T04 | 75–110 h | — |
+| LIFE-T04 | **83–124 h** | **+8–14 h** (FIT-24, D-V) |
 | LIFE-T05 | 25–40 h | — |
 | LIFE-T06 | 28–45 h | −7–10 h (bez pomiarów ciała) |
 | LIFE-T07 | 30–45 h | — |
 | ~~LIFE-T08~~ | ~~15–25 h~~ | **częściowo przeniesione**, reszta w T01 |
 | R1 hardening | 42–68 h | −8–12 h (mniejsza powierzchnia) |
-| **Suma inżynierii** | **348–527 h** | |
-| +20% rezerwy | **418–632 h** | |
+| **Suma inżynierii** | **356–541 h** | |
+| +20% rezerwy | **427–649 h** | |
 
-Przy 20 h tygodniowo: **21–32 tygodnie z rezerwą**, czyli około pięciu do ośmiu miesięcy.
+Przy 20 h tygodniowo: **21–32 tygodnie z rezerwą**, czyli około pięciu do ośmiu miesięcy. Decyzja D-V nie zmienia tego przedziału w sposób odczuwalny.
 
 ### 8.1.1 Uczciwa uwaga o skali oszczędności
 
-Przycięcie zakresu (D-S) oszczędza **47–73 h bazowo**, czyli mniej więcej trzy do czterech tygodni kalendarzowych. To znacznie mniej, niż sugerowano przy podejmowaniu decyzji.
+Przycięcie zakresu (D-S) oszczędza **47–73 h bazowo**, a po dodaniu FIT-24 (D-V) netto **39–59 h** — mniej więcej dwa do trzech tygodni kalendarzowych. To znacznie mniej, niż sugerowano przy podejmowaniu decyzji.
 
 Powód jest strukturalny i wart odnotowania: **dwie trzecie nakładu leży w czterech pozycjach — M0, katalog, logowanie i utwardzanie przed wydaniem — których nie da się wyciąć, nie wycinając produktu.** Szablony, eksport CSV, pomiary ciała i logowanie społecznościowe były w sumie mniejsze niż sam etap M0.
 
@@ -763,51 +767,34 @@ Report actual hours/agent cost/iterations vs baseline.
 
 ## 9. v1.1
 
-> **Otwarta decyzja O-12 — kolejność v1.1.** Obecny ciąg to generic sync (80–120 h) → Capacitor (50–90 h) → Life Coach (120–180 h). Alternatywa zgłoszona w recenzji: **Life Coach jako PWA online-first zaraz po becie v1.0**, a infrastruktura później.
->
-> Argument za odwróceniem jest mocny. Wersja 1.0 ma już trwały szkic, kolejkę wysyłkową, bramkę mutacji i atomowy zapis treningu, więc generic sync nie jest warunkiem działania Life Coacha w trybie online-first. Odwrócenie kolejności sprawdza **właściwą długoterminową tezę produktu o 130–210 h wcześniej** — a to jest teza, na której stoi cały sens projektu, skoro wyróżnik v1.0 jest cienki i zajęty (PRD §1.2).
->
-> Argument przeciw jest jeden, ale realny: **Life Coach wymaga API modelu językowego, które kosztuje**, co koliduje z decyzją D-T o wyłącznie darmowych progach. Przy dziesięciu testerach to rząd kilku funtów miesięcznie — niewiele, ale to pierwszy stały koszt w projekcie.
->
-> Decyzja należy do właściciela. Do jej podjęcia poniższa kolejność pozostaje zapisana bez zmian. — generic sync + Capacitor + Life Coach
+**Kolejność ustalona decyzją D-X (2026-08-12): Life Coach idzie pierwszy, infrastruktura po nim.**
+
+| | Etap | Nakład |
+|---|---|---|
+| **M5** | **Life Coach — PWA online-first** | 120–180 h |
+| M6 | Generic multi-entity sync | 80–120 h |
+| M7 | Capacitor | 50–90 h + czas sklepów |
+
+**Dlaczego odwrócenie.** Wersja 1.0 dostarcza już trwały szkic, kolejkę wysyłkową, bramkę mutacji i atomowy zapis agregatu, więc generic sync **nie jest warunkiem** działania Life Coacha w trybie online-first. Odwrócenie sprawdza właściwą długoterminową tezę produktu o **130–210 h wcześniej** — a to jest teza, na której stoi sens projektu, skoro wyróżnik v1.0 jest cienki i zajęty (PRD §1.2). Testowanie jej po pół roku budowania infrastruktury byłoby odwróceniem porządku ryzyka.
+
+**Czego to nie zmienia.** Life Coach w M5 jest **online-first**: check-in i plan wymagają sieci. To jest akceptowalne, ponieważ inaczej niż trening, poranny check-in nie odbywa się w piwnicy bez zasięgu. Trening pozostaje jedynym przepływem działającym w pełni offline aż do M6.
+
+### ⚠️ Konsekwencja, którą trzeba przyjąć świadomie: częściowe uchylenie D-T
+
+Decyzja D-T mówiła „wyłącznie darmowe progi usług". **Life Coach wymaga API modelu językowego, a ono kosztuje** — nie ma tu darmowego progu produkcyjnego. Postawienie Life Coacha przed infrastrukturą oznacza więc, że **pierwszy stały koszt projektu pojawia się o 130–210 h wcześniej, niż zakładano.**
+
+| | |
+|---|---|
+| Skala przy 10 testerach | rząd kilku funtów miesięcznie |
+| Kiedy | od początku M5, nie od v1.2 |
+| Status D-T | **obowiązuje dla v1.0**; od M5 uchylone w części dotyczącej API modelu |
+| Wymagane przed M5 | twardy limit wydatków, alert budżetowy, deterministyczny plan zapasowy przy braku środków lub awarii |
+
+Deterministyczny plan zapasowy jest tu ważniejszy niż zwykle: przy braku środków na koncie API produkt musi degradować się do planu bez modelu, a nie przestawać działać. Ten wymóg był już w kolejności prac; D-X podnosi jego wagę.
 
 Starts only if v1.0 value checkpoint does not demand a product reset.
 
-### M5 — Generic multi-entity sync
-
-**80–120 h**
-
-PRD: CORE-07, SET-14 plus sync requirements supporting v1.1 entities.
-
-Tasks:
-- version/base_version,
-- conflict objects/UI,
-- local queue dependencies,
-- multi-tab lock/lease,
-- tombstones,
-- settings/goals/task sync policies,
-- conflict tests,
-- instrumentation.
-
-**AC:** no generic timestamp LWW; deterministic conflict test passes.
-
-### M6 — Capacitor
-
-**50–90 h + store external time**
-
-- iOS/Android projects,
-- auth deep-link/platform adapter,
-- safe areas,
-- local notifications,
-- haptics,
-- storage lifecycle,
-- native build CI where possible,
-- real-device matrix,
-- current store declarations/review.
-
-**AC:** not merely „website in wrapper”; primary flows work offline/restart and native-specific features are integrated.
-
-### M7 — Life Coach
+### M5 — Life Coach (online-first) — PIERWSZY
 
 **120–180 h**
 
@@ -828,6 +815,46 @@ Order:
 8. 7-day loop test.
 
 **No chat before closed loop.**
+
+**AC dodatkowe wynikające z D-X (online-first):**
+- brak sieci przy check-inie daje jawny, zrozumiały stan — nie pustą kartę i nie fałszywy plan,
+- awaria lub wyczerpany budżet API zwraca deterministyczny plan zapasowy,
+- twardy limit wydatków i alert budżetowy działają **przed** pierwszym wywołaniem produkcyjnym,
+- trening pozostaje w pełni offline; generic sync nadal nie istnieje i nie wolno go tu po cichu wprowadzać.
+
+### M6 — Generic multi-entity sync
+
+**80–120 h**
+
+PRD: CORE-07, SET-14 plus sync requirements supporting v1.1 entities.
+
+Tasks:
+- version/base_version,
+- conflict objects/UI,
+- local queue dependencies,
+- multi-tab lock/lease,
+- tombstones,
+- settings/goals/task sync policies,
+- conflict tests,
+- instrumentation.
+
+**AC:** no generic timestamp LWW; deterministic conflict test passes. Encje Life Coacha z M5 wchodzą do generic sync **tutaj** — do tego czasu są online-first.
+
+### M7 — Capacitor
+
+**50–90 h + store external time**
+
+- iOS/Android projects,
+- auth deep-link/platform adapter,
+- safe areas,
+- local notifications,
+- haptics,
+- storage lifecycle,
+- native build CI where possible,
+- real-device matrix,
+- current store declarations/review.
+
+**AC:** not merely „website in wrapper”; primary flows work offline/restart and native-specific features are integrated.
 
 ### v1.1 exit
 
