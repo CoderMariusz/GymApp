@@ -83,12 +83,12 @@ Część tych prac może biec równolegle z M0, ale nie wolno ignorować ich prz
 | ID | Zadanie | Owner | Blocking |
 |---|---|---|---|
 | ~~P0.1~~ | ~~Offline completion~~ — **ZAMKNIĘTE 2026-08-12 (D-U): TAK.** FIT-23 MUST v1.0, ADR-17 Accepted, G-PROD zielone | Product owner | ✅ |
-| P0.2 | Ratify adult 18+ v1.x + provisional screening policy | Product owner | G-PROD |
+| ~~P0.2~~ | ~~Ratify adult 18+ v1.x + provisional screening policy~~ — **ZAMKNIĘTE**, Z-AGE i R-04 ratyfikowane; G-PROD zielone | Product owner | ✅ |
 | P0.3 | **ZAMKNIĘTE decyzją D-Q** — „LifeOS" porzucone. Pozostaje wybór nazwy z §1.4 PRD + badanie UK IPO klasy 9 i 42 | Product + brand/legal | BRAND-01 |
 | P0.4 | Verify `free-exercise-db` data license + separate media provenance | Content/legal review | **catalog media** |
 | P0.5 | 5–8 interviews/observations z P1; zmierzyć obecny logging workflow. **Dostęp do testerów potwierdzony (D-R)** | Product | G-UXR before F4 beta |
 | P0.6 | Zdefiniować referencyjny 6-exercise/18-set benchmark | Product/testing | before F4 |
-| P0.7 | Nowy projekt Supabase + rotacja sekretów. **Plan darmowy (D-T)** — rozstrzygnąć O-09: wstrzymanie po 7 dniach bezczynności | Human gate | M0 |
+| P0.7 | Nowy projekt Supabase + rotacja sekretów. **Plan darmowy (D-T).** O-09 zamknięte — bez systemu podtrzymującego; procedura ręcznego wznowienia + stan `backend-unavailable` | Human gate | M0 |
 | P0.8 | Confirm eval infrastructure: test user, sandbox secrets, Supabase test environment | AgentOS owner | B6 feature battery |
 | P0.9 | Dependency/version spike against current Next/Supabase/Serwist/next-intl docs | Architecture | M0 |
 | P0.10 | ~~Create `DECISIONS.md`~~ — **ZROBIONE**, zawiera też hierarchię precedencji dokumentów | Architecture | first code |
@@ -97,7 +97,7 @@ Część tych prac może biec równolegle z M0, ale nie wolno ignorować ich prz
 
 ### Exit G-PROD
 
-- R-01 ratified or explicitly rejected with PRD rewritten consistently.
+- ~~R-01 ratified or explicitly rejected~~ — **ratyfikowane 2026-08-12 (D-U)**; PRD spójny.
 - Adult target ratified.
 - No unresolved contradiction between PRD and architecture.
 - Brand risk has an owner (does not need final trademark registration to build UX).
@@ -118,36 +118,54 @@ Specyfikacja zawiera inwentarz ekranów i stanów, ograniczenia twarde z uzasadn
 
 **Zmiana względem wersji 1.1 tego planu:** `G-DESIGN` nie wymaga już niezmiennych, hashowalnych plików referencyjnych dla wszystkich ekranów — tylko dla klatek używanych w bramce wizualnej benchmarku (ścieżka aktywnego treningu, katalog, historia). Wymóg zamrożenia wszystkiego był kosztem bez pokrycia przy jednoosobowym zespole projektowym.
 
-### 2.1 Required design package
+### 2.1 Podział bramki: system designu osobno, ekrany per zadanie
 
-`G-DESIGN` requires:
+**Zmiana po recenzji.** Wcześniej `G-DESIGN` był jedną bramką blokującą **wszystkie** mierzone zadania do czasu ukończenia całego pakietu v1.0. Jest to bezpieczne dla spójności, ale kosztowne kalendarzowo bez potrzeby: zamrażanie panelu postępu trzy tygodnie wcześniej tylko po to, żeby agent mógł zacząć ustawienia, jest czystą stratą.
+
+| Bramka | Zawartość | Co odblokowuje |
+|---|---|---|
+| **`G-DESIGN-SYSTEM`** | tokeny, typografia, siatka i odstępy, powłoka pięciu zakładek, komponenty bazowe, stany globalne (ładowanie, pusty, błąd, offline), **komplet stanów synchronizacji z `draft_local` włącznie**, reguły dostępności, obie motywy, przebieg długich napisów PL | Warunek konieczny dla **wszystkich** zadań. Nic mierzonego nie startuje wcześniej |
+| **`G-DESIGN-T01`** | ekrany ustawień i kont | LIFE-T01 |
+| **`G-DESIGN-T02`** | katalog, selektor, szczegóły ćwiczenia | LIFE-T02 |
+| **`G-DESIGN-T04`** | pełna ścieżka treningu, **w tym „powtórz ostatni trening"** i stany `draft_local`/kolejki | LIFE-T04 |
+| **`G-DESIGN-T05/T06/T07`** | historia, postęp, timer | odpowiednie zadania |
+
+**Dlaczego to nie psuje benchmarku.** Porównywalność wymaga, żeby projekt dla konkretnego zadania był **zamrożony przed startem tego zadania** — nie żeby cały pakiet v1.0 był zamrożony przed startem pierwszego. Warunek zostaje spełniony w obu wariantach.
+
+**Co to daje.** Realną równoległość: gdy skończysz system designu oraz ekrany T01 i T02, AgentOS implementuje te zadania, podczas gdy Ty projektujesz ścieżkę treningu. Przy jednoosobowym zespole to jest jedyne miejsce w całym planie, gdzie da się skrócić kalendarz **bez cięcia zakresu**.
+
+**Ryzyko, które przyjmujemy świadomie:** projektowanie ekranów treningu po zamrożeniu systemu designu może ujawnić braki w komponentach bazowych. Łagodzi to kolejność — ścieżka treningu jest najbardziej wymagająca, więc system designu powstaje z jej wymaganiami na biurku, nawet jeśli same klatki przychodzą później.
+
+### 2.2 Required design package
+
+`G-DESIGN` (suma powyższych bramek) requires:
 
 - mobile 390×844 reference,
 - desktop 1440 reference,
 - design tokens,
 - 5-tab shell,
-- full active workout flow,
+- full active workout flow **including "repeat last workout" (FIT-24)**,
 - Exercise selector/detail,
 - History,
 - Progress,
 - Settings,
 - light/dark,
 - PL long-string pass,
-- offline/queued/sync-failed states,
+- **`draft_local`/offline/queued/syncing/sync-failed/conflict states — wszystkie sześć**,
 - loading/empty/error,
 - destructive dialogs,
 - focus/accessibility annotations for critical paths,
 - stable `DESIGN_ID` per tested frame,
 - exportable assets rules.
 
-### 2.2 No fake design freeze
+### 2.3 No fake design freeze
 
 A screenshot labeled „final” is not enough. `G-DESIGN` is green only when:
-- every LIFE-T01…T08 has at least one mapped frame or an explicit `design-not-required`,
+- every v1.0 product task (T01, T02, T04, T05, T06, T07) has at least one mapped frame or an explicit `design-not-required`,
 - component states are defined,
 - visual reference files are immutable/hashable for the benchmark.
 
-### 2.3 Brand can remain neutral
+### 2.4 Brand can remain neutral
 
 If BRAND-01 is unresolved, designer uses `LifeOS` as **project label** but does not spend irreversible effort on logo/trademark-dependent identity. UX/design system can proceed.
 
@@ -617,12 +635,12 @@ If task is impossible because docs conflict, expected outcome is `blocked_spec_c
 
 **Reference effort:** 50–80 h
 
-After T01–T08:
+After the six v1.0 product tasks (T01, T02, T04, T05, T06, T07) — **not T03/T08, które są v1.0.1**:
 
 ### R1.1 End-to-end product flow
 
 Fresh user:
-sign in → settings basics → start workout *(blank lub „repeat last", jeśli O-10 przyjęte)* → workout → offline completion *(zależne od O-01)* → reconnect → history → progress.
+sign in → settings basics → start workout (blank **lub „repeat last", FIT-24**) → workout → **offline completion (FIT-23)** → reconnect → history → progress.
 
 *Bez szablonów i eksportu CSV — v1.0.1.*
 
@@ -731,9 +749,9 @@ Właściciel zaakceptował narzut równorzędnej roli benchmarku. Poniżej jego 
 | Niemierzony przebieg próbny | 4–6 h |
 | **Razem** | **54–84 h** |
 
-To jest **15–24% ponad nakład inżynierii produktowej**, czyli około trzech do czterech tygodni kalendarzowych. Nie jest wliczone w 348–527 h powyżej.
+To jest **15–24% ponad nakład inżynierii produktowej**, czyli około trzech do czterech tygodni kalendarzowych. Nie jest wliczone w 356–541 h powyżej.
 
-**Łączny nakład v1.0 razem z benchmarkiem: 402–611 h bazowo, 482–733 h z rezerwą — czyli 24–37 tygodni.**
+**Łączny nakład v1.0 razem z benchmarkiem: 410–625 h bazowo, 492–750 h z rezerwą — czyli 25–38 tygodni.**
 
 ### 8.2 Poza budżetem inżynierskim — rachunek pełny
 
@@ -741,15 +759,26 @@ Wszystko poniżej wykonuje **ta sama osoba**, więc nie biegnie równolegle w se
 
 | Pozycja | Nakład | Uwaga |
 |---|---:|---|
-| Projekt graficzny (D-O) | 25–40 h | Właściciel w narzędziu projektowym wg `05-DESIGN-BRIEF.md` |
+| Projekt graficzny (D-O) | 25–40 h | Właściciel w narzędziu projektowym wg `DESIGN-BRIEF.md`; podzielone na `G-DESIGN-SYSTEM` + zamrożenia per zadanie (§7.4) |
 | Treść katalogu | 60–100 h | Faza F1–F3 przed LIFE-T02 |
 | Wywiady z użytkownikami i obserwacja (D-R) | 15–25 h | Pięć do ośmiu osób, plus opracowanie |
 | Rekrutacja i prowadzenie bety | 10–20 h | Dziesięciu testerów |
 | Przeglądy prawne, marki i prywatności | 10–20 h | Badanie znaków towarowych, G-PRIV |
 | **Razem poza inżynierią** | **120–205 h** | |
 
-**Całkowity rachunek v1.0: 522–816 h bazowo, 602–938 h z rezerwą.**
-Przy 20 h tygodniowo: **30–47 tygodni, czyli siedem do jedenastu miesięcy do bety z dziesięcioma użytkownikami.**
+**Całkowity rachunek v1.0: 530–830 h bazowo, 612–955 h z rezerwą.**
+Przy 20 h tygodniowo: **31–48 tygodni, czyli siedem do jedenastu miesięcy do bety z dziesięcioma użytkownikami.**
+
+| Składnik | Zakres |
+|---|---:|
+| Inżynieria produktowa | 356–541 h |
+| Narzut benchmarku AgentOS | 54–84 h |
+| **Baza** | **410–625 h** |
+| +20% rezerwy | **492–750 h** |
+| Praca właściciela poza inżynierią | 120–205 h |
+| **Pełny v1.0** | **612–955 h** |
+
+To jest wariant skrajnie konserwatywny i **nie jest prognozą**, że projekt potrwa 48 tygodni. Właśnie po to istnieje warstwa AgentOS: żeby zmierzyć rzeczywistą kompresję względem tego baseline'u. Ale sam baseline musi być matematycznie spójny, inaczej pomiar nie ma punktu odniesienia.
 
 Ta liczba nigdzie się już nie chowa. Jest większa niż w wersji 1.1 tego planu nie dlatego, że zakres urósł — zakres zmalał — tylko dlatego, że po raz pierwszy zsumowano wszystko, co wykonuje ta sama osoba.
 
@@ -757,7 +786,7 @@ Ta liczba nigdzie się już nie chowa. Jest większa niż w wersji 1.1 tego plan
 
 Re-estimate after:
 1. M0,
-2. T01–T03,
+2. T01, T02, T04 — pierwsze trzy zadania produktu v1.0,
 3. T04,
 4. first 10-user beta.
 
@@ -959,7 +988,7 @@ This is the machine-readable planning spine. No requirement may be considered im
 | FIT-10 | LIFE-T05 |
 | FIT-11 | LIFE-T05 |
 | FIT-12 | LIFE-T06 |
-| FIT-13 | LIFE-T06 if O-04; otherwise v1.0.1 |
+| FIT-13 | **v1.0.1** — poza LIFE-T06 w v1.0 |
 | FIT-14 | WON'T — core logging is fast path |
 | FIT-15 | LIFE-T03 |
 | FIT-16 | LIFE-T08 |

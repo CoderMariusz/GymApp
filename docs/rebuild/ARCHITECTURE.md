@@ -63,7 +63,7 @@
 | ADR-28 | **Każda operacja zmieniająca strukturę kompletnego agregatu treningu jest atomowa** — nie tylko tworzenie | **New/required** | `CommitWorkout` rozwiązywał wyłącznie zapis nowego treningu. FIT-11 pozwala jednak edytować i usuwać trening już zapisany. Wykonane jako osobne żądania — zmień trening, usuń serię, dodaj serię, zmień kolejność — odtwarzają dokładnie tę klasę częściowego zapisu, którą `CommitWorkout` miał wyeliminować. Patrz §7.4 |
 | ADR-29 | **Dzieci agregatu nie powielają `user_id` ani `version`** | **New/required** | autoryzacja i współbieżność egzekwowane przez korzeń agregatu. Patrz §7.5 |
 | ADR-30 | **Funkcje RPC domyślnie `SECURITY INVOKER`**; `SECURITY DEFINER` tylko gdy konieczne, zawsze z ustawionym `search_path` i `EXECUTE` ograniczonym do konkretnych ról | **New/required** | zgodne z bieżącą rekomendacją Supabase; `SECURITY DEFINER` bez ustawionego `search_path` jest klasycznym wektorem eskalacji |
-| ADR-27 | **Szablony treningów poza v1.0** | **New** | decyzja D-S. Tabele `workout_templates` i `workout_template_exercises` **nie powstają w v1.0**. `workouts.template_id` pozostaje w schemacie jako pole opcjonalne bez klucza obcego do czasu v1.0.1 — dzięki temu migracja nie wymaga przebudowy tabeli treningów |
+| ADR-27 | **Szablony treningów poza v1.0 — łącznie z `template_id`** | **New, poprawione po recenzji** | decyzja D-S. Tabele `workout_templates` i `workout_template_exercises` **nie powstają w v1.0**, a `workouts.template_id` **również nie**. Wcześniejsza wersja zostawiała to pole „żeby ułatwić migrację" — to jest dokładne odwrócenie zasady, na której stoi ten projekt: *nie budujemy schematu dla funkcji, która nie istnieje*. Dodanie nullable `template_id` w migracji v1.0.1 jest trywialne, a zostawione teraz stanowi zaproszenie dla agenta, by zacząć je wypełniać. Nie powstają też katalogi `features/templates/`, `app/(app)/templates/` ani `features/measurements/` — **Git ma pokazywać prawdę: szablony i pomiary nie istnieją** |
 
 **Change control:** ADR change is committed before code that depends on it. Status: `proposed → accepted → implemented → superseded`.
 
@@ -167,7 +167,6 @@ Next request-time image optimizer is unavailable in static export. Project-owned
 │   │   │   ├── dashboard/
 │   │   │   ├── workout/
 │   │   │   ├── exercises/
-│   │   │   ├── templates/
 │   │   │   ├── history/
 │   │   │   ├── progress/
 │   │   │   └── settings/
@@ -178,10 +177,8 @@ Next request-time image optimizer is unavailable in static export. Project-owned
 │   ├── auth/
 │   ├── exercises/
 │   ├── workouts/
-│   ├── templates/
 │   ├── history/
 │   ├── progress/
-│   ├── measurements/
 │   ├── settings/
 │   ├── life-coach/          # v1.1
 │   └── mind/                # v1.2
@@ -247,7 +244,6 @@ active_workout_drafts
   id
   user_id
   started_at
-  template_id?
   payload
   revision
   updated_at_local
@@ -344,7 +340,6 @@ workout:
   started_at
   completed_at
   notes?
-  template_id?
 exercises[]:
   id
   exercise_id
@@ -578,7 +573,9 @@ Built-in templates can be seeded with system owner semantics or shipped as local
 Unique `(template_id, order_index)`.
 
 #### `workouts`
-`id, user_id, started_at, completed_at, template_id?, notes?`
+`id, user_id, started_at, completed_at, notes?`
+
+**Bez `template_id` w v1.0** (ADR-27). Kolumna dochodzi migracją w v1.0.1 razem z tabelami szablonów.
 
 Do **not** store canonical `total_volume`/PR/current duration if they are safely derivable. If a summary cache is later added, it is explicitly denormalized and rebuildable.
 

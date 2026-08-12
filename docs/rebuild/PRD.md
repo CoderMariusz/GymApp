@@ -5,7 +5,7 @@
 **Status:** **G-PROD zamknięte** (D-U…D-X, 2026-08-12). Otwarte pozostają: `G-DESIGN` (design nie istnieje), `G-BACKUP`, G-LIC, BRAND-01 — mierzone `LIFE-Txx` nadal NO-GO  
 **Produkt:** greenfield, PWA-first, docelowo Capacitor  
 **Odbiorcy dokumentu:** właściciel produktu, designer, Agent OS, developer/recenzent  
-**Dokumenty powiązane:** `02ARCHITECTURE_REVIEWED.md`, `03IMPLEMENTATIONPLAN_REVIEWED.md`, `plan-testow-v2.md`
+**Dokumenty powiązane:** `DECISIONS.md` (nadrzędny), `ARCHITECTURE.md`, `PLAN.md`, `DESIGN-BRIEF.md`
 
 > Ten dokument zastępuje wersję 1.0 z 2026-08-11 jako kandydat do zatwierdzenia. Nie jest kosmetycznym rewrite'em. W miejscach, w których research lub analiza architektury obalały założenie, wymaganie zostało zmienione i oznaczone w Change Log.
 
@@ -62,8 +62,8 @@ Każde wymaganie ma trwały identyfikator: `CORE-*`, `EX-*`, `FIT-*`, `LC-*`, `S
 | ID | Decyzja | Skutek w dokumencie |
 |---|---|---|
 | **D-M** | **Rola produktu i benchmarku jest równorzędna.** Właściciel akceptuje narzut infrastruktury pomiarowej | Warstwa AgentOS zostaje. §4 planu implementacji wylicza jawnie jej koszt godzinowy, żeby cena była widoczna |
-| **D-N** | **Wyróżnik v1.0: brak limitów darmowego planu konkurencji** — nieograniczone rutyny i własne ćwiczenia, pełna historia wykresów, bez reklam | **Zastępuje R-05.** Patrz §1.2, w tym udokumentowane ryzyko tego wyboru |
-| **D-O** | **Projekt graficzny powstaje w narzędziu projektowym pod nadzorem właściciela**, na podstawie pełnej specyfikacji | `G-DESIGN` ma właściciela. Specyfikacja: `05-DESIGN-BRIEF.md` |
+| **D-N** | **Wyróżnik v1.0: brak limitów darmowego planu konkurencji** — nieograniczone własne ćwiczenia, pełna historia wykresów, synchronizacja między urządzeniami, działanie bez zasięgu | **Zastępuje R-05.** Sformułowanie poprawione po recenzji: pierwotne „nieograniczone rutyny, bez reklam" było błędne, bo v1.0 nie ma rutyn (D-S), a darmowy Hevy i tak nie ma reklam. Patrz §1.2 |
+| **D-O** | **Projekt graficzny powstaje w narzędziu projektowym pod nadzorem właściciela**, na podstawie pełnej specyfikacji | `G-DESIGN` ma właściciela. Specyfikacja: `DESIGN-BRIEF.md` |
 | **D-P** | **Jurysdykcja i rynek docelowy: Wielka Brytania** | Potwierdza MHRA, UK GDPR i UK/EU name clearance w §12 i G-MH |
 | **D-Q** | **Nazwa „LifeOS" zostaje porzucona.** Nowa do wyboru z krótkiej listy | Patrz §1.4. `lifeos` pozostaje wyłącznie nazwą repozytorium |
 | **D-R** | **Testerzy są dostępni** — właściciel ma dostęp do osób trenujących siłowo | G-UXR, G2 i G3 zostają bez zmian. To najmocniejszy element planu walidacji |
@@ -250,7 +250,7 @@ Nie zmniejszamy GO-A z ośmiu do sześciu. Zmniejszenie unieważniłoby porówny
 | ~~LIFE-T03~~ | Workout template builder — **v1.0.1** | FIT-15 |
 | LIFE-T04 | Workout logging + offline durable completion | FIT-01…FIT-05, FIT-07, FIT-08, FIT-23 |
 | LIFE-T05 | Workout history | FIT-10, FIT-11 |
-| LIFE-T06 | Progress dashboard | FIT-12, FIT-13 |
+| LIFE-T06 | Progress dashboard | FIT-12 *(FIT-13 dopiero v1.0.1)* |
 | LIFE-T07 | Rest timer + PR detection | FIT-06, FIT-09 |
 | ~~LIFE-T08~~ | CSV export — **v1.0.1**; SET-06 realizowane w LIFE-T01 | FIT-16, SET-06 |
 
@@ -268,7 +268,7 @@ Nie zmniejszamy GO-A z ośmiu do sześciu. Zmniejszenie unieważniłoby porówny
 | CORE-04 | MUST v1.0 | **PWA installability.** Manifest, właściwe ikony, standalone display, service worker, install smoke-test Chrome/Android i ręczny test iOS/Safari. Brak wymogu „Lighthouse PWA score”. |
 | CORE-05 | MUST v1.0 | **Offline shell.** Po co najmniej jednym udanym wejściu aplikacja uruchamia się bez sieci do ekranów deklarowanych offline. |
 | CORE-06 | MUST v1.0 | **Durable active-workout draft.** Każda zmiana aktywnego treningu zapisuje się lokalnie w IndexedDB; reload/kill karty nie usuwa pracy. |
-| CORE-07 | MUST v1.0 | **Widoczny stan danych.** UI rozróżnia `saved`, `queued`, `syncing`, `failed`, `conflict`; nigdy nie komunikuje „zapisano w chmurze”, jeśli zapis jest tylko lokalny. |
+| CORE-07 | MUST v1.0 | **Widoczny stan danych.** UI rozróżnia sześć stanów: `draft_local`, `saved`, `queued`, `syncing`, `failed`, `conflict`; nigdy nie komunikuje „zapisano w chmurze”, jeśli zapis jest tylko lokalny. **`draft_local` jest częścią modelu domenowego, nie decyzją wizualną** — oznacza trening w toku, bezpiecznie zapisany na urządzeniu i celowo jeszcze niewysłany. Mylenie go z `queued` pokazywałoby „czeka na wysłanie" w trakcie aktywnego treningu, czyli sugerowałoby awarię tam, gdzie system działa poprawnie. Pełna kolejność: `draft_local` → `queued` → `syncing` → `saved`, z `failed` i `conflict` jako gałęziami wyjątkowymi. |
 | CORE-08 | MUST v1.0 | **Error recovery.** Każda krytyczna operacja ma retry/recovery path; błędy mają stabilny kod diagnostyczny. |
 | CORE-09 | MUST v1.0 | **No silent update.** Nowa wersja PWA nie reloaduje aktywnego treningu automatycznie. |
 | CORE-10 | MUST v1.0 | **Release traceability.** Build zawiera semver/commit SHA/catalog version; ekran About pokazuje wersję. |
@@ -340,10 +340,10 @@ Fallback dla zdjęć: **ship without source photos** + własne/licencjonowane di
 | FIT-10 | MUST v1.0 | History list + filter by exercise + detail. |
 | FIT-11 | MUST v1.0 | Edit/delete z soft-delete; po edycji statystyki i PR są przeliczane. |
 | FIT-12 | MUST v1.0 | Progress: estimated 1RM, weekly volume, PR timeline; 30d/90d/6m/1y/all. |
-| FIT-13 | **v1.0.1** | Body measurements + trends. Przeniesione decyzją D-S. Zamyka otwartą decyzję O-04. |
+| FIT-13 | **v1.0.1** | Body measurements + trends. Przeniesione decyzją D-S; O-04 zamknięte. **Nie wchodzi do LIFE-T06 w v1.0.** |
 | FIT-14 | WON'T | Osobny „quick log” screen. **Główny workflow ma być quick**; nie utrzymujemy dwóch ścieżek zapisu. |
-| FIT-15 | **v1.0.1** | Workout templates. Przeniesione decyzją D-S. Konsekwencja: w v1.0 trening zaczyna się zawsze od pustego, a szybkość zapewnia pamięć wzorca (FIT-01), nie szablon. |
-| FIT-16 | **v1.0.1** | CSV export historii treningów. Przeniesione decyzją D-S. **Uwaga:** eksport pełnych danych użytkownika z SET-06 pozostaje MUST v1.0 jako wymóg UK GDPR. |
+| FIT-15 | **v1.0.1** | Workout templates. Przeniesione decyzją D-S. Konsekwencja w v1.0: trening zaczyna się **albo od pustego, albo przez powtórzenie ostatniego (FIT-24, decyzja D-V)**; szybkość zapewnia pamięć wzorca (FIT-01) i powtórzenie struktury, nie zapisany szablon. FIT-24 pokrywa najczęstszy przypadek użycia rutyny bez tabel szablonów. |
+| FIT-16 | **v1.0.1** | CSV export historii treningów. Przeniesione decyzją D-S. **Uwaga:** eksport pełnych danych użytkownika z SET-06 pozostaje MUST v1.0 — nie jako wymóg prawny konkretnego przycisku, lecz decyzją produktową D-W (prywatność od projektu, zaufanie, gotowość pod wymogi sklepów). Wymogiem UK GDPR jest *proces* obsługi żądania w terminie, nie samoobsługowy interfejs. |
 | FIT-17 | SHOULD v1.1 | Progression suggestion jako oddzielna, wyjaśniona warstwa nad pattern memory. |
 | FIT-18 | SHOULD v1.1 | Workout streak. |
 | FIT-19 | WON'T v1.x | Supersets/circuits. |
@@ -763,7 +763,7 @@ Nowe wymaganie może wejść tylko przez:
 | ~~O-10~~ | ~~Repeat last workout?~~ **ZAMKNIĘTE — TAK (D-V).** FIT-24 MUST v1.0, +8–14 h w LIFE-T04 | Product owner | ✅ |
 | ~~O-11~~ | ~~SET-06 samoobsługa czy proces?~~ **ZAMKNIĘTE — samoobsługa (D-W).** Zakres SET-06 bez zmian | Product owner | ✅ |
 | ~~O-12~~ | ~~Kolejność v1.1?~~ **ZAMKNIĘTE — Life Coach najpierw (D-X).** Patrz PLAN §9; uchyla część D-T | Product owner | ✅ |
-| O-09 | **Jak utrzymać projekt Supabase przy życiu** mimo wstrzymania po 7 dniach bezczynności. Patrz §13.6 | Architecture | M0 |
+| ~~O-09~~ | ~~Podtrzymywanie projektu Supabase~~ **ZAMKNIĘTE — odrzucone.** Nie budujemy sztucznego ruchu obchodzącego politykę darmowego planu; procedura ręcznego wznowienia + stan `backend-unavailable`. `ARCHITECTURE.md` §24.1 | Architecture | ✅ |
 
 ---
 

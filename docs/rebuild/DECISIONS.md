@@ -57,7 +57,8 @@ Zasady dodatkowe:
 
 | Blokada | Czego brakuje |
 |---|---|
-| `G-DESIGN` | Pakiet graficzny nie istnieje. Brief to wejście, nie wynik |
+| `G-DESIGN-SYSTEM` | Tokeny, powłoka, komponenty bazowe, **sześć stanów synchronizacji**, dostępność, obie motywy. **Blokuje wszystkie mierzone zadania** |
+| `G-DESIGN-Txx` | Klatki per zadanie. Blokują tylko swoje zadanie — patrz `PLAN.md` §2.1 |
 | `G-BACKUP` | Kopie poza platformą + udokumentowana próba odtworzenia |
 | `G-LIC` | Licencja zdjęć w `free-exercise-db` — planuj własne diagramy |
 | `BRAND-01` | Wybór nazwy + badanie UK IPO klasy 9 i 42 |
@@ -71,7 +72,8 @@ Zasady dodatkowe:
 | Bramka | Stan | Czego brakuje |
 |---|---|---|
 | G-PROD | 🟢 **CLOSED** | D-U…D-X, 2026-08-12 |
-| G-DESIGN | 🔴 **OPEN** | Design nie istnieje. Brief to wejście, nie wynik |
+| **G-DESIGN-SYSTEM** | 🔴 **OPEN** | Design nie istnieje. Brief to wejście, nie wynik. **Krytyczna ścieżka projektu** |
+| **G-DESIGN-Txx** | 🔴 **OPEN** | Per zadanie; można zamrażać stopniowo (`PLAN.md` §2.1) |
 | G-LIC | 🔴 **OPEN** | Licencja zdjęć w `free-exercise-db` — trzy zgłoszenia bez odpowiedzi od marca 2024. Planuj własne diagramy |
 | BRAND-01 | 🔴 **OPEN** | Wybór nazwy + badanie UK IPO, klasy 9 i 42 |
 | **G-BACKUP** | 🔴 **OPEN** | **Nowa.** Darmowy plan Supabase nie ma automatycznych kopii. Wymagana udokumentowana próba odtworzenia przed pierwszym zewnętrznym testerem |
@@ -85,3 +87,24 @@ Zasady dodatkowe:
 **GO:** repozytorium, konfiguracja, spike'i M0, projekt Supabase, rotacja sekretów, produkcja designu, wywiady z użytkownikami, treść katalogu, badanie znaku towarowego.
 
 **NO-GO:** mierzone zadania `LIFE-T01…T07`, zamrożenie `TASK_SPEC`, pierwszy zewnętrzny tester (do czasu `G-BACKUP`).
+
+---
+
+## 6. Runda konsolidacji 2026-08-12 (po recenzji zewnętrznej)
+
+Runda mechaniczna, bez zmian koncepcyjnych. Usunięto pozostałości po D-S…D-X, przeliczono sumy po FIT-24, dodano kierunek fotograficzny.
+
+| Obszar | Zmiana |
+|---|---|
+| D-N w tabeli decyzji | Zsynchronizowane z poprawionym §1.2 |
+| CORE-07 | Dodane `draft_local` — sześć stanów, część modelu domenowego |
+| FIT-15 / FIT-16 / FIT-13 | Usunięte nieaktualne uzasadnienia i warunki |
+| O-09 | Usunięte jako otwarte z PRD i PLAN |
+| PLAN P0.2, P0.7, exit G-PROD | Oznaczone zamknięte |
+| R1 | Sześć zadań produktu; usunięte „jeśli O-10 / zależne od O-01" |
+| Sumy | Przeliczone: **612–955 h** pełnego v1.0 (było 602–938) |
+| **`template_id`** | **Usunięte ze schematu v1.0** wraz z katalogami `templates/` i `measurements/` — ADR-27 poprawione |
+| `G-DESIGN` | Podzielone na `G-DESIGN-SYSTEM` + bramki per zadanie |
+| `DESIGN-BRIEF.md` §9 | Nowy kierunek fotograficzny, manifest zdjęć, zakaz AI w instruktażu |
+
+**Po tej rundzie przestajemy recenzować dokumenty.** Kolejne tygodnie teoretyzowania dają mniej niż M0, prawdziwy design i pierwsi testerzy.

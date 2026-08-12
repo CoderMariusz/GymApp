@@ -161,7 +161,7 @@ Every screen needs its states designed. This inventory is the completeness crite
 
 ### 6.2 Sync states — specific to this product
 
-The user's second-worst pain is not knowing whether the session saved. These five states are distinct and must be visually distinguishable. **The interface must never say "saved to the cloud" when the data is only on the device.**
+The user's second-worst pain is not knowing whether the session saved. These **six** states are distinct and must be visually distinguishable. **The interface must never say "saved to the cloud" when the data is only on the device.**
 
 | State | Meaning | Emotional job |
 |---|---|---|
@@ -237,7 +237,98 @@ Both light and dark themes are required. **Dark is likely the more used theme** 
 
 ---
 
-## 9. Accessibility
+## 9. Photography and visual asset direction
+
+This section exists because the product's marketing surface can promise features the product does not have. **A photograph is a requirement claim.** A running route on a map implies GPS tracking; a heart-rate waveform implies wearable integration. LifeOS v1.0 does neither, and an image that suggests otherwise creates a defect that no code can fix.
+
+### 9.1 Visual language
+
+| Element | Direction |
+|---|---|
+| Style | Premium, cinematic, dark athletic editorial |
+| Dominant tones | Black / deep navy / graphite |
+| Accent | Restrained lime-green plus a cool blue; accent is punctuation, never the field |
+| People | Athletic but **not exclusively bodybuilder**. A recognisable gym-goer beats a fitness model — relatability is the point |
+| Framing | Subject off-centre, generous negative space |
+| UI overlay | **Every hero image must leave calm surfaces** where cards and text will sit. An image with detail edge-to-edge is unusable regardless of quality |
+| Branding | No visible clothing or equipment logos |
+| Exercise instruction | **Never.** See §9.5 |
+
+### 9.2 Phase discipline — the most important rule here
+
+Do not assemble one large set showing strength plus running plus smartwatch plus planning plus meditation. That composition reads as *superapp that does everything* — which is precisely the positioning this project spent a full scope cut escaping.
+
+**Imagery grows with the product.**
+
+| Phase | Dominant visual world |
+|---|---|
+| **v1.0** | Strength, gym, logging, progress — **only this** |
+| v1.1 | plus planning, daily life, energy |
+| v1.2 | plus breathing, stress, recovery |
+| v2 | plus wearables and health data, *if it actually ships* |
+
+### 9.3 Forbidden implications for v1.0
+
+No image may suggest: heart-rate monitoring, GPS or route tracking, pace or distance analytics, calorie counting, diet tracking, wearable synchronisation, meditation or breathing content, or clinical/medical measurement.
+
+None of these exist in v1.0. Several are out of v1.x entirely.
+
+### 9.4 Approved asset manifest
+
+Every asset carries: file, source/generator, date, phase tag, approval status. **An asset without a manifest row is not approved for use.**
+
+| # | Asset | v1.0 | Verdict | Use / hold |
+|---|---|:---:|---|---|
+| 1 | Man with heavy dumbbell | **9.2** | ✅ Primary hero | Best of set: works with dark UI, ample negative space, reads instantly as strength training. Later add a variant with a more average build |
+| 2 | Woman stretching, dark gym | **8.8** | ✅ Second hero | Balances #1's masculine, bodybuilding read. **#1 + #2 is the branding pair for v1.0** |
+| 3 | Runner | 5.0 | ⛔ Hold | Strong photo, wrong promise. Implies GPS, pace, distance, cardio tracking. Not in app, not in v1.0 marketing. Revisit as later marketing material (8/10) |
+| 4 | Woman with phone and planner | 3.0 | ⛔ Hold → **v1.1** | Excellent future asset (9/10 for Life Coach). Cleanly separates *fitness = movement* from *coaching = organisation and calm* |
+| 5 | Smartwatch with green ECG | 4.0 | ⛔ Hold | Most misleading of the set — reads as Apple Health integration and heart-rate monitoring; the waveform pushes it toward medical. FIT-21 is outside v1.x. If regenerated, **remove the waveform** and hold until health integrations genuinely exist |
+| 6 | Meditation / breathing | 2.0 | ⛔ Hold → **v1.2** | Very good future Mind asset (9.3/10). Using it now would market a module that does not exist |
+
+**Net for v1.0: assets 1 and 2 only.** Four of six generated images are good work aimed at versions that have not shipped.
+
+### 9.5 AI-generated imagery may never demonstrate technique
+
+Hero, background, onboarding, empty state, marketing — all fine.
+
+**"This is how you perform a Romanian deadlift" — never.**
+
+A generative model produces beautifully lit movement containing subtle biomechanical errors. A user copying a wrong hip hinge under load can be injured, and the image will look authoritative while doing it.
+
+This also bounds what `G-LIC` buys us: generating our own assets resolves the rights question around the source repository's photographs, **but it does not satisfy the quality bar for instructional content.** Exercise demonstration needs a verified diagram, verified photography, or verified animation — reviewed against a real technique source.
+
+### 9.6 What the next shoot actually needs
+
+The gap is not another flawless fitness model. It is **the real moment of use** — which is the entire product thesis and is absent from the current set.
+
+| Asset | Why it earns its place |
+|---|---|
+| Person between sets, phone in one hand, barbell behind | The core product story, currently unillustrated |
+| Close-up of hands operating a phone beside a dumbbell | Background for Repeat / Pattern Memory |
+| Person sitting on a bench just after a set, glancing briefly at phone | The JTBD, literally |
+| Loading plates, collars, chalk, hands | Neutral card backgrounds with no feature implication |
+| Wide empty dark gym | Copy space for headlines |
+| Woman performing a heavy strength movement | Balances the first hero properly |
+| An ordinary fit person, not a fitness model | Relatability |
+| End of workout, racking equipment | Summary and success states |
+
+Note how many of these contain a phone. That is deliberate: v1.0 is not selling training, it is selling **the four seconds you spend on your phone between sets**.
+
+### 9.7 Reference screenshots — how to read them
+
+| Reference | v1.0 value | Take | Do not take |
+|---|:---:|---|---|
+| Three dark fitness phones | **9.0** | Hierarchy, black/navy, large photography, cards, whitespace | Calories, steps, running as feature inspiration |
+| Lifestyle / Plans | 5.5 *(8.0 for v1.1)* | Planning concept, categorisation, timeline | Dated UI; social and events do not belong here |
+| Green-navy fitness | **8.7** | Premium feel, lime accent, rounded cards, photo-plus-UI composition | Premium upsell language, diet and calories |
+| HealthPulse neon green | 7.0 | Black plus neon accent, strong contrast | Medical/health-tech read, HR monitoring, wearable implication |
+
+**Blend for the v1.0 visual language: 70% reference 1, 25% reference 3, 5% reference 4.** Reference 2 belongs to a separate Life Coach moodboard — not fitness v1.0.
+
+---
+
+## 10. Accessibility
 
 Target is WCAG 2.2 AA on critical flows. Automated checks are necessary but not sufficient — annotate the following:
 
@@ -249,7 +340,7 @@ Target is WCAG 2.2 AA on critical flows. Automated checks are necessary but not 
 
 ---
 
-## 10. Localisation stress cases
+## 11. Localisation stress cases
 
 English and Polish ship together in v1.0. Test the layout against these actual strings:
 
@@ -268,7 +359,10 @@ Polish also uses diacritics that extend below the baseline (ą, ę) — check li
 
 ---
 
-## 11. What to deliver
+## 12. What to deliver
+
+> **Delivery is split into `G-DESIGN-SYSTEM` first, then per-task packages** (`G-DESIGN-T01`, `-T02`, `-T04`, …). See `PLAN.md` §2.1. The system package gates every scored task; each screen package gates only its own. This exists so implementation of settings and catalog can begin while the workout flow is still being designed.
+
 
 | Item | Requirement |
 |---|---|
@@ -285,7 +379,7 @@ A frame labelled "final" is not a deliverable. The state inventory in §7 is the
 
 ---
 
-## 12. Deliberately left to the designer
+## 13. Deliberately left to the designer
 
 The constraints above are boundaries, not a design. These are open, and a good answer to any of them would improve the product:
 
@@ -298,7 +392,7 @@ The constraints above are boundaries, not a design. These are open, and a good a
 
 ---
 
-## 13. What would make this design fail
+## 14. What would make this design fail
 
 Stated plainly so it can be checked against:
 
