@@ -1,0 +1,175 @@
+/* ── Base palette ──────────────────────────────────────────────
+   Sampled from the v1.0 mockup sheets (references/mockup-sheet-a|b.png).
+   Surfaces are a cool near-black (navy-graphite), never pure #000 except
+   for the device backdrop. Accent is lime; it is punctuation, never field. */
+:root{
+  /* Ink — cool near-black ramp */
+  --ink-1000:#04060a; --ink-950:#070a0f; --ink-900:#0c0f15; --ink-850:#12161d;
+  --ink-800:#181d25; --ink-700:#1e242e; --ink-600:#2a323e; --ink-500:#3b4553;
+  --ink-400:#5b6675; --ink-300:#8b95a3; --ink-200:#b6bec9; --ink-100:#dfe4ea; --ink-000:#ffffff;
+
+  /* Lime — the accent. 500 is the button/pill fill sampled at #90d850 */
+  --lime-700:#5f9a2c; --lime-600:#7cc13e; --lime-500:#90d850; --lime-400:#a8d858; --lime-300:#c3e88a;
+  --lime-tint-16:rgba(144,216,80,.16); --lime-tint-08:rgba(144,216,80,.08);
+
+  /* Cool blue — second accent, reserved for in-transit / informational */
+  --blue-600:#2f6fd0; --blue-500:#4c8df6; --blue-400:#7bb0ff;
+  --blue-tint-14:rgba(76,141,246,.14);
+
+  /* Amber — waiting, deferred, warm-up */
+  --amber-600:#c07f10; --amber-500:#f0a92b; --amber-400:#f7c368;
+  --amber-tint-14:rgba(240,169,43,.14);
+
+  /* Red — destructive, conflict */
+  --red-600:#c2313a; --red-500:#e5484d; --red-400:#f4787c;
+  --red-tint-14:rgba(229,72,77,.14);
+
+  /* Photography scrim — heroes always carry a scrim so cards stay legible */
+  --scrim-strong:linear-gradient(180deg,rgba(4,6,10,0) 0%,rgba(4,6,10,.55) 46%,rgba(4,6,10,.94) 100%); /* @kind other */
+  --scrim-side:linear-gradient(90deg,rgba(4,6,10,.92) 0%,rgba(4,6,10,.55) 55%,rgba(4,6,10,0) 100%); /* @kind other */
+}
+
+/* ── Semantic roles — dark (default; gyms are dim, phones are dark) ── */
+:root,[data-theme="dark"]{
+  color-scheme:dark;
+
+  --backdrop:#000000;
+  --surface-base:var(--ink-950);
+  --surface-card:var(--ink-900);
+  --surface-raised:var(--ink-850);
+  --surface-sunken:var(--ink-1000);
+  --surface-inset:rgba(255,255,255,.04);
+  --surface-nav:rgba(7,10,15,.86);
+
+  --text-primary:var(--ink-000);
+  --text-secondary:var(--ink-300);
+  --text-tertiary:var(--ink-400);
+  --text-inverse:var(--ink-1000);
+  --text-accent:var(--lime-500);
+
+  --border-subtle:rgba(255,255,255,.07);
+  --border-default:var(--ink-700);
+  --border-strong:var(--ink-600);
+  --border-accent:var(--lime-500);
+  --focus-ring:var(--lime-400);
+
+  --action-primary:var(--lime-500);
+  --action-primary-hover:var(--lime-400);
+  --action-primary-press:var(--lime-600);
+  --action-primary-text:var(--ink-1000);
+  --action-secondary:var(--ink-850);
+  --action-secondary-hover:var(--ink-800);
+  --action-secondary-text:var(--ink-000);
+  --action-ghost-hover:rgba(255,255,255,.06);
+  --action-disabled:var(--ink-800);
+  --action-disabled-text:var(--ink-500);
+
+  --feedback-success:var(--lime-500);
+  --feedback-success-quiet:var(--lime-tint-16);
+  --feedback-warning:var(--amber-500);
+  --feedback-warning-quiet:var(--amber-tint-14);
+  --feedback-danger:var(--red-500);
+  --feedback-danger-quiet:var(--red-tint-14);
+  --feedback-info:var(--blue-500);
+  --feedback-info-quiet:var(--blue-tint-14);
+
+  /* Set-entry semantics — the product's core distinction */
+  --set-proposed-text:var(--ink-400);          /* pre-filled proposal, not a fact */
+  --set-proposed-border:var(--ink-700);
+  --set-logged-text:var(--ink-000);            /* recorded fact */
+  --set-logged-mark:var(--lime-500);
+  --set-active-bg:var(--lime-tint-08);
+  --set-active-border:var(--lime-500);
+  --set-warmup-text:var(--amber-400);
+  --set-warmup-rail:var(--amber-500);
+
+  /* Charts */
+  --chart-line:var(--lime-500);
+  --chart-fill:linear-gradient(180deg,rgba(144,216,80,.28) 0%,rgba(144,216,80,0) 100%); /* @kind other */
+  --chart-bar:var(--lime-400);
+  --chart-bar-muted:var(--ink-700);
+  --chart-grid:rgba(255,255,255,.06);
+  --chart-axis-text:var(--ink-400);
+}
+
+/* ── Semantic roles — light. Designed, not inverted:
+   surfaces are warm-neutral paper, lime darkens to hold AA on white. ── */
+[data-theme="light"]{
+  color-scheme:light;
+
+  --backdrop:#e7e9ec;
+  --surface-base:#f7f8f9;
+  --surface-card:#ffffff;
+  --surface-raised:#ffffff;
+  --surface-sunken:#eef0f2;
+  --surface-inset:rgba(4,6,10,.04);
+  --surface-nav:rgba(255,255,255,.9);
+
+  --text-primary:#0c0f15;
+  --text-secondary:#525c69;
+  --text-tertiary:#77818f;
+  --text-inverse:#ffffff;
+  --text-accent:var(--lime-700);
+
+  --border-subtle:rgba(4,6,10,.07);
+  --border-default:#dde1e6;
+  --border-strong:#c3c9d1;
+  --border-accent:var(--lime-600);
+  --focus-ring:var(--lime-700);
+
+  --action-primary:var(--lime-500);
+  --action-primary-hover:var(--lime-400);
+  --action-primary-press:var(--lime-600);
+  --action-primary-text:#0c0f15;
+  --action-secondary:#eef0f2;
+  --action-secondary-hover:#e4e7ea;
+  --action-secondary-text:#0c0f15;
+  --action-ghost-hover:rgba(4,6,10,.05);
+  --action-disabled:#e4e7ea;
+  --action-disabled-text:#a2abb5;
+
+  --feedback-success:var(--lime-700);
+  --feedback-success-quiet:rgba(95,154,44,.12);
+  --feedback-warning:var(--amber-600);
+  --feedback-warning-quiet:rgba(192,127,16,.12);
+  --feedback-danger:var(--red-600);
+  --feedback-danger-quiet:rgba(194,49,58,.1);
+  --feedback-info:var(--blue-600);
+  --feedback-info-quiet:rgba(47,111,208,.1);
+
+  --set-proposed-text:#77818f;
+  --set-proposed-border:#dde1e6;
+  --set-logged-text:#0c0f15;
+  --set-logged-mark:var(--lime-700);
+  --set-active-bg:rgba(95,154,44,.08);
+  --set-active-border:var(--lime-600);
+  --set-warmup-text:var(--amber-600);
+  --set-warmup-rail:var(--amber-500);
+
+  --chart-line:var(--lime-700);
+  --chart-fill:linear-gradient(180deg,rgba(95,154,44,.22) 0%,rgba(95,154,44,0) 100%); /* @kind other */
+  --chart-bar:var(--lime-600);
+  --chart-bar-muted:#dde1e6;
+  --chart-grid:rgba(4,6,10,.07);
+  --chart-axis-text:#77818f;
+}
+
+/* ── Sync state roles. Six states, per DESIGN-BRIEF §6.2.
+   Colour never carries the meaning alone — every state pairs with an icon
+   and a literal label. `queued` is deliberately neutral, not a warning. ── */
+:root,[data-theme="dark"]{
+  --sync-draft-fg:var(--ink-300);   --sync-draft-bg:rgba(255,255,255,.06);
+  --sync-queued-fg:var(--ink-200);  --sync-queued-bg:rgba(255,255,255,.08);
+  --sync-syncing-fg:var(--blue-400);--sync-syncing-bg:var(--blue-tint-14);
+  --sync-saved-fg:var(--lime-500);  --sync-saved-bg:var(--lime-tint-16);
+  --sync-failed-fg:var(--amber-400);--sync-failed-bg:var(--amber-tint-14);
+  --sync-conflict-fg:var(--red-400);--sync-conflict-bg:var(--red-tint-14);
+}
+[data-theme="light"]{
+  --sync-draft-fg:#525c69;          --sync-draft-bg:rgba(4,6,10,.06);
+  --sync-queued-fg:#3b4553;         --sync-queued-bg:rgba(4,6,10,.07);
+  --sync-syncing-fg:var(--blue-600);--sync-syncing-bg:rgba(47,111,208,.1);
+  --sync-saved-fg:var(--lime-700);  --sync-saved-bg:rgba(95,154,44,.14);
+  --sync-failed-fg:var(--amber-600);--sync-failed-bg:rgba(192,127,16,.14);
+  --sync-conflict-fg:var(--red-600);--sync-conflict-bg:rgba(194,49,58,.1);
+}

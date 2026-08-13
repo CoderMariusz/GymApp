@@ -1,0 +1,11 @@
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--surface-base);color:var(--text-primary);font-family:var(--font-ui);font-size:var(--type-body-size);line-height:var(--type-body-lh);-webkit-font-smoothing:antialiased;text-wrap:pretty}
+h1,h2,h3,h4{font-family:var(--font-display);font-weight:var(--fw-bold);letter-spacing:var(--type-title-ls);margin:0}
+a{color:var(--text-accent);text-decoration:none}
+a:hover{color:var(--lime-400);text-decoration:underline}
+button{font-family:inherit}
+:focus-visible{outline:2px solid var(--focus-ring);outline-offset:2px}
+.num{font-family:var(--font-numeric);font-variant-numeric:var(--numeric-tabular);font-feature-settings:"tnum" 1}
+.eyebrow{font-size:var(--type-caption-size);line-height:var(--type-caption-lh);letter-spacing:var(--type-caption-ls);text-transform:uppercase;color:var(--text-tertiary);font-weight:var(--fw-semibold)}
+.ds-icon>svg{width:100%;height:100%;display:block;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+@keyframes lifeos-spin{to{transform:rotate(360deg)}}

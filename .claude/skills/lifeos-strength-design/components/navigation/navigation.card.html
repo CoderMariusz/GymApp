@@ -1,0 +1,28 @@
+<!-- @dsCard group="Components" viewport="700x230" name="Navigation" subtitle="Five-tab shell and screen headers" -->
+<!DOCTYPE html><html data-theme="dark"><head><meta charset="utf-8"><title>Navigation</title>
+<link rel="stylesheet" href="../../styles.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+<style>body{margin:0;background:var(--surface-base);padding:16px}.row{display:flex;flex-wrap:wrap;align-items:center;gap:12px}.col{display:flex;flex-direction:column;gap:12px}.lbl{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-tertiary);font-weight:700;margin-bottom:8px}</style></head><body><div id="root"></div>
+<script type="text/babel">
+const { BottomNav, ScreenHeader, IconButton, SyncBadge } = window.LifeOSStrengthDesignSystem_576cfb;
+function Demo(){
+  const [tab,setTab]=React.useState('workout');
+  return (<div className="col" style={{gap:16}}>
+    <div className="row" style={{gap:16,alignItems:'flex-start'}}>
+      <div style={{flex:1,background:'var(--surface-card)',borderRadius:'var(--radius-lg)',border:'1px solid var(--border-subtle)'}}>
+        <ScreenHeader title="Push Day" onBack={()=>{}} right={<IconButton icon="ellipsis" label="More"/>}/>
+      </div>
+      <div style={{flex:1,background:'var(--surface-card)',borderRadius:'var(--radius-lg)',border:'1px solid var(--border-subtle)'}}>
+        <ScreenHeader title="Workout" subtitle="Draft — on this device" left={<span style={{width:32,height:32,borderRadius:999,background:'var(--surface-inset)',display:'inline-block',marginRight:4}}/>} right={<SyncBadge state="draft_local" compact/>}/>
+      </div>
+    </div>
+    <div style={{border:'1px solid var(--border-subtle)',borderRadius:'var(--radius-lg)',overflow:'hidden',paddingTop:14,background:'var(--surface-base)'}}>
+      <BottomNav active={tab} onSelect={setTab}/>
+    </div>
+  </div>);
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<Demo/>);
+</script></body></html>

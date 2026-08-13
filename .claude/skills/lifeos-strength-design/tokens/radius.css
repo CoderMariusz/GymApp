@@ -1,0 +1,10 @@
+:root{
+  --radius-xs:6px;
+  --radius-sm:10px;   /* inputs, small chips */
+  --radius-md:14px;   /* buttons, set rows */
+  --radius-lg:18px;   /* cards */
+  --radius-xl:24px;   /* hero cards, sheets */
+  --radius-2xl:32px;  /* bottom sheet top corners */
+  --radius-pill:999px;
+  --radius-device:44px;
+}

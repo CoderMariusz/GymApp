@@ -1,0 +1,32 @@
+:root{
+  --font-display:"Archivo","Helvetica Neue",Arial,sans-serif;
+  --font-ui:"Manrope","Helvetica Neue",Arial,sans-serif;
+  --font-numeric:"Archivo","Helvetica Neue",Arial,sans-serif;
+
+  /* Weights */
+  --fw-regular:400; /* @kind font */
+  --fw-medium:500; /* @kind font */
+  --fw-semibold:600; /* @kind font */
+  --fw-bold:700; /* @kind font */
+  --fw-extrabold:800; /* @kind font */
+
+  /* Mobile scale (390px reference). Sizes are literal px from the mockups. */
+  --type-display-size:34px;  --type-display-lh:38px;  --type-display-ls:-.02em;
+  --type-title-size:22px;    --type-title-lh:28px;    --type-title-ls:-.01em;
+  --type-heading-size:17px;  --type-heading-lh:22px;  --type-heading-ls:-.005em;
+  --type-body-size:15px;     --type-body-lh:21px;     --type-body-ls:0;
+  --type-label-size:13px;    --type-label-lh:17px;    --type-label-ls:0;
+  --type-caption-size:11px;  --type-caption-lh:14px;  --type-caption-ls:.06em;
+
+  /* Numeric — the set editor is read at arm's length */
+  --type-metric-hero-size:44px; --type-metric-hero-lh:44px;
+  --type-metric-size:28px;      --type-metric-lh:32px;
+  --type-metric-sm-size:17px;   --type-metric-sm-lh:20px;
+  --type-timer-size:30px;       --type-timer-lh:32px;
+
+  /* Desktop overrides (1440 reference) */
+  --type-display-desktop-size:46px; --type-display-desktop-lh:50px;
+  --type-title-desktop-size:26px;   --type-title-desktop-lh:32px;
+
+  --numeric-tabular:tabular-nums; /* @kind font */
+}

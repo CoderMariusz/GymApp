@@ -1,0 +1,5 @@
+/* LifeOS Strength — webfonts.
+   SUBSTITUTION: the source repo ships no font binaries (Tailwind/shadcn defaults only).
+   Archivo + Manrope are Google Fonts stand-ins chosen for tabular figures and a
+   flat, athletic grotesk voice. Replace with licensed brand files when they exist. */
+@import url("https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,400..800;1,400..700&family=Manrope:wght@400..800&display=swap");

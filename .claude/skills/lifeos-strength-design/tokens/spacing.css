@@ -1,0 +1,29 @@
+:root{
+  /* 4px base scale */
+  --space-0:0px; --space-1:4px; --space-2:8px; --space-3:12px; --space-4:16px;
+  --space-5:20px; --space-6:24px; --space-7:32px; --space-8:40px; --space-9:48px; --space-10:64px;
+
+  /* Layout */
+  --gutter-mobile:16px;      /* screen side padding, 390 reference */
+  --gutter-desktop:32px;
+  --card-pad:16px;
+  --card-pad-tight:12px;
+  --stack-gap:12px;          /* between cards in a scroll column */
+  --section-gap:24px;
+
+  /* Interaction — non-negotiable (DESIGN-BRIEF C-5) */
+  --hit-min:44px;
+  --hit-primary:52px;        /* Complete set / Confirm */
+  --hit-nav:56px;
+
+  /* Shell */
+  --header-h:56px;
+  --nav-h:64px;
+  --fab-size:56px;
+  --safe-top:env(safe-area-inset-top,0px);
+  --safe-bottom:env(safe-area-inset-bottom,0px);
+  --viewport-mobile:390px;
+  --viewport-mobile-h:844px;
+  --viewport-desktop:1440px;
+  --content-max:1160px;
+}

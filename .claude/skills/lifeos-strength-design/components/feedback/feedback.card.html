@@ -1,0 +1,28 @@
+<!-- @dsCard group="Components" viewport="700x330" name="Feedback" subtitle="Banners, empty states, destructive confirmation" -->
+<!DOCTYPE html><html data-theme="dark"><head><meta charset="utf-8"><title>Feedback</title>
+<link rel="stylesheet" href="../../styles.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+<style>body{margin:0;background:var(--surface-base);padding:16px}.row{display:flex;flex-wrap:wrap;align-items:center;gap:12px}.col{display:flex;flex-direction:column;gap:12px}.lbl{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-tertiary);font-weight:700;margin-bottom:8px}</style></head><body><div id="root"></div>
+<script type="text/babel">
+const { Banner, EmptyState, ConfirmDialog, Button } = window.LifeOSStrengthDesignSystem_576cfb;
+function Demo(){
+  return (<div className="row" style={{alignItems:'flex-start',gap:16}}>
+    <div className="col" style={{flex:'1 1 320px'}}>
+      <div className="lbl">Banners</div>
+      <Banner icon="cloud-off" title="2 workouts waiting to sync" description="We'll sync when you're back online." onClick={()=>{}}/>
+      <Banner icon="download" tone="info" title="Update available" description="Installs after your workout."/>
+      <Banner icon="wifi-off" title="Offline" description="Logging works. History from the server is unavailable."/>
+      <div className="lbl" style={{marginTop:8}}>Empty state</div>
+      <EmptyState icon="history" title="No workouts yet" description="Finished sessions land here — volume, records and dates." action={<Button size="md">Start workout</Button>}/>
+    </div>
+    <div style={{flex:'0 0 340px'}}>
+      <div className="lbl">Destructive confirmation</div>
+      <ConfirmDialog title="Delete this workout?" description="18 sets and 12,450 kg of volume will be removed." recovery="Personal records derived from this session are recalculated. This cannot be undone." confirmLabel="Delete workout"/>
+    </div>
+  </div>);
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<Demo/>);
+</script></body></html>
