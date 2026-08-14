@@ -184,7 +184,7 @@ A new version can be installed. It must **never** interrupt an active workout. D
 
 ---
 
-## 6.9 „Powtórz ostatni trening" (FIT-24, decyzja D-V)
+### 6.9 „Powtórz ostatni trening" (FIT-24, decyzja D-V)
 
 Po wycięciu szablonów to jest **główna droga rozpoczęcia treningu** dla powracającego użytkownika, a nie funkcja poboczna. Prowadzi ścieżkę mierzoną progiem 60 s.
 
@@ -227,7 +227,7 @@ Each screen lists states requiring a frame. This is the checklist `G-DESIGN` ver
 
 Define these as semantic roles, not raw values. The implementation uses Tailwind and shadcn/ui, so tokens should map onto that model.
 
-**Colour roles needed:** surface levels · text primary and secondary · border · primary action · destructive · success · warning · and five distinct sync-state roles per §6.2.
+**Colour roles needed:** surface levels · text primary and secondary · border · primary action · destructive · success · warning · and **six** distinct sync-state roles per §6.2.
 
 Both light and dark themes are required. **Dark is likely the more used theme** — gyms are dim and phones are set to dark. Do not treat it as an afterthought.
 
@@ -372,7 +372,7 @@ Polish also uses diacritics that extend below the baseline (ą, ę) — check li
 | Token definitions | Semantic roles, both themes |
 | Component states | Per §6 and §7 |
 | Frame identifiers | Stable `DESIGN_ID` per frame, mapped to requirement identifiers from the PRD |
-| Accessibility annotations | Per §9, on critical paths |
+| Accessibility annotations | Per §10, on critical paths |
 | Asset export rules | Naming, formats, densities |
 
 A frame labelled "final" is not a deliverable. The state inventory in §7 is the acceptance criterion.
