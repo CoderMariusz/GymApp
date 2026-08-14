@@ -48,6 +48,7 @@ Zasady dodatkowe:
 | **D-V** | **FIT-24 „Repeat last workout" wchodzi do v1.0**                                       | 2026-08-12 | ADR-31 (bez encji szablonu), LIFE-T04 +8–14 h, `DESIGN-BRIEF.md` §6.9. Benchmark rozdzielony: powtórzenie <60 s, od pustego <120 s                     |
 | **D-W** | **SET-06 pozostaje samoobsługowy w v1.0**                                              | 2026-08-12 | Zakres bez zmian; uzasadnienie produktowe, nie prawne                                                                                                  |
 | **D-X** | **Kolejność v1.1: Life Coach → generic sync → Capacitor**                              | 2026-08-12 | `PLAN.md` §9. Teza produktu testowana 130–210 h wcześniej. **Koszt: pierwszy stały wydatek na API modelu przesunięty wcześniej; częściowo uchyla D-T** |
+| **D-Y** | **Powiadomienia, inwentarz płytek, waga ciała i blokada wygaszania ekranu → v1.0.1** | 2026-08-14 | Cztery elementy narysowane w pakiecie designu z 14.08 ponad zakres v1.0. Oznaczane w interfejsie jak CSV i „missed planned session": wyszarzone, z plakietką `1.0.1`. Zero tabel, zero kolumn, zero katalogów w v1.0 — ADR-27 obowiązuje tak samo |
 
 ---
 
@@ -108,3 +109,35 @@ Runda mechaniczna, bez zmian koncepcyjnych. Usunięto pozostałości po D-S…D-
 | `DESIGN-BRIEF.md` §9         | Nowy kierunek fotograficzny, manifest zdjęć, zakaz AI w instruktażu                                |
 
 **Po tej rundzie przestajemy recenzować dokumenty.** Kolejne tygodnie teoretyzowania dają mniej niż M0, prawdziwy design i pierwsi testerzy.
+
+---
+
+## 7. Runda 2026-08-14 — pakiet designu i rozstrzygnięcie zakresu
+
+Pakiet designu z 14.08 (183 pliki) domknął ekrany Ustawień, layouty set-editora dla
+czterech typów śledzenia i osiem klatek stanów systemowych. Audyt wobec PRD wykazał
+sześć braków wymagań i cztery elementy ponad zakres.
+
+**Rozstrzygnięcie właściciela (D-Y):** cztery elementy ponad zakres idą do v1.0.1.
+
+| Element | Podstawa |
+|---|---|
+| Ekran Notifications z trzema przełącznikami | brak w PRD; ARCH wiąże powiadomienia z Capacitorem (ADR-04, v1.1) |
+| Plate inventory | brak w PRD |
+| Waga ciała w koncie | brak kolumny w `user_profiles` (§9.2); D-S usunęło pomiary ciała |
+| Keep the screen awake | brak w PRD |
+
+**Braki wymagań pozostają otwarte** i są rozpisane per bramka:
+
+| Bramka | Czego brakuje |
+|---|---|
+| `G-DESIGN-SYSTEM` | stan `backend-unavailable` (ARCH §24.1) + potwierdzenie fontów i ikon |
+| `G-DESIGN-T01` | SET-06 pełny eksport danych, SET-08 About, SET-05 awatar, SET-07 disclaimer |
+| do rozstrzygnięcia | SET-02 jednostka długości cm/in — poprawka należy się PRD albo designowi |
+
+**`G-DESIGN-T02` jest zielona.** Katalog, selektor i szczegóły ćwiczenia są narysowane.
+
+**Uwaga do kolejności baterii.** Zamiana T01↔T02 z 14.08 opierała się wyłącznie na
+dostępności designu. Nie uwzględniała toru treści: LIFE-T02 wymaga realnego katalogu
+ćwiczeń, a ten to 60–100 h pracy właściciela (C0–C5), która jeszcze nie ruszyła.
+Blokada T01 to 8–14 h pracy projektowej. **Kolejność wymaga ponownej decyzji.**
