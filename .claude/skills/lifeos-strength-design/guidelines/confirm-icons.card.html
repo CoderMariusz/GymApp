@@ -1,0 +1,57 @@
+<!-- @dsCard group="Confirm" viewport="960x700" name="Icons — confirm or replace" subtitle="Lucide at 2px stroke is a substitution. Say yes, or send the real set." -->
+<!DOCTYPE html><html data-theme="dark" lang="en"><head><meta charset="utf-8"><title>Icons — confirm or replace</title><link rel="stylesheet" href="../styles.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../_ds_bundle.js"></script>
+<style>body{margin:0;padding:20px;background:var(--surface-base);color:var(--text-primary);font-family:var(--font-ui)}
+.head{display:flex;align-items:baseline;gap:10px;margin-bottom:16px}
+.h1{font-family:var(--font-display);font-size:22px;font-weight:800;letter-spacing:-.01em}
+.tag{font-size:10px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;padding:3px 8px;border-radius:999px;background:var(--feedback-warning-quiet);color:var(--feedback-warning)}
+.lbl{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-tertiary);font-weight:700}
+.card{padding:16px;background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-lg)}
+.grid{display:grid;grid-template-columns:repeat(10,1fr);gap:10px;margin-top:10px}
+.cell{display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 4px;background:var(--surface-inset);border-radius:var(--radius-sm,10px)}
+.nm{font-size:9px;line-height:11px;color:var(--text-tertiary);text-align:center;word-break:break-word}
+.ask{margin-top:12px;padding:16px;background:var(--surface-card);border:1px solid var(--border-default);border-radius:var(--radius-lg)}
+.ask ul{margin:10px 0 0;padding-left:18px}
+.ask li{font-size:12px;line-height:19px;color:var(--text-secondary);margin-bottom:6px}
+.k{color:var(--text-primary);font-weight:700}
+.row{display:flex;align-items:flex-end;gap:22px;margin-top:10px}
+.mono{font-family:var(--font-numeric)}
+a{color:var(--text-accent)}a:hover{color:var(--action-primary-hover)}</style></head><body><div id="root"></div>
+<script type="text/babel">
+const { Icon } = window.LifeOSStrengthDesignSystem_576cfb;
+const SET = ['house','dumbbell','list','history','chart-column','plus','minus','check','chevron-left','chevron-right','chevron-down','ellipsis','play','pause','timer','trophy','trending-up','calendar','clock','cloud-off','wifi-off','refresh-cw','rotate-ccw','git-merge','smartphone','download','copy','search','search-x','filter','sliders-horizontal','user','settings','bell','bell-off','volume-2','mail','lock','shield','file-text','globe','log-out','ruler','moon','sun','trash-2','pencil','star','info','circle-alert','triangle-alert','signal','wifi','battery-full'];
+function Sheet(){
+  return (<React.Fragment>
+    <div className="head"><span className="h1">Icons</span><span className="tag">Substitution · needs confirmation</span></div>
+    <div className="card">
+      <div className="lbl">The working set — 20px, 2px stroke, rounded terminals</div>
+      <div className="grid">{SET.map(n=><div className="cell" key={n}><Icon name={n} size={20} color="var(--text-primary)"/><span className="nm">{n}</span></div>)}</div>
+      <div className="row">
+        <span className="lbl" style={{alignSelf:'center'}}>Sizes</span>
+        <span style={{display:'flex',alignItems:'flex-end',gap:14}}>
+          <span style={{display:'flex',flexDirection:'column',alignItems:'center',gap:6}}><Icon name="dumbbell" size={16}/><span className="nm">16 · inline with text</span></span>
+          <span style={{display:'flex',flexDirection:'column',alignItems:'center',gap:6}}><Icon name="dumbbell" size={20}/><span className="nm">20 · default</span></span>
+          <span style={{display:'flex',flexDirection:'column',alignItems:'center',gap:6}}><Icon name="dumbbell" size={24}/><span className="nm">24 · bottom nav</span></span>
+        </span>
+        <span style={{display:'flex',alignItems:'center',gap:10,marginLeft:'auto'}}>
+          <Icon name="trophy" size={20} color="var(--text-accent)"/><span className="nm" style={{textAlign:'left'}}>Tinted through any colour token —<br/>a glyph never carries meaning without a word beside it (C-4)</span>
+        </span>
+      </div>
+    </div>
+    <div className="ask">
+      <div className="lbl">What we need from you</div>
+      <ul>
+        <li><span className="k">Keep Lucide</span> — MIT licensed, no attribution required in the UI, self-hostable as SVG or a sprite. The 55 glyphs above are the whole set the product uses; nothing else is drawn.</li>
+        <li><span className="k">Or send the real icon set</span> — SVG on a 24px grid, 2px stroke, rounded caps and joins, one file per glyph, named to match the list above so nothing has to be re-wired.</li>
+        <li>Missing from every source so far: <span className="k">no logo and no app icon</span>. The mark is a separate ask from the icon set, and it is blocked on the naming decision.</li>
+        <li>Exercise imagery stays out: no illustrations, no technique diagrams. Exercise rows use the <span className="mono">dumbbell</span> glyph until verified instructional media exists.</li>
+        <li>Icons load from <span className="mono">unpkg.com/lucide-static</span> in these design files. Production self-hosts them — the CDN is a design-time convenience, not a shipping dependency.</li>
+      </ul>
+    </div>
+  </React.Fragment>);
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<Sheet/>);
+</script></body></html>

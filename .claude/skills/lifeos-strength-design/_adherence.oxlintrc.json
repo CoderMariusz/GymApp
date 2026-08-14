@@ -25,6 +25,9 @@
               "screens/desktop/**",
               "screens/history/**",
               "screens/selector/**",
+              "screens/set-editor/**",
+              "screens/settings/**",
+              "screens/system/**",
               "ui_kits/desktop/**",
               "ui_kits/mobile-app/**"
             ],
@@ -104,6 +107,10 @@
         "message": "<Card> radius must be one of 'md' | 'lg' | 'xl'."
       },
       {
+        "selector": "JSXOpeningElement[name.name='Checkbox'] > JSXAttribute > JSXIdentifier[name!=/^(?:checked|indeterminate|onChange|label|description|disabled|key|ref|className|style|children)$/]",
+        "message": "<Checkbox> doesn't accept that prop. Declared props: checked, indeterminate, onChange, label, description, disabled."
+      },
+      {
         "selector": "JSXOpeningElement[name.name='Chip'] > JSXAttribute > JSXIdentifier[name!=/^(?:selected|icon|key|ref|className|style|children)$/]",
         "message": "<Chip> doesn't accept that prop. Declared props: selected, icon."
       },
@@ -144,8 +151,20 @@
         "message": "<Input> align must be one of 'left' | 'center' | 'right'."
       },
       {
+        "selector": "JSXOpeningElement[name.name='ListRow'] > JSXAttribute > JSXIdentifier[name!=/^(?:icon|label|description|value|control|chevron|tone|disabled|key|ref|className|style|children)$/]",
+        "message": "<ListRow> doesn't accept that prop. Declared props: icon, label, description, value, control, chevron, tone, disabled."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='ListRow'] > JSXAttribute[name.name='tone'] > Literal[value!=/^(?:default|danger)$/]",
+        "message": "<ListRow> tone must be one of 'default' | 'danger'."
+      },
+      {
         "selector": "JSXOpeningElement[name.name='PRBadge'] > JSXAttribute > JSXIdentifier[name!=/^(?:label|detail|key|ref|className|style|children)$/]",
         "message": "<PRBadge> doesn't accept that prop. Declared props: label, detail."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='RadioOption'] > JSXAttribute > JSXIdentifier[name!=/^(?:value|label|icon|description|key|ref|className|style|children)$/]",
+        "message": "<RadioOption> doesn't accept that prop. Declared props: value, label, icon, description."
       },
       {
         "selector": "JSXOpeningElement[name.name='RestTimer'] > JSXAttribute > JSXIdentifier[name!=/^(?:remaining|running|nextLabel|nextValue|onToggle|onSkip|key|ref|className|style|children)$/]",
@@ -176,6 +195,10 @@
         "message": "<SetRow> state must be one of 'logged' | 'active' | 'proposed'."
       },
       {
+        "selector": "JSXOpeningElement[name.name='Skeleton'] > JSXAttribute > JSXIdentifier[name!=/^(?:width|height|radius|circle|lines|gap|key|ref|className|style|children)$/]",
+        "message": "<Skeleton> doesn't accept that prop. Declared props: width, height, radius, circle, lines, gap."
+      },
+      {
         "selector": "JSXOpeningElement[name.name='StatCard'] > JSXAttribute > JSXIdentifier[name!=/^(?:label|value|unit|delta|deltaTone|icon|footnote|key|ref|className|style|children)$/]",
         "message": "<StatCard> doesn't accept that prop. Declared props: label, value, unit, delta, deltaTone, icon, footnote."
       },
@@ -190,6 +213,10 @@
       {
         "selector": "JSXOpeningElement[name.name='Stepper'] > JSXAttribute[name.name='size'] > Literal[value!=/^(?:md|lg)$/]",
         "message": "<Stepper> size must be one of 'md' | 'lg'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Switch'] > JSXAttribute > JSXIdentifier[name!=/^(?:checked|onChange|label|disabled|key|ref|className|style|children)$/]",
+        "message": "<Switch> doesn't accept that prop. Declared props: checked, onChange, label, disabled."
       },
       {
         "selector": "JSXOpeningElement[name.name='SyncBadge'] > JSXAttribute > JSXIdentifier[name!=/^(?:state|label|compact|key|ref|className|style|children)$/]",
@@ -240,6 +267,9 @@
       "Card": {
         "replaces": []
       },
+      "Checkbox": {
+        "replaces": []
+      },
       "Chip": {
         "replaces": []
       },
@@ -261,7 +291,13 @@
       "Input": {
         "replaces": []
       },
+      "ListRow": {
+        "replaces": []
+      },
       "PRBadge": {
+        "replaces": []
+      },
+      "RadioOption": {
         "replaces": []
       },
       "RestTimer": {
@@ -279,10 +315,16 @@
       "SetRow": {
         "replaces": []
       },
+      "Skeleton": {
+        "replaces": []
+      },
       "StatCard": {
         "replaces": []
       },
       "Stepper": {
+        "replaces": []
+      },
+      "Switch": {
         "replaces": []
       },
       "SyncBadge": {

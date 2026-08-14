@@ -168,10 +168,12 @@ design and never draw one by hand.
   rows use a neutral `dumbbell` glyph on an inset tile until verified instructional media exists.
 - Icons that are the sole carrier of meaning get an accessible name; decorative ones are hidden.
 
-Working glyph set: `house dumbbell list history chart-column plus minus check chevron-left
-chevron-right chevron-down ellipsis play pause trophy trending-up calendar clock cloud-off wifi-off
-refresh-cw rotate-ccw git-merge smartphone download search search-x filter sliders-horizontal
-user settings bell mail lock trash-2 circle-alert alert-circle signal wifi battery-full`.
+Working glyph set (55 glyphs, the whole set the product uses): `house dumbbell list history
+chart-column plus minus check chevron-left chevron-right chevron-down ellipsis play pause timer
+trophy trending-up calendar clock cloud-off wifi-off refresh-cw rotate-ccw git-merge smartphone
+download copy search search-x filter sliders-horizontal user settings bell bell-off volume-2 mail
+lock shield file-text globe log-out ruler moon sun trash-2 pencil star info circle-alert
+triangle-alert signal wifi battery-full`. Rendered as a sheet in `guidelines/confirm-icons.card.html`.
 
 ---
 
@@ -195,14 +197,14 @@ user settings bell mail lock trash-2 circle-alert alert-circle signal wifi batte
 ### Components
 
 **core** — `Button` · `IconButton` · `Icon` · `Card` · `Badge` · `Chip` · `SegmentedControl` ·
-`Input` · `Select` · `Stepper`
+`Input` · `Select` · `Stepper` · `Switch` · `Checkbox` · `RadioGroup` · `ListRow`
 
 **fitness** — `SetRow` · `RestTimer` · `SyncBadge` · `PRBadge` · `ExerciseRow` · `StatCard` ·
 `WeekDots` · `VolumeBars` · `TrendChart`
 
 **navigation** — `BottomNav` · `ScreenHeader`
 
-**feedback** — `Banner` · `EmptyState` · `ConfirmDialog`
+**feedback** — `Banner` · `EmptyState` · `ConfirmDialog` · `Skeleton`
 
 Each component directory holds `<Name>.jsx`, `<Name>.d.ts`, `<Name>.prompt.md` and one
 `@dsCard` HTML showing its states.
@@ -211,8 +213,9 @@ Each component directory holds `<Name>.jsx`, `<Name>.d.ts`, `<Name>.prompt.md` a
 mockups, and the implementation target is Tailwind + shadcn/ui. This inventory is therefore derived
 from what the mockups and the §7 screen inventory actually contain, not from a shadcn checklist.
 `Icon` is an **intentional addition**: a glyph wrapper is needed because no icon assets exist.
-Deliberately absent: Toast (C-3 forbids sync-by-toast — use `Banner`), Avatar, Tabs, Tooltip,
-Switch, Checkbox, Radio — the last four belong to Settings screens that have not been designed yet.
+`Switch`, `Checkbox`, `RadioGroup`, `ListRow` and `Skeleton` were added with the Settings and
+system-state screens — they are used there, not speculative.
+Deliberately absent: Toast (C-3 forbids sync-by-toast — use `Banner`), Avatar, Tabs, Tooltip.
 
 ### UI kits
 
@@ -230,6 +233,9 @@ Switch, Checkbox, Radio — the last four belong to Settings screens that have n
 | `screens/selector/` | Add-exercise sheet: recent + most used · search results · filters active · no results |
 | `screens/auth/` | Sign up (default, invalid, email taken, success) · password reset (request, sent, new password, expired link) |
 | `screens/desktop/` | All four groups at 1440, dark and light |
+| `screens/settings/` | Settings root · account · units & display · workout defaults · notifications (incl. blocked by system) · data & sync · sign out · delete account |
+| `screens/set-editor/` | The four set-entry layouts: weight × reps · bodyweight · timed (before + running) · distance |
+| `screens/system/` | Fatal error · offline browsing · offline logging · update available · update deferred · loading skeletons |
 
 ---
 
@@ -256,9 +262,9 @@ Straight from the brief. Breaking one of these is a defect, not a preference.
 
 | Item | What was done | Needs |
 |---|---|---|
-| **Fonts** | No binaries in source. **Archivo** (display + numerals) and **Manrope** (UI) pulled from Google Fonts, chosen for tabular figures and a flat athletic voice | Licensed brand fonts, or confirmation of these two |
-| **Icons** | No icon assets in source. **Lucide** via CDN, masked for tinting | Confirmation, or the real icon set |
+| **Fonts** | No binaries in source. **Archivo** (display + numerals) and **Manrope** (UI) pulled from Google Fonts, chosen for tabular figures and a flat athletic voice. Specimen, weights in use and the exact ask: `guidelines/confirm-fonts.card.html` | Licensed brand fonts, or confirmation of these two |
+| **Icons** | No icon assets in source. **Lucide** via CDN, masked for tinting. All 55 glyphs, sizes and the exact ask: `guidelines/confirm-icons.card.html` | Confirmation, or the real icon set |
 | **Logo** | None provided — **none drawn**. The name is set in Archivo ExtraBold with a lime full stop | A real mark, once BRAND-01 resolves the name |
 | **Product name** | `LifeOS` used as the working label | The BRAND-01 decision (Datum / Rung / Ballast) |
-| **Screens not yet drawn** | Settings and its subsections; set-editor field layouts for bodyweight / timed / distance exercises; system states (fatal error, offline, update available, loading skeletons) | Say which to build next |
+| **Screens not yet drawn** | ~~Settings, set-editor layouts, system states~~ — **all drawn** in `screens/settings/`, `screens/set-editor/` and `screens/system/`. Nothing from the v1.0 inventory is now undrawn | Review; then the next batch is the desktop equivalents of these three |
 | **Photography** | Three approved dark gym images extracted from the provided sheets | The §9.6 shoot list — the *moment of use* (phone in hand between sets) is missing from every asset |

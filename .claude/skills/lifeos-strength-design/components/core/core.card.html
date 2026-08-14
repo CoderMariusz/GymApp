@@ -1,4 +1,4 @@
-<!-- @dsCard group="Components" viewport="700x340" name="Core primitives" subtitle="Button, Chip, Segmented, Badge, Stepper, Input" -->
+<!-- @dsCard group="Components" viewport="700x560" name="Core primitives" subtitle="Button, Chip, Segmented, Badge, Stepper, Input, Switch, Radio, ListRow" -->
 <!DOCTYPE html><html data-theme="dark"><head><meta charset="utf-8"><title>Core primitives</title>
 <link rel="stylesheet" href="../../styles.css">
 <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
@@ -7,9 +7,10 @@
 <script src="../../_ds_bundle.js"></script>
 <style>body{margin:0;background:var(--surface-base);padding:16px}.row{display:flex;flex-wrap:wrap;align-items:center;gap:12px}.col{display:flex;flex-direction:column;gap:12px}.lbl{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-tertiary);font-weight:700;margin-bottom:8px}</style></head><body><div id="root"></div>
 <script type="text/babel">
-const { Button, Chip, SegmentedControl, Badge, Stepper, Input, Select, IconButton, Card } = window.LifeOSStrengthDesignSystem_576cfb;
+const { Button, Chip, SegmentedControl, Badge, Stepper, Input, Select, IconButton, Card, Switch, Checkbox, RadioGroup, ListRow } = window.LifeOSStrengthDesignSystem_576cfb;
 function Demo(){
   const [m,setM]=React.useState('Strength');const [w,setW]=React.useState(105);
+  const [alert,setAlert]=React.useState(true);const [sound,setSound]=React.useState(false);const [theme,setTheme]=React.useState('Dark');
   return (<div className="col" style={{gap:18}}>
     <div><div className="lbl">Button — variant · size · state</div><div className="row">
       <Button variant="primary" size="lg" shape="pill" uppercase>Complete set</Button>
@@ -30,6 +31,21 @@ function Demo(){
       <div style={{width:190}}><div className="lbl">Input</div><Input label="Email" icon="mail" placeholder="marek@example.com"/></div>
       <div style={{width:170}}><div className="lbl">Input — error</div><Input label="Password" type="password" defaultValue="secret" error="Wrong credentials"/></div>
       <div style={{width:170}}><div className="lbl">Select</div><Select label="Range" options={['This month','Last 3 months']}/></div>
+    </div>
+    <div className="row" style={{alignItems:'flex-start',gap:20}}>
+      <div style={{flex:'1 1 300px'}}><div className="lbl">List rows · Switch</div><div className="col" style={{gap:8}}>
+        <ListRow icon="bell" label="Rest timer alert" description="Sounds when the rest timer ends" control={<Switch checked={alert} onChange={setAlert} label="Rest timer alert"/>}/>
+        <ListRow icon="volume-2" label="Set confirmation sound" control={<Switch checked={sound} onChange={setSound} label="Set confirmation sound"/>}/>
+        <ListRow icon="ruler" label="Units & display" value="kg · dark" onClick={()=>{}}/>
+        <ListRow icon="trash-2" label="Delete local data" tone="danger" chevron={false} onClick={()=>{}}/>
+      </div></div>
+      <div style={{flex:'1 1 240px'}}><div className="lbl">Radio · Checkbox</div>
+        <RadioGroup value={theme} onChange={setTheme} options={[{value:'System',label:'System',icon:'smartphone'},{value:'Dark',label:'Dark',icon:'moon'},{value:'Light',label:'Light',icon:'sun'}]}/>
+        <div className="col" style={{gap:0,marginTop:8}}>
+          <Checkbox checked label="Count warm-up sets in volume"/>
+          <Checkbox label="Weekly summary email"/>
+        </div>
+      </div>
     </div>
   </div>);
 }

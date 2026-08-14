@@ -1,4 +1,4 @@
-/* @ds-bundle: {"format":4,"namespace":"LifeOSStrengthDesignSystem_576cfb","components":[{"name":"Badge","sourcePath":"components/core/Badge.jsx"},{"name":"Button","sourcePath":"components/core/Button.jsx"},{"name":"Card","sourcePath":"components/core/Card.jsx"},{"name":"Chip","sourcePath":"components/core/Chip.jsx"},{"name":"Icon","sourcePath":"components/core/Icon.jsx"},{"name":"IconButton","sourcePath":"components/core/IconButton.jsx"},{"name":"Input","sourcePath":"components/core/Input.jsx"},{"name":"SegmentedControl","sourcePath":"components/core/SegmentedControl.jsx"},{"name":"Select","sourcePath":"components/core/Select.jsx"},{"name":"Stepper","sourcePath":"components/core/Stepper.jsx"},{"name":"Banner","sourcePath":"components/feedback/Banner.jsx"},{"name":"ConfirmDialog","sourcePath":"components/feedback/ConfirmDialog.jsx"},{"name":"EmptyState","sourcePath":"components/feedback/EmptyState.jsx"},{"name":"ExerciseRow","sourcePath":"components/fitness/ExerciseRow.jsx"},{"name":"PRBadge","sourcePath":"components/fitness/PRBadge.jsx"},{"name":"RestTimer","sourcePath":"components/fitness/RestTimer.jsx"},{"name":"SetRow","sourcePath":"components/fitness/SetRow.jsx"},{"name":"StatCard","sourcePath":"components/fitness/StatCard.jsx"},{"name":"SYNC_STATES","sourcePath":"components/fitness/SyncBadge.jsx"},{"name":"SyncBadge","sourcePath":"components/fitness/SyncBadge.jsx"},{"name":"TrendChart","sourcePath":"components/fitness/TrendChart.jsx"},{"name":"VolumeBars","sourcePath":"components/fitness/VolumeBars.jsx"},{"name":"WeekDots","sourcePath":"components/fitness/WeekDots.jsx"},{"name":"NAV_ITEMS","sourcePath":"components/navigation/BottomNav.jsx"},{"name":"BottomNav","sourcePath":"components/navigation/BottomNav.jsx"},{"name":"ScreenHeader","sourcePath":"components/navigation/ScreenHeader.jsx"}],"sourceHashes":{"components/core/Badge.jsx":"58a61b96b317","components/core/Button.jsx":"bbc1eabc21d1","components/core/Card.jsx":"270cdc4cf1c7","components/core/Chip.jsx":"f34fdbda4251","components/core/Icon.jsx":"b9719924c078","components/core/IconButton.jsx":"5f1bac230c91","components/core/Input.jsx":"a7f3b403396d","components/core/SegmentedControl.jsx":"48e854a22f5b","components/core/Select.jsx":"1ea5c6715457","components/core/Stepper.jsx":"7d0df9ba7739","components/feedback/Banner.jsx":"65b63e7c8b7c","components/feedback/ConfirmDialog.jsx":"6b447e92ce3a","components/feedback/EmptyState.jsx":"d4a2ab400c48","components/fitness/ExerciseRow.jsx":"563e31692320","components/fitness/PRBadge.jsx":"d3fc20d10535","components/fitness/RestTimer.jsx":"8bf671aabf99","components/fitness/SetRow.jsx":"e58be0953d08","components/fitness/StatCard.jsx":"1cb73d8013e5","components/fitness/SyncBadge.jsx":"71126c9fb20e","components/fitness/TrendChart.jsx":"fa94ff3dfd18","components/fitness/VolumeBars.jsx":"a7d82bed02f2","components/fitness/WeekDots.jsx":"e49b8613308f","components/navigation/BottomNav.jsx":"09b5dcf203e0","components/navigation/ScreenHeader.jsx":"241c8f51eb2b","screens/auth/Auth.jsx":"2cf788975b1d","screens/catalog/ExerciseDetail.jsx":"d5af0c75e11a","screens/desktop/DesktopScreens.jsx":"efc9db22f158","screens/history/History.jsx":"0c5df32e04c2","screens/selector/Selector.jsx":"6a70fedc7b26","ui_kits/desktop/DashboardView.jsx":"91e801a55d72","ui_kits/desktop/DesktopShell.jsx":"cdf22eb4e52f","ui_kits/desktop/ProgressView.jsx":"9039855f0820","ui_kits/desktop/WorkoutView.jsx":"dfc9f61766e2","ui_kits/mobile-app/ExercisesScreen.jsx":"b24a8b9d6f21","ui_kits/mobile-app/HomeScreen.jsx":"f713ad1f98b4","ui_kits/mobile-app/ProgressScreen.jsx":"e3a5b6c44404","ui_kits/mobile-app/SignInScreen.jsx":"d17eb296e39d","ui_kits/mobile-app/SummaryScreen.jsx":"ab1b6c5b0243","ui_kits/mobile-app/WorkoutScreen.jsx":"5d39085039d4","ui_kits/mobile-app/app.jsx":"812cd60afc28","ui_kits/mobile-app/shell.jsx":"92192093eac7"},"inlinedExternals":[],"unexposedExports":[]} */
+/* @ds-bundle: {"format":4,"namespace":"LifeOSStrengthDesignSystem_576cfb","components":[{"name":"Badge","sourcePath":"components/core/Badge.jsx"},{"name":"Button","sourcePath":"components/core/Button.jsx"},{"name":"Card","sourcePath":"components/core/Card.jsx"},{"name":"Checkbox","sourcePath":"components/core/Checkbox.jsx"},{"name":"Chip","sourcePath":"components/core/Chip.jsx"},{"name":"Icon","sourcePath":"components/core/Icon.jsx"},{"name":"IconButton","sourcePath":"components/core/IconButton.jsx"},{"name":"Input","sourcePath":"components/core/Input.jsx"},{"name":"ListRow","sourcePath":"components/core/ListRow.jsx"},{"name":"RadioGroup","sourcePath":"components/core/RadioGroup.jsx"},{"name":"SegmentedControl","sourcePath":"components/core/SegmentedControl.jsx"},{"name":"Select","sourcePath":"components/core/Select.jsx"},{"name":"Stepper","sourcePath":"components/core/Stepper.jsx"},{"name":"Switch","sourcePath":"components/core/Switch.jsx"},{"name":"Banner","sourcePath":"components/feedback/Banner.jsx"},{"name":"ConfirmDialog","sourcePath":"components/feedback/ConfirmDialog.jsx"},{"name":"EmptyState","sourcePath":"components/feedback/EmptyState.jsx"},{"name":"Skeleton","sourcePath":"components/feedback/Skeleton.jsx"},{"name":"ExerciseRow","sourcePath":"components/fitness/ExerciseRow.jsx"},{"name":"PRBadge","sourcePath":"components/fitness/PRBadge.jsx"},{"name":"RestTimer","sourcePath":"components/fitness/RestTimer.jsx"},{"name":"SetRow","sourcePath":"components/fitness/SetRow.jsx"},{"name":"StatCard","sourcePath":"components/fitness/StatCard.jsx"},{"name":"SYNC_STATES","sourcePath":"components/fitness/SyncBadge.jsx"},{"name":"SyncBadge","sourcePath":"components/fitness/SyncBadge.jsx"},{"name":"TrendChart","sourcePath":"components/fitness/TrendChart.jsx"},{"name":"VolumeBars","sourcePath":"components/fitness/VolumeBars.jsx"},{"name":"WeekDots","sourcePath":"components/fitness/WeekDots.jsx"},{"name":"NAV_ITEMS","sourcePath":"components/navigation/BottomNav.jsx"},{"name":"BottomNav","sourcePath":"components/navigation/BottomNav.jsx"},{"name":"ScreenHeader","sourcePath":"components/navigation/ScreenHeader.jsx"}],"sourceHashes":{"components/core/Badge.jsx":"58a61b96b317","components/core/Button.jsx":"bbc1eabc21d1","components/core/Card.jsx":"270cdc4cf1c7","components/core/Checkbox.jsx":"b069a5c24d3b","components/core/Chip.jsx":"f34fdbda4251","components/core/Icon.jsx":"b9719924c078","components/core/IconButton.jsx":"5f1bac230c91","components/core/Input.jsx":"a7f3b403396d","components/core/ListRow.jsx":"273d9a44e223","components/core/RadioGroup.jsx":"08be489dd240","components/core/SegmentedControl.jsx":"48e854a22f5b","components/core/Select.jsx":"1ea5c6715457","components/core/Stepper.jsx":"7d0df9ba7739","components/core/Switch.jsx":"a9e9016161ae","components/feedback/Banner.jsx":"65b63e7c8b7c","components/feedback/ConfirmDialog.jsx":"6b447e92ce3a","components/feedback/EmptyState.jsx":"d4a2ab400c48","components/feedback/Skeleton.jsx":"a4404372c9a7","components/fitness/ExerciseRow.jsx":"563e31692320","components/fitness/PRBadge.jsx":"d3fc20d10535","components/fitness/RestTimer.jsx":"8bf671aabf99","components/fitness/SetRow.jsx":"e58be0953d08","components/fitness/StatCard.jsx":"1cb73d8013e5","components/fitness/SyncBadge.jsx":"71126c9fb20e","components/fitness/TrendChart.jsx":"fa94ff3dfd18","components/fitness/VolumeBars.jsx":"a7d82bed02f2","components/fitness/WeekDots.jsx":"e49b8613308f","components/navigation/BottomNav.jsx":"09b5dcf203e0","components/navigation/ScreenHeader.jsx":"241c8f51eb2b","screens/auth/Auth.jsx":"2cf788975b1d","screens/catalog/ExerciseDetail.jsx":"d5af0c75e11a","screens/desktop/DesktopScreens.jsx":"efc9db22f158","screens/history/History.jsx":"0c5df32e04c2","screens/selector/Selector.jsx":"6a70fedc7b26","screens/set-editor/SetEditor.jsx":"2f34079aafa6","screens/settings/Settings.jsx":"239b75025785","screens/system/System.jsx":"7cc8e6fb638c","ui_kits/desktop/DashboardView.jsx":"91e801a55d72","ui_kits/desktop/DesktopShell.jsx":"cdf22eb4e52f","ui_kits/desktop/ProgressView.jsx":"9039855f0820","ui_kits/desktop/WorkoutView.jsx":"dfc9f61766e2","ui_kits/mobile-app/ExercisesScreen.jsx":"b24a8b9d6f21","ui_kits/mobile-app/HomeScreen.jsx":"f713ad1f98b4","ui_kits/mobile-app/ProgressScreen.jsx":"e3a5b6c44404","ui_kits/mobile-app/SignInScreen.jsx":"d17eb296e39d","ui_kits/mobile-app/SummaryScreen.jsx":"ab1b6c5b0243","ui_kits/mobile-app/WorkoutScreen.jsx":"5d39085039d4","ui_kits/mobile-app/app.jsx":"812cd60afc28","ui_kits/mobile-app/shell.jsx":"92192093eac7"},"inlinedExternals":[],"unexposedExports":[]} */
 
 (() => {
 
@@ -340,6 +340,86 @@ function Button({
 Object.assign(__ds_scope, { Button });
 })(); } catch (e) { __ds_ns.__errors.push({ path: "components/core/Button.jsx", error: String((e && e.message) || e) }); }
 
+// components/core/Checkbox.jsx
+try { (() => {
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); }
+function Checkbox({
+  checked = false,
+  indeterminate,
+  onChange,
+  disabled,
+  label,
+  description,
+  style,
+  ...rest
+}) {
+  const on = checked || indeterminate;
+  return /*#__PURE__*/React.createElement("button", _extends({
+    role: "checkbox",
+    "aria-checked": indeterminate ? 'mixed' : !!checked,
+    disabled: disabled,
+    onClick: () => onChange && onChange(!checked),
+    style: {
+      display: 'inline-flex',
+      alignItems: 'flex-start',
+      gap: 10,
+      minHeight: 'var(--hit-min)',
+      padding: '0 2px',
+      background: 'none',
+      border: 'none',
+      textAlign: 'left',
+      cursor: disabled ? 'not-allowed' : 'pointer',
+      opacity: disabled ? 0.45 : 1,
+      color: 'var(--text-primary)',
+      fontFamily: 'var(--font-ui)',
+      ...style
+    }
+  }, rest), /*#__PURE__*/React.createElement("span", {
+    style: {
+      marginTop: 11,
+      flex: '0 0 auto',
+      display: 'inline-flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      width: 22,
+      height: 22,
+      borderRadius: 7,
+      background: on ? 'var(--action-primary)' : 'transparent',
+      border: '2px solid ' + (on ? 'var(--action-primary)' : 'var(--border-strong)'),
+      transition: 'background var(--dur-fast) var(--ease-standard)'
+    }
+  }, checked && !indeterminate && /*#__PURE__*/React.createElement(__ds_scope.Icon, {
+    name: "check",
+    size: 14,
+    color: "var(--action-primary-text)"
+  }), indeterminate && /*#__PURE__*/React.createElement(__ds_scope.Icon, {
+    name: "minus",
+    size: 14,
+    color: "var(--action-primary-text)"
+  })), (label || description) && /*#__PURE__*/React.createElement("span", {
+    style: {
+      display: 'flex',
+      flexDirection: 'column',
+      gap: 2,
+      padding: '10px 0'
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: 14,
+      fontWeight: 'var(--fw-bold)',
+      lineHeight: '18px'
+    }
+  }, label), description && /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: 11,
+      lineHeight: '15px',
+      color: 'var(--text-tertiary)'
+    }
+  }, description)));
+}
+Object.assign(__ds_scope, { Checkbox });
+})(); } catch (e) { __ds_ns.__errors.push({ path: "components/core/Checkbox.jsx", error: String((e && e.message) || e) }); }
+
 // components/core/Chip.jsx
 try { (() => {
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); }
@@ -506,6 +586,180 @@ function Input({
 }
 Object.assign(__ds_scope, { Input });
 })(); } catch (e) { __ds_ns.__errors.push({ path: "components/core/Input.jsx", error: String((e && e.message) || e) }); }
+
+// components/core/ListRow.jsx
+try { (() => {
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); }
+/** The Settings row. Label, optional description, a value or a control, and a chevron when it navigates. */
+function ListRow({
+  icon,
+  label,
+  description,
+  value,
+  control,
+  chevron,
+  tone = 'default',
+  disabled,
+  onClick,
+  style,
+  ...rest
+}) {
+  const danger = tone === 'danger';
+  const showChevron = chevron !== undefined ? chevron : !control;
+  const fg = danger ? 'var(--feedback-danger)' : 'var(--text-primary)';
+  return /*#__PURE__*/React.createElement("div", _extends({
+    role: onClick ? 'button' : undefined,
+    onClick: disabled ? undefined : onClick,
+    style: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: 12,
+      minHeight: 52,
+      padding: '10px 14px',
+      background: 'var(--surface-card)',
+      border: '1px solid var(--border-subtle)',
+      borderRadius: 'var(--radius-md)',
+      opacity: disabled ? 0.45 : 1,
+      cursor: onClick && !disabled ? 'pointer' : 'default',
+      color: 'var(--text-primary)',
+      fontFamily: 'var(--font-ui)',
+      ...style
+    }
+  }, rest), icon && /*#__PURE__*/React.createElement(__ds_scope.Icon, {
+    name: icon,
+    size: 18,
+    color: danger ? 'var(--feedback-danger)' : 'var(--text-secondary)',
+    style: {
+      flex: '0 0 auto'
+    }
+  }), /*#__PURE__*/React.createElement("span", {
+    style: {
+      flex: 1,
+      display: 'flex',
+      flexDirection: 'column',
+      gap: 2,
+      minWidth: 0
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: 14,
+      fontWeight: 'var(--fw-bold)',
+      color: fg
+    }
+  }, label), description && /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: 11,
+      lineHeight: '15px',
+      color: 'var(--text-tertiary)'
+    }
+  }, description)), value !== undefined && /*#__PURE__*/React.createElement("span", {
+    style: {
+      flex: '0 0 auto',
+      fontSize: 13,
+      fontWeight: 'var(--fw-semibold)',
+      color: 'var(--text-tertiary)'
+    }
+  }, value), control, showChevron && /*#__PURE__*/React.createElement(__ds_scope.Icon, {
+    name: "chevron-right",
+    size: 17,
+    color: "var(--text-tertiary)",
+    style: {
+      flex: '0 0 auto'
+    }
+  }));
+}
+Object.assign(__ds_scope, { ListRow });
+})(); } catch (e) { __ds_ns.__errors.push({ path: "components/core/ListRow.jsx", error: String((e && e.message) || e) }); }
+
+// components/core/RadioGroup.jsx
+try { (() => {
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); }
+function RadioGroup({
+  options = [],
+  value,
+  onChange,
+  style,
+  ...rest
+}) {
+  const opts = options.map(o => typeof o === 'string' ? {
+    value: o,
+    label: o
+  } : o);
+  return /*#__PURE__*/React.createElement("div", _extends({
+    role: "radiogroup",
+    style: {
+      display: 'flex',
+      flexDirection: 'column',
+      gap: 8,
+      ...style
+    }
+  }, rest), opts.map(o => {
+    const on = o.value === value;
+    return /*#__PURE__*/React.createElement("button", {
+      key: o.value,
+      role: "radio",
+      "aria-checked": on,
+      onClick: () => onChange && onChange(o.value),
+      style: {
+        display: 'flex',
+        alignItems: 'center',
+        gap: 12,
+        minHeight: 52,
+        padding: '0 14px',
+        textAlign: 'left',
+        cursor: 'pointer',
+        color: 'var(--text-primary)',
+        fontFamily: 'var(--font-ui)',
+        background: on ? 'var(--surface-raised)' : 'var(--surface-card)',
+        border: '1px solid ' + (on ? 'var(--border-accent)' : 'var(--border-subtle)'),
+        borderRadius: 'var(--radius-md)',
+        transition: 'background var(--dur-fast) var(--ease-standard)'
+      }
+    }, o.icon && /*#__PURE__*/React.createElement(__ds_scope.Icon, {
+      name: o.icon,
+      size: 18,
+      color: on ? 'var(--text-accent)' : 'var(--text-secondary)'
+    }), /*#__PURE__*/React.createElement("span", {
+      style: {
+        flex: 1,
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 2
+      }
+    }, /*#__PURE__*/React.createElement("span", {
+      style: {
+        fontSize: 14,
+        fontWeight: 'var(--fw-bold)'
+      }
+    }, o.label), o.description && /*#__PURE__*/React.createElement("span", {
+      style: {
+        fontSize: 11,
+        lineHeight: '15px',
+        color: 'var(--text-tertiary)'
+      }
+    }, o.description)), /*#__PURE__*/React.createElement("span", {
+      style: {
+        flex: '0 0 auto',
+        display: 'inline-flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: 20,
+        height: 20,
+        borderRadius: 'var(--radius-pill)',
+        border: '2px solid ' + (on ? 'var(--action-primary)' : 'var(--border-strong)')
+      }
+    }, on && /*#__PURE__*/React.createElement("span", {
+      style: {
+        width: 10,
+        height: 10,
+        borderRadius: 'var(--radius-pill)',
+        background: 'var(--action-primary)'
+      }
+    })));
+  }));
+}
+Object.assign(__ds_scope, { RadioGroup });
+})(); } catch (e) { __ds_ns.__errors.push({ path: "components/core/RadioGroup.jsx", error: String((e && e.message) || e) }); }
 
 // components/core/SegmentedControl.jsx
 try { (() => {
@@ -707,6 +961,61 @@ function Stepper({
 }
 Object.assign(__ds_scope, { Stepper });
 })(); } catch (e) { __ds_ns.__errors.push({ path: "components/core/Stepper.jsx", error: String((e && e.message) || e) }); }
+
+// components/core/Switch.jsx
+try { (() => {
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); }
+/** On/off control. Position and the glyph carry the state, not colour alone (C-4). */
+function Switch({
+  checked = false,
+  onChange,
+  disabled,
+  label,
+  style,
+  ...rest
+}) {
+  return /*#__PURE__*/React.createElement("button", _extends({
+    role: "switch",
+    "aria-checked": !!checked,
+    "aria-label": label,
+    disabled: disabled,
+    onClick: () => onChange && onChange(!checked),
+    style: {
+      position: 'relative',
+      flex: '0 0 auto',
+      width: 52,
+      height: 32,
+      padding: 0,
+      cursor: disabled ? 'not-allowed' : 'pointer',
+      opacity: disabled ? 0.45 : 1,
+      background: checked ? 'var(--action-primary)' : 'var(--action-secondary)',
+      border: '1px solid ' + (checked ? 'transparent' : 'var(--border-default)'),
+      borderRadius: 'var(--radius-pill)',
+      transition: 'background var(--dur-fast) var(--ease-standard)',
+      ...style
+    }
+  }, rest), /*#__PURE__*/React.createElement("span", {
+    style: {
+      position: 'absolute',
+      top: 3,
+      left: checked ? 23 : 3,
+      display: 'inline-flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      width: 24,
+      height: 24,
+      borderRadius: 'var(--radius-pill)',
+      background: checked ? 'var(--action-primary-text)' : 'var(--text-secondary)',
+      transition: 'left var(--dur-fast) var(--ease-standard)'
+    }
+  }, checked && /*#__PURE__*/React.createElement(__ds_scope.Icon, {
+    name: "check",
+    size: 14,
+    color: "var(--action-primary)"
+  })));
+}
+Object.assign(__ds_scope, { Switch });
+})(); } catch (e) { __ds_ns.__errors.push({ path: "components/core/Switch.jsx", error: String((e && e.message) || e) }); }
 
 // components/feedback/Banner.jsx
 try { (() => {
@@ -933,6 +1242,59 @@ function EmptyState({
 }
 Object.assign(__ds_scope, { EmptyState });
 })(); } catch (e) { __ds_ns.__errors.push({ path: "components/feedback/EmptyState.jsx", error: String((e && e.message) || e) }); }
+
+// components/feedback/Skeleton.jsx
+try { (() => {
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); }
+/** Loading placeholder. Shape mirrors the content that will land, so nothing shifts on arrival. */
+function Skeleton({
+  width = '100%',
+  height = 12,
+  radius = 8,
+  circle,
+  lines,
+  gap = 8,
+  style,
+  ...rest
+}) {
+  const base = {
+    background: 'var(--surface-raised)',
+    animation: 'lifeos-skeleton 1.4s var(--ease-standard) infinite'
+  };
+  if (lines) {
+    return /*#__PURE__*/React.createElement("span", _extends({
+      style: {
+        display: 'flex',
+        flexDirection: 'column',
+        gap,
+        ...style
+      }
+    }, rest), Array.from({
+      length: lines
+    }, (_, i) => /*#__PURE__*/React.createElement("span", {
+      key: i,
+      style: {
+        ...base,
+        display: 'block',
+        width: i === lines - 1 ? '62%' : '100%',
+        height,
+        borderRadius: radius
+      }
+    })));
+  }
+  return /*#__PURE__*/React.createElement("span", _extends({
+    style: {
+      ...base,
+      display: 'block',
+      width: circle ? height : width,
+      height,
+      borderRadius: circle ? 'var(--radius-pill)' : radius,
+      ...style
+    }
+  }, rest));
+}
+Object.assign(__ds_scope, { Skeleton });
+})(); } catch (e) { __ds_ns.__errors.push({ path: "components/feedback/Skeleton.jsx", error: String((e && e.message) || e) }); }
 
 // components/fitness/ExerciseRow.jsx
 try { (() => {
@@ -4611,6 +4973,1899 @@ Object.assign(window, {
 });
 })(); } catch (e) { __ds_ns.__errors.push({ path: "screens/selector/Selector.jsx", error: String((e && e.message) || e) }); }
 
+// screens/set-editor/SetEditor.jsx
+try { (() => {
+const {
+  Card: ECard,
+  Button: EBtn,
+  Icon: EIcon,
+  Chip: EChip,
+  Badge: EBadge,
+  Stepper: EStep,
+  SetRow: ESet,
+  RestTimer: ERest,
+  SyncBadge: ESync,
+  ScreenHeader: EHeader,
+  IconButton: EIconBtn
+} = window.LifeOSStrengthDesignSystem_576cfb;
+function Cols({
+  labels
+}) {
+  return /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: 8,
+      padding: '0 10px 0 4px',
+      margin: '2px 0 4px'
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      width: 34,
+      textAlign: 'center',
+      fontSize: 10,
+      letterSpacing: '.08em',
+      textTransform: 'uppercase',
+      color: 'var(--text-tertiary)',
+      fontWeight: 700
+    }
+  }, "Set"), labels.map(l => /*#__PURE__*/React.createElement("span", {
+    key: l,
+    style: {
+      flex: 1,
+      textAlign: 'center',
+      fontSize: 10,
+      letterSpacing: '.08em',
+      textTransform: 'uppercase',
+      color: 'var(--text-tertiary)',
+      fontWeight: 700
+    }
+  }, l)), /*#__PURE__*/React.createElement("span", {
+    style: {
+      width: 32,
+      flex: '0 0 auto'
+    }
+  }));
+}
+function Docked({
+  children
+}) {
+  return /*#__PURE__*/React.createElement("div", {
+    style: {
+      flex: '0 0 auto',
+      position: 'relative',
+      padding: '0 var(--gutter-mobile) 16px'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      position: 'absolute',
+      left: 0,
+      right: 0,
+      top: -28,
+      height: 28,
+      background: 'linear-gradient(to top,var(--surface-base),rgba(0,0,0,0))',
+      pointerEvents: 'none'
+    }
+  }), children);
+}
+function Quick({
+  items
+}) {
+  return /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      gap: 8,
+      margin: '12px 0 10px',
+      overflow: 'hidden'
+    }
+  }, items.map((t, i) => /*#__PURE__*/React.createElement(EChip, {
+    key: t,
+    selected: i === 0
+  }, t)));
+}
+function TrackNote({
+  children
+}) {
+  return /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      gap: 8,
+      marginTop: 14,
+      padding: '10px 12px',
+      background: 'var(--surface-card)',
+      border: '1px solid var(--border-subtle)',
+      borderRadius: 'var(--radius-md)',
+      fontSize: 11,
+      lineHeight: '16px',
+      color: 'var(--text-tertiary)'
+    }
+  }, /*#__PURE__*/React.createElement(EIcon, {
+    name: "info",
+    size: 14,
+    color: "var(--text-tertiary)",
+    style: {
+      flex: '0 0 auto',
+      marginTop: 1
+    }
+  }), /*#__PURE__*/React.createElement("span", null, children));
+}
+function Head({
+  title,
+  meta,
+  tracks
+}) {
+  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(EHeader, {
+    title: title,
+    subtitle: meta,
+    onBack: () => {},
+    right: /*#__PURE__*/React.createElement(ESync, {
+      state: "draft_local",
+      compact: true
+    })
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      padding: '0 var(--gutter-mobile)',
+      marginTop: 2,
+      marginBottom: 6
+    }
+  }, /*#__PURE__*/React.createElement(EBadge, {
+    tone: "neutral",
+    size: "sm",
+    icon: "sliders-horizontal"
+  }, "Tracks: ", tracks)));
+}
+function EditorWeighted() {
+  return /*#__PURE__*/React.createElement(Screen, null, /*#__PURE__*/React.createElement(Bar, null), /*#__PURE__*/React.createElement(Head, {
+    title: "Bench Press",
+    meta: "Exercise 2 of 6",
+    tracks: "weight \xB7 reps"
+  }), /*#__PURE__*/React.createElement(Scroll, {
+    style: {
+      paddingTop: 2
+    }
+  }, /*#__PURE__*/React.createElement(Cols, {
+    labels: ['kg', 'Reps', 'RIR']
+  }), /*#__PURE__*/React.createElement(ESet, {
+    index: 1,
+    warmup: true,
+    weight: "60",
+    reps: "8",
+    rir: "\u2014",
+    state: "logged"
+  }), /*#__PURE__*/React.createElement(ESet, {
+    index: 1,
+    weight: "100",
+    reps: "8",
+    rir: "2",
+    state: "logged"
+  }), /*#__PURE__*/React.createElement(ESet, {
+    index: 2,
+    weight: "100",
+    reps: "6",
+    rir: "1",
+    state: "logged"
+  }), /*#__PURE__*/React.createElement(ESet, {
+    index: 3,
+    weight: "102.5",
+    reps: "6",
+    rir: "\u2014",
+    state: "active"
+  }), /*#__PURE__*/React.createElement(ESet, {
+    index: 4,
+    weight: "102.5",
+    reps: "6",
+    rir: "\u2014",
+    state: "proposed"
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 11,
+      color: 'var(--text-tertiary)',
+      margin: '10px 4px 0'
+    }
+  }, "Last time: 100 kg \xD7 8, 5 days ago. Grey rows are proposals, not records."), /*#__PURE__*/React.createElement(TrackNote, null, "Weight and reps: the default layout. The other three come from what the exercise tracks.")), /*#__PURE__*/React.createElement(Docked, null, /*#__PURE__*/React.createElement(ERest, {
+    remaining: "1:26",
+    running: true,
+    nextLabel: "Then",
+    nextValue: "Set 4 \xB7 102.5 kg"
+  }), /*#__PURE__*/React.createElement(Quick, {
+    items: ['100 kg', '102.5', '105', '+2.5']
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      gap: 8
+    }
+  }, /*#__PURE__*/React.createElement(EStep, {
+    size: "lg",
+    value: 102.5,
+    step: 2.5,
+    unit: "kg",
+    style: {
+      flex: 1.4
+    }
+  }), /*#__PURE__*/React.createElement(EStep, {
+    size: "lg",
+    value: 6,
+    step: 1,
+    unit: "reps",
+    style: {
+      flex: 1
+    }
+  })), /*#__PURE__*/React.createElement(EBtn, {
+    variant: "primary",
+    size: "lg",
+    shape: "pill",
+    block: true,
+    uppercase: true,
+    style: {
+      marginTop: 10
+    }
+  }, "Complete set")));
+}
+function EditorBodyweight() {
+  return /*#__PURE__*/React.createElement(Screen, null, /*#__PURE__*/React.createElement(Bar, null), /*#__PURE__*/React.createElement(Head, {
+    title: "Pull-up",
+    meta: "Exercise 3 of 6",
+    tracks: "reps \xB7 added weight"
+  }), /*#__PURE__*/React.createElement(Scroll, {
+    style: {
+      paddingTop: 2
+    }
+  }, /*#__PURE__*/React.createElement(Cols, {
+    labels: ['Reps', 'Added', 'RIR']
+  }), /*#__PURE__*/React.createElement(ESet, {
+    index: 1,
+    warmup: true,
+    weight: "10",
+    reps: "Body",
+    rir: "\u2014",
+    state: "logged"
+  }), /*#__PURE__*/React.createElement(ESet, {
+    index: 1,
+    weight: "10",
+    reps: "Body",
+    rir: "2",
+    state: "logged"
+  }), /*#__PURE__*/React.createElement(ESet, {
+    index: 2,
+    weight: "8",
+    reps: "+5 kg",
+    rir: "1",
+    state: "logged"
+  }), /*#__PURE__*/React.createElement(ESet, {
+    index: 3,
+    weight: "8",
+    reps: "+5 kg",
+    rir: "\u2014",
+    state: "active"
+  }), /*#__PURE__*/React.createElement(ESet, {
+    index: 4,
+    weight: "6",
+    reps: "+5 kg",
+    rir: "\u2014",
+    state: "proposed"
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 11,
+      color: 'var(--text-tertiary)',
+      margin: '10px 4px 0'
+    }
+  }, "Reps lead. Added weight is optional and reads \"Body\" when there is none."), /*#__PURE__*/React.createElement(TrackNote, null, "Volume counts your body weight at 78 kg plus anything added. Change your body weight in Account \u2014 past sets keep the value they were logged with.")), /*#__PURE__*/React.createElement(Docked, null, /*#__PURE__*/React.createElement(ERest, {
+    remaining: "2:10",
+    running: true,
+    nextLabel: "Then",
+    nextValue: "Set 4 \xB7 6 reps"
+  }), /*#__PURE__*/React.createElement(Quick, {
+    items: ['Body', '+5 kg', '+10 kg', 'Assisted −20']
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      gap: 8
+    }
+  }, /*#__PURE__*/React.createElement(EStep, {
+    size: "lg",
+    value: 8,
+    step: 1,
+    unit: "reps",
+    style: {
+      flex: 1.2
+    }
+  }), /*#__PURE__*/React.createElement(EStep, {
+    size: "lg",
+    value: 5,
+    step: 2.5,
+    unit: "added kg",
+    style: {
+      flex: 1.2
+    }
+  })), /*#__PURE__*/React.createElement(EBtn, {
+    variant: "primary",
+    size: "lg",
+    shape: "pill",
+    block: true,
+    uppercase: true,
+    style: {
+      marginTop: 10
+    }
+  }, "Complete set")));
+}
+function EditorTimed({
+  running
+}) {
+  return /*#__PURE__*/React.createElement(Screen, null, /*#__PURE__*/React.createElement(Bar, null), /*#__PURE__*/React.createElement(Head, {
+    title: "Plank",
+    meta: "Exercise 5 of 6",
+    tracks: "duration \xB7 load"
+  }), /*#__PURE__*/React.createElement(Scroll, {
+    style: {
+      paddingTop: 2
+    }
+  }, /*#__PURE__*/React.createElement(Cols, {
+    labels: ['Time', 'Load']
+  }), /*#__PURE__*/React.createElement(ESet, {
+    index: 1,
+    weight: "0:45",
+    reps: "Body",
+    state: "logged"
+  }), /*#__PURE__*/React.createElement(ESet, {
+    index: 2,
+    weight: "1:00",
+    reps: "Body",
+    state: "logged"
+  }), /*#__PURE__*/React.createElement(ESet, {
+    index: 3,
+    weight: "1:00",
+    reps: "+10 kg",
+    state: running ? 'active' : 'active'
+  }), /*#__PURE__*/React.createElement(ESet, {
+    index: 4,
+    weight: "1:00",
+    reps: "+10 kg",
+    state: "proposed"
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 11,
+      color: 'var(--text-tertiary)',
+      margin: '10px 4px 0'
+    }
+  }, "Time replaces reps. Load is optional."), /*#__PURE__*/React.createElement(TrackNote, null, "Timing runs in the app so you do not have to watch a clock and a phone. The set is recorded when you stop, and you can still correct the value by hand.")), /*#__PURE__*/React.createElement(Docked, null, running ? /*#__PURE__*/React.createElement(ECard, {
+    tone: "accent",
+    style: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: 14
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      flex: 1
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      display: 'block',
+      fontSize: 10,
+      letterSpacing: '.1em',
+      textTransform: 'uppercase',
+      color: 'var(--text-tertiary)',
+      fontWeight: 700
+    }
+  }, "Timing set 3"), /*#__PURE__*/React.createElement("span", {
+    className: "num",
+    style: {
+      display: 'block',
+      fontFamily: 'var(--font-numeric)',
+      fontVariantNumeric: 'tabular-nums',
+      fontSize: 44,
+      lineHeight: '46px',
+      fontWeight: 700,
+      letterSpacing: '-.02em',
+      color: 'var(--text-accent)'
+    }
+  }, "0:47")), /*#__PURE__*/React.createElement(EIconBtn, {
+    icon: "pause",
+    label: "Pause the set timer",
+    variant: "filled",
+    size: 52,
+    iconSize: 22
+  })) : /*#__PURE__*/React.createElement(ERest, {
+    remaining: "1:30",
+    running: false,
+    nextLabel: "Then",
+    nextValue: "Set 4 \xB7 1:00"
+  }), /*#__PURE__*/React.createElement(Quick, {
+    items: running ? ['Stop at 1:00', 'Keep going', 'Discard'] : ['1:00', '0:45', '1:30', '2:00']
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      gap: 8
+    }
+  }, /*#__PURE__*/React.createElement(EStep, {
+    size: "lg",
+    value: running ? '0:47' : '1:00',
+    step: 15,
+    unit: "mm:ss",
+    style: {
+      flex: 1.4
+    }
+  }), /*#__PURE__*/React.createElement(EStep, {
+    size: "lg",
+    value: 10,
+    step: 2.5,
+    unit: "load kg",
+    style: {
+      flex: 1
+    }
+  })), /*#__PURE__*/React.createElement(EBtn, {
+    variant: "primary",
+    size: "lg",
+    shape: "pill",
+    block: true,
+    uppercase: true,
+    style: {
+      marginTop: 10
+    }
+  }, running ? 'Stop and log' : 'Start the set')));
+}
+function EditorDistance() {
+  return /*#__PURE__*/React.createElement(Screen, null, /*#__PURE__*/React.createElement(Bar, null), /*#__PURE__*/React.createElement(Head, {
+    title: "Farmer Carry",
+    meta: "Exercise 6 of 6",
+    tracks: "distance \xB7 duration"
+  }), /*#__PURE__*/React.createElement(Scroll, {
+    style: {
+      paddingTop: 2
+    }
+  }, /*#__PURE__*/React.createElement(Cols, {
+    labels: ['Dist', 'Time', 'Pace']
+  }), /*#__PURE__*/React.createElement(ESet, {
+    index: 1,
+    weight: "40 m",
+    reps: "0:38",
+    rir: "1:35",
+    state: "logged"
+  }), /*#__PURE__*/React.createElement(ESet, {
+    index: 2,
+    weight: "40 m",
+    reps: "0:35",
+    rir: "1:28",
+    state: "logged"
+  }), /*#__PURE__*/React.createElement(ESet, {
+    index: 3,
+    weight: "40 m",
+    reps: "0:35",
+    rir: "1:28",
+    state: "active"
+  }), /*#__PURE__*/React.createElement(ESet, {
+    index: 4,
+    weight: "40 m",
+    reps: "0:35",
+    rir: "\u2014",
+    state: "proposed"
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 11,
+      color: 'var(--text-tertiary)',
+      margin: '10px 4px 0'
+    }
+  }, "Pace is calculated, never typed. It is shown per 100 m."), /*#__PURE__*/React.createElement(TrackNote, null, "Distance and duration replace weight and reps. Load carried is part of the exercise, not the set \u2014 it lives on the exercise, with the plates you used.")), /*#__PURE__*/React.createElement(Docked, null, /*#__PURE__*/React.createElement(ERest, {
+    remaining: "1:45",
+    running: true,
+    nextLabel: "Then",
+    nextValue: "Set 4 \xB7 40 m"
+  }), /*#__PURE__*/React.createElement(Quick, {
+    items: ['40 m', '20 m', '60 m', '+10 m']
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      gap: 8
+    }
+  }, /*#__PURE__*/React.createElement(EStep, {
+    size: "lg",
+    value: 40,
+    step: 5,
+    unit: "m",
+    style: {
+      flex: 1
+    }
+  }), /*#__PURE__*/React.createElement(EStep, {
+    size: "lg",
+    value: '0:35',
+    step: 5,
+    unit: "mm:ss",
+    style: {
+      flex: 1
+    }
+  })), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: 8,
+      marginTop: 8,
+      padding: '8px 12px',
+      background: 'var(--surface-inset)',
+      border: '1px solid var(--border-subtle)',
+      borderRadius: 'var(--radius-md)'
+    }
+  }, /*#__PURE__*/React.createElement(EIcon, {
+    name: "trending-up",
+    size: 14,
+    color: "var(--text-tertiary)"
+  }), /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: 11,
+      letterSpacing: '.06em',
+      textTransform: 'uppercase',
+      color: 'var(--text-tertiary)',
+      fontWeight: 700
+    }
+  }, "Pace"), /*#__PURE__*/React.createElement("span", {
+    style: {
+      marginLeft: 'auto',
+      fontFamily: 'var(--font-numeric)',
+      fontVariantNumeric: 'tabular-nums',
+      fontSize: 15,
+      fontWeight: 700
+    }
+  }, "1:28 / 100 m")), /*#__PURE__*/React.createElement(EBtn, {
+    variant: "primary",
+    size: "lg",
+    shape: "pill",
+    block: true,
+    uppercase: true,
+    style: {
+      marginTop: 10
+    }
+  }, "Complete set")));
+}
+Object.assign(window, {
+  EditorWeighted,
+  EditorBodyweight,
+  EditorTimed,
+  EditorDistance
+});
+})(); } catch (e) { __ds_ns.__errors.push({ path: "screens/set-editor/SetEditor.jsx", error: String((e && e.message) || e) }); }
+
+// screens/settings/Settings.jsx
+try { (() => {
+const {
+  Card: SCard,
+  Button: SBtn,
+  Icon: SIcon,
+  Chip: SChip,
+  Badge: SBadge,
+  SegmentedControl: SSeg,
+  Switch: SSwitch,
+  RadioGroup: SRadio,
+  ListRow: SRow,
+  ScreenHeader: SHeader,
+  SyncBadge: SSync,
+  ConfirmDialog: SConfirm,
+  Banner: SBanner
+} = window.LifeOSStrengthDesignSystem_576cfb;
+function Field({
+  label,
+  hint,
+  children
+}) {
+  return /*#__PURE__*/React.createElement("div", {
+    style: {
+      padding: '12px 14px',
+      background: 'var(--surface-card)',
+      border: '1px solid var(--border-subtle)',
+      borderRadius: 'var(--radius-md)'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 13,
+      fontWeight: 800,
+      color: 'var(--text-secondary)',
+      marginBottom: 10
+    }
+  }, label), children, hint && /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 11,
+      lineHeight: '16px',
+      color: 'var(--text-tertiary)',
+      marginTop: 10
+    }
+  }, hint));
+}
+function Stack({
+  children,
+  gap = 8,
+  style
+}) {
+  return /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      flexDirection: 'column',
+      gap,
+      ...style
+    }
+  }, children);
+}
+function SettingsRoot() {
+  return /*#__PURE__*/React.createElement(Screen, null, /*#__PURE__*/React.createElement(Bar, null), /*#__PURE__*/React.createElement(SHeader, {
+    title: "Settings",
+    onBack: () => {}
+  }), /*#__PURE__*/React.createElement(Scroll, {
+    style: {
+      paddingTop: 4
+    }
+  }, /*#__PURE__*/React.createElement(SCard, {
+    interactive: true,
+    style: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: 12
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      width: 44,
+      height: 44,
+      flex: '0 0 auto',
+      borderRadius: 'var(--radius-pill)',
+      background: 'var(--surface-inset)',
+      display: 'inline-flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      fontFamily: 'var(--font-numeric)',
+      fontSize: 15,
+      fontWeight: 800,
+      color: 'var(--text-secondary)'
+    }
+  }, "MK"), /*#__PURE__*/React.createElement("span", {
+    style: {
+      flex: 1,
+      minWidth: 0
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      display: 'block',
+      fontSize: 15,
+      fontWeight: 800
+    }
+  }, "Mariusz Kowalski"), /*#__PURE__*/React.createElement("span", {
+    style: {
+      display: 'block',
+      fontSize: 12,
+      color: 'var(--text-tertiary)',
+      marginTop: 2,
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      whiteSpace: 'nowrap'
+    }
+  }, "marek@example.com")), /*#__PURE__*/React.createElement(SIcon, {
+    name: "chevron-right",
+    size: 18,
+    color: "var(--text-tertiary)"
+  })), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: 8,
+      margin: '10px 2px 0'
+    }
+  }, /*#__PURE__*/React.createElement(SSync, {
+    state: "queued"
+  }), /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: 11,
+      color: 'var(--text-tertiary)'
+    }
+  }, "2 workouts waiting \xB7 synced 2 minutes ago")), /*#__PURE__*/React.createElement(Eyebrow, null, "Preferences"), /*#__PURE__*/React.createElement(Stack, null, /*#__PURE__*/React.createElement(SRow, {
+    icon: "ruler",
+    label: "Units & display",
+    value: "kg \xB7 dark",
+    onClick: () => {}
+  }), /*#__PURE__*/React.createElement(SRow, {
+    icon: "dumbbell",
+    label: "Workout defaults",
+    value: "1:30 rest",
+    onClick: () => {}
+  }), /*#__PURE__*/React.createElement(SRow, {
+    icon: "bell",
+    label: "Notifications",
+    value: "Off",
+    onClick: () => {}
+  }), /*#__PURE__*/React.createElement(SRow, {
+    icon: "refresh-cw",
+    label: "Data & sync",
+    value: "2 queued",
+    onClick: () => {}
+  })), /*#__PURE__*/React.createElement(Eyebrow, null, "About"), /*#__PURE__*/React.createElement(Stack, null, /*#__PURE__*/React.createElement(SRow, {
+    icon: "smartphone",
+    label: "Version",
+    value: "1.0.0 (214)",
+    chevron: false
+  }), /*#__PURE__*/React.createElement(SRow, {
+    icon: "shield",
+    label: "Privacy policy",
+    onClick: () => {}
+  }), /*#__PURE__*/React.createElement(SRow, {
+    icon: "file-text",
+    label: "Terms of use",
+    onClick: () => {}
+  }), /*#__PURE__*/React.createElement(SRow, {
+    icon: "git-merge",
+    label: "Open-source licences",
+    onClick: () => {}
+  })), /*#__PURE__*/React.createElement(SBtn, {
+    variant: "ghost",
+    block: true,
+    iconLeft: "log-out",
+    style: {
+      color: 'var(--feedback-danger)',
+      marginTop: 20
+    }
+  }, "Sign out"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 11,
+      lineHeight: '16px',
+      color: 'var(--text-tertiary)',
+      textAlign: 'center',
+      marginTop: 14
+    }
+  }, "Settings is reached from your name on Home.", /*#__PURE__*/React.createElement("br", null), "It is not one of the five destinations.")));
+}
+function SettingsAccount() {
+  return /*#__PURE__*/React.createElement(Screen, null, /*#__PURE__*/React.createElement(Bar, null), /*#__PURE__*/React.createElement(SHeader, {
+    title: "Account",
+    onBack: () => {}
+  }), /*#__PURE__*/React.createElement(Scroll, {
+    style: {
+      paddingTop: 4
+    }
+  }, /*#__PURE__*/React.createElement(Stack, null, /*#__PURE__*/React.createElement(SRow, {
+    label: "Name",
+    value: "Mariusz Kowalski",
+    onClick: () => {}
+  }), /*#__PURE__*/React.createElement(SRow, {
+    label: "Email",
+    description: "Used for sign-in and password reset",
+    value: "marek@example.com",
+    onClick: () => {}
+  }), /*#__PURE__*/React.createElement(SRow, {
+    label: "Password",
+    value: "Change",
+    onClick: () => {}
+  }), /*#__PURE__*/React.createElement(SRow, {
+    label: "Body weight",
+    description: "Used for volume on bodyweight exercises",
+    value: "78 kg",
+    onClick: () => {}
+  })), /*#__PURE__*/React.createElement(Eyebrow, null, "Session"), /*#__PURE__*/React.createElement(Stack, null, /*#__PURE__*/React.createElement(SRow, {
+    icon: "clock",
+    label: "Signed in since",
+    value: "May 2, 2024",
+    chevron: false
+  }), /*#__PURE__*/React.createElement(SRow, {
+    icon: "log-out",
+    label: "Sign out",
+    tone: "danger",
+    chevron: false,
+    onClick: () => {}
+  })), /*#__PURE__*/React.createElement(Eyebrow, null, "This account"), /*#__PURE__*/React.createElement(SRow, {
+    icon: "trash-2",
+    label: "Delete account",
+    tone: "danger",
+    description: "Removes 142 workouts and 2,568 sets from the server",
+    chevron: false,
+    onClick: () => {}
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginTop: 16,
+      padding: '12px 14px',
+      background: 'var(--surface-card)',
+      border: '1px solid var(--border-subtle)',
+      borderRadius: 'var(--radius-md)',
+      fontSize: 11,
+      lineHeight: '16px',
+      color: 'var(--text-tertiary)'
+    }
+  }, "Email sign-in only in this version. Google and Apple sign-in are not available yet.")));
+}
+function SettingsUnits() {
+  return /*#__PURE__*/React.createElement(Screen, null, /*#__PURE__*/React.createElement(Bar, null), /*#__PURE__*/React.createElement(SHeader, {
+    title: "Units & display",
+    onBack: () => {}
+  }), /*#__PURE__*/React.createElement(Scroll, {
+    style: {
+      paddingTop: 4
+    }
+  }, /*#__PURE__*/React.createElement(Stack, {
+    gap: 10
+  }, /*#__PURE__*/React.createElement(Field, {
+    label: "Weight",
+    hint: "Changing this converts every logged set on screen. Nothing is rewritten."
+  }, /*#__PURE__*/React.createElement(SSeg, {
+    options: ['kg', 'lb'],
+    value: "kg"
+  })), /*#__PURE__*/React.createElement(Field, {
+    label: "Distance"
+  }, /*#__PURE__*/React.createElement(SSeg, {
+    options: ['km', 'mi'],
+    value: "km"
+  })), /*#__PURE__*/React.createElement(Field, {
+    label: "First day of week"
+  }, /*#__PURE__*/React.createElement(SSeg, {
+    options: ['Monday', 'Sunday'],
+    value: "Monday"
+  }))), /*#__PURE__*/React.createElement(Eyebrow, null, "Theme"), /*#__PURE__*/React.createElement(SRadio, {
+    value: "Dark",
+    options: [{
+      value: 'System',
+      label: 'System',
+      icon: 'smartphone',
+      description: 'Follows your phone'
+    }, {
+      value: 'Dark',
+      label: 'Dark',
+      icon: 'moon',
+      description: 'Designed for gym lighting'
+    }, {
+      value: 'Light',
+      label: 'Light',
+      icon: 'sun',
+      description: 'Designed, not inverted'
+    }]
+  }), /*#__PURE__*/React.createElement(Eyebrow, null, "Language"), /*#__PURE__*/React.createElement(SRadio, {
+    value: "English",
+    options: [{
+      value: 'English',
+      label: 'English',
+      icon: 'globe'
+    }, {
+      value: 'Polski',
+      label: 'Polski',
+      icon: 'globe',
+      description: 'Labels run longer; rows stay the same height'
+    }]
+  }), /*#__PURE__*/React.createElement(Eyebrow, null, "Preview"), /*#__PURE__*/React.createElement(SCard, null, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      alignItems: 'baseline',
+      gap: 8
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontFamily: 'var(--font-numeric)',
+      fontVariantNumeric: 'tabular-nums',
+      fontSize: 28,
+      fontWeight: 700,
+      letterSpacing: '-.02em'
+    }
+  }, "102.5"), /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: 13,
+      fontWeight: 800,
+      color: 'var(--text-tertiary)'
+    }
+  }, "kg"), /*#__PURE__*/React.createElement("span", {
+    style: {
+      marginLeft: 'auto',
+      fontFamily: 'var(--font-numeric)',
+      fontSize: 13,
+      color: 'var(--text-secondary)'
+    }
+  }, "Mon 12 May \xB7 5.0 km")), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 11,
+      color: 'var(--text-tertiary)',
+      marginTop: 6
+    }
+  }, "Bench Press \xB7 estimated 1RM"))));
+}
+function SettingsWorkout() {
+  return /*#__PURE__*/React.createElement(Screen, null, /*#__PURE__*/React.createElement(Bar, null), /*#__PURE__*/React.createElement(SHeader, {
+    title: "Workout defaults",
+    onBack: () => {}
+  }), /*#__PURE__*/React.createElement(Scroll, {
+    style: {
+      paddingTop: 4
+    }
+  }, /*#__PURE__*/React.createElement(Field, {
+    label: "Default rest between sets",
+    hint: "Used by exercises that carry no rest value of their own."
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      gap: 8
+    }
+  }, /*#__PURE__*/React.createElement(SChip, null, "0:45"), /*#__PURE__*/React.createElement(SChip, null, "1:00"), /*#__PURE__*/React.createElement(SChip, {
+    selected: true
+  }, "1:30"), /*#__PURE__*/React.createElement(SChip, null, "2:00"), /*#__PURE__*/React.createElement(SChip, null, "3:00"))), /*#__PURE__*/React.createElement(Stack, {
+    style: {
+      marginTop: 8
+    }
+  }, /*#__PURE__*/React.createElement(SRow, {
+    icon: "play",
+    label: "Start rest timer automatically",
+    description: "Starts when you confirm a set",
+    control: /*#__PURE__*/React.createElement(SSwitch, {
+      checked: true,
+      label: "Start rest timer automatically"
+    })
+  }), /*#__PURE__*/React.createElement(SRow, {
+    icon: "bell",
+    label: "Alert when rest ends",
+    description: "Sound and vibration",
+    control: /*#__PURE__*/React.createElement(SSwitch, {
+      label: "Alert when rest ends"
+    })
+  })), /*#__PURE__*/React.createElement(Eyebrow, null, "Set entry"), /*#__PURE__*/React.createElement(Stack, {
+    gap: 10
+  }, /*#__PURE__*/React.createElement(Field, {
+    label: "Weight increment",
+    hint: "Sets the stepper step and the quick-pick chips."
+  }, /*#__PURE__*/React.createElement(SSeg, {
+    options: ['1.25', '2.5', '5'],
+    value: "2.5"
+  })), /*#__PURE__*/React.createElement(SRow, {
+    icon: "dumbbell",
+    label: "Plate inventory",
+    description: "Quick picks are built from the plates you own",
+    value: "6 sizes",
+    onClick: () => {}
+  }), /*#__PURE__*/React.createElement(SRow, {
+    icon: "history",
+    label: "Pre-fill from last session",
+    description: "Shown greyed, as a proposal until you confirm",
+    control: /*#__PURE__*/React.createElement(SSwitch, {
+      checked: true,
+      label: "Pre-fill from last session"
+    })
+  }), /*#__PURE__*/React.createElement(SRow, {
+    icon: "trending-up",
+    label: "Count warm-up sets in volume",
+    description: "Off: warm-ups never affect volume or records",
+    control: /*#__PURE__*/React.createElement(SSwitch, {
+      label: "Count warm-up sets in volume"
+    })
+  })), /*#__PURE__*/React.createElement(Eyebrow, null, "During a workout"), /*#__PURE__*/React.createElement(Stack, null, /*#__PURE__*/React.createElement(SRow, {
+    icon: "smartphone",
+    label: "Keep the screen awake",
+    control: /*#__PURE__*/React.createElement(SSwitch, {
+      checked: true,
+      label: "Keep the screen awake"
+    })
+  }), /*#__PURE__*/React.createElement(SRow, {
+    icon: "clock",
+    label: "Finish automatically after",
+    value: "4 hours",
+    onClick: () => {}
+  }))));
+}
+function SettingsNotifications({
+  blocked
+}) {
+  return /*#__PURE__*/React.createElement(Screen, null, /*#__PURE__*/React.createElement(Bar, null), /*#__PURE__*/React.createElement(SHeader, {
+    title: "Notifications",
+    onBack: () => {}
+  }), /*#__PURE__*/React.createElement(Scroll, {
+    style: {
+      paddingTop: 4
+    }
+  }, blocked && /*#__PURE__*/React.createElement(SBanner, {
+    tone: "warning",
+    icon: "bell-off",
+    title: "Turned off in system settings",
+    description: "Nothing can be sent until you allow notifications for this app.",
+    action: /*#__PURE__*/React.createElement(SBtn, {
+      size: "sm",
+      variant: "secondary"
+    }, "Open"),
+    style: {
+      marginBottom: 12
+    }
+  }), /*#__PURE__*/React.createElement(SRow, {
+    icon: "bell",
+    label: "Notifications",
+    description: blocked ? 'Allowed in the app, blocked by the system' : 'Everything below depends on this',
+    control: /*#__PURE__*/React.createElement(SSwitch, {
+      checked: true,
+      label: "Notifications"
+    })
+  }), /*#__PURE__*/React.createElement(Eyebrow, null, "During a workout"), /*#__PURE__*/React.createElement(Stack, null, /*#__PURE__*/React.createElement(SRow, {
+    icon: "clock",
+    label: "Rest timer ends",
+    control: /*#__PURE__*/React.createElement(SSwitch, {
+      checked: !blocked,
+      disabled: blocked,
+      label: "Rest timer ends"
+    })
+  }), /*#__PURE__*/React.createElement(SRow, {
+    icon: "cloud-off",
+    label: "A workout failed to sync",
+    description: "Never a toast only \u2014 the queue is on the surface too",
+    control: /*#__PURE__*/React.createElement(SSwitch, {
+      checked: !blocked,
+      disabled: blocked,
+      label: "A workout failed to sync"
+    })
+  })), /*#__PURE__*/React.createElement(Eyebrow, null, "Weekly"), /*#__PURE__*/React.createElement(Stack, null, /*#__PURE__*/React.createElement(SRow, {
+    icon: "chart-column",
+    label: "Weekly summary",
+    description: "Sunday evening: volume, records, sessions",
+    control: /*#__PURE__*/React.createElement(SSwitch, {
+      disabled: blocked,
+      label: "Weekly summary"
+    })
+  }), /*#__PURE__*/React.createElement(SRow, {
+    icon: "calendar",
+    label: "Missed planned session",
+    description: "Not in this version",
+    disabled: true,
+    control: /*#__PURE__*/React.createElement(SBadge, {
+      tone: "neutral",
+      size: "sm"
+    }, "1.0.1")
+  })), /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginTop: 16,
+      padding: '12px 14px',
+      background: 'var(--surface-card)',
+      border: '1px solid var(--border-subtle)',
+      borderRadius: 'var(--radius-md)',
+      fontSize: 11,
+      lineHeight: '16px',
+      color: 'var(--text-tertiary)'
+    }
+  }, "No notification ever asks you to train. The app only reports on work you have already done.")));
+}
+function SettingsData() {
+  return /*#__PURE__*/React.createElement(Screen, null, /*#__PURE__*/React.createElement(Bar, null), /*#__PURE__*/React.createElement(SHeader, {
+    title: "Data & sync",
+    onBack: () => {}
+  }), /*#__PURE__*/React.createElement(Scroll, {
+    style: {
+      paddingTop: 4
+    }
+  }, /*#__PURE__*/React.createElement(SCard, null, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: 8
+    }
+  }, /*#__PURE__*/React.createElement(SSync, {
+    state: "queued"
+  }), /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: 13,
+      fontWeight: 800
+    }
+  }, "2 workouts waiting")), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 12,
+      lineHeight: '17px',
+      color: 'var(--text-secondary)',
+      marginTop: 8
+    }
+  }, "Saved on this device. They upload as soon as there is a connection \u2014 nothing is lost."), /*#__PURE__*/React.createElement(SBtn, {
+    variant: "secondary",
+    block: true,
+    iconLeft: "refresh-cw",
+    style: {
+      marginTop: 12
+    }
+  }, "Sync now")), /*#__PURE__*/React.createElement(Stack, {
+    style: {
+      marginTop: 8
+    }
+  }, /*#__PURE__*/React.createElement(SRow, {
+    icon: "clock",
+    label: "Last synced",
+    value: "2 minutes ago",
+    chevron: false
+  }), /*#__PURE__*/React.createElement(SRow, {
+    icon: "git-merge",
+    label: "Waiting to upload",
+    description: "Jun 12 \xB7 Jun 10",
+    value: "2 workouts",
+    onClick: () => {}
+  }), /*#__PURE__*/React.createElement(SRow, {
+    icon: "signal",
+    label: "Sync over mobile data",
+    description: "Off: uploads wait for Wi-Fi",
+    control: /*#__PURE__*/React.createElement(SSwitch, {
+      checked: true,
+      label: "Sync over mobile data"
+    })
+  })), /*#__PURE__*/React.createElement(Eyebrow, null, "On this device"), /*#__PURE__*/React.createElement(Stack, null, /*#__PURE__*/React.createElement(SRow, {
+    icon: "smartphone",
+    label: "Local data",
+    value: "1.2 MB",
+    chevron: false
+  }), /*#__PURE__*/React.createElement(SRow, {
+    icon: "download",
+    label: "Export as CSV",
+    description: "Not in this version",
+    disabled: true,
+    control: /*#__PURE__*/React.createElement(SBadge, {
+      tone: "neutral",
+      size: "sm"
+    }, "1.0.1")
+  }), /*#__PURE__*/React.createElement(SRow, {
+    icon: "trash-2",
+    label: "Delete local data",
+    tone: "danger",
+    description: "Server data stays. Anything still queued is lost.",
+    chevron: false,
+    onClick: () => {}
+  })), /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginTop: 16,
+      padding: '12px 14px',
+      background: 'var(--surface-card)',
+      border: '1px solid var(--border-subtle)',
+      borderRadius: 'var(--radius-md)',
+      fontSize: 11,
+      lineHeight: '16px',
+      color: 'var(--text-tertiary)'
+    }
+  }, "Logging never waits for the network. A set is on this device the moment you confirm it, and on the server when the badge says so.")));
+}
+function SignOutConfirm() {
+  return /*#__PURE__*/React.createElement(Screen, null, /*#__PURE__*/React.createElement(Bar, null), /*#__PURE__*/React.createElement(SHeader, {
+    title: "Settings",
+    onBack: () => {}
+  }), /*#__PURE__*/React.createElement(Scroll, {
+    style: {
+      paddingTop: 4,
+      opacity: .5
+    }
+  }, /*#__PURE__*/React.createElement(Stack, null, /*#__PURE__*/React.createElement(SRow, {
+    icon: "ruler",
+    label: "Units & display",
+    value: "kg \xB7 dark"
+  }), /*#__PURE__*/React.createElement(SRow, {
+    icon: "dumbbell",
+    label: "Workout defaults",
+    value: "1:30 rest"
+  }), /*#__PURE__*/React.createElement(SRow, {
+    icon: "bell",
+    label: "Notifications",
+    value: "Off"
+  }), /*#__PURE__*/React.createElement(SRow, {
+    icon: "refresh-cw",
+    label: "Data & sync",
+    value: "2 queued"
+  }))), /*#__PURE__*/React.createElement(Overlay, null, /*#__PURE__*/React.createElement(SConfirm, {
+    title: "Sign out?",
+    description: "2 workouts are still waiting to upload.",
+    recovery: "They stay on this device and upload when you sign back in on this phone. Deleting the app first loses them.",
+    confirmLabel: "Sign out anyway",
+    cancelLabel: "Stay signed in"
+  })));
+}
+function DeleteAccountConfirm() {
+  return /*#__PURE__*/React.createElement(Screen, null, /*#__PURE__*/React.createElement(Bar, null), /*#__PURE__*/React.createElement(SHeader, {
+    title: "Account",
+    onBack: () => {}
+  }), /*#__PURE__*/React.createElement(Scroll, {
+    style: {
+      paddingTop: 4,
+      opacity: .5
+    }
+  }, /*#__PURE__*/React.createElement(Stack, null, /*#__PURE__*/React.createElement(SRow, {
+    label: "Name",
+    value: "Mariusz Kowalski"
+  }), /*#__PURE__*/React.createElement(SRow, {
+    label: "Email",
+    value: "marek@example.com"
+  }), /*#__PURE__*/React.createElement(SRow, {
+    label: "Password",
+    value: "Change"
+  }))), /*#__PURE__*/React.createElement(Overlay, null, /*#__PURE__*/React.createElement(SConfirm, {
+    title: "Delete your account?",
+    description: "142 workouts, 2,568 sets and every record are removed from the server and from this device.",
+    recovery: "Nothing can be recovered, and export is not available in this version. Type your email to confirm.",
+    confirmLabel: "Delete account",
+    cancelLabel: "Keep my account"
+  })));
+}
+Object.assign(window, {
+  SettingsRoot,
+  SettingsAccount,
+  SettingsUnits,
+  SettingsWorkout,
+  SettingsNotifications,
+  SettingsData,
+  SignOutConfirm,
+  DeleteAccountConfirm
+});
+})(); } catch (e) { __ds_ns.__errors.push({ path: "screens/settings/Settings.jsx", error: String((e && e.message) || e) }); }
+
+// screens/system/System.jsx
+try { (() => {
+const {
+  Card: YCard,
+  Button: YBtn,
+  Icon: YIcon,
+  Badge: YBadge,
+  Chip: YChip,
+  Banner: YBanner,
+  Skeleton: YSk,
+  SetRow: YSet,
+  Stepper: YStep,
+  SyncBadge: YSync,
+  ScreenHeader: YHeader,
+  BottomNav: YNav,
+  RestTimer: YRest
+} = window.LifeOSStrengthDesignSystem_576cfb;
+function FatalError() {
+  return /*#__PURE__*/React.createElement(Screen, null, /*#__PURE__*/React.createElement(Bar, null), /*#__PURE__*/React.createElement("div", {
+    style: {
+      flex: 1,
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      padding: '0 24px 40px'
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      width: 56,
+      height: 56,
+      borderRadius: 'var(--radius-lg)',
+      background: 'var(--feedback-danger-quiet)',
+      display: 'inline-flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginBottom: 20
+    }
+  }, /*#__PURE__*/React.createElement(YIcon, {
+    name: "triangle-alert",
+    size: 26,
+    color: "var(--feedback-danger)"
+  })), /*#__PURE__*/React.createElement("h1", {
+    style: {
+      margin: 0,
+      fontFamily: 'var(--font-display)',
+      fontSize: 30,
+      lineHeight: '34px',
+      fontWeight: 800,
+      letterSpacing: '-.02em'
+    }
+  }, "The app stopped unexpectedly"), /*#__PURE__*/React.createElement("p", {
+    style: {
+      margin: '12px 0 0',
+      fontSize: 14,
+      lineHeight: '21px',
+      color: 'var(--text-secondary)'
+    }
+  }, "Your last workout is saved on this device, including the set you were entering. Nothing has been lost."), /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginTop: 18,
+      display: 'flex',
+      alignItems: 'center',
+      gap: 8
+    }
+  }, /*#__PURE__*/React.createElement(YSync, {
+    state: "draft_local"
+  }), /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: 12,
+      color: 'var(--text-tertiary)'
+    }
+  }, "1 workout on this device")), /*#__PURE__*/React.createElement(YBtn, {
+    variant: "primary",
+    size: "lg",
+    shape: "pill",
+    block: true,
+    uppercase: true,
+    style: {
+      marginTop: 24
+    }
+  }, "Reload"), /*#__PURE__*/React.createElement(YBtn, {
+    variant: "secondary",
+    block: true,
+    iconLeft: "copy",
+    style: {
+      marginTop: 8
+    }
+  }, "Copy error details"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginTop: 20,
+      fontFamily: 'var(--font-numeric)',
+      fontSize: 11,
+      lineHeight: '17px',
+      color: 'var(--text-tertiary)',
+      textAlign: 'center'
+    }
+  }, "ERR-4C21 \xB7 build 214 \xB7 Jun 12, 2024 18:42", /*#__PURE__*/React.createElement("br", null), "Reported automatically. No workout data is sent.")));
+}
+function OfflineHistory() {
+  const rows = [['Jun 12', 'Push · 6 exercises', '12,450 kg'], ['Jun 10', 'Pull · 5 exercises', '10,980 kg'], ['Jun 8', 'Legs · 5 exercises', '16,240 kg'], ['Jun 5', 'Push · 6 exercises', '11,900 kg']];
+  return /*#__PURE__*/React.createElement(Screen, null, /*#__PURE__*/React.createElement(Bar, null), /*#__PURE__*/React.createElement(YHeader, {
+    title: "History",
+    right: /*#__PURE__*/React.createElement(YSync, {
+      state: "queued",
+      compact: true
+    })
+  }), /*#__PURE__*/React.createElement(Scroll, {
+    style: {
+      paddingTop: 4
+    }
+  }, /*#__PURE__*/React.createElement(YBanner, {
+    icon: "wifi-off",
+    title: "Offline",
+    description: "Logging works as usual. Sessions older than what is stored here are unavailable until you reconnect."
+  }), /*#__PURE__*/React.createElement(Eyebrow, null, "On this device"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      flexDirection: 'column',
+      gap: 8
+    }
+  }, rows.map(([d, t, v]) => /*#__PURE__*/React.createElement(YCard, {
+    key: d,
+    interactive: true,
+    style: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: 12
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      flex: 1
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      display: 'block',
+      fontSize: 14,
+      fontWeight: 800
+    }
+  }, t), /*#__PURE__*/React.createElement("span", {
+    style: {
+      display: 'block',
+      fontSize: 12,
+      color: 'var(--text-tertiary)',
+      marginTop: 2
+    }
+  }, d, ", 2024 \xB7 45:12")), /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontFamily: 'var(--font-numeric)',
+      fontVariantNumeric: 'tabular-nums',
+      fontSize: 14,
+      fontWeight: 700
+    }
+  }, v), /*#__PURE__*/React.createElement(YIcon, {
+    name: "chevron-right",
+    size: 17,
+    color: "var(--text-tertiary)"
+  })))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginTop: 14,
+      padding: '12px 14px',
+      background: 'var(--surface-card)',
+      border: '1px solid var(--border-subtle)',
+      borderRadius: 'var(--radius-md)',
+      fontSize: 11,
+      lineHeight: '16px',
+      color: 'var(--text-tertiary)'
+    }
+  }, "The last 30 sessions stay on this device. Volume, records and charts are calculated from them, so they work offline too.")), /*#__PURE__*/React.createElement(YNav, {
+    active: "history"
+  }));
+}
+function OfflineWorkout() {
+  return /*#__PURE__*/React.createElement(Screen, null, /*#__PURE__*/React.createElement(Bar, null), /*#__PURE__*/React.createElement(YHeader, {
+    title: "Bench Press",
+    subtitle: "Exercise 2 of 6",
+    onBack: () => {},
+    right: /*#__PURE__*/React.createElement(YSync, {
+      state: "draft_local",
+      compact: true
+    })
+  }), /*#__PURE__*/React.createElement(Scroll, {
+    style: {
+      paddingTop: 2
+    }
+  }, /*#__PURE__*/React.createElement(YBanner, {
+    icon: "cloud-off",
+    title: "Saved on this device",
+    description: "No connection. Every set you confirm is stored here and uploads by itself later.",
+    style: {
+      marginBottom: 12
+    }
+  }), /*#__PURE__*/React.createElement(YSet, {
+    index: 1,
+    weight: "100",
+    reps: "8",
+    rir: "2",
+    state: "logged"
+  }), /*#__PURE__*/React.createElement(YSet, {
+    index: 2,
+    weight: "100",
+    reps: "6",
+    rir: "1",
+    state: "logged"
+  }), /*#__PURE__*/React.createElement(YSet, {
+    index: 3,
+    weight: "102.5",
+    reps: "6",
+    rir: "\u2014",
+    state: "active"
+  }), /*#__PURE__*/React.createElement(YSet, {
+    index: 4,
+    weight: "102.5",
+    reps: "6",
+    rir: "\u2014",
+    state: "proposed"
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 11,
+      color: 'var(--text-tertiary)',
+      margin: '10px 4px 0'
+    }
+  }, "Nothing here waits for the network. The badge in the header says where the data is.")), /*#__PURE__*/React.createElement("div", {
+    style: {
+      flex: '0 0 auto',
+      padding: '0 var(--gutter-mobile) 16px'
+    }
+  }, /*#__PURE__*/React.createElement(YRest, {
+    remaining: "1:26",
+    running: true,
+    nextLabel: "Then",
+    nextValue: "Set 4 \xB7 102.5 kg"
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      gap: 8,
+      marginTop: 12
+    }
+  }, /*#__PURE__*/React.createElement(YStep, {
+    size: "lg",
+    value: 102.5,
+    step: 2.5,
+    unit: "kg",
+    style: {
+      flex: 1.4
+    }
+  }), /*#__PURE__*/React.createElement(YStep, {
+    size: "lg",
+    value: 6,
+    step: 1,
+    unit: "reps",
+    style: {
+      flex: 1
+    }
+  })), /*#__PURE__*/React.createElement(YBtn, {
+    variant: "primary",
+    size: "lg",
+    shape: "pill",
+    block: true,
+    uppercase: true,
+    style: {
+      marginTop: 10
+    }
+  }, "Complete set")));
+}
+function UpdateAvailable() {
+  return /*#__PURE__*/React.createElement(Screen, null, /*#__PURE__*/React.createElement(Bar, null), /*#__PURE__*/React.createElement(YHeader, {
+    title: "History"
+  }), /*#__PURE__*/React.createElement(Scroll, {
+    style: {
+      paddingTop: 4
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      flexDirection: 'column',
+      gap: 8
+    }
+  }, [['Jun 12', 'Push · 6 exercises'], ['Jun 10', 'Pull · 5 exercises'], ['Jun 8', 'Legs · 5 exercises']].map(([d, t]) => /*#__PURE__*/React.createElement(YCard, {
+    key: d
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      display: 'block',
+      fontSize: 14,
+      fontWeight: 800
+    }
+  }, t), /*#__PURE__*/React.createElement("span", {
+    style: {
+      display: 'block',
+      fontSize: 12,
+      color: 'var(--text-tertiary)',
+      marginTop: 2
+    }
+  }, d, ", 2024"))))), /*#__PURE__*/React.createElement(Sheet, {
+    height: "52%"
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      padding: '12px 20px 20px',
+      display: 'flex',
+      flexDirection: 'column',
+      height: '100%'
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      width: 44,
+      height: 44,
+      borderRadius: 'var(--radius-md)',
+      background: 'var(--feedback-info-quiet)',
+      display: 'inline-flex',
+      alignItems: 'center',
+      justifyContent: 'center'
+    }
+  }, /*#__PURE__*/React.createElement(YIcon, {
+    name: "download",
+    size: 22,
+    color: "var(--feedback-info)"
+  })), /*#__PURE__*/React.createElement("h2", {
+    style: {
+      margin: '16px 0 0',
+      fontFamily: 'var(--font-display)',
+      fontSize: 22,
+      lineHeight: '26px',
+      fontWeight: 800,
+      letterSpacing: '-.01em'
+    }
+  }, "Version 1.0.1 is ready"), /*#__PURE__*/React.createElement("p", {
+    style: {
+      margin: '10px 0 0',
+      fontSize: 14,
+      lineHeight: '21px',
+      color: 'var(--text-secondary)'
+    }
+  }, "Installing restarts the app. It takes about two seconds, and your queued workouts stay on this device."), /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginTop: 14,
+      display: 'flex',
+      flexDirection: 'column',
+      gap: 6,
+      fontSize: 12,
+      lineHeight: '18px',
+      color: 'var(--text-tertiary)'
+    }
+  }, /*#__PURE__*/React.createElement("span", null, "Faster history search"), /*#__PURE__*/React.createElement("span", null, "Plate maths for 1.25 kg increments")), /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginTop: 'auto',
+      display: 'flex',
+      flexDirection: 'column',
+      gap: 8
+    }
+  }, /*#__PURE__*/React.createElement(YBtn, {
+    variant: "primary",
+    size: "lg",
+    shape: "pill",
+    block: true,
+    uppercase: true
+  }, "Install now"), /*#__PURE__*/React.createElement(YBtn, {
+    variant: "ghost",
+    block: true
+  }, "Later")))));
+}
+function UpdateDeferred() {
+  return /*#__PURE__*/React.createElement(Screen, null, /*#__PURE__*/React.createElement(Bar, null), /*#__PURE__*/React.createElement(YHeader, {
+    title: "Bench Press",
+    subtitle: "Exercise 2 of 6",
+    onBack: () => {},
+    right: /*#__PURE__*/React.createElement(YSync, {
+      state: "saved",
+      compact: true
+    })
+  }), /*#__PURE__*/React.createElement(Scroll, {
+    style: {
+      paddingTop: 2
+    }
+  }, /*#__PURE__*/React.createElement(YBanner, {
+    tone: "info",
+    icon: "download",
+    title: "Update installs after this workout",
+    description: "Version 1.0.1 is downloaded. It will not interrupt the session.",
+    action: /*#__PURE__*/React.createElement(YBadge, {
+      tone: "neutral",
+      size: "sm"
+    }, "1.0.1"),
+    style: {
+      marginBottom: 12
+    }
+  }), /*#__PURE__*/React.createElement(YSet, {
+    index: 1,
+    weight: "100",
+    reps: "8",
+    rir: "2",
+    state: "logged"
+  }), /*#__PURE__*/React.createElement(YSet, {
+    index: 2,
+    weight: "100",
+    reps: "6",
+    rir: "1",
+    state: "logged"
+  }), /*#__PURE__*/React.createElement(YSet, {
+    index: 3,
+    weight: "102.5",
+    reps: "6",
+    rir: "\u2014",
+    state: "active"
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 11,
+      color: 'var(--text-tertiary)',
+      margin: '10px 4px 0'
+    }
+  }, "An update never interrupts an active workout, and never takes the primary action slot.")), /*#__PURE__*/React.createElement("div", {
+    style: {
+      flex: '0 0 auto',
+      padding: '0 var(--gutter-mobile) 16px'
+    }
+  }, /*#__PURE__*/React.createElement(YRest, {
+    remaining: "1:26",
+    running: true,
+    nextLabel: "Then",
+    nextValue: "Set 4 \xB7 102.5 kg"
+  }), /*#__PURE__*/React.createElement(YBtn, {
+    variant: "primary",
+    size: "lg",
+    shape: "pill",
+    block: true,
+    uppercase: true,
+    style: {
+      marginTop: 12
+    }
+  }, "Complete set")));
+}
+function SkeletonHome() {
+  return /*#__PURE__*/React.createElement(Screen, null, /*#__PURE__*/React.createElement(Bar, null), /*#__PURE__*/React.createElement("div", {
+    style: {
+      height: 56,
+      display: 'flex',
+      alignItems: 'center',
+      gap: 12,
+      padding: '0 var(--gutter-mobile)'
+    }
+  }, /*#__PURE__*/React.createElement(YSk, {
+    circle: true,
+    height: 36
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      flex: 1
+    }
+  }, /*#__PURE__*/React.createElement(YSk, {
+    width: "46%",
+    height: 13
+  }), /*#__PURE__*/React.createElement(YSk, {
+    width: "28%",
+    height: 9,
+    style: {
+      marginTop: 7
+    }
+  }))), /*#__PURE__*/React.createElement(Scroll, {
+    style: {
+      paddingTop: 6
+    }
+  }, /*#__PURE__*/React.createElement(YSk, {
+    height: 128,
+    radius: 18
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      gap: 12,
+      marginTop: 12
+    }
+  }, /*#__PURE__*/React.createElement(YSk, {
+    height: 86,
+    radius: 18,
+    style: {
+      flex: 1
+    }
+  }), /*#__PURE__*/React.createElement(YSk, {
+    height: 86,
+    radius: 18,
+    style: {
+      flex: 1
+    }
+  })), /*#__PURE__*/React.createElement("div", {
+    style: {
+      height: 18
+    }
+  }), /*#__PURE__*/React.createElement(YSk, {
+    width: "34%",
+    height: 10
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      flexDirection: 'column',
+      gap: 8,
+      marginTop: 10
+    }
+  }, /*#__PURE__*/React.createElement(YSk, {
+    height: 64,
+    radius: 18
+  }), /*#__PURE__*/React.createElement(YSk, {
+    height: 64,
+    radius: 18
+  }), /*#__PURE__*/React.createElement(YSk, {
+    height: 64,
+    radius: 18
+  })), /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginTop: 16,
+      textAlign: 'center',
+      fontSize: 11,
+      color: 'var(--text-tertiary)'
+    }
+  }, "Cards keep their real heights, so nothing moves when the data lands.")), /*#__PURE__*/React.createElement(YNav, {
+    active: "home"
+  }));
+}
+function SkeletonHistory() {
+  return /*#__PURE__*/React.createElement(Screen, null, /*#__PURE__*/React.createElement(Bar, null), /*#__PURE__*/React.createElement(YHeader, {
+    title: "History"
+  }), /*#__PURE__*/React.createElement(Scroll, {
+    style: {
+      paddingTop: 4
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      gap: 8,
+      marginBottom: 14
+    }
+  }, /*#__PURE__*/React.createElement(YSk, {
+    width: 86,
+    height: 34,
+    radius: 999
+  }), /*#__PURE__*/React.createElement(YSk, {
+    width: 104,
+    height: 34,
+    radius: 999
+  }), /*#__PURE__*/React.createElement(YSk, {
+    width: 72,
+    height: 34,
+    radius: 999
+  })), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      flexDirection: 'column',
+      gap: 8
+    }
+  }, [0, 1, 2, 3, 4, 5].map(i => /*#__PURE__*/React.createElement("div", {
+    key: i,
+    style: {
+      padding: 16,
+      background: 'var(--surface-card)',
+      border: '1px solid var(--border-subtle)',
+      borderRadius: 'var(--radius-lg)',
+      display: 'flex',
+      alignItems: 'center',
+      gap: 12
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      flex: 1
+    }
+  }, /*#__PURE__*/React.createElement(YSk, {
+    width: "52%",
+    height: 13
+  }), /*#__PURE__*/React.createElement(YSk, {
+    width: "34%",
+    height: 9,
+    style: {
+      marginTop: 8
+    }
+  })), /*#__PURE__*/React.createElement(YSk, {
+    width: 62,
+    height: 13
+  }))))), /*#__PURE__*/React.createElement(YNav, {
+    active: "history"
+  }));
+}
+function SkeletonDetail() {
+  return /*#__PURE__*/React.createElement(Screen, null, /*#__PURE__*/React.createElement(Bar, null), /*#__PURE__*/React.createElement(YHeader, {
+    title: "Bench Press",
+    onBack: () => {}
+  }), /*#__PURE__*/React.createElement(Scroll, {
+    style: {
+      paddingTop: 6
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: 12,
+      marginBottom: 14
+    }
+  }, /*#__PURE__*/React.createElement(YSk, {
+    height: 56,
+    width: 56,
+    radius: 14
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      flex: 1
+    }
+  }, /*#__PURE__*/React.createElement(YSk, {
+    width: "44%",
+    height: 12
+  }), /*#__PURE__*/React.createElement(YSk, {
+    width: "62%",
+    height: 9,
+    style: {
+      marginTop: 8
+    }
+  }))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'grid',
+      gridTemplateColumns: '1fr 1fr',
+      gap: 8
+    }
+  }, /*#__PURE__*/React.createElement(YSk, {
+    height: 56,
+    radius: 14
+  }), /*#__PURE__*/React.createElement(YSk, {
+    height: 56,
+    radius: 14
+  }), /*#__PURE__*/React.createElement(YSk, {
+    height: 56,
+    radius: 14
+  }), /*#__PURE__*/React.createElement(YSk, {
+    height: 56,
+    radius: 14
+  })), /*#__PURE__*/React.createElement("div", {
+    style: {
+      height: 20
+    }
+  }), /*#__PURE__*/React.createElement(YSk, {
+    width: "30%",
+    height: 10
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginTop: 10,
+      padding: 16,
+      background: 'var(--surface-card)',
+      border: '1px solid var(--border-subtle)',
+      borderRadius: 'var(--radius-lg)'
+    }
+  }, /*#__PURE__*/React.createElement(YSk, {
+    width: "38%",
+    height: 26
+  }), /*#__PURE__*/React.createElement(YSk, {
+    width: "56%",
+    height: 9,
+    style: {
+      marginTop: 8
+    }
+  }), /*#__PURE__*/React.createElement(YSk, {
+    height: 110,
+    radius: 12,
+    style: {
+      marginTop: 14
+    }
+  })), /*#__PURE__*/React.createElement("div", {
+    style: {
+      height: 18
+    }
+  }), /*#__PURE__*/React.createElement(YSk, {
+    width: "26%",
+    height: 10
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginTop: 10,
+      display: 'flex',
+      flexDirection: 'column',
+      gap: 8
+    }
+  }, /*#__PURE__*/React.createElement(YSk, {
+    height: 40,
+    radius: 12
+  }), /*#__PURE__*/React.createElement(YSk, {
+    height: 40,
+    radius: 12
+  }), /*#__PURE__*/React.createElement(YSk, {
+    height: 40,
+    radius: 12
+  }))));
+}
+Object.assign(window, {
+  FatalError,
+  OfflineHistory,
+  OfflineWorkout,
+  UpdateAvailable,
+  UpdateDeferred,
+  SkeletonHome,
+  SkeletonHistory,
+  SkeletonDetail
+});
+})(); } catch (e) { __ds_ns.__errors.push({ path: "screens/system/System.jsx", error: String((e && e.message) || e) }); }
+
 // ui_kits/desktop/DashboardView.jsx
 try { (() => {
 const {
@@ -7154,6 +9409,8 @@ __ds_ns.Button = __ds_scope.Button;
 
 __ds_ns.Card = __ds_scope.Card;
 
+__ds_ns.Checkbox = __ds_scope.Checkbox;
+
 __ds_ns.Chip = __ds_scope.Chip;
 
 __ds_ns.Icon = __ds_scope.Icon;
@@ -7162,17 +9419,25 @@ __ds_ns.IconButton = __ds_scope.IconButton;
 
 __ds_ns.Input = __ds_scope.Input;
 
+__ds_ns.ListRow = __ds_scope.ListRow;
+
+__ds_ns.RadioGroup = __ds_scope.RadioGroup;
+
 __ds_ns.SegmentedControl = __ds_scope.SegmentedControl;
 
 __ds_ns.Select = __ds_scope.Select;
 
 __ds_ns.Stepper = __ds_scope.Stepper;
 
+__ds_ns.Switch = __ds_scope.Switch;
+
 __ds_ns.Banner = __ds_scope.Banner;
 
 __ds_ns.ConfirmDialog = __ds_scope.ConfirmDialog;
 
 __ds_ns.EmptyState = __ds_scope.EmptyState;
+
+__ds_ns.Skeleton = __ds_scope.Skeleton;
 
 __ds_ns.ExerciseRow = __ds_scope.ExerciseRow;
 

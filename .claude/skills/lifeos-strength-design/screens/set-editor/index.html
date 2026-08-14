@@ -1,0 +1,22 @@
+<!-- @dsCard group="Screens · Set editor" viewport="1720x960" name="Set editor layouts — mobile" subtitle="Weight × reps, bodyweight, timed, distance — the four layouts an exercise's tracks decide" -->
+<!DOCTYPE html><html data-theme="dark" lang="en"><head><meta charset="utf-8"><title>Set editor layouts — mobile</title>
+<link rel="stylesheet" href="../../styles.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+<style>body{margin:0;padding:28px;background:var(--backdrop)}#root{display:flex;gap:28px;align-items:flex-start}#root *{scrollbar-width:none}#root *::-webkit-scrollbar{display:none;width:0;height:0}a{color:var(--text-accent)}a:hover{color:var(--action-primary-hover)}</style>
+</head><body><div id="root"></div>
+<script type="text/babel" src="../_frame.jsx"></script>
+<script type="text/babel" src="./SetEditor.jsx"></script>
+<script type="text/babel">ReactDOM.createRoot(document.getElementById('root')).render(<React.Fragment>
+  <PhoneFrame label="Weight × reps" theme="dark" note="the reference layout"><EditorWeighted/></PhoneFrame>
+  <PhoneFrame label="Bodyweight — reps + added" theme="dark"><EditorBodyweight/></PhoneFrame>
+  <PhoneFrame label="Timed — duration + load" theme="dark" note="before the set"><EditorTimed/></PhoneFrame>
+  <PhoneFrame label="Timed — running" theme="dark" note="timer inside the docked entry"><EditorTimed running/></PhoneFrame>
+  <PhoneFrame label="Distance — distance + duration" theme="dark" note="pace is calculated"><EditorDistance/></PhoneFrame>
+  <PhoneFrame label="Bodyweight — reps + added" theme="light"><EditorBodyweight/></PhoneFrame>
+  <PhoneFrame label="Timed — running" theme="light"><EditorTimed running/></PhoneFrame>
+  <PhoneFrame label="Distance — distance + duration" theme="light"><EditorDistance/></PhoneFrame>
+</React.Fragment>);</script>
+</body></html>

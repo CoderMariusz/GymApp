@@ -1,4 +1,4 @@
-<!-- @dsCard group="Components" viewport="700x330" name="Feedback" subtitle="Banners, empty states, destructive confirmation" -->
+<!-- @dsCard group="Components" viewport="700x420" name="Feedback" subtitle="Banners, empty states, destructive confirmation, loading skeletons" -->
 <!DOCTYPE html><html data-theme="dark"><head><meta charset="utf-8"><title>Feedback</title>
 <link rel="stylesheet" href="../../styles.css">
 <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
@@ -7,7 +7,7 @@
 <script src="../../_ds_bundle.js"></script>
 <style>body{margin:0;background:var(--surface-base);padding:16px}.row{display:flex;flex-wrap:wrap;align-items:center;gap:12px}.col{display:flex;flex-direction:column;gap:12px}.lbl{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-tertiary);font-weight:700;margin-bottom:8px}</style></head><body><div id="root"></div>
 <script type="text/babel">
-const { Banner, EmptyState, ConfirmDialog, Button } = window.LifeOSStrengthDesignSystem_576cfb;
+const { Banner, EmptyState, ConfirmDialog, Button, Skeleton, Card } = window.LifeOSStrengthDesignSystem_576cfb;
 function Demo(){
   return (<div className="row" style={{alignItems:'flex-start',gap:16}}>
     <div className="col" style={{flex:'1 1 320px'}}>
@@ -21,6 +21,15 @@ function Demo(){
     <div style={{flex:'0 0 340px'}}>
       <div className="lbl">Destructive confirmation</div>
       <ConfirmDialog title="Delete this workout?" description="18 sets and 12,450 kg of volume will be removed." recovery="Personal records derived from this session are recalculated. This cannot be undone." confirmLabel="Delete workout"/>
+      <div className="lbl" style={{marginTop:14}}>Loading skeleton — mirrors the real card</div>
+      <Card>
+        <div style={{display:'flex',alignItems:'center',gap:12}}>
+          <Skeleton circle height={40}/>
+          <div style={{flex:1}}><Skeleton width="58%" height={14}/><Skeleton width="34%" height={10} style={{marginTop:8}}/></div>
+        </div>
+        <Skeleton height={64} radius={14} style={{marginTop:14}}/>
+        <Skeleton lines={2} height={11} style={{marginTop:14}}/>
+      </Card>
     </div>
   </div>);
 }

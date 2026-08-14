@@ -1,0 +1,64 @@
+<!-- @dsCard group="Confirm" viewport="960x680" name="Fonts — confirm or replace" subtitle="Archivo + Manrope are substitutions. Say yes, or send the licensed files." -->
+<!DOCTYPE html><html data-theme="dark" lang="en"><head><meta charset="utf-8"><title>Fonts — confirm or replace</title><link rel="stylesheet" href="../styles.css">
+<style>body{margin:0;padding:20px;background:var(--surface-base);color:var(--text-primary);font-family:var(--font-ui)}
+.head{display:flex;align-items:baseline;gap:10px;margin-bottom:16px}
+.h1{font-family:var(--font-display);font-size:22px;font-weight:800;letter-spacing:-.01em}
+.tag{font-size:10px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;padding:3px 8px;border-radius:999px;background:var(--feedback-warning-quiet);color:var(--feedback-warning)}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.card{padding:16px;background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-lg)}
+.lbl{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-tertiary);font-weight:700}
+.meta{font-size:12px;line-height:18px;color:var(--text-secondary)}
+.dim{font-size:11px;line-height:16px;color:var(--text-tertiary)}
+.spec{font-family:var(--font-display);letter-spacing:-.02em;font-weight:800}
+.num{font-family:var(--font-numeric);font-variant-numeric:tabular-nums;font-weight:700}
+.rule{height:1px;background:var(--border-subtle);margin:14px 0}
+.ask{margin-top:12px;padding:16px;background:var(--surface-card);border:1px solid var(--border-default);border-radius:var(--radius-lg)}
+.ask ul{margin:10px 0 0;padding-left:18px}
+.ask li{font-size:12px;line-height:19px;color:var(--text-secondary);margin-bottom:6px}
+.k{color:var(--text-primary);font-weight:700}
+table{border-collapse:collapse;width:100%;margin-top:8px}
+td{font-size:11px;padding:4px 0;color:var(--text-secondary);border-bottom:1px solid var(--border-subtle)}
+td:last-child{text-align:right;color:var(--text-tertiary)}
+a{color:var(--text-accent)}a:hover{color:var(--action-primary-hover)}</style></head><body>
+<div class="head"><span class="h1">Fonts</span><span class="tag">Substitution · needs confirmation</span></div>
+<div class="cols">
+  <div class="card">
+    <div class="lbl">Display · headings · every numeral</div>
+    <div class="spec" style="font-size:34px;line-height:38px;margin-top:8px">Archivo</div>
+    <div class="num" style="font-size:44px;line-height:46px;margin-top:6px">102.5 kg</div>
+    <div class="num" style="font-size:20px;color:var(--text-secondary);margin-top:2px">12,450 · 45:12 · 1,111.0</div>
+    <div class="rule"></div>
+    <div class="meta">Chosen for true tabular figures and a flat, athletic voice with no humanist softness. Screen titles, metrics, timers, set values.</div>
+    <table><tbody>
+      <tr><td>Weights in use</td><td>400 · 600 · 700 · 800</td></tr>
+      <tr><td>Italic</td><td>not used</td></tr>
+      <tr><td>Display size</td><td>34 / 38, −.02em</td></tr>
+      <tr><td>Value being edited</td><td>44px tabular</td></tr>
+    </tbody></table>
+  </div>
+  <div class="card">
+    <div class="lbl">Body · labels · captions</div>
+    <div style="font-size:34px;line-height:38px;font-weight:800;margin-top:8px">Manrope</div>
+    <div style="font-size:15px;line-height:21px;margin-top:10px">Saved on this device. Waiting for a connection — nothing is lost.</div>
+    <div class="dim" style="margin-top:8px">Ostatni raz: 80 kg × 8, 5 dni temu — Polish sits in the same rows.</div>
+    <div class="rule"></div>
+    <div class="meta">Chosen for a wide lower case that stays readable at 11px and for diacritics that keep their shape at caption size.</div>
+    <table><tbody>
+      <tr><td>Weights in use</td><td>400 · 600 · 700 · 800</td></tr>
+      <tr><td>Body</td><td>15 / 21</td></tr>
+      <tr><td>Caption</td><td>11 / 14, .06em, uppercase</td></tr>
+      <tr><td>Loaded from</td><td>Google Fonts, display=swap</td></tr>
+    </tbody></table>
+  </div>
+</div>
+<div class="ask">
+  <div class="lbl">What we need from you</div>
+  <ul>
+    <li><span class="k">Keep these two</span> — no work needed. They are Google Fonts under the OFL, self-hostable, and the whole system is already built on them.</li>
+    <li><span class="k">Or send the licensed brand files</span> — WOFF2 for the four weights listed above, per family, with a licence covering app, web and PWA distribution.</li>
+    <li><span class="k">Tell us whether the replacement numerals are tabular.</span> If they are not, we keep Archivo for numerals only: a column of weights that jitters costs the glance-at-arm's-length reading the product is built around.</li>
+    <li>A swap changes numeral width, which changes set-table column widths and stepper size. Budget one pass over the set row, stepper and timer after the files land.</li>
+    <li>Current fallback stack: <span class="num" style="font-weight:400">system-ui, -apple-system, Segoe UI, sans-serif</span>. Fonts are set in one place — <span class="num" style="font-weight:400">tokens/fonts.css</span> and <span class="num" style="font-weight:400">tokens/typography.css</span>.</li>
+  </ul>
+</div>
+</body></html>

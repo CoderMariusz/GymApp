@@ -9,3 +9,4 @@ button{font-family:inherit}
 .eyebrow{font-size:var(--type-caption-size);line-height:var(--type-caption-lh);letter-spacing:var(--type-caption-ls);text-transform:uppercase;color:var(--text-tertiary);font-weight:var(--fw-semibold)}
 .ds-icon>svg{width:100%;height:100%;display:block;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 @keyframes lifeos-spin{to{transform:rotate(360deg)}}
+@keyframes lifeos-skeleton{0%,100%{opacity:.5}50%{opacity:.85}}
