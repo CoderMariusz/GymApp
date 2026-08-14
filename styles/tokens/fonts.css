@@ -1,0 +1,16 @@
+/* Webfonts are NOT loaded here.
+   ARCHITECTURE.md §16.1 requires self-hosted, cache-first fonts: a CDN @import
+   breaks the offline shell and adds a third-party request the service worker
+   cannot precache. Archivo (display + numerals) and Manrope (UI) are loaded via
+   `next/font/google` in app/[locale]/layout.tsx, which self-hosts them at build
+   time and exposes them as --font-archivo / --font-manrope.
+
+   SUBSTITUTION, still open: both are stand-ins. The design system flags this in
+   its §7 — licensed brand fonts, or explicit confirmation of these two, is a
+   G-DESIGN-SYSTEM item. */
+
+:root{
+  --font-display: var(--font-archivo),"Helvetica Neue",Arial,sans-serif;
+  --font-ui: var(--font-manrope),"Helvetica Neue",Arial,sans-serif;
+  --font-numeric: var(--font-archivo),"Helvetica Neue",Arial,sans-serif;
+}

@@ -1,0 +1,10 @@
+# Design tokens are copied verbatim from .claude/skills/lifeos-strength-design/tokens.
+# Formatting them here would make every re-copy produce a spurious diff.
+styles/tokens/
+# Documents delivered by the product owner — reformatting them destroys review diffs.
+docs/
+.claude/
+# Build output
+.next/
+out/
+coverage/

@@ -1,65 +1,62 @@
-# lifeOS — STAN 2026-08-13
+# lifeos — STAN 2026-08-14
 
-**Jednym zdaniem:** modularny ekosystem life-coachingu z AI — Fitness Coach,
-Life Coach, Mind & Emotion; killer feature to komunikacja między modułami.
+**Jednym zdaniem:** dziennik treningu siłowego — PWA offline-first, EN/PL.
+Projekt przebudowany od zera: **Flutter porzucony, stack to Next.js + Supabase.**
 
-- **Status:** 🟡 wznawiany po długiej przerwie
-- **Katalog:** `~/Projects/lifeos` (15 MB) — **ściągnięty 13.08**, wcześniej nie było go na Macu
-- **Remote:** `github.com/CoderMariusz/GymApp` — ⚠️ **PUBLICZNE**
-- **Stack:** Flutter ≥3.38 / Dart ≥3.10 · Supabase · Drift (19 tabel) · offline-first
-- **Prod:** brak
+- **Status:** 🟢 M0 rozpoczęte — szkielet stoi i się buduje
+- **Katalog:** `~/Projects/lifeos` · **Remote:** `github.com/CoderMariusz/GymApp` — ⚠️ **PUBLICZNE**
+- **Nazwa produktu:** nierozstrzygnięta (D-Q). `lifeos` to nazwa repo. Kandydaci: Datum, Rung, Ballast
 
-## Uwaga na nazewnictwo
+## Co się stało 14.08
 
-Repo nazywa się `GymApp`, projekt w środku nazywa się **LifeOS** (`pubspec.yaml`:
-`name: lifeos`). Katalog lokalny nazwałem `lifeos` — zgodnie z projektem, nie z repo.
+Stara implementacja Flutter (216 plików Dart, ~56 % wg raportu z 23.11.2025) **skasowana**.
+Punkt odtworzenia: tag `flutter-archive-2026-08-14`, wypchnięty na origin.
 
-## Gdzie jesteśmy
+Wgrane dokumenty z rundy konsolidacji 12.08 → `docs/` (PRD, ARCHITECTURE, PLAN,
+DESIGN-BRIEF, DECISIONS, reviews). To jest teraz jedyne źródło prawdy.
 
-**Ostatnia realna praca: 2 grudnia 2025** — osiem miesięcy przerwy. `pushed_at` repo
-pokazuje 12.08.2026, ale żadna z 20 gałęzi nie ma commita nowszego niż grudzień 2025,
-więc tamten push nie ruszył HEAD-a.
+Postawiony szkielet: Next.js 16 + React 19 + TS 6 strict, `output: 'export'`, Tailwind 4,
+next-intl EN/PL, Vitest, Playwright, ESLint z regułą granic feature'ów, CI.
 
-Wg `EPIC_IMPLEMENTATION_STATUS.md` (23.11.2025) — **56 % ukończenia**, 37 z 66 stories,
-287 plików Dart, 27 plików testów / 207 przypadków. Struktura dokumentacji: BMAD.
+**Dowody, nie deklaracje:**
+- `npm run verify` → kod wyjścia **0** (format, lint, typecheck, 4 testy, build)
+- statyczny eksport generuje `/en` i `/pl` z realnie przetłumaczoną treścią i `lang` w HTML
+- reguła granic **sprawdzona na czerwono** — import `features/history` → wnętrze
+  `features/workouts` pada z komunikatem wskazującym ARCHITECTURE §4.1
+- test parytetu tłumaczeń i sześciu stanów CORE-07 **sprawdzony na czerwono** — usunięcie
+  `conflict` z `pl.json` wywala 2 z 4 testów
 
-- **Epic 1 (fundament, 85 %)** — rejestracja, Google/Apple OAuth, reset hasła, profil,
-  sync offline-first, eksport RODO, usuwanie konta z 7-dniową karencją. Brakuje MFA
-  i zarządzania urządzeniami.
-- **Luki krytyczne:** Mind & Emotion, gamifikacja, powiadomienia, onboarding.
+## Decyzje z 14.08
 
-⚠️ **Te liczby mają osiem miesięcy.** Przed planowaniem trzeba je odświeżyć na kodzie,
-nie na raporcie.
+| Decyzja | Wybór |
+|---|---|
+| Repozytorium | to samo, kasowanie w miejscu, historia zachowana |
+| Kolejność baterii | **T02 przed T01** — Ustawienia jako jedyne nie mają narysowanego designu |
+| TypeScript | **6.0.3, nie 7** — TS 7 nie jest wspierany przez `typescript-eslint` (`>=4.8.4 <6.1.0`) |
+| ESLint | **9.39.5, nie 10** — ESLint 10 wywala `scopeManager.addGlobals` w parserze |
+| Fonty | self-hosted przez `next/font`, nie CDN — wymóg offline-first (§16.1) |
 
-## Bariera wejścia — do rozwiązania jako pierwsze
+## ⚠️ Do zrobienia poza repo — pilne
 
-**Flutter i Dart nie są zainstalowane na tym Macu** (`flutter not found`, `dart not found`).
-Bez nich nie da się ani zbudować, ani uruchomić, ani nawet zrobić `flutter analyze`.
-Każda ocena stanu przed instalacją SDK jest oceną dokumentacji, nie kodu.
+**Klucz `service_role` Supabase jest w historii publicznego repo** (`supabase_config.dart`,
+jako `defaultValue`). Ważny do 2035, omija wszystkie 66 polityk RLS. Kasowanie plików tego
+**nie naprawia** — trzeba unieważnić u wystawcy.
 
+Skoro ADR-15 i tak wymaga nowego projektu, najprościej **usunąć stary projekt Supabase**
+(ref `neyxqf…`) z panelu. To unieważnia oba klucze jednym ruchem.
 
-## Design system — dostarczony 13.08
+## Bramki
 
-Zainstalowany jako **skill**: `.claude/skills/lifeos-strength-design/` (160 plików, 14 MB).
-Agent wywołuje go przez `/lifeos-strength-design`.
-
-Zawiera tokeny, komponenty (core, feedback, fitness, navigation), ekrany (auth, catalog,
-desktop, history, selector), ui_kits, guidelines, references i imagery.
-
-**Uwaga na zakres:** system nazywa się *Strength* i opisuje LifeOS jako **dziennik treningu
-siłowego, v1.0** — węziej niż zastany kod, który celuje w trzy moduły (Fitness, Life Coach,
-Mind & Emotion). Przed wdrożeniem trzeba rozstrzygnąć, czy to zawężenie zakresu produktu,
-czy design pokrywa na razie jeden moduł.
+| Bramka | Stan |
+|---|---|
+| M0 | 🟢 GO — szkielet stoi, zostają SPIKE-01…06 |
+| `G-DESIGN-SYSTEM` | 🟡 blisko — system designu istnieje i pokrywa tokeny, powłokę, sześć stanów sync, obie motywy, PL. Brakuje: ekranów Ustawień, layoutów set-editora dla bodyweight/timed/distance, ekranowych stanów systemowych, potwierdzenia fontów i ikon |
+| `G-BACKUP` | 🔴 darmowy plan nie ma kopii; wymagana udokumentowana próba odtworzenia |
+| `G-LIC` | 🔴 licencja zdjęć `free-exercise-db` |
+| `BRAND-01` | 🔴 nazwa + UK IPO klasy 9 i 42 |
 
 ## Następny krok
 
-1. Zainstalować Flutter SDK ≥3.38
-2. `flutter analyze` + `flutter test` — **zobaczyć, ile z 207 testów faktycznie przechodzi**
-   po ośmiu miesiącach i przy nowszym SDK
-3. Dopiero potem: odświeżyć raport stanu na podstawie kodu
-4. Wdrożyć design system — jest na miejscu (najpierw rozstrzygnąć zakres, patrz wyżej)
-
-## Ryzyko
-
-Repo jest **publiczne**. Sprawdzone 13.08: żadnych kluczy w kodzie, jest tylko
-`.env.example`. Przy każdym commicie skanować ponownie.
+1. Usunąć stary projekt Supabase, założyć nowy (P0.7)
+2. Domknąć `G-DESIGN-SYSTEM` — cztery brakujące pozycje
+3. SPIKE-01…06 — reszta M0

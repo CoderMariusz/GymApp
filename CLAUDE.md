@@ -1,262 +1,147 @@
-# LifeOS / GymApp - AI Assistant Guide
+# Repozytorium `lifeos` — instrukcja dla agentów
 
-> Ten plik pomaga AI (Claude, GPT, etc.) efektywnie pracować z projektem.
+> **Zanim napiszesz linijkę kodu, przeczytaj `docs/DECISIONS.md`.** Ustala hierarchię
+> dokumentów i mówi, co wolno robić teraz, a co jest zablokowane bramką.
 
-## Quick Facts
+## Czym to jest
 
-| Aspect | Value |
-|--------|-------|
-| **Nazwa** | LifeOS (package: lifeos) |
-| **Typ** | Flutter mobile app (iOS + Android) |
-| **Architektura** | Clean Architecture + Riverpod |
-| **Baza danych** | Drift (SQLite) + Supabase |
-| **Status** | MVP 1.0 in progress (~45% complete) |
+**Dziennik treningu siłowego.** Nie coach, nie sieć społecznościowa, nie licznik kalorii.
+Jedno zdanie, które rozstrzyga spory projektowe:
 
----
+> Użytkownik nie patrzy na ten ekran. On na niego **zerka** — stojąc przy stojaku, między
+> seriami, z telefonem w jednej ręce.
 
-## 📁 Documentation Index
+Budżet: sesja 6 ćwiczeń / 18 serii zapisana w **poniżej 60 sekund** aktywnej interakcji.
 
-### Gdzie szukać informacji?
+`LifeOS` to **nazwa repozytorium, nie nazwa produktu.** Decyzja D-Q ją porzuciła (kolizje w
+sklepach). Kandydaci: Datum, Rung, Ballast. Bramka BRAND-01 otwarta — w kodzie i dokumentach
+używaj znacznika `PRODUCT_NAME`, nie wpisuj nazwy na stałe.
 
-```
-docs/
-├── 00-START-HERE.md          ← ZACZNIJ TUTAJ (entry point)
-├── BMAD-STRUCTURE.md         ← Jak zorganizowana jest dokumentacja
-│
-├── 1-BASELINE/               ← WYMAGANIA I ARCHITEKTURA
-│   ├── product/
-│   │   ├── PRD-overview.md        ← Executive summary, success criteria
-│   │   ├── PRD-fitness-requirements.md   ← FR30-FR46
-│   │   ├── PRD-life-coach-requirements.md ← FR6-FR29
-│   │   ├── PRD-mind-requirements.md      ← FR47-FR76
-│   │   └── PRD-nfr.md             ← Non-functional requirements
-│   └── architecture/
-│       ├── ARCH-overview.md       ← Tech stack, decisions D1-D13
-│       ├── ARCH-database-schema.md ← Drift tables, Supabase
-│       ├── ARCH-ai-infrastructure.md ← AI prompts, CMI
-│       └── ARCH-security.md       ← E2EE, GDPR, RLS
-│
-├── 2-MANAGEMENT/             ← EPICS, STATUS, TODO
-│   ├── project-status.md     ← AKTUALNY STATUS PROJEKTU
-│   ├── MVP-AUDIT-REPORT.md   ← Audit kodu vs dokumentacji
-│   ├── MVP-TODO.md           ← Master TODO list
-│   ├── MVP-SCOPE-ANALYSIS.md ← Analiza scope MVP 1.0
-│   └── epics/
-│       ├── epic-1-core-platform.md
-│       ├── epic-2-life-coach.md
-│       ├── epic-3-fitness.md
-│       ├── epic-4-mind.md
-│       ├── epic-5-cross-module.md
-│       ├── epic-6-gamification.md
-│       ├── epic-7-onboarding-subscriptions.md
-│       ├── epic-8-notifications.md
-│       └── epic-9-settings.md
-│
-├── 4-DEVELOPMENT/            ← DEVELOPER GUIDES
-│   └── setup/QUICK-START-5MIN.md
-│
-└── 5-ARCHIVE/                ← STARA DOKUMENTACJA (nie używać)
-```
-
-### Szybkie linki
-
-| Pytanie | Plik |
-|---------|------|
-| Co to za projekt? | `docs/00-START-HERE.md` |
-| Jaki jest aktualny status? | `docs/2-MANAGEMENT/project-status.md` |
-| Co zostało do zrobienia? | `docs/2-MANAGEMENT/MVP-TODO.md` |
-| Jakie są wymagania modułu X? | `docs/1-BASELINE/product/PRD-*.md` |
-| Jak działa baza danych? | `docs/1-BASELINE/architecture/ARCH-database-schema.md` |
-| Szczegóły story Y? | `docs/2-MANAGEMENT/epics/epic-*.md` |
-
----
-
-## 🏗️ Code Structure
+## Hierarchia dokumentów — przy konflikcie wygrywa wyższy
 
 ```
-lib/
-├── main.dart                 ← Entry point
-├── core/                     ← Shared infrastructure
-│   ├── ai/                   ← AI service (OpenAI, prompts)
-│   ├── auth/                 ← Supabase auth
-│   ├── database/             ← Drift tables & providers
-│   ├── sync/                 ← Offline sync (partial)
-│   ├── router/               ← GoRouter navigation
-│   └── theme/                ← App theme
-│
-└── features/                 ← Feature modules
-    ├── fitness/              ← 🏋️ ~90% complete
-    │   ├── data/             ← Repositories, models
-    │   ├── domain/           ← Entities, use cases
-    │   └── presentation/     ← Pages, providers, widgets
-    │
-    ├── life_coach/           ← 🎯 ~75% complete
-    │   ├── ai/               ← Daily plan generator
-    │   ├── chat/             ← AI coaching chat
-    │   ├── goals/            ← Goal suggestions
-    │   ├── data/             ← Repositories
-    │   ├── domain/           ← Entities, use cases
-    │   └── presentation/     ← Pages, providers
-    │
-    ├── mind_emotion/         ← 🧘 ~25% complete
-    │   ├── data/             ← Meditation repos
-    │   ├── domain/           ← Entities
-    │   └── presentation/     ← Library screen (player TODO)
-    │
-    ├── exercise/             ← 📚 ~20% (no persistence)
-    ├── settings/             ← ⚙️ ~25% (basic)
-    └── onboarding/           ← 👋 ~5% (placeholder)
+1. docs/DECISIONS.md      ← decyzje i ich status
+2. docs/PRD.md            ← co ma działać
+3. docs/ARCHITECTURE.md   ← jak wolno to zbudować
+4. zaakceptowany DESIGN   ← .claude/skills/lifeos-strength-design/
+5. TASK_SPEC              ← zamrożony kontrakt jednego zadania
+6. docs/PLAN.md           ← kolejność i nakład
 ```
 
----
+`docs/reviews/` **nigdy** nie rozstrzyga konfliktu — jest historyczny i niewiążący.
+`docs/DESIGN-BRIEF.md` jest **wejściem do designu, nie designem**.
 
-## 📜 Documentation Rules
+## Stack — nie negocjuj go lokalnie
 
-### Kiedy aktualizować dokumentację?
+| Warstwa             | Wybór                                              | ADR            |
+| ------------------- | -------------------------------------------------- | -------------- |
+| Framework           | Next.js 16 App Router, React 19, TypeScript strict | ADR-01         |
+| Build               | `output: 'export'` — statyczny, zero runtime Node  | ADR-02         |
+| Backend             | Supabase: Auth + PostgreSQL + RLS + Edge Functions | ADR-03         |
+| Stan zdalny         | TanStack Query (to **cache**, nie źródło prawdy)   | ADR-05, ADR-07 |
+| Stan lokalny trwały | Dexie/IndexedDB — aktywny trening, outbox, katalog | ADR-06         |
+| Stan ulotny         | Zustand — wyłącznie interakcja UI                  | §4.2           |
+| Style               | Tailwind 4 + tokeny systemu designu                | ADR-08         |
+| Walidacja           | Zod na granicach aplikacji                         | ADR-09         |
+| PWA                 | Serwist                                            | ADR-10         |
+| i18n                | next-intl, ścieżki `/en`, `/pl`, bez middleware    | ADR-11         |
+| Natywne             | Capacitor — **dopiero v1.1**                       | ADR-04         |
 
-| Trigger | Akcja |
-|---------|-------|
-| Nowa funkcja zaimplementowana | Update `project-status.md` |
-| Story ukończone | Update epic file (status: ✅ Done) |
-| Nowy bug/issue | Dodaj do `MVP-TODO.md` |
-| Zmiana architektury | Update `ARCH-*.md` |
-| Nowe wymagania | Update `PRD-*.md` |
+**TypeScript jest przypięty na 6.0.3, nie 7.** TS 7 wywraca `typescript-eslint`
+(wspiera `>=4.8.4 <6.1.0`). ESLint na 9.x z tego samego powodu. Nie podbijaj bez sprawdzenia.
 
-### Jak aktualizować?
+## Czego nie wolno — `ARCHITECTURE.md` §23
 
-1. **project-status.md** - Zmień procenty w tabelach
-2. **epic-X.md** - Zmień status story (⏳ Planned → 🔄 In Progress → ✅ Done)
-3. **MVP-TODO.md** - Zmień ❌ na ✅ dla ukończonych tasków
+- zapisu do Supabase z komponentu lub hooka **poza `lib/mutations/`**,
+- danych treningu wyłącznie w Zustand albo `localStorage`,
+- kolejki offline wiersz po wierszu dla agregatu treningu w v1.0,
+- generycznego LWW po `updated_at`,
+- `exercise_id` jako nullable + surowa nazwa w `workout_exercises`,
+- ręcznie utrzymywanych typów TS dla bazy (mają być generowane),
+- zdjęć ćwiczeń ze źródła bez bramki proweniencji,
+- surowych treści zdrowotnych/mentalnych w Sentry,
+- obejścia autoryzacji dla benchmarku w buildzie produkcyjnym,
+- zależności od middleware przy `output: 'export'`,
+- nazywania cache'u TanStack Query „źródłem prawdy".
 
-### Format AI-INDEX
+**Nie twórz katalogów dla funkcji, które nie istnieją** (ADR-27). W v1.0 **nie ma**
+`features/templates/`, `features/measurements/`, `app/[locale]/(app)/templates/`,
+kolumny `workouts.template_id` ani `features/life-coach/` i `features/mind/`.
+Git ma pokazywać prawdę.
 
-Każdy plik MD powinien mieć komentarz AI-INDEX:
-```markdown
-<!-- AI-INDEX: keyword1, keyword2, keyword3 -->
+## Sześć stanów synchronizacji — CORE-07
+
+`draft_local` → `queued` → `syncing` → `saved`, z `failed` i `conflict` jako gałęziami.
+
+**`draft_local` ≠ `queued`.** Pierwszy znaczy „trening w toku, bezpiecznie na urządzeniu,
+celowo jeszcze niewysłany". Pokazanie przy nim „czeka na wysłanie" sugeruje awarię tam,
+gdzie system działa poprawnie. Nazwy są dokładnie te — tak samo w PRD, w systemie designu
+(`SyncBadge`) i w `messages/*.json`. Test `lib/i18n/messages.test.ts` tego pilnuje.
+
+Uwaga: `sync_outbox.status` w Dexie (`queued | sending | failed | attention`) to **mechanika
+kolejki**, osobna od stanu UI. Nie mieszaj tych dwóch słowników.
+
+## Agregat treningu — najważniejszy kontrakt w projekcie
+
+Trening zapisuje się **jednym atomowym poleceniem**, nigdy zestawem żądań:
+
+- `CommitWorkout` — utworzenie (ADR-18),
+- `UpdateWorkoutAggregate` — edycja, **pełne zastąpienie dzieci**, `base_version` (ADR-28),
+- `DeleteWorkout` — miękkie usunięcie + przeliczenie rekordów (ADR-28).
+
+Dzieci agregatu (`workout_exercises`, `workout_sets`) **nie mają własnego `user_id` ani
+`version`** — autoryzacja i współbieżność idą przez korzeń (ADR-29). RLS na dzieciach
+sprawdza własność złączeniem z korzeniem.
+
+Funkcje RPC domyślnie `SECURITY INVOKER`. `SECURITY DEFINER` tylko z ustawionym
+`search_path` i `EXECUTE` odebranym `PUBLIC` (ADR-30).
+
+## Design
+
+Autorytetem jest skill **`.claude/skills/lifeos-strength-design/`** — wywołaj go przez
+`/lifeos-strength-design`. Zawiera tokeny, 24 komponenty React, ekrany i reguły marki.
+Tokeny CSS są skopiowane do `styles/tokens/` i ładowane w `app/globals.css`; **nie edytuj
+ich ręcznie** — zmieniaj w skillu i kopiuj ponownie.
+
+Dwanaście rzeczy, których złamanie jest defektem, a nie preferencją, jest w `readme.md`
+tego skilla, §6. Najczęściej łamane: pięć zakładek i ani jednej więcej, Ustawienia **nie
+są** zakładką, kolor nigdy nie niesie znaczenia sam, 44 px minimum, timer nie zasłania pola
+wprowadzania, `queued` czyta się jako norma a nie błąd.
+
+## Struktura
+
 ```
-To pomaga AI szybko znaleźć odpowiedni plik.
-
----
-
-## ⚠️ Known Issues (Stan na 2025-12-02)
-
-### KRYTYCZNE
-
-1. **Provider Conflict** - `daily_plan_provider.dart` używa MockGoalsRepository
-   - Fix: Zamień na GoalsRepositoryImpl
-   - Plik: `lib/features/life_coach/ai/providers/daily_plan_provider.dart`
-
-2. **Hardcoded User IDs** - W meditation_providers.dart
-   - `userId: 'current_user_id'` - powinno być z auth provider
-   - Plik: `lib/features/mind_emotion/presentation/providers/meditation_providers.dart`
-
-### Do zrobienia
-
-- Meditation Player screen (nie istnieje)
-- Breathing exercises screen (nie istnieje)
-- Exercise library persistence (brak Drift tables)
-
----
-
-## 🚀 MVP 1.0 Scope
-
-### In Scope
-- ✅ Auth (email)
-- ✅ Fitness (full)
-- ✅ Life Coach (daily plan, check-ins, goals, chat)
-- 🔄 Mind (mood in check-in, meditation player, breathing)
-- 🔄 Basic settings
-
-### Out of Scope (MVP 1.1)
-- ❌ Onboarding flow
-- ❌ IAP/Subscriptions
-- ❌ Push notifications
-- ❌ Cross-Module Intelligence
-- ❌ Social features
-
----
-
-## 🔧 Tech Stack Quick Reference
-
-| Layer | Technology |
-|-------|------------|
-| UI | Flutter 3.x, Material 3 |
-| State | Riverpod 3.0 (riverpod_annotation) |
-| Database | Drift (SQLite) |
-| Backend | Supabase (Auth, PostgreSQL, Storage) |
-| AI | OpenAI API (gpt-4o-mini) |
-| Navigation | GoRouter |
-| Charts | fl_chart |
-| Audio | just_audio (not integrated yet) |
-
----
-
-## 📝 Conventions
-
-### File Naming
-```
-feature_name/
-├── data/
-│   ├── models/         → feature_model.dart
-│   ├── repositories/   → feature_repository_impl.dart
-│   └── datasources/    → feature_datasource.dart
-├── domain/
-│   ├── entities/       → feature_entity.dart
-│   ├── repositories/   → feature_repository.dart (interface)
-│   └── usecases/       → verb_noun_usecase.dart
-└── presentation/
-    ├── pages/          → feature_page.dart
-    ├── providers/      → feature_provider.dart
-    └── widgets/        → feature_widget.dart
+app/[locale]/(auth|app)/   trasy; layout w [locale] jest layoutem korzenia
+features/<nazwa>/          import wyłącznie przez index.ts — ESLint tego pilnuje
+lib/                       supabase · local-db · mutations · sync · auth · i18n · format · analytics · errors
+components/{ui,system}     wspólne komponenty
+messages/                  en.json · pl.json — klucze muszą być identyczne
+data/catalog/              zbudowany katalog ćwiczeń (paczka statyczna, nie Storage)
+scripts/catalog/           potok 0-snapshot → 8-validate
+supabase/                  migrations · seed · tests · functions
+e2e/                       Playwright — przeciw statycznemu buildowi, nie dev serverowi
+eval/                      task-specs · fixtures · design-baselines (benchmark AgentOS)
 ```
 
-### Commit Messages
-```
-feat: Add meditation player screen
-fix: Resolve provider conflict in daily_plan_provider
-docs: Update project status after Epic 3 completion
-refactor: Extract breathing animation to separate widget
-```
-
----
-
-## 🤖 AI Instructions
-
-### Przed rozpoczęciem pracy:
-1. Przeczytaj `docs/2-MANAGEMENT/project-status.md` - aktualny stan
-2. Przeczytaj `docs/2-MANAGEMENT/MVP-TODO.md` - co zostało do zrobienia
-3. Sprawdź odpowiedni epic file dla szczegółów story
-
-### Po zakończeniu pracy:
-1. Update `project-status.md` jeśli zmienił się % completion
-2. Update epic file jeśli story zostało ukończone
-3. Update `MVP-TODO.md` - oznacz task jako ✅
-4. Commit z opisowym message
-
-### Jeśli tworzysz nowy plik:
-1. Dodaj AI-INDEX comment na początku
-2. Śledź naming conventions
-3. Użyj Clean Architecture pattern
-4. Dodaj do odpowiedniego folderu
-
----
-
-## 📞 Quick Commands
+## Polecenia
 
 ```bash
-# Run app
-flutter run
-
-# Generate Drift code
-dart run build_runner build
-
-# Run tests
-flutter test
-
-# Analyze code
-flutter analyze
+npm run dev         # serwer deweloperski
+npm run build       # statyczny eksport do out/
+npm run verify      # format + lint + typecheck + testy + katalog + skan sekretów
+npm run test        # Vitest
+npm run e2e         # Playwright przeciw out/
 ```
 
----
+## Zasada dowodu
 
-*Ostatnia aktualizacja: 2025-12-02*
+Wyrenderowana strona nie jest dowodem — strona otwiera się też wtedy, gdy funkcja pod spodem
+jest zepsuta. Dowodem jest **trwały stan**: wiersz w bazie, wpis w IndexedDB, plik na dysku.
+
+Zanim uznasz test za bramkę, **zobacz go na czerwono**: zepsuj to, czego pilnuje, i sprawdź,
+że pada. Bramka, która nie umie się zaczerwienić, melduje bezpieczeństwo, którego nie ma.
+
+## Język
+
+Odpowiadaj po polsku. Kod, nazwy, komentarze w kodzie i dokumenty w `docs/` — po angielsku,
+zgodnie z tym, co już tam jest.

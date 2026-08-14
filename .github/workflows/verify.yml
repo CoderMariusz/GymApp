@@ -1,0 +1,45 @@
+name: verify
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0 # gitleaks scans history
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: format + lint + types + tests
+        run: |
+          npm run format:check
+          npm run lint
+          npm run typecheck
+          npm run test
+
+      - name: build static export
+        run: npm run build
+
+      # ARCHITECTURE.md §19.1 — a provider key must never reach a production bundle.
+      - name: production bundle must not contain a service key
+        run: |
+          if grep -rEl 'service_role|SUPABASE_SERVICE' out/ ; then
+            echo "::error::service key marker found in static export"
+            exit 1
+          fi
+          echo "clean"
+
+      - name: gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

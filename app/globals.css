@@ -1,0 +1,13 @@
+@import 'tailwindcss';
+
+/* Design system tokens — copied from .claude/skills/lifeos-strength-design/tokens.
+   That skill is the authority (docs/DESIGN-BRIEF.md is its input). When a token
+   changes there, re-copy; do not hand-edit values here. */
+@import '../styles/tokens/typography.css';
+@import '../styles/tokens/fonts.css';
+@import '../styles/tokens/colors.css';
+@import '../styles/tokens/spacing.css';
+@import '../styles/tokens/radius.css';
+@import '../styles/tokens/elevation.css';
+@import '../styles/tokens/motion.css';
+@import '../styles/tokens/base.css';

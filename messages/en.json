@@ -1,0 +1,21 @@
+{
+  "nav": {
+    "home": "Home",
+    "workout": "Workout",
+    "exercises": "Exercises",
+    "history": "History",
+    "progress": "Progress",
+    "settings": "Settings"
+  },
+  "sync": {
+    "draft_local": "Saved on this device",
+    "queued": "Waiting for connection",
+    "syncing": "Sending",
+    "saved": "On the server",
+    "failed": "Attempt failed, will retry",
+    "conflict": "Needs a decision"
+  },
+  "common": {
+    "appName": "LifeOS"
+  }
+}
